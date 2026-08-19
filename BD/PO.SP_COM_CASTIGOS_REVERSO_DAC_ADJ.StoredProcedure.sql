@@ -1,0 +1,913 @@
+﻿SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [PO].[SP_COM_CASTIGOS_REVERSO_DAC_ADJ]
+(
+	@FECHA_INICIO DATE
+)
+AS
+BEGIN
+    SET NOCOUNT ON
+
+    declare @ID_POLIZA int = 95
+           ,@FECHA_ANT date
+    
+    set @FECHA_ANT = DATEADD(day, -1, @FECHA_INICIO)
+
+	BEGIN TRY
+		BEGIN TRANSACTION
+		
+			DELETE FROM PO.SAF_MOV_ABONO WHERE FECHA_MOVIMIENTO = @FECHA_INICIO AND ID_POLIZA = @ID_POLIZA
+
+			--# BLOCK: EXTRACTOR DE MOVIMIENTOS PAGO
+			INSERT INTO PO.SAF_MOV_ABONO(
+			ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, CUENTA_CARGO, CUENTA_ABONO, ID_PRODUCTO, NOMBRE_PRODUCTO, ID_FONDEO, RUBRO, MONTO
+			,MON_PAGO_IVA, IND_FORMA_PAGO, ID_TIPO_CREDITO, TIPO_CREDITO, IND_ESTADO, CARTERA_VENCIDA, FECHA_MOVIMIENTO
+			,TIP_TRANSACCION, SUBTIP_TRANSAC, IND_ETAPA, MON_CREDITO, CEDIDO, FEC_APERTURA, ID_SECUENCIA, ID_REFERENCIA, ID_CUENTA, IND_COVID, 
+			CONCEPTO_FINAL, APELLIDO, TABLA_ORIGEN, ID_POLIZA, TIPO_VIVIENDA, REVERSO, CANAL)
+			SELECT  
+				C.ID_EXTERNO
+				,C.NUM_CREDITO
+				,dbo.FN_FORMA_NOMBRE(PF.PRIMER_APELLIDO, PF.SEGUNDO_APELLIDO, PF.PRIMER_NOMBRE, PF.SEGUNDO_NOMBRE, PJ.RAZON_SOCIAL, PJ.NOM_COMERCIAL)
+				,'' AS CUENTA_CARGO
+				,'' AS CUENTA_ABONO
+				,ISNULL((SELECT TOP 1 NUM_PRODUCTO FROM PO.PR_CAT_PRODUCTO WHERE ID_SAF = P.TIP_CREDITO), P.TIP_CREDITO) ID_PRODUCTO
+				--,(SELECT TOP 1 NOMBRE_PRODUCTO FROM PO.PR_CAT_PRODUCTO WHERE ID_SAF = P.TIP_CREDITO) NOMBRE_PRODUCTO
+				,CP.NOMBRE_CORTO
+				,CH.ID_FONDEO
+				,B.COD_CONCEPTO AS RUBRO
+				,B.MON_PAGO MONTO
+				,B.MON_PAGO_IVA
+				,CASE WHEN A.IND_FORMA_PAGO = '' THEN 0 ELSE A.IND_FORMA_PAGO END IND_FORMA_PAGO
+				,C.NUM_DESC_TIPO_CREDITO
+				--,(SELECT TOP 1 DESC_TIPO_CREDITO FROM [PO].[SAF_CAT_DESC_TIPO] WHERE NUM_DESC_TIPO_CREDITO = C.NUM_DESC_TIPO_CREDITO)
+				,CP.NOMBRE_CORTO
+				,C.IND_ESTADO
+				,CASE WHEN C.Ind_estado_Cont = 'VI' THEN 'NO' WHEN C.Ind_estado_Cont = 'VE' THEN 'SI' END CARTERA_VENCIDA
+				,A.FEC_MOVIMIENTO
+				,A.TIP_TRANSACCION
+				,A.SUBTIP_TRANSAC
+				,CH.IND_ETAPA
+				,C.MON_CREDITO
+				,[dbo].[FN_ORIGEN_FONDOS](C.COD_ORIGEN,C.COD_EMPRESA) AS CEDIDO 
+				,C.FEC_APERTURA
+				,A.Id_secuencia
+                ,B.ID_REFERENCIA
+				,case when exists(select * from Quiero_Confianza_Shadow.PR.PR_DEPOSITOS_X_IDENTIFICAR where id_carga = A.id_carga and id_deposito = A.id_deposito) then 2080 else CAST(A.Id_cuenta AS bigint) end
+				,dbo.FN_ES_COVID(Q.Ind_Posposicion,Q.Fecha_Posposicion,Q.Num_Credito)
+				,''
+				,IIF(PF.PRIMER_APELLIDO IS NULL OR PF.PRIMER_APELLIDO = '', 'NOMBRE', PF.PRIMER_APELLIDO)
+				,'DAC ADJ REV CAST COM'
+				,@ID_POLIZA
+                ,''--CH.TIPO_VIVIENDA
+				,case when exists(select * from Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO where num_asiento = A.num_asiento and Mon_movimiento = -A.Mon_movimiento) then 'SI' else 'NO' end
+				,dbo.FN_TIPO_CANAL(C.TIP_TASA)
+			FROM Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO A WITH (NOLOCK)
+					INNER JOIN Quiero_Confianza_shadow.PR.PR_DETALLE_PAGO B WITH (NOLOCK) ON A.ID_SECUENCIA = B.ID_SECUENCIA
+					INNER JOIN Quiero_Confianza_shadow.PR.PR_CREDITOS C WITH (NOLOCK) ON A.COD_EMPRESA = C.COD_EMPRESA AND A.NUM_CREDITO = C.NUM_CREDITO
+					--INNER JOIN Quiero_Confianza_shadow.CL.CL_PERSONAS_FISICAS D WITH (NOLOCK) ON C.COD_EMPRESA = D.COD_EMPRESA AND C.COD_CLIENTE = D.COD_CLIENTE
+					INNER JOIN Quiero_Confianza_shadow.PR.PR_TIPO_CREDITO P WITH (NOLOCK) ON C.TIP_CREDITO = P.TIP_CREDITO AND C.COD_EMPRESA = P.COD_EMPRESA
+
+					LEFT JOIN Quiero_Confianza_shadow.PR.PR_RUBRO_COBRO_X_CREDITO Q WITH (NOLOCK) ON Q.Num_Secuencia = B.Id_referencia
+					    AND Q.Num_Credito = A.Num_credito AND Q.Num_Det_Secuencia = B.Num_det_secuencia AND Q.Cod_Rubro = B.Cod_concepto AND Q.Ind_Estado != 'N'
+                    LEFT JOIN PO.CONTROL_HISTORICO_TRASPASOS CH ON A.NUM_CREDITO = CH.NUM_CREDITO AND CH.FECHA_SISTEMA = @FECHA_ANT
+					LEFT JOIN PO.PR_CREDITO_EXTRA CE ON CE.ID_EXTERNO = C.ID_EXTERNO
+					LEFT JOIN PO.PR_CREDITO_PRODUCTO CP ON CP.ID_PRODUCTO = CE.ID_PRODUCTO
+					LEFT JOIN Quiero_Confianza_shadow.CL.CL_PERSONAS_JURIDICAS PJ WITH (NOLOCK) ON C.COD_EMPRESA = PJ.COD_EMPRESA AND C.COD_CLIENTE = PJ.COD_CLIENTE
+					LEFT JOIN Quiero_Confianza_shadow.CL.CL_PERSONAS_FISICAS PF WITH (NOLOCK) ON C.COD_EMPRESA = PF.COD_EMPRESA AND C.COD_CLIENTE = PF.COD_CLIENTE
+			WHERE C.IND_ESTADO IN ('C', 'D')
+					AND C.IND_LINEA = 'N'
+                    AND C.NUM_DESC_TIPO_CREDITO IN (25,   29)
+                    AND C.COD_ORIGEN NOT IN (22,23,28, 35)
+					AND A.FEC_MOVIMIENTO = @FECHA_INICIO 
+                    and A.mon_movimiento < 0 
+					AND (B.MON_PAGO <> 0 OR B.MON_PAGO_IVA <> 0)
+					AND A.TIP_TRANSACCION !=3  --Evita que se traigan desembolsos que se jalan en SP FIRMA
+                    AND A.Id_cuenta IN ('2073','2074')
+
+
+		UPDATE H
+			SET H.BANCO_RECEPTOR = C.DES_CUENTA+'/'+C.NUM_CUENTA
+		FROM PO.SAF_MOV_ABONO H
+			INNER JOIN Quiero_Confianza_shadow.BA.BA_CTA_CORRIENTE C ON H.ID_CUENTA = CAST( C.ID_CUENTA AS VARCHAR(50))
+		WHERE H.FECHA_MOVIMIENTO = @FECHA_INICIO
+			AND H.ID_POLIZA = @ID_POLIZA
+
+		------------- ###################################### ------------------------------------------------
+		------------- ###################################### ------------------------------------------------
+
+		---# Crea un nuevo registro si existe IVA en el universo extraido
+		INSERT INTO PO.SAF_MOV_ABONO (ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_PRODUCTO, NOMBRE_PRODUCTO, ID_FONDEO, 
+										TIP_TRANSACCION, SUBTIP_TRANSAC, RUBRO, MONTO, MON_PAGO_IVA, ID_TIPO_CREDITO,
+										TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, IND_ETAPA, IND_FORMA_PAGO,
+										FEC_APERTURA, CEDIDO, MON_CREDITO, ID_SECUENCIA,ID_REFERENCIA, ID_CUENTA, BANCO_RECEPTOR, IND_COVID, APELLIDO, TABLA_ORIGEN, ID_POLIZA, REVERSO, CANAL)
+		SELECT ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_PRODUCTO, NOMBRE_PRODUCTO, ID_FONDEO,
+				TIP_TRANSACCION, SUBTIP_TRANSAC, CONCAT('IVA ', RUBRO), MON_PAGO_IVA, 0, ID_TIPO_CREDITO, 
+				TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, IND_ETAPA, IND_FORMA_PAGO,
+				FEC_APERTURA, CEDIDO, MON_CREDITO, ID_SECUENCIA, ID_REFERENCIA, ID_CUENTA, BANCO_RECEPTOR, IND_COVID, APELLIDO, 'DAC ADJ REV CAST COM', @ID_POLIZA, REVERSO, CANAL
+		FROM PO.SAF_MOV_ABONO
+		WHERE MON_PAGO_IVA != 0 AND FECHA_MOVIMIENTO = @FECHA_INICIO
+		    AND ID_POLIZA = @ID_POLIZA
+		--PRINT('INSERT IVA')
+		------------- ###################################### ------------------------------------------------
+		------------- ###################################### ------------------------------------------------
+
+		--- COBRANZA REESTRUCTURAS CASTIGO
+		SELECT A.NUM_CREDITO, A.COD_CONCEPTO RUBRO, B.ID_SECUENCIA, B.MONTO PAGO, 
+		(SELECT E.NUM_PRIORIDAD_PAGO FROM [Quiero_Confianza_shadow].PR.PR_PRIORIDAD_RUBRO_TIPOCRED E WHERE 
+		D.TIP_CREDITO= E.TIP_CREDITO AND REPLACE(A.COD_CONCEPTO, 'IVA ','')= E.COD_RUBRO) ORDEN,
+		IIF(A.COD_CONCEPTO LIKE 'IVA%', 'S','N') IND_IVA, B.ID, A.TIPO 
+		INTO #MOVS_RC
+		FROM [PO].[PR_REEST_CAST_DET] A
+				JOIN PO.SAF_MOV_ABONO B ON A.NUM_CREDITO = B.NUM_CREDITO
+				JOIN [Quiero_Confianza_shadow].PR.PR_CREDITOS D ON A.NUM_CREDITO = D.NUM_CREDITO
+				--LEFT JOIN [Quiero_Confianza_shadow].PR.PR_PRIORIDAD_RUBRO_TIPOCRED E ON D.TIP_CREDITO= E.TIP_CREDITO AND A.COD_CONCEPTO= E.COD_RUBRO
+		WHERE B.FECHA_MOVIMIENTO = @FECHA_INICIO AND B.ID_POLIZA = @ID_POLIZA AND B.RUBRO = 'PRINCIPAL'
+				AND A.ID_SECUENCIA IS NULL AND A.FECHA_MODIFICACION IS NULL
+				AND B.ID_SECUENCIA NOT IN (SELECT DISTINCT ID_SECUENCIA FROM [PO].[PR_REEST_CAST_DET] WHERE ID_SECUENCIA IS NOT NULL)
+		GROUP BY A.NUM_CREDITO, A.COD_CONCEPTO, B.ID_SECUENCIA, B.MONTO, TIP_CREDITO, B.ID, A.TIPO--, E.NUM_PRIORIDAD_PAGO
+		
+		UPDATE PO.SAF_MOV_ABONO
+			SET TABLA_ORIGEN = 'POSTERIOR'
+		WHERE ID_POLIZA= @ID_POLIZA AND FECHA_MOVIMIENTO= @FECHA_INICIO AND NUM_CREDITO IN (SELECT DISTINCT NUM_CREDITO FROM PR_REEST_CAST_APLI)
+
+		EXEC [PO].[SP_SAF_POLIZA_REEST_CAST_APLI]@FECHA_INICIO, @ID_POLIZA
+
+		INSERT INTO PO.SAF_MOV_ABONO(
+		ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, CUENTA_CARGO, CUENTA_ABONO, ID_PRODUCTO, NOMBRE_PRODUCTO, ID_FONDEO, RUBRO, MONTO
+		,MON_PAGO_IVA, IND_FORMA_PAGO, ID_TIPO_CREDITO, TIPO_CREDITO, IND_ESTADO, CARTERA_VENCIDA, FECHA_MOVIMIENTO
+		,TIP_TRANSACCION, SUBTIP_TRANSAC, IND_ETAPA, MON_CREDITO, CEDIDO, FEC_APERTURA, ID_SECUENCIA, ID_REFERENCIA, ID_CUENTA, IND_COVID, 
+		CONCEPTO_FINAL, APELLIDO, TABLA_ORIGEN, ID_POLIZA, TIPO_VIVIENDA, REVERSO, CANAL)
+		SELECT  
+			C.ID_EXTERNO
+			,C.NUM_CREDITO
+			,dbo.FN_FORMA_NOMBRE(PF.PRIMER_APELLIDO, PF.SEGUNDO_APELLIDO, PF.PRIMER_NOMBRE, PF.SEGUNDO_NOMBRE, PJ.RAZON_SOCIAL, PJ.NOM_COMERCIAL)
+			,'' AS CUENTA_CARGO
+			,'' AS CUENTA_ABONO
+			,ISNULL((SELECT TOP 1 NUM_PRODUCTO FROM PO.PR_CAT_PRODUCTO WHERE ID_SAF = P.TIP_CREDITO), P.TIP_CREDITO) ID_PRODUCTO
+			--,(SELECT TOP 1 NOMBRE_PRODUCTO FROM PO.PR_CAT_PRODUCTO WHERE ID_SAF = P.TIP_CREDITO) NOMBRE_PRODUCTO
+			,CP.NOMBRE_CORTO
+			,CH.ID_FONDEO
+			,A.COD_CONCEPTO AS RUBRO
+			,A.MON_PAGO MONTO
+			,0 MON_PAGO_IVA
+			,CASE WHEN B.IND_FORMA_PAGO = '' THEN 0 ELSE B.IND_FORMA_PAGO END IND_FORMA_PAGO
+			,C.NUM_DESC_TIPO_CREDITO
+			--,(SELECT TOP 1 DESC_TIPO_CREDITO FROM [PO].[SAF_CAT_DESC_TIPO] WHERE NUM_DESC_TIPO_CREDITO = C.NUM_DESC_TIPO_CREDITO)
+			,CP.NOMBRE_CORTO
+			,C.IND_ESTADO
+			,CASE WHEN C.Ind_estado_Cont = 'VI' THEN 'NO' WHEN C.Ind_estado_Cont = 'VE' THEN 'SI' END CARTERA_VENCIDA
+			,A.FECHA_PROCESO
+			,B.TIP_TRANSACCION
+			,B.SUBTIP_TRANSAC
+			,CH.IND_ETAPA
+			,C.MON_CREDITO
+			,[dbo].[FN_ORIGEN_FONDOS](C.COD_ORIGEN,C.COD_EMPRESA) AS CEDIDO 
+			,C.FEC_APERTURA
+			,A.Id_secuencia
+            ,(SELECT TOP 1 ID_REFERENCIA FROM Quiero_Confianza_shadow.PR.PR_DETALLE_PAGO WHERE ID_SECUENCIA = B.ID_SECUENCIA AND COD_CONCEPTO= A.COD_CONCEPTO)
+			,case when exists(select * from Quiero_Confianza_Shadow.PR.PR_DEPOSITOS_X_IDENTIFICAR where id_carga = B.id_carga and id_deposito = B.id_deposito) then 2080 else CAST(B.Id_cuenta AS bigint) end
+			,'N'
+			,''
+			,IIF(PF.PRIMER_APELLIDO IS NULL OR PF.PRIMER_APELLIDO = '', 'NOMBRE', PF.PRIMER_APELLIDO)
+			,A.TIPO
+			,@ID_POLIZA
+            ,''--CH.TIPO_VIVIENDA
+			,case when exists(select * from Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO where num_asiento = B.num_asiento and Mon_movimiento = -B.Mon_movimiento) then 'SI' else 'NO' end
+			,dbo.FN_TIPO_CANAL(C.TIP_TASA)
+		FROM [PO].[PR_REEST_CAST_APLI] A
+				LEFT JOIN Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO B WITH (NOLOCK) ON A.ID_SECUENCIA = B.ID_SECUENCIA AND A.NUM_ASIENTO = B.NUM_ASIENTO
+				LEFT JOIN Quiero_Confianza_shadow.PR.PR_CREDITOS C WITH (NOLOCK) ON A.NUM_CREDITO = C.NUM_CREDITO
+				LEFT JOIN Quiero_Confianza_shadow.PR.PR_TIPO_CREDITO P WITH (NOLOCK) ON C.TIP_CREDITO = P.TIP_CREDITO AND C.COD_EMPRESA = P.COD_EMPRESA
+				LEFT JOIN PO.CONTROL_HISTORICO_TRASPASOS CH ON A.NUM_CREDITO = CH.NUM_CREDITO AND CH.FECHA_SISTEMA = @FECHA_ANT
+				LEFT JOIN PO.PR_CREDITO_EXTRA CE ON CE.ID_EXTERNO = C.ID_EXTERNO
+				LEFT JOIN PO.PR_CREDITO_PRODUCTO CP ON CP.ID_PRODUCTO = CE.ID_PRODUCTO
+				LEFT JOIN Quiero_Confianza_shadow.CL.CL_PERSONAS_JURIDICAS PJ WITH (NOLOCK) ON C.COD_EMPRESA = PJ.COD_EMPRESA AND C.COD_CLIENTE = PJ.COD_CLIENTE
+				LEFT JOIN Quiero_Confianza_shadow.CL.CL_PERSONAS_FISICAS PF WITH (NOLOCK) ON C.COD_EMPRESA = PF.COD_EMPRESA AND C.COD_CLIENTE = PF.COD_CLIENTE
+		WHERE A.FECHA_PROCESO = @FECHA_INICIO AND A.ID_POLIZA = @ID_POLIZA
+
+		DELETE FROM PO.SAF_MOV_ABONO 
+		WHERE ID_POLIZA= @ID_POLIZA AND FECHA_MOVIMIENTO= @FECHA_INICIO 
+			AND ID IN (SELECT ID FROM #MOVS_RC)
+
+		--- CALIFICACION BASE DEL CONCEPTO DEACUERDO A REGLAS GLOBALES
+		UPDATE PO.SAF_MOV_ABONO
+		SET CONCEPTO = CASE
+				WHEN dbo.FN_RUBRO_POL(RUBRO) = 'IVA INTERESES' THEN 'CMR CASTIGO DACADJ IVA INTERESES'
+				WHEN RUBRO LIKE '%IVA%' THEN 'CMR CASTIGO DACADJ IVA'
+				ELSE CONCAT('CMR CASTIGO DACADJ ',TIPO_CREDITO)
+			END
+		WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+			AND ID_POLIZA = @ID_POLIZA AND RUBRO != ''-- AND ID_TIPO_CREDITO = 25
+
+		-- GENERACION DE CONCEPTOS MEZZANINE COMERCIALES
+		/*UPDATE PO.SAF_MOV_ABONO
+				SET CONCEPTO = 
+				CASE
+				WHEN RUBRO LIKE '%SEGURO%' THEN 'CMR DCM PAGO CASTIGO ACCESORIOS'
+				WHEN RUBRO LIKE '%IVA%' THEN 'CMR DCM PAGO CASTIGO ' + dbo.FN_RUBRO_POL(RUBRO)
+				WHEN RUBRO LIKE '%CARGO_PORCENTAJE%' THEN 'CMR DCM PAGO CASTIGO ACCESORIOS'
+				WHEN RUBRO LIKE '%SALDO_FAVOR%' THEN 'CMR DCM PAGO DESCARGA FAVOR'
+				ELSE CONCAT('CMR DCM PAGO CASTIGO ',dbo.FN_RUBRO_POL(RUBRO))
+				END
+		WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+			AND ID_POLIZA = @ID_POLIZA AND RUBRO != '' AND ID_TIPO_CREDITO = 29*/
+
+		-- REGISTROS YA PROCESADOS DE REESTRUCTURA CASTIGO
+		UPDATE PO.SAF_MOV_ABONO
+		SET CONCEPTO = 
+			CASE
+				WHEN TABLA_ORIGEN = 'ORDEN' THEN REPLACE(CONCEPTO, 'CASTIGO ', 'CASTIGO CO ')
+				WHEN TABLA_ORIGEN = 'POSTERIOR' THEN REPLACE(CONCEPTO, 'CASTIGO ', 'CASTIGO POSTERIOR CO ')
+				ELSE CONCEPTO
+			END,
+			TABLA_ORIGEN = 'R CAST COBRANZA COM'
+		WHERE FECHA_MOVIMIENTO = @FECHA_INICIO AND ID_POLIZA = @ID_POLIZA AND TABLA_ORIGEN IN ('BALANCE', 'ORDEN', 'POSTERIOR')
+
+		UPDATE PO.SAF_MOV_ABONO
+		SET CONCEPTO_ANT = CONCAT('CMR CAS'
+                ,CASE
+					WHEN ID_CUENTA = 2073 THEN ' DACION'
+					WHEN ID_CUENTA = 2074 THEN ' ADJUDICACION'
+				END)
+        WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+			AND ID_POLIZA = @ID_POLIZA 
+
+		-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> BALANCE-ORDEN ETAPA 3 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+		--# Variables a usar para lectura linea a linea
+		DECLARE  @ID_EXTERNO		VARCHAR(15),	@NUM_CREDITO		NUMERIC(8, 0), 
+				 @ID_FONDEO		    INT, 			@ID_PRODUCTO		NUMERIC(3, 0), 
+				 @TIP_TRANSACCION   VARCHAR(5),		@SUBTIP_TRANSAC		VARCHAR(5), 
+				 @RUBRO			    VARCHAR(30),	@MONTO				NUMERIC(16, 2), 
+				 @MON_PAGO_IVA		NUMERIC(16, 2), @TIPO_CREDITO		VARCHAR(255), 
+				 @TIPO_VIVIENDA		VARCHAR(150),	@FECHA_MOVIMIENTO	DATE, 
+				 @IND_ESTADO		VARCHAR(2),		@NOM_CLIENTE		VARCHAR(250),
+				 @ID_TIPO_CREDITO   INT,			@IND_ETAPA			INT, 
+				 @MAX_INDICE		INT,			@INDICE				INT = 0,
+				 @IND_FORMA_PAGO	INT,			@NOMBRE_PRODUCTO	VARCHAR(355),
+				 @IND_ETAPA_ANTERIOR INT,			@IND_ETAPA_ACTUAL	INT,
+				 @FECHA_ACTUAL		DATE,			@FECHA_ANTERIOR		DATE,
+				 @ID_FONDEO_ACTUAL	INT,			@ID_FONDEO_ANTERIOR	INT,
+				 @FEC_APERTURA		DATE,			@MON_CREDITO		NUMERIC(16, 2),
+				 @CEDIDO			VARCHAR(255),   @ID_SECUENCIA	    INT,
+				 @ID_CUENTA	        VARCHAR(25),	@ID_UNICO			VARCHAR(150),
+				 @CONCEPTO	        VARCHAR(150),	@LEYENDA			VARCHAR(70),
+				 @QUERY				VARCHAR(MAX),   @BANDERA			INT,
+				 @TOTAL				DECIMAL(16,2) = 0,	@EL_RUBRO			VARCHAR(30) = '',
+				 @ORDEN				DECIMAL(16,2),	@MONTO_BALANCE		DECIMAL(16,2),
+				 @NUM_CREDITO_ANT	NUMERIC(8, 0) = 0,
+				 @CONCEPTO_FINAL	VARCHAR(30),	@APELLIDO			VARCHAR(30)
+				 ,@CANAL			VARCHAR(30)
+			 
+        declare @MONTO_OFFSET numeric(16,6),@ORDEN_TOT numeric(16,6),@DIAS_PERIODO_INTERNO int,@fecha_ref date, @Dias_offset int
+
+
+		--# variables para uso de la separacion balance/orden
+		DECLARE @SUMA89 NUMERIC(16, 2), @SUMA90 NUMERIC(16, 2), @FAVOR NUMERIC(16, 2), @IMPAGO DATE, @ETAPA_3_INI  DATE, @DIA_CORTE int
+
+		
+		--# Tabla temporal para almacenar la fila a trabajar
+		DECLARE @MOVS TABLE (ID INT, ID_EXTERNO VARCHAR(15), NUM_CREDITO NUMERIC(8, 0), NOM_CLIENTE VARCHAR(250), ID_PRODUCTO NUMERIC(3,0), 
+							NOMBRE_PRODUCTO VARCHAR(355), ID_FONDEO INT, TIP_TRANSACCION VARCHAR(5), SUBTIP_TRANSAC VARCHAR(5),
+							RUBRO VARCHAR(30), MONTO NUMERIC(16, 2), MON_PAGO_IVA NUMERIC(16,2), ID_TIPO_CREDITO INT, 
+							TIPO_CREDITO VARCHAR(255), TIPO_VIVIENDA VARCHAR(150), FECHA_MOVIMIENTO DATETIME, IND_ESTADO VARCHAR(2), 
+							CARTERA_VENCIDA VARCHAR(2), IND_ETAPA INT, IND_FORMA_PAGO INT, FEC_APERTURA DATE, CEDIDO VARCHAR(255),
+							MON_CREDITO NUMERIC(16, 2), ID_SECUENCIA	INT, ID_REFERENCIA INT, ID_CUENTA	VARCHAR(25), ID_UNICO VARCHAR(150), CONCEPTO VARCHAR(150),
+							CONCEPTO_FINAL VARCHAR(30), APELLIDO VARCHAR(30), CANAL VARCHAR(30))
+
+		--# Se insertan todos los registros que se trabajaran con un indice a la tabla temporal
+		INSERT INTO @MOVS (ID, ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_PRODUCTO,
+							NOMBRE_PRODUCTO, ID_FONDEO, TIP_TRANSACCION, SUBTIP_TRANSAC,
+							RUBRO, MONTO, MON_PAGO_IVA, ID_TIPO_CREDITO, 
+							TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, 
+							IND_ETAPA, IND_FORMA_PAGO, FEC_APERTURA, CEDIDO, MON_CREDITO, ID_SECUENCIA, ID_REFERENCIA, ID_CUENTA, ID_UNICO, CONCEPTO,
+							CONCEPTO_FINAL, APELLIDO, CANAL)
+		SELECT 
+			ROW_NUMBER() OVER (ORDER BY NUM_CREDITO, RUBRO, ID_SECUENCIA, ID_REFERENCIA) ID
+			,ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_PRODUCTO, 
+			NOMBRE_PRODUCTO, ID_FONDEO, TIP_TRANSACCION, SUBTIP_TRANSAC
+			,RUBRO, MONTO, MON_PAGO_IVA, ID_TIPO_CREDITO, 
+			TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, 
+			IND_ETAPA, IND_FORMA_PAGO, FEC_APERTURA, CEDIDO, MON_CREDITO, ID_SECUENCIA, ID_REFERENCIA, ID_CUENTA, ID, CONCEPTO,
+			CONCEPTO_FINAL, APELLIDO, CANAL
+			FROM PO.SAF_MOV_ABONO
+            WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+			    AND ID_POLIZA = @ID_POLIZA
+                AND IND_ETAPA = 3
+				AND RUBRO NOT IN ('PRINCIPAL','SALDO_FAVOR','COMISION_PREPAGO','IVA COMISION_PREPAGO') 
+				AND CONCEPTO NOT LIKE '%COVID%' 
+				AND TABLA_ORIGEN != 'R CAST COBRANZA COM'
+		
+		--# Se obtiene el tamaño total de registros
+		SELECT @MAX_INDICE = COUNT(ID) FROM @MOVS
+		WHILE @INDICE < @MAX_INDICE	BEGIN
+			--# BLOC: lee todos los campos del registro actual
+			SELECT 
+				@ID_EXTERNO = ID_EXTERNO, @NUM_CREDITO = NUM_CREDITO, @NOM_CLIENTE = NOM_CLIENTE, @ID_PRODUCTO = ID_PRODUCTO, 
+				@NOMBRE_PRODUCTO = NOMBRE_PRODUCTO, @ID_FONDEO = ID_FONDEO, @TIP_TRANSACCION = TIP_TRANSACCION, @SUBTIP_TRANSAC = SUBTIP_TRANSAC,
+				@RUBRO = RUBRO, @MONTO = ABS(MONTO), @MON_PAGO_IVA = MON_PAGO_IVA, @ID_TIPO_CREDITO = ID_TIPO_CREDITO, 
+				@TIPO_CREDITO = TIPO_CREDITO, @TIPO_VIVIENDA = TIPO_VIVIENDA, @FECHA_MOVIMIENTO = FECHA_MOVIMIENTO, 
+				@IND_ESTADO = IND_ESTADO, @IND_ETAPA = IND_ETAPA, @IND_FORMA_PAGO = IND_FORMA_PAGO, @FEC_APERTURA = FEC_APERTURA, @CEDIDO = CEDIDO, @MON_CREDITO = MON_CREDITO,
+				@IND_ETAPA_ACTUAL = IND_ETAPA, @FECHA_ACTUAL = FECHA_MOVIMIENTO, @ID_FONDEO_ACTUAL = ID_FONDEO,
+				@ID_SECUENCIA = ID_SECUENCIA, @ID_CUENTA = ID_CUENTA, @ID_UNICO = ID_UNICO, @CONCEPTO = CONCEPTO,
+				@CONCEPTO_FINAL = CONCEPTO_FINAL, @APELLIDO = APELLIDO, @CANAL = CANAL
+			FROM @MOVS WHERE ID = @INDICE + 1
+			--# BLOC_END
+
+			--# BLOC: inicializan variables
+			SELECT @IND_ETAPA_ANTERIOR = 0, @FECHA_ANTERIOR = NULL, @ID_FONDEO_ANTERIOR = NULL, @LEYENDA = ''
+			--# BLOC_END
+
+			--# BLOC: toma valores dia anterior
+			SELECT @IND_ETAPA_ANTERIOR = IND_ETAPA, @FECHA_ANTERIOR = FECHA_SISTEMA, @ID_FONDEO_ANTERIOR = ID_FONDEO
+			FROM PO.CONTROL_HISTORICO_TRASPASOS WITH (NOLOCK)
+			WHERE NUM_CREDITO = @NUM_CREDITO AND FECHA_SISTEMA = @FECHA_ANT
+			--# BLOC_END
+
+			--print '|@NUM_CREDITO:|'+isnull(cast(@NUM_CREDITO as varchar),'')+'|@IND_ETAPA_ACTUAL:|'+isnull(cast(@IND_ETAPA_ACTUAL as varchar),'')+'|@IND_ETAPA_ANTERIOR:|'+isnull(cast(@IND_ETAPA_ANTERIOR as varchar),'')
+
+			-- # TRATAMIENTO PARA SEPARACION DE CUENTAS BALANCE/ORDEN ETAPA 3    @IND_ETAPA_ANTERIOR
+
+			--print '|NUM_CREDITO:|'+isnull(cast(@NUM_CREDITO as varchar),'')+'|NUM_CREDITO_ANT:|'+isnull(cast(@NUM_CREDITO_ANT as varchar),'')+'|RUBRO:|'+isnull(cast(@RUBRO as varchar),'')+'|EL_RUBRO:|'+isnull(cast(@EL_RUBRO as varchar),'')
+			        IF @NUM_CREDITO != @NUM_CREDITO_ANT BEGIN
+				        SELECT @NUM_CREDITO_ANT = @NUM_CREDITO, @TOTAL = 0
+                        --print '==============================================================='
+                        --print '|CAMBIO Cred:|'+isnull(cast(@NUM_CREDITO as varchar),'')
+			        END
+
+					IF @EL_RUBRO != @RUBRO  BEGIN --- OR @NUM_CREDITO != @NUM_CREDITO_ANT
+						--# BLOC: inicializa variables, lee impago y balance
+						SELECT @BANDERA = 0, @EL_RUBRO = @RUBRO, @TOTAL = 0, @SUMA89 = 0, @ORDEN = 0
+                        --print '|CAMBIO rub:|'+isnull(cast(@RUBRO as varchar),'')
+						--SELECT @IMPAGO = FECHA_INICIO, @SUMA89 = MONTO_BALANCE FROM PO.CALC_BALANCE_ORDEN WHERE NUM_CREDITO = @NUM_CREDITO AND RUBRO = @RUBRO
+						--------------------------------------------------------------------------------------------------------------------------
+                       --- CALCULO FECHA DE ETAPA 3 
+                        SET @ETAPA_3_INI = dbo.FECHA_IMPAGO(@NUM_CREDITO)
+
+                        --print '|ETAPA_3_INI:|'+isnull(cast(@ETAPA_3_INI as varchar),'')+'|NUM_CREDITO:|'+isnull(cast(@NUM_CREDITO as varchar),'')
+						
+						-->>>>>>>>>>>>>>>>>>>>>>>>>>>>> CALCULO MONTO DE BALANCE ETAPA 3 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        if (not @ETAPA_3_INI is null) begin --se encuentra en etapa 3
+                            if @RUBRO IN ('INTERESES') begin
+
+                                SELECT @SUMA89 = ABS(isnull(sum(B.MON_PAGO),0)),@fecha_ref = max(FEC_COBRO)
+                                FROM Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO A INNER JOIN
+                                    Quiero_Confianza_shadow.PR.PR_DETALLE_PAGO B ON A.ID_SECUENCIA = B.ID_SECUENCIA INNER JOIN
+                                    Quiero_Confianza_shadow.PR.PR_RUBRO_COBRO_X_CREDITO C ON C.NUM_SECUENCIA = B.ID_REFERENCIA AND A.NUM_CREDITO = C.NUM_CREDITO AND C.NUM_DET_SECUENCIA = B.NUM_DET_SECUENCIA AND C.COD_RUBRO = B.COD_CONCEPTO
+                                WHERE A.TIP_TRANSACCION = 4 -- AND A.COD_ESTADO = 'A'
+                                    AND C.NUM_CREDITO = @NUM_CREDITO
+                                    and C.cod_rubro = @RUBRO
+                                    and A.FEC_MOVIMIENTO = @FECHA_INICIO
+                                    and C.FEC_EXIGIBLE_PAGO <= @ETAPA_3_INI
+
+
+                                select @MONTO_OFFSET = isnull(sum(MON_DIARIO),0)
+                                from Quiero_Confianza_shadow.PR.PR_CALCULO_INTERESES_DIA
+                                where num_credito = @NUM_CREDITO
+                                    and @fecha_ref <= fecha_calculo and fecha_calculo < @ETAPA_3_INI
+
+                                if @SUMA89 > 0 begin
+                                    set @SUMA89 = @SUMA89 + @MONTO_OFFSET
+                                end
+
+                                set @SUMA89 = isnull(@SUMA89,0)
+
+                            end else if @RUBRO IN ('IVA INTERESES') begin
+
+                                SELECT @SUMA89 = ABS(isnull(sum(B.MON_PAGO_IVA),0)),@fecha_ref = max(FEC_COBRO)
+                                FROM Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO A INNER JOIN
+                                    Quiero_Confianza_shadow.PR.PR_DETALLE_PAGO B ON A.ID_SECUENCIA = B.ID_SECUENCIA INNER JOIN
+                                    Quiero_Confianza_shadow.PR.PR_RUBRO_COBRO_X_CREDITO C ON C.NUM_SECUENCIA = B.ID_REFERENCIA AND A.NUM_CREDITO = C.NUM_CREDITO AND C.NUM_DET_SECUENCIA = B.NUM_DET_SECUENCIA AND C.COD_RUBRO = B.COD_CONCEPTO
+                                WHERE A.TIP_TRANSACCION = 4 -- AND A.COD_ESTADO = 'A'
+                                    AND C.NUM_CREDITO = @NUM_CREDITO
+                                    and C.cod_rubro = replace(@RUBRO,'IVA ','')
+                                    and A.FEC_MOVIMIENTO = @FECHA_INICIO
+                                    and C.FEC_EXIGIBLE_PAGO <= @ETAPA_3_INI
+
+                                select @MONTO_OFFSET = isnull(sum(MON_DIARIO),0)*0.16
+                                from Quiero_Confianza_shadow.PR.PR_CALCULO_INTERESES_DIA
+                                where num_credito = @NUM_CREDITO
+                                    and @fecha_ref <= fecha_calculo and fecha_calculo < @ETAPA_3_INI
+
+                                if @SUMA89 > 0 begin
+                                    set @SUMA89 = @SUMA89 + @MONTO_OFFSET
+                                end
+
+                                set @SUMA89 = isnull(@SUMA89,0)
+
+                            end else if @RUBRO Like 'IVA%' begin
+
+                                SELECT @SUMA89 = ABS(isnull(sum(B.MON_PAGO_IVA),0))
+                                FROM Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO A INNER JOIN
+                                    Quiero_Confianza_shadow.PR.PR_DETALLE_PAGO B ON A.ID_SECUENCIA = B.ID_SECUENCIA INNER JOIN
+                                    Quiero_Confianza_shadow.PR.PR_RUBRO_COBRO_X_CREDITO C ON C.NUM_SECUENCIA = B.ID_REFERENCIA AND A.NUM_CREDITO = C.NUM_CREDITO AND C.NUM_DET_SECUENCIA = B.NUM_DET_SECUENCIA AND C.COD_RUBRO = B.COD_CONCEPTO
+                                WHERE A.TIP_TRANSACCION = 4-- AND A.COD_ESTADO = 'A'
+                                    AND C.NUM_CREDITO = @NUM_CREDITO
+                                    and C.cod_rubro = replace(@RUBRO,'IVA ','')
+                                    and A.FEC_MOVIMIENTO = @FECHA_INICIO
+                                    and C.FEC_EXIGIBLE_PAGO <= @ETAPA_3_INI--C.fec_cobro <= @ETAPA_3_INI_1M
+
+                            end else begin
+
+                                SELECT @SUMA89 = ABS(isnull(sum(B.MON_PAGO),0))
+                                FROM Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO A INNER JOIN
+                                    Quiero_Confianza_shadow.PR.PR_DETALLE_PAGO B ON A.ID_SECUENCIA = B.ID_SECUENCIA INNER JOIN
+                                    Quiero_Confianza_shadow.PR.PR_RUBRO_COBRO_X_CREDITO C ON C.NUM_SECUENCIA = B.ID_REFERENCIA AND A.NUM_CREDITO = C.NUM_CREDITO AND C.NUM_DET_SECUENCIA = B.NUM_DET_SECUENCIA AND C.COD_RUBRO = B.COD_CONCEPTO
+                                WHERE A.TIP_TRANSACCION = 4-- AND A.COD_ESTADO = 'A'
+                                    AND C.NUM_CREDITO = @NUM_CREDITO
+                                    and C.cod_rubro = @RUBRO
+                                    and A.FEC_MOVIMIENTO = @FECHA_INICIO
+                                    and C.FEC_EXIGIBLE_PAGO <= @ETAPA_3_INI--C.fec_cobro <= @ETAPA_3_INI_1M
+
+                            end
+                        end --(not @ETAPA_3_INI is null) AND @IND_ETAPA_ACTUAL = 3
+
+
+                        --print '|NUM_CREDITO:|'+isnull(cast(@NUM_CREDITO as varchar),'')+'|RUBRO:|'+isnull(cast(@RUBRO as varchar),'')+'|@ETAPA_3_INI_1M:|'+isnull(cast(@ETAPA_3_INI_1M as varchar),'')+'|SUMA89:|'+isnull(cast(@SUMA89 as varchar),'')
+					END -- END @EL_RUBRO != @RUBRO
+
+					--# BLOC: incrementa total
+					SET  @TOTAL =  @TOTAL + @MONTO
+					--# BLOC_END
+					--SELECT @NUM_CREDITO CRED, @RUBRO 'RUBRO', @SUMA89 'BALANCE', @TOTAL 'TOTAL' 
+
+					--#	SOLO SE VALIDA UNA UNICA OCACION SI EL PAGO DEBE DIVIDIRSE
+                    --print '|@TOTAL:|'+isnull(cast(@TOTAL as varchar),'')+'|@RUBRO:|'+isnull(cast(@RUBRO as varchar),'')+'|@MONTO:|'+isnull(cast(@MONTO as varchar),'')+'|@SUMA89:|'+isnull(cast(@SUMA89 as varchar),'')+'|@ORDEN:|'+isnull(cast(@ORDEN as varchar),'')+'|@BANDERA:|'+isnull(cast(@BANDERA as varchar),'')+'|@CASTIGO:|'+isnull(cast(@CASTIGO as varchar),'')
+					IF @BANDERA = 0 BEGIN
+						IF @TOTAL > @SUMA89 AND @SUMA89 > 0 BEGIN
+							SET @BANDERA = 1
+							SET @ORDEN = @TOTAL - @SUMA89
+							--SELECT @ORDEN 'ORDEN'
+ 							IF @ORDEN != 0 BEGIN
+									INSERT INTO PO.SAF_MOV_ABONO (ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_FONDEO, ID_PRODUCTO,
+											CONCEPTO, NOMBRE_PRODUCTO, RUBRO, MONTO, MON_PAGO_IVA, ID_TIPO_CREDITO, 
+											TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, IND_ETAPA, FEC_APERTURA, CEDIDO, TABLA_ORIGEN, ID_POLIZA,ID_SECUENCIA, ID_CUENTA, BANCO_RECEPTOR, REVERSO, CONCEPTO_ANT,
+											CANAL)
+									SELECT TOP 1 ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_FONDEO, ID_PRODUCTO,
+											REPLACE(CONCEPTO, 'CASTIGO ', 'CASTIGO CO '),
+											NOMBRE_PRODUCTO, RUBRO, -1*@ORDEN, 0, ID_TIPO_CREDITO, 
+											TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, IND_ETAPA,
+											FEC_APERTURA, CEDIDO, 'REV COBRANZA CAS COM', ID_POLIZA,ID_SECUENCIA,ID_CUENTA, BANCO_RECEPTOR, REVERSO, CONCEPTO_ANT, CANAL
+									FROM PO.SAF_MOV_ABONO 
+									WHERE ID_POLIZA = @ID_POLIZA
+                                        AND ID = @ID_UNICO
+                                    
+									--SELECT MONTO FROM PO.SAF_MOV_ABONO WHERE ID = @ID_UNICO
+									UPDATE PO.SAF_MOV_ABONO SET MONTO = MONTO + @ORDEN --, CONCEPTO = REPLACE(CONCEPTO, 'PAGO ', 'PAGO CO ') --COAA
+									WHERE ID = @ID_UNICO
+
+									IF (@MONTO - @ORDEN) = 0 BEGIN
+										DELETE FROM PO.SAF_MOV_ABONO  WHERE ID = @ID_UNICO	
+									END
+						
+							END --# @ORDEN != 0
+						END --# @TOTAL > @SUMA89 AND @SUMA89 >0
+						
+					END --# BANDERA
+
+					IF @TOTAL >  @SUMA89 BEGIN
+						IF @ORDEN <= 0 BEGIN
+							UPDATE PO.SAF_MOV_ABONO SET CONCEPTO = REPLACE(CONCEPTO, 'CASTIGO ', 'CASTIGO CO ') --COBB
+							WHERE ID = @ID_UNICO
+						END
+					    SET  @ORDEN = 0
+
+					END -- # @MONTO > @SUMA89
+
+			SET @INDICE = @INDICE + 1
+		END --# WHILE
+
+        declare @NUM_CREDITO_C int,@RUBRO_C varchar(30),@MONTO_C numeric(18,2),@ID_REFERENCIA int,@FEC_CASTIGO DATE,@FEC_CASTIGO_1M date
+
+        exec CursorCloseDeallocate 'db_cursor_poliza_cobranza_castigo_montos'
+
+        DECLARE db_cursor_poliza_cobranza_castigo_montos CURSOR FOR
+
+            select NUM_CREDITO,RUBRO
+            FROM PO.SAF_MOV_ABONO 
+            WHERE ID_POLIZA = @ID_POLIZA AND FECHA_MOVIMIENTO = @FECHA_INICIO
+                AND RUBRO NOT IN ('PRINCIPAL','SALDO_FAVOR')
+				AND TABLA_ORIGEN != 'R CAST COBRANZA COM'
+            group by NUM_CREDITO,RUBRO
+
+        OPEN db_cursor_poliza_cobranza_castigo_montos  
+            FETCH NEXT FROM db_cursor_poliza_cobranza_castigo_montos
+            INTO @NUM_CREDITO_C, @RUBRO_C
+
+        WHILE @@FETCH_STATUS = 0  
+        BEGIN
+        	SELECT @FEC_CASTIGO = FECHA FROM PO.FECHA_CASTIGO WHERE NUM_CREDITO = @NUM_CREDITO
+            set @FEC_CASTIGO_1M = DATEADD(month, 1, @FEC_CASTIGO)
+
+            --print '|@fecha_ref:|'+isnull(cast(@fecha_ref as varchar),'')+'|@FEC_CASTIGO:|'+isnull(cast(@FEC_CASTIGO as varchar),'')+'|@FEC_CASTIGO_1M:|'+isnull(cast(@FEC_CASTIGO_1M as varchar),'')+'|@MONTO_OFFSET:|'+isnull(cast(@MONTO_OFFSET as varchar),'')
+
+            if @RUBRO_C IN ('INTERESES') begin
+
+				UPDATE PO.SAF_MOV_ABONO
+                SET CONCEPTO = REPLACE(CONCEPTO, 'CASTIGO ', 'CASTIGO POSTERIOR ') --COBB
+				WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		            AND ID_POLIZA = @ID_POLIZA
+                    AND NUM_CREDITO = @NUM_CREDITO_C
+                    AND rubro = @RUBRO_C
+                    AND ID_REFERENCIA IN (
+                        SELECT B.ID_REFERENCIA
+                        FROM Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO A INNER JOIN
+                            Quiero_Confianza_shadow.PR.PR_DETALLE_PAGO B ON A.ID_SECUENCIA = B.ID_SECUENCIA INNER JOIN
+                            Quiero_Confianza_shadow.PR.PR_RUBRO_COBRO_X_CREDITO C ON C.NUM_SECUENCIA = B.ID_REFERENCIA AND A.NUM_CREDITO = C.NUM_CREDITO AND C.NUM_DET_SECUENCIA = B.NUM_DET_SECUENCIA AND C.COD_RUBRO = B.COD_CONCEPTO
+                        WHERE A.TIP_TRANSACCION = 4 -- AND A.COD_ESTADO = 'A'
+                            AND C.NUM_CREDITO = @NUM_CREDITO_C
+                            and C.cod_rubro = @RUBRO_C
+                            and A.FEC_MOVIMIENTO = @FECHA_INICIO
+                            and C.fec_cobro >= @FEC_CASTIGO
+                    )
+
+                SELECT @fecha_ref = min(FEC_COBRO),@ID_REFERENCIA = min(B.ID_REFERENCIA), @ID_SECUENCIA = min(B.ID_SECUENCIA)
+                FROM Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO A INNER JOIN
+                    Quiero_Confianza_shadow.PR.PR_DETALLE_PAGO B ON A.ID_SECUENCIA = B.ID_SECUENCIA INNER JOIN
+                    Quiero_Confianza_shadow.PR.PR_RUBRO_COBRO_X_CREDITO C ON C.NUM_SECUENCIA = B.ID_REFERENCIA AND A.NUM_CREDITO = C.NUM_CREDITO AND C.NUM_DET_SECUENCIA = B.NUM_DET_SECUENCIA AND C.COD_RUBRO = B.COD_CONCEPTO
+                WHERE A.TIP_TRANSACCION = 4 -- AND A.COD_ESTADO = 'A'
+                    AND C.NUM_CREDITO = @NUM_CREDITO_C
+                    and C.cod_rubro = @RUBRO_C
+                    and A.FEC_MOVIMIENTO = @FECHA_INICIO
+                    and C.fec_cobro >= @FEC_CASTIGO
+					AND B.Mon_pago < 0
+
+
+                if @FEC_CASTIGO <= @fecha_ref and @fecha_ref < @FEC_CASTIGO_1M begin
+
+                    select @MONTO_OFFSET = isnull(sum(MON_DIARIO),0)
+                    from Quiero_Confianza_shadow.PR.PR_CALCULO_INTERESES_DIA
+                    where num_credito = @NUM_CREDITO_C
+                        and @FEC_CASTIGO <= fecha_calculo and fecha_calculo < @fecha_ref
+
+					INSERT INTO PO.SAF_MOV_ABONO (ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_FONDEO, ID_PRODUCTO,
+							CONCEPTO, NOMBRE_PRODUCTO, RUBRO, MONTO, MON_PAGO_IVA, ID_TIPO_CREDITO, 
+							TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, IND_ETAPA, FEC_APERTURA, CEDIDO, TABLA_ORIGEN, ID_POLIZA,ID_SECUENCIA, ID_CUENTA, BANCO_RECEPTOR, REVERSO, CONCEPTO_ANT,
+							CANAL)
+					SELECT TOP 1 ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_FONDEO, ID_PRODUCTO,
+							REPLACE(CONCEPTO, ' POSTERIOR', ''),
+							NOMBRE_PRODUCTO, RUBRO, MONTO + @MONTO_OFFSET, 0, ID_TIPO_CREDITO, 
+							TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, IND_ETAPA,
+							FEC_APERTURA, CEDIDO, 'REV COBRANZA CAS COM', ID_POLIZA,ID_SECUENCIA,ID_CUENTA, BANCO_RECEPTOR, REVERSO, CONCEPTO_ANT, CANAL
+					FROM PO.SAF_MOV_ABONO 
+					WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		                AND ID_POLIZA = @ID_POLIZA
+                        AND NUM_CREDITO = @NUM_CREDITO_C
+                        AND rubro = @RUBRO_C
+                        AND ID_REFERENCIA = @ID_REFERENCIA
+						AND ID_SECUENCIA= @ID_SECUENCIA
+
+				    UPDATE PO.SAF_MOV_ABONO
+                    SET MONTO = -@MONTO_OFFSET
+				    WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		                AND ID_POLIZA = @ID_POLIZA
+                        AND NUM_CREDITO = @NUM_CREDITO_C
+                        AND rubro = @RUBRO_C
+                        AND ID_REFERENCIA = @ID_REFERENCIA
+						AND ID_SECUENCIA= @ID_SECUENCIA
+
+
+                    /*
+                    select @ID_REFERENCIA = MAX(ID_REFERENCIA)
+                    from PO.SAF_MOV_ABONO
+				    WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		                AND ID_POLIZA = @ID_POLIZA
+                        AND NUM_CREDITO = @NUM_CREDITO_C
+                        AND rubro = @RUBRO_C
+                        AND NOT CONCEPTO like 'CASTIGO POSTERIOR %'
+
+				    UPDATE PO.SAF_MOV_ABONO
+                    SET MONTO = MONTO - @MONTO_OFFSET
+				    WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		                AND ID_POLIZA = @ID_POLIZA
+                        AND NUM_CREDITO = @NUM_CREDITO_C
+                        AND rubro = @RUBRO_C
+                        AND ID_REFERENCIA = @ID_REFERENCIA*/
+
+                end
+
+            end else if @RUBRO_C IN ('IVA INTERESES') begin
+
+				UPDATE PO.SAF_MOV_ABONO
+                SET CONCEPTO = REPLACE(CONCEPTO, 'CASTIGO ', 'CASTIGO POSTERIOR ') --COBB
+				WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		            AND ID_POLIZA = @ID_POLIZA
+                    AND NUM_CREDITO = @NUM_CREDITO_C
+                    AND rubro = @RUBRO_C
+                    AND ID_REFERENCIA IN (
+                        SELECT B.ID_REFERENCIA
+                        FROM Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO A INNER JOIN
+                            Quiero_Confianza_shadow.PR.PR_DETALLE_PAGO B ON A.ID_SECUENCIA = B.ID_SECUENCIA INNER JOIN
+                            Quiero_Confianza_shadow.PR.PR_RUBRO_COBRO_X_CREDITO C ON C.NUM_SECUENCIA = B.ID_REFERENCIA AND A.NUM_CREDITO = C.NUM_CREDITO AND C.NUM_DET_SECUENCIA = B.NUM_DET_SECUENCIA AND C.COD_RUBRO = B.COD_CONCEPTO
+                        WHERE A.TIP_TRANSACCION = 4 -- AND A.COD_ESTADO = 'A'
+                            AND C.NUM_CREDITO = @NUM_CREDITO_C
+                            and C.cod_rubro = replace(@RUBRO_C,'IVA ','')
+                            and A.FEC_MOVIMIENTO = @FECHA_INICIO
+                            and C.fec_cobro >= @FEC_CASTIGO
+                    )
+
+                SELECT @fecha_ref = min(FEC_COBRO),@ID_REFERENCIA = min(B.ID_REFERENCIA), @ID_SECUENCIA = min(B.ID_SECUENCIA)
+                FROM Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO A INNER JOIN
+                    Quiero_Confianza_shadow.PR.PR_DETALLE_PAGO B ON A.ID_SECUENCIA = B.ID_SECUENCIA INNER JOIN
+                    Quiero_Confianza_shadow.PR.PR_RUBRO_COBRO_X_CREDITO C ON C.NUM_SECUENCIA = B.ID_REFERENCIA AND A.NUM_CREDITO = C.NUM_CREDITO AND C.NUM_DET_SECUENCIA = B.NUM_DET_SECUENCIA AND C.COD_RUBRO = B.COD_CONCEPTO
+                WHERE A.TIP_TRANSACCION = 4 -- AND A.COD_ESTADO = 'A'
+                    AND C.NUM_CREDITO = @NUM_CREDITO_C
+                    and C.cod_rubro = replace(@RUBRO_C,'IVA ','')
+                    and A.FEC_MOVIMIENTO = @FECHA_INICIO
+                    and C.fec_cobro >= @FEC_CASTIGO
+					AND B.Mon_pago < 0
+
+                if @FEC_CASTIGO <= @fecha_ref and @fecha_ref < @FEC_CASTIGO_1M begin
+
+                    select @MONTO_OFFSET = isnull(sum(MON_DIARIO),0)*0.16
+                    from Quiero_Confianza_shadow.PR.PR_CALCULO_INTERESES_DIA
+                    where num_credito = @NUM_CREDITO_C
+                        and @FEC_CASTIGO <= fecha_calculo and fecha_calculo < @fecha_ref
+
+                    --print '|@fecha_ref:|'+isnull(cast(@fecha_ref as varchar),'')+'|@FEC_CASTIGO:|'+isnull(cast(@FEC_CASTIGO as varchar),'')+'|@FEC_CASTIGO_1M:|'+isnull(cast(@FEC_CASTIGO_1M as varchar),'')+'|@MONTO_OFFSET:|'+isnull(cast(@MONTO_OFFSET as varchar),'')
+
+					INSERT INTO PO.SAF_MOV_ABONO (ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_FONDEO, ID_PRODUCTO,
+							CONCEPTO, NOMBRE_PRODUCTO, RUBRO, MONTO, MON_PAGO_IVA, ID_TIPO_CREDITO, 
+							TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, IND_ETAPA, FEC_APERTURA, CEDIDO, TABLA_ORIGEN, ID_POLIZA,ID_SECUENCIA, ID_CUENTA, BANCO_RECEPTOR, REVERSO, CONCEPTO_ANT,
+							CANAL)
+					SELECT TOP 1 ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_FONDEO, ID_PRODUCTO,
+							REPLACE(CONCEPTO, ' POSTERIOR', ''),
+							NOMBRE_PRODUCTO, RUBRO, MONTO + @MONTO_OFFSET, 0, ID_TIPO_CREDITO, 
+							TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, IND_ETAPA,
+							FEC_APERTURA, CEDIDO, 'REV COBRANZA CAS COM', ID_POLIZA,ID_SECUENCIA,ID_CUENTA, BANCO_RECEPTOR, REVERSO, CONCEPTO_ANT, CANAL
+					FROM PO.SAF_MOV_ABONO 
+					WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		                AND ID_POLIZA = @ID_POLIZA
+                        AND NUM_CREDITO = @NUM_CREDITO_C
+                        AND rubro = @RUBRO_C
+                        AND ID_REFERENCIA = @ID_REFERENCIA
+						AND ID_SECUENCIA= @ID_SECUENCIA
+
+				    UPDATE PO.SAF_MOV_ABONO
+                    SET MONTO = -@MONTO_OFFSET
+				    WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		                AND ID_POLIZA = @ID_POLIZA
+                        AND NUM_CREDITO = @NUM_CREDITO_C
+                        AND rubro = @RUBRO_C
+                         AND ID_REFERENCIA = @ID_REFERENCIA
+						 AND ID_SECUENCIA= @ID_SECUENCIA
+
+                    /*select @ID_REFERENCIA = MAX(ID_REFERENCIA)
+                    from PO.SAF_MOV_ABONO
+				    WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		                AND ID_POLIZA = @ID_POLIZA
+                        AND NUM_CREDITO = @NUM_CREDITO_C
+                        AND rubro = @RUBRO_C
+                        AND NOT CONCEPTO like 'CASTIGO POSTERIOR %'
+
+				    UPDATE PO.SAF_MOV_ABONO
+                    SET MONTO = MONTO - @MONTO_OFFSET
+				    WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		                AND ID_POLIZA = @ID_POLIZA
+                        AND NUM_CREDITO = @NUM_CREDITO_C
+                        AND rubro = @RUBRO_C
+                        AND ID_REFERENCIA = @ID_REFERENCIA*/
+                
+                end
+
+
+            end else if @RUBRO_C Like 'IVA%' begin
+
+				UPDATE PO.SAF_MOV_ABONO
+                SET CONCEPTO = REPLACE(CONCEPTO, 'CASTIGO ', 'CASTIGO POSTERIOR ') --COBB
+				WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		            AND ID_POLIZA = @ID_POLIZA
+                    AND NUM_CREDITO = @NUM_CREDITO_C
+                    AND rubro = @RUBRO_C
+                    AND ID_REFERENCIA IN (
+                        SELECT B.ID_REFERENCIA
+                        FROM Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO A INNER JOIN
+                            Quiero_Confianza_shadow.PR.PR_DETALLE_PAGO B ON A.ID_SECUENCIA = B.ID_SECUENCIA INNER JOIN
+                            Quiero_Confianza_shadow.PR.PR_RUBRO_COBRO_X_CREDITO C ON C.NUM_SECUENCIA = B.ID_REFERENCIA AND A.NUM_CREDITO = C.NUM_CREDITO AND C.NUM_DET_SECUENCIA = B.NUM_DET_SECUENCIA AND C.COD_RUBRO = B.COD_CONCEPTO
+                        WHERE A.TIP_TRANSACCION = 4-- AND A.COD_ESTADO = 'A'
+                            AND C.NUM_CREDITO = @NUM_CREDITO_C
+                            and C.cod_rubro = replace(@RUBRO_C,'IVA ','')
+                            and A.FEC_MOVIMIENTO = @FECHA_INICIO
+                            and C.fec_base_calc >= @FEC_CASTIGO
+                    )
+
+            end else begin
+				
+				UPDATE PO.SAF_MOV_ABONO
+                SET CONCEPTO = REPLACE(CONCEPTO, 'CASTIGO ', 'CASTIGO POSTERIOR ') --COBB
+				WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		            AND ID_POLIZA = @ID_POLIZA
+                    AND NUM_CREDITO = @NUM_CREDITO_C
+                    AND rubro = @RUBRO_C
+                    AND ID_REFERENCIA IN (
+                        SELECT B.ID_REFERENCIA
+                        FROM Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO A INNER JOIN
+                            Quiero_Confianza_shadow.PR.PR_DETALLE_PAGO B ON A.ID_SECUENCIA = B.ID_SECUENCIA INNER JOIN
+                            Quiero_Confianza_shadow.PR.PR_RUBRO_COBRO_X_CREDITO C ON C.NUM_SECUENCIA = B.ID_REFERENCIA AND A.NUM_CREDITO = C.NUM_CREDITO AND C.NUM_DET_SECUENCIA = B.NUM_DET_SECUENCIA AND C.COD_RUBRO = B.COD_CONCEPTO
+                        WHERE A.TIP_TRANSACCION = 4-- AND A.COD_ESTADO = 'A'
+                            AND C.NUM_CREDITO = @NUM_CREDITO_C
+                            and C.cod_rubro = @RUBRO_C
+                            and A.FEC_MOVIMIENTO = @FECHA_INICIO
+                            and C.fec_base_calc >= @FEC_CASTIGO--C.fec_cobro <= @ETAPA_3_INI_1M
+                    )
+
+            end
+
+            FETCH NEXT FROM db_cursor_poliza_cobranza_castigo_montos
+            INTO @NUM_CREDITO_C, @RUBRO_C
+        END 
+
+        CLOSE db_cursor_poliza_cobranza_castigo_montos  
+        DEALLOCATE db_cursor_poliza_cobranza_castigo_montos
+
+		/*IF @TOTAL != 0 BEGIN
+			UPDATE PO.CALC_BALANCE_ORDEN SET MONTO_BALANCE = @SUMA89 - @TOTAL WHERE NUM_Credito = @NUM_CREDITO AND RUBRO = @EL_RUBRO
+		END*/
+
+        exec CursorCloseDeallocate 'db_cursor_poliza_cobranza_castigo'
+		-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FIN REGISTRO DE CASTIGO EN CUENTAS DE ORDEN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		
+		-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REGISTRO DE RECUPERACION EN CUENTAS DE ORDEN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		
+        DECLARE db_cursor_poliza_cobranza_castigo CURSOR FOR
+
+            select NUM_CREDITO,RUBRO,isnull(sum(MONTO),0)
+            FROM PO.SAF_MOV_ABONO 
+            WHERE ID_POLIZA = @ID_POLIZA AND FECHA_MOVIMIENTO = @FECHA_INICIO
+                AND NOT CONCEPTO LIKE '%CASTIGO POSTERIOR %'
+                AND RUBRO NOT IN ('SALDO_FAVOR')
+            group by NUM_CREDITO,RUBRO
+
+        OPEN db_cursor_poliza_cobranza_castigo  
+            FETCH NEXT FROM db_cursor_poliza_cobranza_castigo
+            INTO @NUM_CREDITO_C, @RUBRO_C, @MONTO_C
+
+        WHILE @@FETCH_STATUS = 0  
+        BEGIN  
+
+			INSERT INTO PO.SAF_MOV_ABONO (ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_FONDEO, ID_PRODUCTO,
+				    CONCEPTO,CONCEPTO_ANT, NOMBRE_PRODUCTO, RUBRO, MONTO, MON_PAGO_IVA, ID_TIPO_CREDITO, 
+				    TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, IND_ETAPA, FEC_APERTURA, CEDIDO, TABLA_ORIGEN, ID_POLIZA, REVERSO, CANAL, ID_CUENTA)
+			SELECT TOP 1 ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_FONDEO, ID_PRODUCTO,
+				    'CMR CASTIGO CCO RECUPERACION' /*+TIPO_CREDITO+' '+ CANAL*/,'CMR CASTIGO CCO RECUPERACION' /*+ TIPO_CREDITO+' '+ CANAL*/,
+				    NOMBRE_PRODUCTO, RUBRO, @MONTO_C, 0, ID_TIPO_CREDITO, 
+				    TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, IND_ETAPA,
+				    FEC_APERTURA, CEDIDO, 'DAC ADJ REV CAST COM', ID_POLIZA, REVERSO, CANAL, ID_CUENTA
+			FROM PO.SAF_MOV_ABONO 
+			WHERE ID_POLIZA = @ID_POLIZA AND FECHA_MOVIMIENTO = @FECHA_INICIO AND ID_TIPO_CREDITO = 25
+                AND NUM_CREDITO = @NUM_CREDITO_C AND RUBRO = @RUBRO_C
+                AND NOT CONCEPTO LIKE 'CMR CASTIGO POSTERIOR %'
+
+			-- GENERACION DE CONCEPTOS MEZZANINE COMERCIALES
+			INSERT INTO PO.SAF_MOV_ABONO (ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_FONDEO, ID_PRODUCTO,
+				    CONCEPTO,CONCEPTO_ANT, NOMBRE_PRODUCTO, RUBRO, MONTO, MON_PAGO_IVA, ID_TIPO_CREDITO, 
+				    TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, IND_ETAPA, FEC_APERTURA, CEDIDO, TABLA_ORIGEN, ID_POLIZA, REVERSO, CANAL, ID_CUENTA)
+			SELECT TOP 1 ID_EXTERNO, NUM_CREDITO, NOM_CLIENTE, ID_FONDEO, ID_PRODUCTO,
+				    'CMR DCM CASTIGO CCO RECUPERACION' /*+TIPO_CREDITO+' '+ CANAL*/,'CMR DCM CASTIGO CCO RECUPERACION' /*+ TIPO_CREDITO+' '+ CANAL*/,
+				    NOMBRE_PRODUCTO, RUBRO, @MONTO_C, 0, ID_TIPO_CREDITO, 
+				    TIPO_CREDITO, TIPO_VIVIENDA, FECHA_MOVIMIENTO, IND_ESTADO, IND_ETAPA,
+				    FEC_APERTURA, CEDIDO, 'DAC ADJ REV CAST COM', ID_POLIZA, REVERSO, CANAL, ID_CUENTA
+			FROM PO.SAF_MOV_ABONO 
+			WHERE ID_POLIZA = @ID_POLIZA AND FECHA_MOVIMIENTO = @FECHA_INICIO AND ID_TIPO_CREDITO = 29
+                AND NUM_CREDITO = @NUM_CREDITO_C AND RUBRO = @RUBRO_C
+                AND NOT CONCEPTO LIKE 'CMR DCM CASTIGO POSTERIOR %'
+
+            FETCH NEXT FROM db_cursor_poliza_cobranza_castigo
+            INTO @NUM_CREDITO_C, @RUBRO_C, @MONTO_C
+        END 
+
+        CLOSE db_cursor_poliza_cobranza_castigo  
+        DEALLOCATE db_cursor_poliza_cobranza_castigo
+
+ ---------------------------------------- FIN REGISTRO DE CASTIGO EN CUENTAS DE ORDEN ----------------------------
+		UPDATE H SET H.ID_CONCEPTO = C.ID
+		FROM PO.SAF_MOV_ABONO H JOIN PO.SAF_CATALOGO_CONCEPTOS C ON C.CONCEPTO = H.CONCEPTO 
+		WHERE H.FECHA_MOVIMIENTO = @FECHA_INICIO
+		AND H.ID_POLIZA = @ID_POLIZA
+
+		UPDATE H SET H.ID_CONCEPTO_ANT = C.ID
+		FROM PO.SAF_MOV_ABONO H JOIN PO.SAF_CATALOGO_CONCEPTOS C ON C.CONCEPTO = H.CONCEPTO_ANT 
+		WHERE H.FECHA_MOVIMIENTO = @FECHA_INICIO
+		AND H.ID_POLIZA = @ID_POLIZA
+
+		--- ASIGNACION DE CUENTAS
+		UPDATE H SET 
+			H.CUENTA_CARGO = CC.CUENTA_CARGO
+		FROM PO.SAF_MOV_ABONO H JOIN PO.SAF_CAT_CONTABLE CC ON H.ID_CONCEPTO_ANT = CC.ID_CONCEPTO 
+		WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		AND H.ID_POLIZA = @ID_POLIZA
+
+		UPDATE H SET 
+			H.CUENTA_CARGO = CC.CUENTA_CARGO
+		FROM PO.SAF_MOV_ABONO H JOIN PO.SAF_CAT_CONTABLE CC ON H.ID_CONCEPTO = CC.ID_CONCEPTO 
+		WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		AND H.ID_POLIZA = @ID_POLIZA and H.CUENTA_CARGO is null
+
+		UPDATE H SET 
+			H.CUENTA_ABONO = CC.CUENTA_ABONO
+		FROM PO.SAF_MOV_ABONO H JOIN PO.SAF_CAT_CONTABLE CC ON H.ID_CONCEPTO = CC.ID_CONCEPTO 
+		WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+		AND H.ID_POLIZA = @ID_POLIZA
+
+		----------- ########### Valida si hay cuenta SAF
+		UPDATE H
+			SET H.CUENTA_CARGO = IIF(C.CUENTA_MASCARA IS NULL, D.CUENTA_MASCARA, C.CUENTA_MASCARA)
+		FROM
+			PO.SAF_MOV_ABONO H
+			LEFT JOIN Quiero_Confianza_shadow.BA.BA_CTA_CORRIENTE B ON H.ID_CUENTA = CAST( B.ID_CUENTA AS VARCHAR(50))
+			LEFT JOIN Quiero_Confianza_shadow.CG.CG_CATALOGO_X_EMPRESA C ON B.CTA_CONTABLE = C.CUENTA_CONTABLE
+			LEFT JOIN Quiero_Confianza_shadow.CG.CG_CATALOGO_X_EMPRESA D ON CAST( H.ID_CUENTA AS VARCHAR(50))= D.CUENTA_CONTABLE
+		WHERE 
+			H.CUENTA_CARGO = 'Cuenta SAF'
+			AND H.FECHA_MOVIMIENTO = @FECHA_INICIO
+			AND H.ID_POLIZA = @ID_POLIZA
+
+		UPDATE H
+			SET H.CUENTA_ABONO = IIF(C.CUENTA_MASCARA IS NULL, D.CUENTA_MASCARA, C.CUENTA_MASCARA)
+		FROM
+			PO.SAF_MOV_ABONO H
+			LEFT JOIN Quiero_Confianza_shadow.BA.BA_CTA_CORRIENTE B ON H.ID_CUENTA = B.ID_CUENTA
+			LEFT JOIN Quiero_Confianza_shadow.CG.CG_CATALOGO_X_EMPRESA C ON B.CTA_CONTABLE = C.CUENTA_CONTABLE
+			LEFT JOIN Quiero_Confianza_shadow.CG.CG_CATALOGO_X_EMPRESA D ON CAST( H.ID_CUENTA AS VARCHAR(50))= D.CUENTA_CONTABLE
+		WHERE 
+			H.CUENTA_ABONO = 'Cuenta SAF'
+			AND H.FECHA_MOVIMIENTO = @FECHA_INICIO
+			AND H.ID_POLIZA = @ID_POLIZA
+	    
+		--------------- ######## Caso especial enmascaramiento de cuentas
+
+		--no deben quedar nulos en las cuentas
+        UPDATE PO.SAF_MOV_ABONO
+        SET   CUENTA_ABONO = ''
+		WHERE FECHA_MOVIMIENTO = @FECHA_INICIO AND ID_POLIZA = @ID_POLIZA
+            and CUENTA_ABONO is null
+
+		UPDATE PO.SAF_MOV_ABONO
+        SET   CUENTA_CARGO = ''
+		WHERE FECHA_MOVIMIENTO = @FECHA_INICIO AND ID_POLIZA = @ID_POLIZA
+            and CUENTA_CARGO is null
+
+		-- >>>>>>>>>>>>>>>>>>>>>>>>>>> GENERACION DE CONCEPTO FINAL <<<<<<<<<<<<<<<<<<<<<<<<<<<
+		
+		UPDATE PO.SAF_MOV_ABONO
+		SET CONCEPTO_FINAL= LEFT(CONCAT('CMR CAS'
+			,CASE
+				WHEN ID_CUENTA = 2073 THEN ' DAC'
+				WHEN ID_CUENTA = 2074 THEN ' ADJ'
+			END 
+			, ' ', ID_EXTERNO, ' ', NOM_CLIENTE), 100)
+		WHERE FECHA_MOVIMIENTO = @FECHA_INICIO AND ID_POLIZA = @ID_POLIZA
+		
+	    --    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GENERACION DE POLIZA <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+	    CREATE TABLE #POLIZA (CONCEPTO VARCHAR(255),CUENTA VARCHAR(355),MONTO_CARGO MONEY, MONTO_ABONO MONEY, ID_SECUENCIA INT)
+	    CREATE TABLE #POLIZAF(CONCEPTO VARCHAR(255),CUENTA VARCHAR(355),MONTO_CARGO MONEY, MONTO_ABONO MONEY)
+
+
+		INSERT INTO #POLIZA (CONCEPTO, CUENTA, MONTO_CARGO, MONTO_ABONO, ID_SECUENCIA) 
+		SELECT CONCEPTO_FINAL,
+			A.CUENTA_CARGO AS CUENTA, 
+			CAST(SUM(MONTO) AS decimal (16,2)) AS MONTO_CARGO, 
+			CAST(0.00 AS decimal (16,2)) AS MONTO_ABONO
+            , ID_SECUENCIA
+        FROM [PO].[SAF_MOV_ABONO] A 
+        WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+				AND A.ID_POLIZA = @ID_POLIZA
+		GROUP BY A.CUENTA_CARGO, A.ID_SECUENCIA, A.CONCEPTO_FINAL
+
+		
+	    INSERT INTO #POLIZA (CONCEPTO, CUENTA, MONTO_CARGO, MONTO_ABONO) 
+		SELECT CONCEPTO_FINAL,	 
+				A.CUENTA_ABONO CUENTA, 
+				CAST(0.00 AS decimal (16,2)) AS MONTO_CARGO,
+				CAST( SUM(MONTO) AS decimal (16,2)) AS MONTO_ABONO
+		FROM [PO].[SAF_MOV_ABONO] A 
+        WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+				AND A.ID_POLIZA = @ID_POLIZA
+		GROUP BY A.CUENTA_ABONO, CONCEPTO_FINAL, A.ID_POLIZA, A.NOMBRE_PRODUCTO,A.ID_FONDEO,A.IND_ETAPA 
+
+
+		INSERT INTO #POLIZAF(CONCEPTO, CUENTA, MONTO_CARGO, MONTO_ABONO)
+		SELECT CONCEPTO,	CUENTA,
+			SUM(MONTO_CARGO) CARGO, 
+			SUM(MONTO_ABONO) ABONO
+		FROM #POLIZA
+		GROUP BY CONCEPTO, CUENTA, ID_SECUENCIA
+
+        exec [PO].[SP_SAF_POLIZA_FINALIZA] @FECHA_INICIO, @ID_POLIZA
+
+		COMMIT
+	END TRY
+	BEGIN CATCH
+		ROLLBACK
+
+        INSERT INTO PO.SAF_POLIZA_ERRORES
+               (FECHA_GENERACION, FECHA_SISTEMA, ID_POLIZA, DESCRIPCION)
+        VALUES (getdate()       ,@FECHA_INICIO ,@ID_POLIZA, 'Linea:'+cast(ERROR_LINE() as varchar)+'. '+ERROR_MESSAGE())
+
+	END CATCH
+	
+END
+GO
