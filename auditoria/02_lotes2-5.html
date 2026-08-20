@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auditoria SQL KARDIA &mdash; Lote 2-5</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.55 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+.wrap{padding:22px 32px 60px;max-width:1500px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:132px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b} .kpi.a b{color:#ffa94d} .kpi.m b{color:#ffd43b} .kpi.b b{color:#74c0fc}
+h2{margin:34px 0 12px;font-size:17px;border-left:3px solid #4c8dff;padding-left:10px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#161e2e;border:1px solid #2a3549;
+ border-radius:10px;padding:12px 14px;position:sticky;top:0;z-index:5}
+.bar label{font-size:12px;color:#93a1bb;margin-right:4px}
+select,input[type=search]{background:#0e1420;color:#e8edf6;border:1px solid #35415a;border-radius:6px;padding:7px 9px;font:13px inherit}
+input[type=search]{min-width:230px}
+button.rst{background:#243149;color:#e8edf6;border:1px solid #35415a;border-radius:6px;padding:7px 12px;cursor:pointer}
+.count{margin-left:auto;color:#93a1bb;font-size:12px}
+.f{background:#161e2e;border:1px solid #2a3549;border-radius:9px;margin:9px 0;overflow:hidden}
+.f>header{display:flex;gap:12px;align-items:center;padding:11px 14px;cursor:pointer}
+.f>header:hover{background:#1d2739}
+.sev{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.sev.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.sev.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.sev.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.sev.b{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+.id{color:#93a1bb;font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.ti{font-weight:600;flex:1}
+.meta{color:#93a1bb;font-size:12px;white-space:nowrap}
+.chev{color:#93a1bb;transition:.15s}
+.f.open .chev{transform:rotate(180deg)}
+.body{display:none;padding:4px 16px 16px;border-top:1px solid #2a3549;background:#131b29}
+.f.open .body{display:block}
+.kv{display:grid;grid-template-columns:118px 1fr;gap:12px;padding:8px 0;border-bottom:1px dashed #263148}
+.kv:last-child{border:0}
+.kv b{color:#93a1bb;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.kv.rem span{color:#8ce99a}
+pre{margin:0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:10px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px;position:sticky;top:56px}
+td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#c9d6ee;max-width:330px;word-break:break-word}
+td.num{white-space:nowrap;color:#93a1bb} td.nota{color:#93a1bb;max-width:300px}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;white-space:nowrap;display:inline-block}
+.pill.p1{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.p2{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+.pill.p3{background:#33270f;color:#ffd8a8;border:1px solid #6b4d1f}
+.pill.p4{background:#3d1420;color:#ffa8b6;border:1px solid #7d2038}
+.fase{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 18px;margin:10px 0}
+.fase h3{margin:0 0 4px;font-size:15px} .fase .obj{margin:0 0 8px;color:#93a1bb}
+.fase ul{margin:0 0 8px;padding-left:20px} .fase li{margin:3px 0}
+.fase .riesgo{margin:0;font-size:12px;color:#93a1bb}
+ul.va li{margin:6px 0}
+details.alc{background:#161e2e;border:1px solid #2a3549;border-radius:9px;padding:12px 16px}
+details.alc summary{cursor:pointer;color:#93a1bb}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+.hide{display:none!important}
+</style></head><body>
+<header class="top">
+  <h1>Auditoria de codigo SQL &mdash; KARDIA / SAF</h1>
+  <p>Lote 2-5 &middot; 80 objetos de mayor riesgo &middot; 41,596 lineas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (produccion) &middot; 2026-08-19</p>
+</header>
+<div class="wrap">
+
+  <div class="kpis">
+    <div class="kpi c"><b>4</b><span>Criticos</span></div>
+    <div class="kpi a"><b>9</b><span>Altos</span></div>
+    <div class="kpi m"><b>8</b><span>Medios</span></div>
+    <div class="kpi b"><b>1</b><span>Bajos</span></div>
+    <div class="kpi"><b>13</b><span>Grupos de hardcodeo</span></div>
+    <div class="kpi"><b>9</b><span>Parametrizables en portal</span></div>
+  </div>
+
+  <details class="alc"><summary>Alcance y criterio de seleccion del lote</summary>
+    <p>80 objetos programables siguientes en el ranking de riesgo (score 44 -&gt; 25), agrupados en 4 lotes de 20. Al ser en su mayoria familias de SPs clonados (poliza por operacion y por segmento COM/IND/SND), el analisis combina revision del patron comun, deteccion automatica por archivo y comparacion entre SPs hermanos: las divergencias dentro de una misma familia son donde se concentran los defectos.</p><ul><li>Lote 2: PO.SP_COM_CASTIGOS_CONDONACION (917 lineas)</li><li>Lote 2: PO.SP_COM_CASTIGOS_DAC_ADJ (913 lineas)</li><li>Lote 2: PO.SP_COM_CASTIGOS_REVERSO_COMISIONES (957 lineas)</li><li>Lote 2: PO.SP_COM_CASTIGOS_REVERSO_CONDONACION (917 lineas)</li><li>Lote 2: PO.SP_COM_CASTIGOS_REVERSO_DAC_ADJ (914 lineas)</li><li>Lote 2: PO.SP_COM_CASTIGOS_REVERSO_INTERESES (955 lineas)</li><li>Lote 2: PO.SP_COM_OPERACIONES_PENDIENTES (149 lineas)</li><li>Lote 2: PO.SP_COM_REVERSO_COBRANZA_CASTIGOS (956 lineas)</li><li>Lote 2: PO.SP_IND_CASTIGOS_CONDONACION (959 lineas)</li><li>Lote 2: PO.SP_IND_CASTIGOS_DAC_ADJ (954 lineas)</li><li>Lote 2: PO.SP_IND_CASTIGOS_REVERSO_COMISIONES (951 lineas)</li><li>Lote 2: PO.SP_IND_CASTIGOS_REVERSO_CONDONACION (960 lineas)</li><li>Lote 2: PO.SP_IND_CASTIGOS_REVERSO_DAC_ADJ (951 lineas)</li><li>Lote 2: PO.SP_IND_CASTIGOS_REVERSO_INTERESES (949 lineas)</li><li>Lote 2: PO.SP_IND_CASTIGOS_REVERSO_MORATORIOS (949 lineas)</li><li>Lote 2: PO.SP_IND_COBRANZA_CASTIGOS (996 lineas)</li><li>Lote 2: PO.SP_IND_REVERSO_COBRANZA_CASTIGOS (996 lineas)</li><li>Lote 2: PO.SP_SND_DEV_ACCESORIOS (201 lineas)</li><li>Lote 2: PO.SP_SND_RECLASIFICACION (183 lineas)</li><li>Lote 2: PO.SP_SND_REVERSO_ACCESORIOS (233 lineas)</li><li>Lote 3: PO.SP_COM_DACION_ADJUDICACION (602 lineas)</li><li>Lote 3: PO.SP_COM_REESTRCTURA_CAP (710 lineas)</li><li>Lote 3: PO.SP_COM_REVERSO_COBRANZA (862 lineas)</li><li>Lote 3: PO.SP_COM_REVERSO_COMISION (290 lineas)</li><li>Lote 3: PO.SP_COM_REVERSO_DACION_ADJUDICACION (598 lineas)</li><li>Lote 3: PO.SP_IND_DACION_ADJUDICACION (643 lineas)</li><li>Lote 3: PO.SP_IND_OPERACIONES_PENDIENTES (187 lineas)</li><li>Lote 3: PO.SP_IND_REESTRCTURA_CAP (754 lineas)</li><li>Lote 3: PO.SP_IND_REVERSO_COMISION (295 lineas)</li><li>Lote 3: PO.SP_IND_REVERSO_DACION_ADJUDICACION (646 lineas)</li><li>Lote 3: PO.SP_IND_TRASPASO (467 lineas)</li><li>Lote 3: PO.SP_SND_COBRANZA (574 lineas)</li><li>Lote 3: PO.SP_SND_COBRANZA_CASTIGOS (460 lineas)</li><li>Lote 3: PO.SP_SND_CONDONACION (329 lineas)</li><li>Lote 3: PO.SP_SND_DACION_ADJUDICACION (311 lineas)</li><li>Lote 3: PO.SP_SND_REVERSO_COBRANZA (556 lineas)</li><li>Lote 3: PO.SP_SND_REVERSO_COBRANZA_CASTIGOS (460 lineas)</li><li>Lote 3: PO.SP_SND_REVERSO_CONDONACION (331 lineas)</li><li>Lote 3: PO.SP_SND_REVERSO_DACION_ADJUDICACION (309 lineas)</li><li>Lote 3: PO.SP_SND_TRASPASO (426 lineas)</li><li>Lote 4: CIERRE.SP_CMR_DIA (393 lineas)</li><li>Lote 4: PO.SP_COM_CONDONACION (533 lineas)</li><li>Lote 4: PO.SP_COM_DEV_ACCESORIOS (182 lineas)</li><li>Lote 4: PO.SP_COM_DEV_INTERES (227 lineas)</li><li>Lote 4: PO.SP_COM_DEV_MORATORIO (325 lineas)</li><li>Lote 4: PO.SP_COM_REESTRCTURA_SN_CAP (746 lineas)</li><li>Lote 4: PO.SP_COM_REVERSO_CONDONACION (526 lineas)</li><li>Lote 4: PO.SP_COM_REVERSO_INTERES (273 lineas)</li><li>Lote 4: PO.SP_COM_REVERSO_MORATORIO (266 lineas)</li><li>Lote 4: PO.SP_IND_CONDONACION (642 lineas)</li><li>Lote 4: PO.SP_IND_FIRMA (311 lineas)</li><li>Lote 4: PO.SP_IND_REESTRCTURA_SN_CAP (661 lineas)</li><li>Lote 4: PO.SP_IND_REVERSO_CONDONACION (610 lineas)</li><li>Lote 4: PO.SP_IND_REVERSO_INTERES (252 lineas)</li><li>Lote 4: PO.SP_SND_ADMINISTRADA (335 lineas)</li><li>Lote 4: PO.SP_SND_DEV_INTERES (161 lineas)</li><li>Lote 4: PO.SP_SND_DEV_MORATORIO (175 lineas)</li><li>Lote 4: PO.SP_SND_REVERSO_INTERES (165 lineas)</li><li>Lote 4: PO.SP_SND_REVERSO_MORATORIO (174 lineas)</li><li>Lote 4: PO.SP_SND_SECUENCIAS_MAN (253 lineas)</li><li>Lote 5: CIERRE.SP_IND_RPT_INTERESES_DEVENGADOS_VIS (385 lineas)</li><li>Lote 5: CIERRE.SP_SAF_SALDOS (574 lineas)</li><li>Lote 5: PO.SP_COM_CANCELACION (216 lineas)</li><li>Lote 5: PO.SP_COM_CASTIGOS (939 lineas)</li><li>Lote 5: PO.SP_COM_DEV_COMISIONES (169 lineas)</li><li>Lote 5: PO.SP_COM_FIRMA (218 lineas)</li><li>Lote 5: PO.SP_COM_REVERSO_DESEMBOLSO (295 lineas)</li><li>Lote 5: PO.SP_COM_VENTA_CARTERA (759 lineas)</li><li>Lote 5: PO.SP_IND_CASTIGOS (913 lineas)</li><li>Lote 5: PO.SP_IND_DESEMBOLSO (305 lineas)</li><li>Lote 5: PO.SP_IND_DEVOLUCIONES (210 lineas)</li><li>Lote 5: PO.SP_IND_DEV_INTERES (207 lineas)</li><li>Lote 5: PO.SP_IND_REVERSO_DESEMBOLSO (295 lineas)</li><li>Lote 5: PO.SP_IND_REVERSO_DEVOLUCIONES (221 lineas)</li><li>Lote 5: PO.SP_IND_REVERSO_MORATORIO (288 lineas)</li><li>Lote 5: PO.SP_IND_TRASPASO_SALDO_FAVOR (190 lineas)</li><li>Lote 5: PO.SP_IND_VENTA_CARTERA (705 lineas)</li><li>Lote 5: PO.SP_SAF_POLIZA_REEST_CAST (545 lineas)</li><li>Lote 5: PO.SP_SND_CASTIGOS (901 lineas)</li><li>Lote 5: PO.SYS_SP_MOV_CARGO (281 lineas)</li></ul>
+    <p><b>Nota de codificacion:</b> los archivos se decodifican por BOM (UTF-16LE en la mayoria, UTF-8 BOM en 30 archivos de BD/).
+    Los &quot;caracteres espaciados&quot; son los bytes 0x00 de UTF-16 leidos como ASCII: <b>no deben limpiarse</b>, se resuelven decodificando correctamente.</p>
+  </details>
+
+  <h2>Hallazgos</h2>
+  <div class="bar">
+    <label>Severidad</label><select id="fs"><option value="">Todas</option><option>Critico</option><option>Alto</option><option>Medio</option><option>Bajo</option></select>
+    <label>Categoria</label><select id="fc"><option value="">Todas</option><option>Ambientes</option><option>Concurrencia</option><option>Correccion funcional</option><option>Estandares</option><option>Integridad de datos</option><option>Mantenibilidad</option><option>Observabilidad</option><option>Parametrizacion</option><option>Rendimiento</option><option>Seguridad</option><option>Transaccional</option></select>
+    <label>Entorno</label><select id="fe"><option value="">Ambos</option><option>BD</option><option>BD_prod</option></select>
+    <label>Lote</label><select id="fl"><option value="">Todos</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+    <input type="search" id="fq" placeholder="Buscar objeto, evidencia, texto...">
+    <button class="rst" onclick="reset()">Limpiar</button>
+    <span class="count" id="cnt"></span>
+  </div>
+  <div id="lista">
+    <article class="f" data-sev="Critico" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote="2"
+             data-txt="l2-001 la participacion afirme esta partida en dos constantes complementarias (0.10 y 0.90) repartidas en 28 sps 22 sps aplican monto * 0.10 y 6 aplican monto * 0.90; cierre.sp_ind_gen_mes usa ambas -- manejo de porcentaje afirme
+update po.saf_mov_cargo set monto = monto * 0.90 where fecha_movimiento=@fecha_inicio and id_poliza=@id_poliza and id_tipo_credito=4
+-- en otros sps: set monto = monto * 0.10 ... and id_tipo_credito = 4 and concepto not like &#x27;trs %&#x27;">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Critico</span>
+        <span class="id">L2-001</span>
+        <span class="ti">La participacion Afirme esta partida en dos constantes complementarias (0.10 y 0.90) repartidas en 28 SPs</span>
+        <span class="meta">Parametrizacion &middot; BD+BD_prod &middot; esfuerzo M (1-3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>22 SPs aplican MONTO * 0.10 y 6 aplican MONTO * 0.90; CIERRE.SP_IND_GEN_MES usa ambas</span></div>
+        <div class="kv"><b>Ubicacion</b><span>p.ej. PO.SP_IND_DEV_INTERES:166, PO.SP_IND_ADMINISTRADA:107, PO.SP_IND_CASTIGOS:882 y 892, PO.SP_COM_VENTA_CARTERA:713</span></div>
+        <div class="kv"><b>Evidencia</b><pre>-- manejo de porcentaje Afirme
+UPDATE PO.SAF_MOV_CARGO SET MONTO = MONTO * 0.90 WHERE FECHA_MOVIMIENTO=@FECHA_INICIO AND ID_POLIZA=@ID_POLIZA AND ID_TIPO_CREDITO=4
+-- en otros SPs: SET MONTO = MONTO * 0.10 ... AND ID_TIPO_CREDITO = 4 AND CONCEPTO NOT LIKE &#x27;TRS %&#x27;</pre></div>
+        <div class="kv"><b>Impacto</b><span>El reparto de un convenio (10% / 90%) vive como dos literales que deben sumar 1 en 28 archivos distintos. Si el porcentaje se renegocia, cualquier archivo que quede sin actualizar produce una poliza descuadrada (cargo != abono) o duplica participacion. Ademas unos SPs reescriben MONTO en la tabla (se pierde el bruto) y otros solo lo aplican al agregar la poliza: el mismo movimiento vale distinto segun quien lo lea.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Un solo parametro PARAM.PARTICIPACION_CONVENIO con vigencia; el complemento se calcula (1 - valor), nunca se escribe. Aplicarlo en el calculo conservando MONTO bruto y MONTO_PARTICIPACION en columnas separadas. Antes del cambio, conciliar los 28 sitios para confirmar que hoy todos usan el mismo valor.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Critico" data-cat="Correccion funcional" data-env="BD BD_prod"
+             data-lote="2"
+             data-txt="l2-002 el filtro de la regla afirme no es el mismo en todos los sps (falta concepto not like &#x27;trs %&#x27;) po.sp_ind_administrada y po.sp_snd_administrada frente al resto de la familia update po.saf_mov_cargo set monto = monto * 0.90 where ... and id_tipo_credito = 4   -- sin la exclusion de traspasos
+resto de la familia: ... and id_tipo_credito = 4 and concepto not like &#x27;trs %&#x27;">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Critico</span>
+        <span class="id">L2-002</span>
+        <span class="ti">El filtro de la regla Afirme no es el mismo en todos los SPs (falta CONCEPTO NOT LIKE &#x27;TRS %&#x27;)</span>
+        <span class="meta">Correccion funcional &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SP_IND_ADMINISTRADA y PO.SP_SND_ADMINISTRADA frente al resto de la familia</span></div>
+        <div class="kv"><b>Ubicacion</b><span>PO.SP_IND_ADMINISTRADA:105-109</span></div>
+        <div class="kv"><b>Evidencia</b><pre>UPDATE PO.SAF_MOV_CARGO SET MONTO = MONTO * 0.90 WHERE ... AND ID_TIPO_CREDITO = 4   -- sin la exclusion de traspasos
+resto de la familia: ... AND ID_TIPO_CREDITO = 4 AND CONCEPTO NOT LIKE &#x27;TRS %&#x27;</pre></div>
+        <div class="kv"><b>Impacto</b><span>En estos SPs el factor tambien se aplica a los movimientos de traspaso (&#x27;TRS %&#x27;), que el resto de la operacion excluye explicitamente. El traspaso queda escalado y el descuadre aparece en la conciliacion entre polizas, no en el proceso que lo genero.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Unificar el predicado de la regla en un solo lugar (funcion o vista de movimientos elegibles) y comparar el resultado de un dia contra el calculo actual antes de publicar.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Critico" data-cat="Correccion funcional" data-env="BD BD_prod"
+             data-lote="5"
+             data-txt="l2-003 po.sys_sp_mov_cargo borra los cargos de principal de todas las polizas del rango po.sys_sp_mov_cargo delete from po.saf_mov_cargo where rubro = &#x27;principal&#x27; and concepto not like &#x27;%firma%&#x27; and fecha_movimiento between @fecha_inicio and @fecha_fin
+-- el sp hermano po.sp_ind_firma:222 hace el mismo delete pero con and id_poliza = @id_poliza">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Critico</span>
+        <span class="id">L2-003</span>
+        <span class="ti">PO.SYS_SP_MOV_CARGO borra los cargos de PRINCIPAL de todas las polizas del rango</span>
+        <span class="meta">Correccion funcional &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SYS_SP_MOV_CARGO</span></div>
+        <div class="kv"><b>Ubicacion</b><span>linea 261</span></div>
+        <div class="kv"><b>Evidencia</b><pre>DELETE FROM PO.SAF_MOV_CARGO WHERE RUBRO = &#x27;PRINCIPAL&#x27; AND CONCEPTO NOT LIKE &#x27;%firma%&#x27; AND FECHA_MOVIMIENTO BETWEEN @FECHA_INICIO AND @FECHA_FIN
+-- el SP hermano PO.SP_IND_FIRMA:222 hace el mismo DELETE pero con AND ID_POLIZA = @ID_POLIZA</pre></div>
+        <div class="kv"><b>Impacto</b><span>La limpieza de &#x27;devengados de principal que no deberian existir&#x27; se ejecuta sin acotar la poliza: elimina cargos de PRINCIPAL generados por cualquier otro proceso en el mismo rango de fechas. La perdida es silenciosa porque el registro simplemente deja de existir.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Agregar el filtro de poliza (o de TABLA_ORIGEN) como en SP_IND_FIRMA y, mejor, corregir el origen que inserta esos registros en lugar de borrarlos despues.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Critico" data-cat="Transaccional" data-env="BD BD_prod"
+             data-lote="2"
+             data-txt="l2-004 el patron de error defectuoso es universal: 78 de 80 sps revierten y reportan exito 78 de los 80 objetos de los lotes 2-5 (solo 1 hace rethrow) conteo automatico sobre los 80 archivos: begin tran 79/80, begin try 79/80, set xact_abort on 0/80, xact_state() 0/80, catch sin raiserror/throw 78/80">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Critico</span>
+        <span class="id">L2-004</span>
+        <span class="ti">El patron de error defectuoso es universal: 78 de 80 SPs revierten y reportan exito</span>
+        <span class="meta">Transaccional &middot; BD+BD_prod &middot; esfuerzo M (1-3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>78 de los 80 objetos de los lotes 2-5 (solo 1 hace rethrow)</span></div>
+        <div class="kv"><b>Ubicacion</b><span>bloque CATCH de cada SP</span></div>
+        <div class="kv"><b>Evidencia</b><pre>conteo automatico sobre los 80 archivos: BEGIN TRAN 79/80, BEGIN TRY 79/80, SET XACT_ABORT ON 0/80, XACT_STATE() 0/80, CATCH sin RAISERROR/THROW 78/80</pre></div>
+        <div class="kv"><b>Impacto</b><span>Confirma que L1-004/005 no son casos aislados sino el estandar de la plataforma: ningun SP aborta el lote ante error y ninguno valida el estado de la transaccion antes del ROLLBACK. Con 100 objetos revisados, el orquestador no puede distinguir un cierre completo de uno parcial.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Aplicar la plantilla transaccional por generacion de codigo o script masivo (son SPs clonados, el bloque es identico), y verificar con una prueba que fuerce error que el SP ahora falla hacia el orquestador.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Correccion funcional" data-env="BD BD_prod"
+             data-lote="4"
+             data-txt="l2-005 el iva se recalcula con 16% fijo en lugar de usar la tasa registrada por credito po.sp_ind_dev_interes frente a po.sp_com_dev_interes y po.sp_snd_dev_interes ind:  concat(&#x27;iva &#x27;, rubro), monto * 0.16, ... where ind_iva_interes = &#x27;s&#x27;
+com/snd: usa d.interes_iva / p.por_iva_interes (la tasa y el importe que trae el origen)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L2-005</span>
+        <span class="ti">El IVA se recalcula con 16% fijo en lugar de usar la tasa registrada por credito</span>
+        <span class="meta">Correccion funcional &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SP_IND_DEV_INTERES frente a PO.SP_COM_DEV_INTERES y PO.SP_SND_DEV_INTERES</span></div>
+        <div class="kv"><b>Ubicacion</b><span>PO.SP_IND_DEV_INTERES:127</span></div>
+        <div class="kv"><b>Evidencia</b><pre>IND:  CONCAT(&#x27;IVA &#x27;, RUBRO), MONTO * 0.16, ... WHERE IND_IVA_INTERES = &#x27;S&#x27;
+COM/SND: usa D.INTERES_IVA / P.POR_IVA_INTERES (la tasa y el importe que trae el origen)</pre></div>
+        <div class="kv"><b>Impacto</b><span>La cartera individual devenga IVA al 16% aunque el credito tenga otra tasa registrada en POR_IVA_INTERES (creditos de zona frontera o convenios). El importe de IVA de la poliza no coincide con el del core y el descuadre se acumula mes a mes.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Usar la tasa del credito (POR_IVA_INTERES) y dejar el literal solo como valor por defecto del catalogo de tasas; conciliar el IVA devengado de un mes contra el core antes y despues.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Correccion funcional" data-env="BD BD_prod"
+             data-lote="3"
+             data-txt="l2-006 la homologacion de rubro contable existe como funcion pero solo la usan los sps com dbo.fn_rubro_pol usada por los sps com y por cierre; los sps ind y snd replican la logica en case embebidos o la omiten com:  iif(concepto=&#x27;prepago&#x27;, dbo.fn_rubro_pol(rubro)+&#x27; canc &#x27;, dbo.fn_rubro_pol(rubro))
+ind:  update ... set concepto = concat(case when id_tipo_credito = 20 then &#x27;pago qbillete &#x27; ... end, ...)  -- sin homologar el rubro
+fn_rubro_pol mapea cargo_porcentaje-&gt;seguro_vida, interes_moratorio-&gt;moratorios, mora_empresarial-&gt;moratorios, seg_dan/cargo_seguro-&gt;seguro_danos y sus iva">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L2-006</span>
+        <span class="ti">La homologacion de rubro contable existe como funcion pero solo la usan los SPs COM</span>
+        <span class="meta">Correccion funcional &middot; BD+BD_prod &middot; esfuerzo M (1-3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>dbo.FN_RUBRO_POL usada por los SPs COM y por CIERRE; los SPs IND y SND replican la logica en CASE embebidos o la omiten</span></div>
+        <div class="kv"><b>Ubicacion</b><span>PO.SP_COM_CONDONACION:122 y 156 vs PO.SP_IND_CONDONACION:200-215</span></div>
+        <div class="kv"><b>Evidencia</b><pre>COM:  IIF(CONCEPTO=&#x27;PREPAGO&#x27;, dbo.FN_RUBRO_POL(RUBRO)+&#x27; CANC &#x27;, dbo.FN_RUBRO_POL(RUBRO))
+IND:  UPDATE ... SET CONCEPTO = CONCAT(CASE WHEN ID_TIPO_CREDITO = 20 THEN &#x27;PAGO QBILLETE &#x27; ... END, ...)  -- sin homologar el rubro
+FN_RUBRO_POL mapea CARGO_PORCENTAJE-&gt;SEGURO_VIDA, INTERES_MORATORIO-&gt;MORATORIOS, MORA_EMPRESARIAL-&gt;MORATORIOS, SEG_DAN/CARGO_SEGURO-&gt;SEGURO_DANOS y sus IVA</pre></div>
+        <div class="kv"><b>Impacto</b><span>En individual y sindicada los rubros del core (CARGO_PORCENTAJE, MORA_EMPRESARIAL, SEG_DAN...) no se traducen al rubro contable, por lo que el concepto no coincide con PO.SAF_CATALOGO_CONCEPTOS y el movimiento queda sin cuenta o cae en la cuenta por defecto. Es la misma regla implementada tres veces con distinto alcance.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Usar FN_RUBRO_POL (o una tabla de homologacion) en todos los segmentos y agregar un control que falle cuando un concepto no exista en el catalogo, en lugar de dejar la cuenta nula.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Correccion funcional" data-env="BD BD_prod"
+             data-lote="3"
+             data-txt="l2-007 la familia sindicada (snd) no aplica el tratamiento covid ni la separacion balance/orden de etapa 3 18 sps po.sp_snd_* frente a sus equivalentes com/ind presencia de caracteristicas por familia (conteo automatico):
+cobranza:        com/ind -&gt; fn_es_covid 1, ind_etapa_actual=3 1, balance/orden 2, nolock 8-15
+                 snd     -&gt; fn_es_covid 0, etapa3 0, balance/orden 0, nolock 0, truncate 1, centinela &#x27;00010101&#x27; 1
+lo mismo en condonacion, dacion_adjudicacion, cobranza_castigos, dev_interes, dev_moratorio, traspaso">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L2-007</span>
+        <span class="ti">La familia sindicada (SND) no aplica el tratamiento COVID ni la separacion balance/orden de etapa 3</span>
+        <span class="meta">Correccion funcional &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>18 SPs PO.SP_SND_* frente a sus equivalentes COM/IND</span></div>
+        <div class="kv"><b>Ubicacion</b><span>comparacion de familias: SND_COBRANZA, SND_CONDONACION, SND_DACION_ADJUDICACION, SND_TRASPASO, SND_DEV_* vs COM_*/IND_*</span></div>
+        <div class="kv"><b>Evidencia</b><pre>presencia de caracteristicas por familia (conteo automatico):
+COBRANZA:        COM/IND -&gt; FN_ES_COVID 1, IND_ETAPA_ACTUAL=3 1, balance/orden 2, NOLOCK 8-15
+                 SND     -&gt; FN_ES_COVID 0, etapa3 0, balance/orden 0, NOLOCK 0, TRUNCATE 1, centinela &#x27;00010101&#x27; 1
+lo mismo en CONDONACION, DACION_ADJUDICACION, COBRANZA_CASTIGOS, DEV_INTERES, DEV_MORATORIO, TRASPASO</pre></div>
+        <div class="kv"><b>Impacto</b><span>Los creditos sindicados no reciben la marca COVID ni la separacion de cuentas de balance/orden para etapa 3, que si se aplica en comercial e individual. Si la cartera sindicada tiene creditos en etapa 3, su registro contable no cumple la misma regla; el reporte regulatorio de etapas queda inconsistente entre segmentos.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Confirmar con negocio si la omision es deliberada (por naturaleza del producto) o una deuda de la version SND. Si aplica, portar el tratamiento; en cualquier caso documentar la decision por escrito, porque hoy la diferencia solo existe en el codigo.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Correccion funcional" data-env="BD BD_prod"
+             data-lote="2"
+             data-txt="l2-008 divergencia sistematica entre sps hermanos com vs ind en la misma operacion 18 familias funcionales con divergencia detectada (castigos_condonacion, castigos_dac_adj, castigos_reverso_*, comision, desembolso, firma, reestrctura_*, venta_cartera, operaciones_pendientes...) castigos_condonacion: com -&gt; fn_rubro_pol 3 usos, id_producto=50 0 usos; ind -&gt; fn_rubro_pol 0, id_producto=50 3 usos
+moratorio: snd -&gt; 0.16 1 uso; com -&gt; 0.16 0 usos; ind -&gt; etapa3 1, balance/orden 1
+desembolso: com -&gt; bloque &#x27;no deben quedar nulos&#x27; presente; ind -&gt; ausente">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L2-008</span>
+        <span class="ti">Divergencia sistematica entre SPs hermanos COM vs IND en la misma operacion</span>
+        <span class="meta">Correccion funcional &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>18 familias funcionales con divergencia detectada (CASTIGOS_CONDONACION, CASTIGOS_DAC_ADJ, CASTIGOS_REVERSO_*, COMISION, DESEMBOLSO, FIRMA, REESTRCTURA_*, VENTA_CARTERA, OPERACIONES_PENDIENTES...)</span></div>
+        <div class="kv"><b>Ubicacion</b><span>tabla de comparacion por familia en clusters_l2_5.json / checks_l2_5.json</span></div>
+        <div class="kv"><b>Evidencia</b><pre>CASTIGOS_CONDONACION: COM -&gt; FN_RUBRO_POL 3 usos, ID_PRODUCTO=50 0 usos; IND -&gt; FN_RUBRO_POL 0, ID_PRODUCTO=50 3 usos
+MORATORIO: SND -&gt; 0.16 1 uso; COM -&gt; 0.16 0 usos; IND -&gt; etapa3 1, balance/orden 1
+DESEMBOLSO: COM -&gt; bloque &#x27;no deben quedar nulos&#x27; presente; IND -&gt; ausente</pre></div>
+        <div class="kv"><b>Impacto</b><span>Cada familia deberia diferenciarse solo por el segmento y la poliza, pero difiere tambien en reglas de negocio: quien homologa rubros, quien clasifica producto por defecto, quien limpia cuentas nulas, quien aplica IVA. Un fix aplicado en una rama no llega a las otras y la diferencia solo se descubre cuando cuadra mal el mes.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Consolidar el nucleo en un SP parametrizado (segmento, poliza, rubros) y dejar 80 fachadas de pocas lineas; mientras eso ocurre, publicar la matriz de divergencias como checklist obligatorio para cualquier cambio en la familia.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Integridad de datos" data-env="BD BD_prod"
+             data-lote="2"
+             data-txt="l2-009 761 lecturas con nolock adicionales en los procesos de castigo, condonacion y venta de cartera 57 de los 80 objetos; concentracion en po.sp_com_dev_moratorio (24), po.sp_com_reverso_interes (19), po.sp_com_dev_interes (17), po.sp_sp_ind_cobranza_castigos (15) conteo automatico: 761 clausulas with (nolock) en los 80 objetos, 2.373 referencias a la base externa">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L2-009</span>
+        <span class="ti">761 lecturas con NOLOCK adicionales en los procesos de castigo, condonacion y venta de cartera</span>
+        <span class="meta">Integridad de datos &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>57 de los 80 objetos; concentracion en PO.SP_COM_DEV_MORATORIO (24), PO.SP_COM_REVERSO_INTERES (19), PO.SP_COM_DEV_INTERES (17), PO.SP_SP_IND_COBRANZA_CASTIGOS (15)</span></div>
+        <div class="kv"><b>Ubicacion</b><span>joins a Quiero_Confianza_shadow.PR.*</span></div>
+        <div class="kv"><b>Evidencia</b><pre>conteo automatico: 761 clausulas WITH (NOLOCK) en los 80 objetos, 2.373 referencias a la base externa</pre></div>
+        <div class="kv"><b>Impacto</b><span>Extiende L1-014 a los procesos de castigo y venta de cartera, donde el importe determina la perdida reconocida. Dos ejecuciones del mismo dia pueden reconocer perdidas distintas y el resultado no es reproducible para auditoria.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Misma remediacion que L1-014: eliminar NOLOCK del calculo contable y leer de un staging o con aislamiento snapshot. Priorizar castigos y venta de cartera por su impacto en resultados.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Concurrencia" data-env="BD BD_prod"
+             data-lote="3"
+             data-txt="l2-010 52 sps mas con cursores globales y 64 llamadas al workaround cursorclosedeallocate 52 de los 80 objetos conteo automatico: 52/80 con cursor, 64 llamadas a cursorclosedeallocate; los nombres de cursor se repiten entre sps de la misma familia (p.ej. db_cursor_poliza)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L2-010</span>
+        <span class="ti">52 SPs mas con cursores globales y 64 llamadas al workaround CursorCloseDeallocate</span>
+        <span class="meta">Concurrencia &middot; BD+BD_prod &middot; esfuerzo M (1-3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>52 de los 80 objetos</span></div>
+        <div class="kv"><b>Ubicacion</b><span>exec CursorCloseDeallocate &#x27;db_cursor_...&#x27; + DECLARE ... CURSOR</span></div>
+        <div class="kv"><b>Evidencia</b><pre>conteo automatico: 52/80 con cursor, 64 llamadas a CursorCloseDeallocate; los nombres de cursor se repiten entre SPs de la misma familia (p.ej. db_cursor_POLIZA)</pre></div>
+        <div class="kv"><b>Impacto</b><span>Ademas del riesgo de colision ya descrito en L1-012, los nombres repetidos entre SPs hermanos hacen que si dos polizas se generan en la misma sesion, la segunda cierre el cursor de la primera. El patron obliga a ejecutar todo secuencialmente, lo que alarga la ventana de cierre.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>CURSOR LOCAL FAST_FORWARD con nombre unico, o reescritura por conjuntos. Es un cambio mecanico aplicable con script sobre la familia completa.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote="3"
+             data-txt="l2-011 cuenta bancaria (clabe stp) embebida en la clasificacion contable po.sp_snd_cobranza, po.sp_snd_administrada case banco when &#x27;stp/6461824110000000&#x27; then 2070 when &#x27;descarga favor&#x27; then 0 when &#x27;no identificado&#x27; then 2080 else ct.id_cuenta end as id_cuenta">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L2-011</span>
+        <span class="ti">Cuenta bancaria (CLABE STP) embebida en la clasificacion contable</span>
+        <span class="meta">Parametrizacion &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SP_SND_COBRANZA, PO.SP_SND_ADMINISTRADA</span></div>
+        <div class="kv"><b>Ubicacion</b><span>PO.SP_SND_COBRANZA:60 y 113; PO.SP_SND_ADMINISTRADA:109</span></div>
+        <div class="kv"><b>Evidencia</b><pre>CASE BANCO WHEN &#x27;STP/6461824110000000&#x27; THEN 2070 WHEN &#x27;Descarga favor&#x27; THEN 0 WHEN &#x27;No Identificado&#x27; THEN 2080 ELSE CT.ID_CUENTA END AS ID_CUENTA</pre></div>
+        <div class="kv"><b>Impacto</b><span>Un numero de cuenta bancaria concreto decide la cuenta contable del movimiento. Si la cuenta STP cambia (o se agrega otra), los cobros caen al ELSE y se contabilizan en la cuenta del catalogo generico sin aviso. Ademas el dato bancario queda expuesto en el codigo fuente y en el repositorio.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Tabla de correspondencia banco/cuenta -&gt; cuenta contable, administrable y con vigencia; el codigo solo hace el lookup y falla explicitamente si no hay correspondencia.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote="2"
+             data-txt="l2-012 74 numeros de poliza distintos hardcodeados, uno por sp, con un valor reutilizado los 80 objetos de los lotes 2-5 (74 valores distintos, del 1 al 107) po.sp_com_dev_comisiones -&gt; 33 y po.sp_com_dev_moratorio -&gt; 33 (mismo numero, tablas distintas: saf_mov_cargo y saf_mov_moratorio); en individual se repite el patron con la poliza 20; en sindicada usan numeros distintos (73 y 75)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L2-012</span>
+        <span class="ti">74 numeros de poliza distintos hardcodeados, uno por SP, con un valor reutilizado</span>
+        <span class="meta">Parametrizacion &middot; BD+BD_prod &middot; esfuerzo M (1-3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>los 80 objetos de los lotes 2-5 (74 valores distintos, del 1 al 107)</span></div>
+        <div class="kv"><b>Ubicacion</b><span>declare @ID_POLIZA int = N en las primeras lineas de cada SP</span></div>
+        <div class="kv"><b>Evidencia</b><pre>PO.SP_COM_DEV_COMISIONES -&gt; 33 y PO.SP_COM_DEV_MORATORIO -&gt; 33 (mismo numero, tablas distintas: SAF_MOV_CARGO y SAF_MOV_MORATORIO); en individual se repite el patron con la poliza 20; en sindicada usan numeros distintos (73 y 75)</pre></div>
+        <div class="kv"><b>Impacto</b><span>El numero de poliza es la llave con la que cada SP borra y reconstruye su propio trabajo. Que dos procesos compartan numero rompe la trazabilidad (no se puede saber que proceso genero un renglon) y hace que cualquier consolidacion o borrado por ID_POLIZA mezcle conceptos de dos procesos. El riesgo se materializa el dia que ambos escriban en la misma tabla.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Catalogo de polizas con clave logica unica por proceso (restriccion UNIQUE), lectura por clave y validacion al desplegar de que no existan numeros duplicados.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Integridad de datos" data-env="BD BD_prod"
+             data-lote="4"
+             data-txt="l2-013 importes en tipo money y redondeos a decimal(16,2) en la construccion de la poliza 74 de los 80 objetos declaran columnas money cast( sum( iif(id_tipo_credito = 4 and concepto not like &#x27;trs %&#x27;, monto * 0.90, monto)) as decimal (16,2)) as monto_cargo">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L2-013</span>
+        <span class="ti">Importes en tipo MONEY y redondeos a decimal(16,2) en la construccion de la poliza</span>
+        <span class="meta">Integridad de datos &middot; BD+BD_prod &middot; esfuerzo M (1-3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>74 de los 80 objetos declaran columnas MONEY</span></div>
+        <div class="kv"><b>Ubicacion</b><span>CREATE TABLE #POLIZA(... MONTO_CARGO MONEY, MONTO_ABONO MONEY); CAST(SUM(...) AS decimal(16,2))</span></div>
+        <div class="kv"><b>Evidencia</b><pre>CAST( SUM( IIF(ID_TIPO_CREDITO = 4 AND CONCEPTO NOT LIKE &#x27;TRS %&#x27;, MONTO * 0.90, MONTO)) AS decimal (16,2)) AS MONTO_CARGO</pre></div>
+        <div class="kv"><b>Impacto</b><span>MONEY tiene 4 decimales y precision fija: al multiplicar por factores (0.90, 0.16) y luego truncar a 2 decimales aparecen diferencias de centavos que se acumulan por renglon de poliza. Es la causa tipica de descuadres de centavos entre poliza y auxiliar.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Migrar a DECIMAL(19,4) en las estructuras intermedias, definir una regla unica de redondeo (al final del calculo, no en cada paso) y agregar un control de cuadre cargo-abono que falle si la diferencia no es cero.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Observabilidad" data-env="BD BD_prod"
+             data-lote="3"
+             data-txt="l2-014 la fecha centinela &#x27;00010101&#x27; en el log de errores aparece en 14 sps mas 14 de los 80 objetos (toda la familia snd y algunos dev) insert into po.saf_poliza_errores (fecha_generacion, fecha_sistema, id_poliza, descripcion) values (getdate(), &#x27;00010101&#x27;, @id_poliza, ...)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L2-014</span>
+        <span class="ti">La fecha centinela &#x27;00010101&#x27; en el log de errores aparece en 14 SPs mas</span>
+        <span class="meta">Observabilidad &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>14 de los 80 objetos (toda la familia SND y algunos DEV)</span></div>
+        <div class="kv"><b>Ubicacion</b><span>bloque CATCH</span></div>
+        <div class="kv"><b>Evidencia</b><pre>INSERT INTO PO.SAF_POLIZA_ERRORES (FECHA_GENERACION, FECHA_SISTEMA, ID_POLIZA, DESCRIPCION) VALUES (getdate(), &#x27;00010101&#x27;, @ID_POLIZA, ...)</pre></div>
+        <div class="kv"><b>Impacto</b><span>Extiende L1-025: en toda la familia sindicada el error se registra sin la fecha de negocio, precisamente en los SPs que reciben un tipo tabla de fechas y pueden procesar varios dias en una ejecucion.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Registrar la fecha en curso y el ID de ejecucion; corregible con el mismo script masivo del patron transaccional.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Integridad de datos" data-env="BD BD_prod"
+             data-lote="4"
+             data-txt="l2-015 borrado por fecha completa sin acotar proceso en tablas de historico y saldos po.sp_com_dev_moratorio (po.saf_mora_empr_hist), cierre.sp_saf_saldos (cierre.saf_saldos), cierre.sp_cmr_dia (cierre.cmr_dia_rep) delete from po.saf_mora_empr_hist where fecha_movimiento = @fecha_inicio
+delete from [cierre].[saf_saldos] where fecha_sistema = @fec_hoy">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L2-015</span>
+        <span class="ti">Borrado por fecha completa sin acotar proceso en tablas de historico y saldos</span>
+        <span class="meta">Integridad de datos &middot; BD+BD_prod &middot; esfuerzo M (1-3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SP_COM_DEV_MORATORIO (PO.SAF_MORA_EMPR_HIST), CIERRE.SP_SAF_SALDOS (CIERRE.SAF_SALDOS), CIERRE.SP_CMR_DIA (CIERRE.CMR_DIA_REP)</span></div>
+        <div class="kv"><b>Ubicacion</b><span>PO.SP_COM_DEV_MORATORIO:23; CIERRE.SP_SAF_SALDOS:22; CIERRE.SP_CMR_DIA:26</span></div>
+        <div class="kv"><b>Evidencia</b><pre>DELETE FROM PO.SAF_MORA_EMPR_HIST WHERE FECHA_MOVIMIENTO = @FECHA_INICIO
+DELETE FROM [CIERRE].[SAF_SALDOS] WHERE FECHA_SISTEMA = @FEC_HOY</pre></div>
+        <div class="kv"><b>Impacto</b><span>El patron borrar-y-reconstruir por fecha es aceptable solo si un unico proceso es dueno de la tabla y la ejecucion es atomica. Sin XACT_ABORT ni rethrow (L2-004), un fallo despues del DELETE deja la fecha vacia y el proceso reporta exito: se pierde el historico del dia sin senal de alarma.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Marcar la propiedad de cada tabla por proceso, ejecutar el borrado y la reconstruccion en la misma transaccion con abort, y agregar un control posterior de conteo minimo esperado por fecha.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Mantenibilidad" data-env="BD BD_prod"
+             data-lote="2"
+             data-txt="l2-016 clonacion masiva confirmada: 41.596 lineas con solo 62 variantes reales y familias de hasta 5 copias casi identicas los 80 objetos de los lotes 2-5 clustering por similitud (normalizando literales, numeros y nombres de base): 62 grupos para 80 archivos; el grupo mayor son 5 copias (po.sp_ind_castigos_reverso_comisiones / _reverso_dac_adj / _dac_adj / _reverso_moratorios / _reverso_intereses) de ~950 lineas cada una con ratio de similitud &gt; 0.85">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L2-016</span>
+        <span class="ti">Clonacion masiva confirmada: 41.596 lineas con solo 62 variantes reales y familias de hasta 5 copias casi identicas</span>
+        <span class="meta">Mantenibilidad &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>los 80 objetos de los lotes 2-5</span></div>
+        <div class="kv"><b>Ubicacion</b><span>clusters_l2_5.json</span></div>
+        <div class="kv"><b>Evidencia</b><pre>clustering por similitud (normalizando literales, numeros y nombres de base): 62 grupos para 80 archivos; el grupo mayor son 5 copias (PO.SP_IND_CASTIGOS_REVERSO_COMISIONES / _REVERSO_DAC_ADJ / _DAC_ADJ / _REVERSO_MORATORIOS / _REVERSO_INTERESES) de ~950 lineas cada una con ratio de similitud &gt; 0.85</pre></div>
+        <div class="kv"><b>Impacto</b><span>Cuantifica L1-029: alrededor de 30.000 lineas son copia con variaciones minimas. El costo de cada correccion se multiplica por el numero de copias y la probabilidad de aplicar el fix de forma incompleta es alta (ya se observa en L2-002, L2-005, L2-006 y L2-008).</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Refactor por generacion: definir el SP nucleo parametrizado, generar las fachadas desde el catalogo de polizas y validar equivalencia ejecutando el mes de control con ambas versiones antes de retirar las copias.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote="5"
+             data-txt="l2-017 1.305 literales de rubro y 935 de concepto en los 80 objetos todos los objetos de los lotes 2-5 &#x27;intereses&#x27; 207, &#x27;seguro_vida&#x27; 184, &#x27;seguro_danos&#x27; 166, &#x27;principal&#x27; 141, &#x27;saldo_favor&#x27; 127, &#x27;moratorios&#x27; 94, &#x27;iva intereses&#x27; 78; 144 conceptos distintos (&#x27;pago cco &#x27;, &#x27;castigo posterior &#x27;, &#x27;castigo com&#x27;, &#x27;venta cartera com&#x27;, ...)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L2-017</span>
+        <span class="ti">1.305 literales de rubro y 935 de concepto en los 80 objetos</span>
+        <span class="meta">Parametrizacion &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>todos los objetos de los lotes 2-5</span></div>
+        <div class="kv"><b>Ubicacion</b><span>hardcode_lotes2-5.json</span></div>
+        <div class="kv"><b>Evidencia</b><pre>&#x27;INTERESES&#x27; 207, &#x27;SEGURO_VIDA&#x27; 184, &#x27;SEGURO_DANOS&#x27; 166, &#x27;PRINCIPAL&#x27; 141, &#x27;SALDO_FAVOR&#x27; 127, &#x27;MORATORIOS&#x27; 94, &#x27;IVA INTERESES&#x27; 78; 144 conceptos distintos (&#x27;PAGO CCO &#x27;, &#x27;CASTIGO POSTERIOR &#x27;, &#x27;CASTIGO COM&#x27;, &#x27;VENTA CARTERA COM&#x27;, ...)</pre></div>
+        <div class="kv"><b>Impacto</b><span>Confirma la escala del problema de L1-024: el vocabulario contable esta replicado como cadenas en cada SP y con variantes de espaciado (&#x27;PAGO CO &#x27; vs &#x27;PAGO CCO &#x27;). Cualquier alta de rubro o cambio de nomenclatura obliga a un barrido manual de 80 archivos.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Catalogo unico de rubros y plantillas de concepto; en la migracion, generar el inventario de cadenas desde este JSON y validar que cada una exista en el catalogo antes de retirar el literal.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote="5"
+             data-txt="l2-018 listas de tipo de credito repetidas y divergentes entre procesos 35 variantes distintas de filtro por tipo de credito en los 80 objetos (438 ocurrencias) num_desc_tipo_credito in (9, 10, 11) x28; in (12,13,14,15,28, 2,18,27) x20; in (1, 3, 4, 9, 10, 11, 16, 17, 20, 23) x20; tipo_credito = 4 x33">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L2-018</span>
+        <span class="ti">Listas de tipo de credito repetidas y divergentes entre procesos</span>
+        <span class="meta">Parametrizacion &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>35 variantes distintas de filtro por tipo de credito en los 80 objetos (438 ocurrencias)</span></div>
+        <div class="kv"><b>Ubicacion</b><span>hardcode_lotes2-5.json</span></div>
+        <div class="kv"><b>Evidencia</b><pre>NUM_DESC_TIPO_CREDITO IN (9, 10, 11) x28; IN (12,13,14,15,28, 2,18,27) x20; IN (1, 3, 4, 9, 10, 11, 16, 17, 20, 23) x20; TIPO_CREDITO = 4 x33</pre></div>
+        <div class="kv"><b>Impacto</b><span>El universo de cada proceso se define con listas escritas a mano que no coinciden entre si. Al dar de alta un tipo de credito hay que decidir en 35 lugares si entra o no, y el olvido se traduce en cartera que no se contabiliza en ese proceso.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Catalogo de tipos de credito con banderas por proceso (participa_en_castigo, participa_en_devengo, es_sindicado...) y reemplazo de las listas IN(...) por join al catalogo. Es el hardcodeo con mayor retorno para el portal.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Ambientes" data-env="BD"
+             data-lote="4"
+             data-txt="l2-019 dos objetos del cierre existen solo en desarrollo cierre.sp_cmr_dia, cierre.sp_ind_rpt_intereses_devengados_vis comparacion de inventario: 78 de los 80 objetos del lote existen en ambos directorios; estos 2 solo en bd/">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L2-019</span>
+        <span class="ti">Dos objetos del cierre existen solo en desarrollo</span>
+        <span class="meta">Ambientes &middot; BD &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_CMR_DIA, CIERRE.SP_IND_RPT_INTERESES_DEVENGADOS_VIS</span></div>
+        <div class="kv"><b>Ubicacion</b><span>presentes en BD/, ausentes en BD_prod/</span></div>
+        <div class="kv"><b>Evidencia</b><pre>comparacion de inventario: 78 de los 80 objetos del lote existen en ambos directorios; estos 2 solo en BD/</pre></div>
+        <div class="kv"><b>Impacto</b><span>O son desarrollos aun no promovidos, o son objetos que existen en produccion pero no se exportaron (el respaldo de produccion estaria incompleto). Cualquiera de las dos lecturas es un problema de control de cambios: no hay forma de saberlo desde el codigo.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Confirmar contra la instancia productiva si existen; formalizar que el contenido de BD_prod/ se genere siempre por exportacion completa y automatica, no manual.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Seguridad" data-env="BD BD_prod"
+             data-lote="5"
+             data-txt="l2-020 po.sys_sp_mov_cargo tambien lee la base de qa po.sys_sp_mov_cargo from quiero_confianza_creditopuente_qa.pr.* with (nolock) (mismo patron que po.sys_sp_mov_abono)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L2-020</span>
+        <span class="ti">PO.SYS_SP_MOV_CARGO tambien lee la base de QA</span>
+        <span class="meta">Seguridad &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SYS_SP_MOV_CARGO</span></div>
+        <div class="kv"><b>Ubicacion</b><span>12 referencias</span></div>
+        <div class="kv"><b>Evidencia</b><pre>FROM Quiero_Confianza_CreditoPuente_QA.PR.* WITH (NOLOCK) (mismo patron que PO.SYS_SP_MOV_ABONO)</pre></div>
+        <div class="kv"><b>Impacto</b><span>Cierra el grupo de 4 extractores SYS_SP_MOV_* que en produccion consultan QA (L1-007). Los cuatro alimentan la poliza: abono, cargo, interes y avaluo.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Incluir este objeto en el mismo cambio de sinonimos y en la verificacion retroactiva de polizas.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Rendimiento" data-env="BD BD_prod"
+             data-lote="3"
+             data-txt="l2-021 22 sps hacen truncate de temporales dentro de la transaccion y 79 reconstruyen el dia completo 22 objetos con truncate table, 79 con delete + insert del dia conteo automatico: truncate 22/80, delete 79/80; el truncate aparece dentro del cursor que recorre fechas">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L2-021</span>
+        <span class="ti">22 SPs hacen TRUNCATE de temporales dentro de la transaccion y 79 reconstruyen el dia completo</span>
+        <span class="meta">Rendimiento &middot; BD+BD_prod &middot; esfuerzo M (1-3 dias)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>22 objetos con TRUNCATE TABLE, 79 con DELETE + INSERT del dia</span></div>
+        <div class="kv"><b>Ubicacion</b><span>TRUNCATE TABLE #POLIZAF dentro del bucle de fechas</span></div>
+        <div class="kv"><b>Evidencia</b><pre>conteo automatico: TRUNCATE 22/80, DELETE 79/80; el TRUNCATE aparece dentro del cursor que recorre fechas</pre></div>
+        <div class="kv"><b>Impacto</b><span>El patron borrar-todo-y-reconstruir por fecha dentro de una unica transaccion mantiene bloqueos sobre las tablas de movimientos durante todo el proceso y hace que el costo sea proporcional al historico reprocesado, no al cambio. Con el cursor de fechas, la ventana de cierre crece linealmente con los dias a reprocesar.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Acotar la transaccion por fecha (una transaccion por dia procesado), y evaluar carga incremental por diferencias en lugar de reconstruccion total.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Bajo" data-cat="Estandares" data-env="BD BD_prod"
+             data-lote="2"
+             data-txt="l2-022 inconsistencias de estilo que dificultan el control automatico los 80 objetos mismo predicado escrito de 6 formas (&#x27;id_producto= 50&#x27; 72, &#x27;id_producto = 50&#x27; 57, &#x27;id_producto=50&#x27; 11, y las variantes de 51); &#x27;tip_transaccion = 3&#x27; junto a &#x27;tip_transaccion = 3&#x27; y &#x27;tip_transaccion=3&#x27;; 1 de 80 sin set nocount on">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev b">Bajo</span>
+        <span class="id">L2-022</span>
+        <span class="ti">Inconsistencias de estilo que dificultan el control automatico</span>
+        <span class="meta">Estandares &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>los 80 objetos</span></div>
+        <div class="kv"><b>Ubicacion</b><span>varios</span></div>
+        <div class="kv"><b>Evidencia</b><pre>mismo predicado escrito de 6 formas (&#x27;ID_PRODUCTO= 50&#x27; 72, &#x27;ID_PRODUCTO = 50&#x27; 57, &#x27;ID_PRODUCTO=50&#x27; 11, y las variantes de 51); &#x27;TIP_TRANSACCION = 3&#x27; junto a &#x27;Tip_transaccion = 3&#x27; y &#x27;Tip_transaccion=3&#x27;; 1 de 80 sin SET NOCOUNT ON</pre></div>
+        <div class="kv"><b>Impacto</b><span>La variabilidad de escritura impide detectar reglas de negocio por busqueda y hace fragil cualquier script de migracion o linter: fue necesario normalizar el texto para poder contar los hardcodeos de esta auditoria.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Formateador SQL en el pipeline (estilo unico acordado) aplicado en un commit dedicado antes del refactor, para que los diffs posteriores muestren solo cambios de logica.</span></div>
+      </div>
+    </article></div>
+
+
+  <h2>Cobertura del lote: 80 objetos revisados</h2>
+  <div class="bar">
+    <label>Lote</label><select id="cl"><option value="">Todos</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+    <input type="search" id="cq" placeholder="Buscar objeto...">
+    <button class="rst" onclick="resetCob()">Limpiar</button>
+    <span class="count" id="ccnt"></span>
+  </div>
+  <table><thead><tr><th>Lote</th><th>Objeto</th><th>Lineas</th><th>En BD_prod</th><th>ID_POLIZA</th>
+    <th>NOLOCK</th><th>Cursores</th><th>Patron transaccional</th></tr></thead>
+  <tbody id="cbody">
+      <tr data-lote="2" data-txt="po.sp_com_castigos_condonacion">
+        <td class="num">2</td><td class="mono">PO.SP_COM_CASTIGOS_CONDONACION</td>
+        <td class="num">917</td><td>si</td>
+        <td class="num">96</td><td class="num">17</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_com_castigos_dac_adj">
+        <td class="num">2</td><td class="mono">PO.SP_COM_CASTIGOS_DAC_ADJ</td>
+        <td class="num">913</td><td>si</td>
+        <td class="num">94</td><td class="num">14</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_com_castigos_reverso_comisiones">
+        <td class="num">2</td><td class="mono">PO.SP_COM_CASTIGOS_REVERSO_COMISIONES</td>
+        <td class="num">957</td><td>si</td>
+        <td class="num">100</td><td class="num">20</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_com_castigos_reverso_condonacion">
+        <td class="num">2</td><td class="mono">PO.SP_COM_CASTIGOS_REVERSO_CONDONACION</td>
+        <td class="num">917</td><td>si</td>
+        <td class="num">97</td><td class="num">17</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_com_castigos_reverso_dac_adj">
+        <td class="num">2</td><td class="mono">PO.SP_COM_CASTIGOS_REVERSO_DAC_ADJ</td>
+        <td class="num">914</td><td>si</td>
+        <td class="num">95</td><td class="num">14</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_com_castigos_reverso_intereses">
+        <td class="num">2</td><td class="mono">PO.SP_COM_CASTIGOS_REVERSO_INTERESES</td>
+        <td class="num">955</td><td>si</td>
+        <td class="num">98</td><td class="num">18</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_com_operaciones_pendientes">
+        <td class="num">2</td><td class="mono">PO.SP_COM_OPERACIONES_PENDIENTES</td>
+        <td class="num">149</td><td>si</td>
+        <td class="num">62</td><td class="num">5</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_com_reverso_cobranza_castigos">
+        <td class="num">2</td><td class="mono">PO.SP_COM_REVERSO_COBRANZA_CASTIGOS</td>
+        <td class="num">956</td><td>si</td>
+        <td class="num">58</td><td class="num">14</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_ind_castigos_condonacion">
+        <td class="num">2</td><td class="mono">PO.SP_IND_CASTIGOS_CONDONACION</td>
+        <td class="num">959</td><td>si</td>
+        <td class="num">103</td><td class="num">18</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_ind_castigos_dac_adj">
+        <td class="num">2</td><td class="mono">PO.SP_IND_CASTIGOS_DAC_ADJ</td>
+        <td class="num">954</td><td>si</td>
+        <td class="num">101</td><td class="num">15</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_ind_castigos_reverso_comisiones">
+        <td class="num">2</td><td class="mono">PO.SP_IND_CASTIGOS_REVERSO_COMISIONES</td>
+        <td class="num">951</td><td>si</td>
+        <td class="num">107</td><td class="num">15</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_ind_castigos_reverso_condonacion">
+        <td class="num">2</td><td class="mono">PO.SP_IND_CASTIGOS_REVERSO_CONDONACION</td>
+        <td class="num">960</td><td>si</td>
+        <td class="num">104</td><td class="num">18</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_ind_castigos_reverso_dac_adj">
+        <td class="num">2</td><td class="mono">PO.SP_IND_CASTIGOS_REVERSO_DAC_ADJ</td>
+        <td class="num">951</td><td>si</td>
+        <td class="num">102</td><td class="num">15</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_ind_castigos_reverso_intereses">
+        <td class="num">2</td><td class="mono">PO.SP_IND_CASTIGOS_REVERSO_INTERESES</td>
+        <td class="num">949</td><td>si</td>
+        <td class="num">105</td><td class="num">15</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_ind_castigos_reverso_moratorios">
+        <td class="num">2</td><td class="mono">PO.SP_IND_CASTIGOS_REVERSO_MORATORIOS</td>
+        <td class="num">949</td><td>si</td>
+        <td class="num">106</td><td class="num">15</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_ind_cobranza_castigos">
+        <td class="num">2</td><td class="mono">PO.SP_IND_COBRANZA_CASTIGOS</td>
+        <td class="num">996</td><td>si</td>
+        <td class="num">37</td><td class="num">15</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_ind_reverso_cobranza_castigos">
+        <td class="num">2</td><td class="mono">PO.SP_IND_REVERSO_COBRANZA_CASTIGOS</td>
+        <td class="num">996</td><td>si</td>
+        <td class="num">38</td><td class="num">15</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_snd_dev_accesorios">
+        <td class="num">2</td><td class="mono">PO.SP_SND_DEV_ACCESORIOS</td>
+        <td class="num">201</td><td>si</td>
+        <td class="num">85</td><td class="num">12</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_snd_reclasificacion">
+        <td class="num">2</td><td class="mono">PO.SP_SND_RECLASIFICACION</td>
+        <td class="num">183</td><td>si</td>
+        <td class="num">83</td><td class="num">5</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="2" data-txt="po.sp_snd_reverso_accesorios">
+        <td class="num">2</td><td class="mono">PO.SP_SND_REVERSO_ACCESORIOS</td>
+        <td class="num">233</td><td>si</td>
+        <td class="num">86</td><td class="num">13</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_com_dacion_adjudicacion">
+        <td class="num">3</td><td class="mono">PO.SP_COM_DACION_ADJUDICACION</td>
+        <td class="num">602</td><td>si</td>
+        <td class="num">41</td><td class="num">9</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_com_reestrctura_cap">
+        <td class="num">3</td><td class="mono">PO.SP_COM_REESTRCTURA_CAP</td>
+        <td class="num">710</td><td>si</td>
+        <td class="num">55</td><td class="num">8</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_com_reverso_cobranza">
+        <td class="num">3</td><td class="mono">PO.SP_COM_REVERSO_COBRANZA</td>
+        <td class="num">862</td><td>si</td>
+        <td class="num">42</td><td class="num">8</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_com_reverso_comision">
+        <td class="num">3</td><td class="mono">PO.SP_COM_REVERSO_COMISION</td>
+        <td class="num">290</td><td>si</td>
+        <td class="num">53</td><td class="num">18</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_com_reverso_dacion_adjudicacion">
+        <td class="num">3</td><td class="mono">PO.SP_COM_REVERSO_DACION_ADJUDICACION</td>
+        <td class="num">598</td><td>si</td>
+        <td class="num">47</td><td class="num">9</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_ind_dacion_adjudicacion">
+        <td class="num">3</td><td class="mono">PO.SP_IND_DACION_ADJUDICACION</td>
+        <td class="num">643</td><td>si</td>
+        <td class="num">11</td><td class="num">12</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_ind_operaciones_pendientes">
+        <td class="num">3</td><td class="mono">PO.SP_IND_OPERACIONES_PENDIENTES</td>
+        <td class="num">187</td><td>si</td>
+        <td class="num">61</td><td class="num">3</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_ind_reestrctura_cap">
+        <td class="num">3</td><td class="mono">PO.SP_IND_REESTRCTURA_CAP</td>
+        <td class="num">754</td><td>si</td>
+        <td class="num">10</td><td class="num">10</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_ind_reverso_comision">
+        <td class="num">3</td><td class="mono">PO.SP_IND_REVERSO_COMISION</td>
+        <td class="num">295</td><td>si</td>
+        <td class="num">27</td><td class="num">12</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_ind_reverso_dacion_adjudicacion">
+        <td class="num">3</td><td class="mono">PO.SP_IND_REVERSO_DACION_ADJUDICACION</td>
+        <td class="num">646</td><td>si</td>
+        <td class="num">39</td><td class="num">12</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_ind_traspaso">
+        <td class="num">3</td><td class="mono">PO.SP_IND_TRASPASO</td>
+        <td class="num">467</td><td>si</td>
+        <td class="num">8</td><td class="num">6</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_snd_cobranza">
+        <td class="num">3</td><td class="mono">PO.SP_SND_COBRANZA</td>
+        <td class="num">574</td><td>si</td>
+        <td class="num">77</td><td class="num">0</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_snd_cobranza_castigos">
+        <td class="num">3</td><td class="mono">PO.SP_SND_COBRANZA_CASTIGOS</td>
+        <td class="num">460</td><td>si</td>
+        <td class="num">88</td><td class="num">0</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_snd_condonacion">
+        <td class="num">3</td><td class="mono">PO.SP_SND_CONDONACION</td>
+        <td class="num">329</td><td>si</td>
+        <td class="num">81</td><td class="num">0</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_snd_dacion_adjudicacion">
+        <td class="num">3</td><td class="mono">PO.SP_SND_DACION_ADJUDICACION</td>
+        <td class="num">311</td><td>si</td>
+        <td class="num">79</td><td class="num">0</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_snd_reverso_cobranza">
+        <td class="num">3</td><td class="mono">PO.SP_SND_REVERSO_COBRANZA</td>
+        <td class="num">556</td><td>si</td>
+        <td class="num">78</td><td class="num">0</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_snd_reverso_cobranza_castigos">
+        <td class="num">3</td><td class="mono">PO.SP_SND_REVERSO_COBRANZA_CASTIGOS</td>
+        <td class="num">460</td><td>si</td>
+        <td class="num">89</td><td class="num">0</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_snd_reverso_condonacion">
+        <td class="num">3</td><td class="mono">PO.SP_SND_REVERSO_CONDONACION</td>
+        <td class="num">331</td><td>si</td>
+        <td class="num">82</td><td class="num">0</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_snd_reverso_dacion_adjudicacion">
+        <td class="num">3</td><td class="mono">PO.SP_SND_REVERSO_DACION_ADJUDICACION</td>
+        <td class="num">309</td><td>si</td>
+        <td class="num">80</td><td class="num">0</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="3" data-txt="po.sp_snd_traspaso">
+        <td class="num">3</td><td class="mono">PO.SP_SND_TRASPASO</td>
+        <td class="num">426</td><td>si</td>
+        <td class="num">91</td><td class="num">0</td>
+        <td class="num">3</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="cierre.sp_cmr_dia">
+        <td class="num">4</td><td class="mono">CIERRE.SP_CMR_DIA</td>
+        <td class="num">393</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">46</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_com_condonacion">
+        <td class="num">4</td><td class="mono">PO.SP_COM_CONDONACION</td>
+        <td class="num">533</td><td>si</td>
+        <td class="num">49</td><td class="num">12</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_com_dev_accesorios">
+        <td class="num">4</td><td class="mono">PO.SP_COM_DEV_ACCESORIOS</td>
+        <td class="num">182</td><td>si</td>
+        <td class="num">34</td><td class="num">12</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_com_dev_interes">
+        <td class="num">4</td><td class="mono">PO.SP_COM_DEV_INTERES</td>
+        <td class="num">227</td><td>si</td>
+        <td class="num">31</td><td class="num">17</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_com_dev_moratorio">
+        <td class="num">4</td><td class="mono">PO.SP_COM_DEV_MORATORIO</td>
+        <td class="num">325</td><td>si</td>
+        <td class="num">33</td><td class="num">24</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_com_reestrctura_sn_cap">
+        <td class="num">4</td><td class="mono">PO.SP_COM_REESTRCTURA_SN_CAP</td>
+        <td class="num">746</td><td>si</td>
+        <td class="num">56</td><td class="num">12</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_com_reverso_condonacion">
+        <td class="num">4</td><td class="mono">PO.SP_COM_REVERSO_CONDONACION</td>
+        <td class="num">526</td><td>si</td>
+        <td class="num">57</td><td class="num">11</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_com_reverso_interes">
+        <td class="num">4</td><td class="mono">PO.SP_COM_REVERSO_INTERES</td>
+        <td class="num">273</td><td>si</td>
+        <td class="num">52</td><td class="num">19</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_com_reverso_moratorio">
+        <td class="num">4</td><td class="mono">PO.SP_COM_REVERSO_MORATORIO</td>
+        <td class="num">266</td><td>si</td>
+        <td class="num">54</td><td class="num">18</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_ind_condonacion">
+        <td class="num">4</td><td class="mono">PO.SP_IND_CONDONACION</td>
+        <td class="num">642</td><td>si</td>
+        <td class="num">13</td><td class="num">14</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_ind_firma">
+        <td class="num">4</td><td class="mono">PO.SP_IND_FIRMA</td>
+        <td class="num">311</td><td>si</td>
+        <td class="num">1</td><td class="num">11</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_ind_reestrctura_sn_cap">
+        <td class="num">4</td><td class="mono">PO.SP_IND_REESTRCTURA_SN_CAP</td>
+        <td class="num">661</td><td>si</td>
+        <td class="num">45</td><td class="num">10</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_ind_reverso_condonacion">
+        <td class="num">4</td><td class="mono">PO.SP_IND_REVERSO_CONDONACION</td>
+        <td class="num">610</td><td>si</td>
+        <td class="num">25</td><td class="num">15</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_ind_reverso_interes">
+        <td class="num">4</td><td class="mono">PO.SP_IND_REVERSO_INTERES</td>
+        <td class="num">252</td><td>si</td>
+        <td class="num">29</td><td class="num">11</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_snd_administrada">
+        <td class="num">4</td><td class="mono">PO.SP_SND_ADMINISTRADA</td>
+        <td class="num">335</td><td>si</td>
+        <td class="num">93</td><td class="num">10</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_snd_dev_interes">
+        <td class="num">4</td><td class="mono">PO.SP_SND_DEV_INTERES</td>
+        <td class="num">161</td><td>si</td>
+        <td class="num">71</td><td class="num">0</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_snd_dev_moratorio">
+        <td class="num">4</td><td class="mono">PO.SP_SND_DEV_MORATORIO</td>
+        <td class="num">175</td><td>si</td>
+        <td class="num">75</td><td class="num">0</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_snd_reverso_interes">
+        <td class="num">4</td><td class="mono">PO.SP_SND_REVERSO_INTERES</td>
+        <td class="num">165</td><td>si</td>
+        <td class="num">72</td><td class="num">0</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_snd_reverso_moratorio">
+        <td class="num">4</td><td class="mono">PO.SP_SND_REVERSO_MORATORIO</td>
+        <td class="num">174</td><td>si</td>
+        <td class="num">76</td><td class="num">0</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="4" data-txt="po.sp_snd_secuencias_man">
+        <td class="num">4</td><td class="mono">PO.SP_SND_SECUENCIAS_MAN</td>
+        <td class="num">253</td><td>si</td>
+        <td class="num">92</td><td class="num">0</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="cierre.sp_ind_rpt_intereses_devengados_vis">
+        <td class="num">5</td><td class="mono">CIERRE.SP_IND_RPT_INTERESES_DEVENGADOS_VIS</td>
+        <td class="num">385</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">40</td>
+        <td class="num">0</td><td>sin transaccion / sin XACT_ABORT</td></tr>      <tr data-lote="5" data-txt="cierre.sp_saf_saldos">
+        <td class="num">5</td><td class="mono">CIERRE.SP_SAF_SALDOS</td>
+        <td class="num">574</td><td>si</td>
+        <td class="num">-</td><td class="num">0</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_com_cancelacion">
+        <td class="num">5</td><td class="mono">PO.SP_COM_CANCELACION</td>
+        <td class="num">216</td><td>si</td>
+        <td class="num">63</td><td class="num">8</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_com_castigos">
+        <td class="num">5</td><td class="mono">PO.SP_COM_CASTIGOS</td>
+        <td class="num">939</td><td>si</td>
+        <td class="num">50</td><td class="num">0</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_com_dev_comisiones">
+        <td class="num">5</td><td class="mono">PO.SP_COM_DEV_COMISIONES</td>
+        <td class="num">169</td><td>si</td>
+        <td class="num">33</td><td class="num">12</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_com_firma">
+        <td class="num">5</td><td class="mono">PO.SP_COM_FIRMA</td>
+        <td class="num">218</td><td>si</td>
+        <td class="num">22</td><td class="num">8</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_com_reverso_desembolso">
+        <td class="num">5</td><td class="mono">PO.SP_COM_REVERSO_DESEMBOLSO</td>
+        <td class="num">295</td><td>si</td>
+        <td class="num">70</td><td class="num">9</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_com_venta_cartera">
+        <td class="num">5</td><td class="mono">PO.SP_COM_VENTA_CARTERA</td>
+        <td class="num">759</td><td>si</td>
+        <td class="num">59</td><td class="num">0</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_ind_castigos">
+        <td class="num">5</td><td class="mono">PO.SP_IND_CASTIGOS</td>
+        <td class="num">913</td><td>si</td>
+        <td class="num">12</td><td class="num">0</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_ind_desembolso">
+        <td class="num">5</td><td class="mono">PO.SP_IND_DESEMBOLSO</td>
+        <td class="num">305</td><td>si</td>
+        <td class="num">2</td><td class="num">8</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_ind_devoluciones">
+        <td class="num">5</td><td class="mono">PO.SP_IND_DEVOLUCIONES</td>
+        <td class="num">210</td><td>si</td>
+        <td class="num">19</td><td class="num">0</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_ind_dev_interes">
+        <td class="num">5</td><td class="mono">PO.SP_IND_DEV_INTERES</td>
+        <td class="num">207</td><td>si</td>
+        <td class="num">4</td><td class="num">8</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_ind_reverso_desembolso">
+        <td class="num">5</td><td class="mono">PO.SP_IND_REVERSO_DESEMBOLSO</td>
+        <td class="num">295</td><td>si</td>
+        <td class="num">26</td><td class="num">8</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_ind_reverso_devoluciones">
+        <td class="num">5</td><td class="mono">PO.SP_IND_REVERSO_DEVOLUCIONES</td>
+        <td class="num">221</td><td>si</td>
+        <td class="num">30</td><td class="num">0</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_ind_reverso_moratorio">
+        <td class="num">5</td><td class="mono">PO.SP_IND_REVERSO_MORATORIO</td>
+        <td class="num">288</td><td>si</td>
+        <td class="num">28</td><td class="num">8</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_ind_traspaso_saldo_favor">
+        <td class="num">5</td><td class="mono">PO.SP_IND_TRASPASO_SALDO_FAVOR</td>
+        <td class="num">190</td><td>si</td>
+        <td class="num">32</td><td class="num">0</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_ind_venta_cartera">
+        <td class="num">5</td><td class="mono">PO.SP_IND_VENTA_CARTERA</td>
+        <td class="num">705</td><td>si</td>
+        <td class="num">46</td><td class="num">0</td>
+        <td class="num">2</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_saf_poliza_reest_cast">
+        <td class="num">5</td><td class="mono">PO.SP_SAF_POLIZA_REEST_CAST</td>
+        <td class="num">545</td><td>si</td>
+        <td class="num">-</td><td class="num">4</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sp_snd_castigos">
+        <td class="num">5</td><td class="mono">PO.SP_SND_CASTIGOS</td>
+        <td class="num">901</td><td>si</td>
+        <td class="num">87</td><td class="num">0</td>
+        <td class="num">1</td><td>TRAN+TRY/CATCH / sin XACT_ABORT / CATCH sin rethrow</td></tr>      <tr data-lote="5" data-txt="po.sys_sp_mov_cargo">
+        <td class="num">5</td><td class="mono">PO.SYS_SP_MOV_CARGO</td>
+        <td class="num">281</td><td>si</td>
+        <td class="num">-</td><td class="num">9</td>
+        <td class="num">0</td><td>TRAN+TRY/CATCH / sin XACT_ABORT</td></tr>
+  </tbody></table>
+
+  <h2>Catalogo de valores hardcodeados y clasificacion de parametrizacion</h2>
+  <div class="bar">
+    <label>Clasificacion</label><select id="hc"><option value="">Todas</option><option>Catalogo en BD (no editable en portal)</option><option>No parametrizable: es un defecto</option><option>Parametrizable en portal</option><option>Parametrizable en portal (catalogo contable)</option><option>Parametrizable en portal (catalogo)</option><option>Parametrizable en portal (definicion de universo)</option><option>Parametrizable en portal (plantillas)</option></select>
+    <input type="search" id="hq" placeholder="Buscar valor, tipo, destino...">
+    <button class="rst" onclick="resetHc()">Limpiar</button>
+    <span class="count" id="hcnt"></span>
+  </div>
+  <table><thead><tr><th>Valor</th><th>Tipo</th><th>Ocurrencias</th><th>Clasificacion</th><th>Destino propuesto</th><th>Nota</th></tr></thead>
+  <tbody id="hbody">
+      <tr data-clas="Parametrizable en portal"
+          data-txt="monto * 0.10 y monto * 0.90 (participacion afirme) porcentaje comercial complementario param.participacion_convenio (uno solo, el complemento se calcula) si los dos valores dejan de sumar 1 la poliza descuadra">
+        <td class="mono">MONTO * 0.10 y MONTO * 0.90 (participacion Afirme)</td><td>Porcentaje comercial complementario</td><td class="num">22 archivos con 0.10, 6 con 0.90 (82 ocurrencias en el lote)</td>
+        <td><span class="pill p1">Parametrizable en portal</span></td>
+        <td>PARAM.PARTICIPACION_CONVENIO (uno solo, el complemento se calcula)</td><td class="nota">Si los dos valores dejan de sumar 1 la poliza descuadra</td></tr>      <tr data-clas="Parametrizable en portal"
+          data-txt="0.16 (iva) tasa impositiva param.tasa_impuesto por vigencia y zona en ind_dev_interes sustituye a la tasa registrada del credito (l2-005)">
+        <td class="mono">0.16 (IVA)</td><td>Tasa impositiva</td><td class="num">43 de 80 archivos, 78 ocurrencias</td>
+        <td><span class="pill p1">Parametrizable en portal</span></td>
+        <td>PARAM.TASA_IMPUESTO por vigencia y zona</td><td class="nota">En IND_DEV_INTERES sustituye a la tasa registrada del credito (L2-005)</td></tr>      <tr data-clas="Parametrizable en portal (catalogo)"
+          data-txt="@id_poliza = 1..107 (74 valores distintos) identificador de poliza po.saf_cat_poliza con clave logica unique es la llave de borrado y reconstruccion de cada proceso">
+        <td class="mono">@ID_POLIZA = 1..107 (74 valores distintos)</td><td>Identificador de poliza</td><td class="num">75 en el lote; el 33 usado por dos SPs</td>
+        <td><span class="pill p1">Parametrizable en portal (catalogo)</span></td>
+        <td>PO.SAF_CAT_POLIZA con clave logica UNIQUE</td><td class="nota">Es la llave de borrado y reconstruccion de cada proceso</td></tr>      <tr data-clas="Parametrizable en portal (catalogo)"
+          data-txt="&#x27;stp/6461824110000000&#x27; -&gt; cuenta 2070 cuenta bancaria (clabe) tabla banco/cuenta -&gt; cuenta contable dato bancario en el codigo fuente">
+        <td class="mono">&#x27;STP/6461824110000000&#x27; -&gt; cuenta 2070</td><td>Cuenta bancaria (CLABE)</td><td class="num">11 en el lote</td>
+        <td><span class="pill p1">Parametrizable en portal (catalogo)</span></td>
+        <td>Tabla banco/cuenta -&gt; cuenta contable</td><td class="nota">Dato bancario en el codigo fuente</td></tr>      <tr data-clas="Parametrizable en portal (catalogo contable)"
+          data-txt="&#x27;140103009001&#x27;, &#x27;140103009002&#x27;, &#x27;140103009003&#x27;, &#x27;1401030090010000&#x27;, &#x27;1401030090020000&#x27;, &#x27;5050260901000300&#x27;, &#x27;1020010502130300&#x27; cuenta / mascara contable po.saf_cat_contable se usan tambien como criterio de clasificacion de condonacion">
+        <td class="mono">&#x27;140103009001&#x27;, &#x27;140103009002&#x27;, &#x27;140103009003&#x27;, &#x27;1401030090010000&#x27;, &#x27;1401030090020000&#x27;, &#x27;5050260901000300&#x27;, &#x27;1020010502130300&#x27;</td><td>Cuenta / mascara contable</td><td class="num">209 en el lote</td>
+        <td><span class="pill p1">Parametrizable en portal (catalogo contable)</span></td>
+        <td>PO.SAF_CAT_CONTABLE</td><td class="nota">Se usan tambien como criterio de clasificacion de condonacion</td></tr>      <tr data-clas="Parametrizable en portal (catalogo contable)"
+          data-txt="&#x27;2020-0508-0203-0000&#x27;, &#x27;2020-0508-0201-0000&#x27;, &#x27;2401-9000-0003-0001&#x27;, &#x27;1020-0105-0205-0100&#x27; cuenta contable con formato po.saf_cat_contable mismos valores que en el lote 1: el hardcodeo se propaga por copia">
+        <td class="mono">&#x27;2020-0508-0203-0000&#x27;, &#x27;2020-0508-0201-0000&#x27;, &#x27;2401-9000-0003-0001&#x27;, &#x27;1020-0105-0205-0100&#x27;</td><td>Cuenta contable con formato</td><td class="num">25 en el lote</td>
+        <td><span class="pill p1">Parametrizable en portal (catalogo contable)</span></td>
+        <td>PO.SAF_CAT_CONTABLE</td><td class="nota">Mismos valores que en el lote 1: el hardcodeo se propaga por copia</td></tr>      <tr data-clas="Catalogo en BD (no editable en portal)"
+          data-txt="23 rubros (&#x27;intereses&#x27;, &#x27;seguro_vida&#x27;, &#x27;seguro_danos&#x27;, &#x27;principal&#x27;, &#x27;saldo_favor&#x27;, &#x27;moratorios&#x27;, &#x27;iva *&#x27;, &#x27;cargo_ballon&#x27;, &#x27;comision_prepago&#x27;...) rubro contable catalogo de rubros + homologacion fn_rubro_pol la homologacion existe pero solo la usan los sps com (l2-006)">
+        <td class="mono">23 rubros (&#x27;INTERESES&#x27;, &#x27;SEGURO_VIDA&#x27;, &#x27;SEGURO_DANOS&#x27;, &#x27;PRINCIPAL&#x27;, &#x27;SALDO_FAVOR&#x27;, &#x27;MORATORIOS&#x27;, &#x27;IVA *&#x27;, &#x27;CARGO_BALLON&#x27;, &#x27;COMISION_PREPAGO&#x27;...)</td><td>Rubro contable</td><td class="num">1.305 en el lote</td>
+        <td><span class="pill p2">Catalogo en BD (no editable en portal)</span></td>
+        <td>Catalogo de rubros + homologacion FN_RUBRO_POL</td><td class="nota">La homologacion existe pero solo la usan los SPs COM (L2-006)</td></tr>      <tr data-clas="Parametrizable en portal (plantillas)"
+          data-txt="144 conceptos de poliza (&#x27;pago cco &#x27;, &#x27;castigo posterior &#x27;, &#x27;castigo com&#x27;, &#x27;venta cartera com&#x27;...) concepto / leyenda po.saf_catalogo_conceptos con plantillas variantes de espaciado entre segmentos rompen el match con el catalogo">
+        <td class="mono">144 conceptos de poliza (&#x27;PAGO CCO &#x27;, &#x27;CASTIGO POSTERIOR &#x27;, &#x27;CASTIGO COM&#x27;, &#x27;VENTA CARTERA COM&#x27;...)</td><td>Concepto / leyenda</td><td class="num">935 en el lote</td>
+        <td><span class="pill p1">Parametrizable en portal (plantillas)</span></td>
+        <td>PO.SAF_CATALOGO_CONCEPTOS con plantillas</td><td class="nota">Variantes de espaciado entre segmentos rompen el match con el catalogo</td></tr>      <tr data-clas="Parametrizable en portal (catalogo)"
+          data-txt="35 listas de tipo de credito (in (9,10,11), in (12,13,14,15,28,2,18,27), = 4, = 5...) universo por tipo de credito catalogo de tipos con banderas por proceso listas divergentes entre procesos equivalentes">
+        <td class="mono">35 listas de tipo de credito (IN (9,10,11), IN (12,13,14,15,28,2,18,27), = 4, = 5...)</td><td>Universo por tipo de credito</td><td class="num">438 en el lote</td>
+        <td><span class="pill p1">Parametrizable en portal (catalogo)</span></td>
+        <td>Catalogo de tipos con banderas por proceso</td><td class="nota">Listas divergentes entre procesos equivalentes</td></tr>      <tr data-clas="Catalogo en BD (no editable en portal)"
+          data-txt="tip_transaccion = 4 / 113 / 3, in (0,4) codigo de transaccion catalogo del core saf escrito con 3 capitalizaciones distintas">
+        <td class="mono">TIP_TRANSACCION = 4 / 113 / 3, IN (0,4)</td><td>Codigo de transaccion</td><td class="num">471 en el lote</td>
+        <td><span class="pill p2">Catalogo en BD (no editable en portal)</span></td>
+        <td>Catalogo del core SAF</td><td class="nota">Escrito con 3 capitalizaciones distintas</td></tr>      <tr data-clas="Catalogo en BD (no editable en portal)"
+          data-txt="id_producto 50 / 51 codigo de producto catalogo de productos con banderas tambien como valor por defecto (&#x27;si es null -&gt; 50 consumo&#x27;)">
+        <td class="mono">ID_PRODUCTO 50 / 51</td><td>Codigo de producto</td><td class="num">210 en el lote</td>
+        <td><span class="pill p2">Catalogo en BD (no editable en portal)</span></td>
+        <td>Catalogo de productos con banderas</td><td class="nota">Tambien como valor por defecto (&#x27;si es NULL -&gt; 50 CONSUMO&#x27;)</td></tr>      <tr data-clas="Parametrizable en portal (definicion de universo)"
+          data-txt="ind_estado = &#x27;p&#x27; / in (&#x27;c&#x27;,&#x27;d&#x27;), ind_linea = &#x27;n&#x27;, ind_covid = &#x27;s&#x27; filtro de universo vista o funcion unica de universo elegible 36 variantes para la misma idea de &#x27;credito vigente&#x27;">
+        <td class="mono">IND_ESTADO = &#x27;P&#x27; / IN (&#x27;C&#x27;,&#x27;D&#x27;), IND_LINEA = &#x27;N&#x27;, IND_COVID = &#x27;S&#x27;</td><td>Filtro de universo</td><td class="num">568 en el lote (36 variantes)</td>
+        <td><span class="pill p1">Parametrizable en portal (definicion de universo)</span></td>
+        <td>Vista o funcion unica de universo elegible</td><td class="nota">36 variantes para la misma idea de &#x27;credito vigente&#x27;</td></tr>      <tr data-clas="No parametrizable: es un defecto"
+          data-txt="&#x27;00010101&#x27; valor centinela registrar la fecha real y el id de ejecucion toda la familia sindicada">
+        <td class="mono">&#x27;00010101&#x27;</td><td>Valor centinela</td><td class="num">14 archivos</td>
+        <td><span class="pill p4">No parametrizable: es un defecto</span></td>
+        <td>Registrar la fecha real y el ID de ejecucion</td><td class="nota">Toda la familia sindicada</td></tr>
+  </tbody></table>
+
+  <h2>Plan de despliegue de la parametrizacion</h2>
+      <div class="fase"><h3>Ajuste al plan del lote 1</h3>
+        <p class="obj">Los lotes 2-5 no agregan fases: confirman que el trabajo es masivo y mecanico</p><ul><li>Las correcciones de patron (transaccional, cursores, centinela, NOCOUNT) se aplican por script sobre familias clonadas, no SP por SP: 78 de 80 comparten el mismo bloque</li><li>Antes de cualquier refactor, ejecutar el commit de formato y normalizacion de encoding para que los diffs posteriores sean legibles</li><li>El refactor a SP nucleo parametrizado (L2-016) se vuelve prerrequisito de la migracion de parametros: migrar 80 copias por separado cuesta mas que consolidarlas primero</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> n/a</p></div>      <div class="fase"><h3>Prioridad inmediata que cambia respecto al lote 1</h3>
+        <p class="obj">Tres defectos nuevos con impacto en cifras</p><ul><li>L2-003: agregar el filtro de poliza al DELETE de PRINCIPAL en PO.SYS_SP_MOV_CARGO</li><li>L2-001/L2-002: conciliar los 28 sitios de la participacion Afirme y unificar el predicado antes de parametrizar</li><li>L2-005: usar la tasa de IVA del credito en la cartera individual</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Medio: cambian cifras, requieren periodo de control</p></div>      <div class="fase"><h3>Decisiones de negocio requeridas</h3>
+        <p class="obj">No son defectos hasta que negocio confirme la intencion</p><ul><li>L2-007: la cartera sindicada no aplica COVID ni separacion balance/orden de etapa 3</li><li>L2-012: dos procesos comparten el numero de poliza 33 (y 20 en individual)</li><li>L2-019: dos objetos del cierre existen solo en desarrollo</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Bajo, pero bloquean el refactor si no se resuelven</p></div>
+
+  <h2>Valor agregado propuesto</h2>
+  <ul class="va"><li>El clustering de similitud (clusters_l2_5.json) sirve como mapa del refactor: indica exactamente que archivos pueden colapsarse en un solo SP nucleo y cuales son variantes reales.</li><li>La matriz de divergencias por familia (que SP usa FN_RUBRO_POL, quien aplica COVID, quien separa balance/orden) funciona como checklist de revision obligatoria mientras exista la duplicacion.</li><li>Los conteos automatizados por archivo (checks_l2_5.json) son la linea base para medir el avance de la remediacion: hoy XACT_ABORT 0/100, rethrow 2/100, cursores locales 0/100.</li><li>Recomendacion de proceso: convertir estos conteos en una compuerta de CI, de modo que un SP nuevo no pueda entrar sin patron transaccional ni con NOLOCK en calculo contable.</li></ul>
+</div>
+<footer>Generado por la auditoria automatizada + revision manual del codigo. Los hallazgos se sustentan en el codigo fuente;
+los que dependen de datos o de plan de ejecucion se marcan como tales en el impacto. Siguiente paso: validar los hallazgos y continuar con el siguiente lote.</footer>
+<script>
+const $=s=>document.querySelector(s), fs=$('#fs'),fc=$('#fc'),fe=$('#fe'),fq=$('#fq'),fl=$('#fl');
+function apply(){
+  let n=0, all=document.querySelectorAll('.f');
+  all.forEach(f=>{
+    const ok=(!fs.value||f.dataset.sev===fs.value)
+      &&(!fc.value||f.dataset.cat===fc.value)
+      &&(!fe.value||f.dataset.env.split(' ').includes(fe.value))
+      &&(!fl||!fl.value||f.dataset.lote===fl.value)
+      &&(!fq.value||f.dataset.txt.includes(fq.value.toLowerCase()));
+    f.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  $('#cnt').textContent=n+' de '+all.length+' hallazgos';
+}
+[fs,fc,fe,fl].forEach(x=>{if(x)x.onchange=apply;}); fq.oninput=apply;
+function reset(){fs.value=fc.value=fe.value='';if(fl)fl.value='';fq.value='';apply();}
+const cl=$('#cl'),cq=$('#cq');
+function applyCob(){
+  if(!cl)return; let n=0, rows=document.querySelectorAll('#cbody tr');
+  rows.forEach(r=>{
+    const ok=(!cl.value||r.dataset.lote===cl.value)&&(!cq.value||r.dataset.txt.includes(cq.value.toLowerCase()));
+    r.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  $('#ccnt').textContent=n+' de '+rows.length+' objetos';
+}
+if(cl){cl.onchange=applyCob; cq.oninput=applyCob;}
+function resetCob(){cl.value='';cq.value='';applyCob();}
+const hc=$('#hc'),hq=$('#hq');
+function applyHc(){
+  let n=0, rows=document.querySelectorAll('#hbody tr');
+  rows.forEach(r=>{
+    const ok=(!hc.value||r.dataset.clas===hc.value)&&(!hq.value||r.dataset.txt.includes(hq.value.toLowerCase()));
+    r.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  $('#hcnt').textContent=n+' de '+rows.length+' grupos';
+}
+hc.onchange=applyHc; hq.oninput=applyHc;
+function resetHc(){hc.value='';hq.value='';applyHc();}
+apply();applyHc();applyCob();
+</script>
+</body></html>

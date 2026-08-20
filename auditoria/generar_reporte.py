@@ -38,11 +38,14 @@ def build(data):
     envs = ["BD", "BD_prod"]
     counts = {s: sum(1 for h in hs if h["sev"] == s) for s in sevs}
 
+    lotes = sorted({str(h["lote"]) for h in hs if h.get("lote")})
+
     rows = []
     for h in hs:
         tags = " ".join(env_tags(h["env"]))
         rows.append(f"""
     <article class="f" data-sev="{e(h['sev'])}" data-cat="{e(h['cat'])}" data-env="{e(tags)}"
+             data-lote="{e(str(h.get('lote','')))}"
              data-txt="{e((h['id'] + ' ' + h['titulo'] + ' ' + h['obj'] + ' ' + h['evidencia']).lower())}">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev {SEV_CLASS[h['sev']]}">{e(h['sev'])}</span>
@@ -79,6 +82,27 @@ def build(data):
 
     va = "".join(f"<li>{e(v)}</li>" for v in data["valor_agregado"])
     objs = "".join(f"<li>{e(o)}</li>" for o in data["alcance"]["objetos"])
+
+    cob = data.get("cobertura") or []
+    cob_rows = "".join(
+        f"""      <tr data-lote="{e(str(c['lote']))}" data-txt="{e(c['obj'].lower())}">
+        <td class="num">{e(str(c['lote']))}</td><td class="mono">{e(c['obj'])}</td>
+        <td class="num">{c['lineas']:,}</td><td>{'si' if c['prod'] else '<b>no</b>'}</td>
+        <td class="num">{e(str(c['poliza']))}</td><td class="num">{c['nolock']}</td>
+        <td class="num">{c['cursor']}</td><td>{e(c['patron'])}</td></tr>""" for c in cob)
+    cob_block = "" if not cob else f"""
+  <h2>Cobertura del lote: {len(cob)} objetos revisados</h2>
+  <div class="bar">
+    <label>Lote</label><select id="cl"><option value="">Todos</option>{''.join(f'<option>{x}</option>' for x in lotes)}</select>
+    <input type="search" id="cq" placeholder="Buscar objeto...">
+    <button class="rst" onclick="resetCob()">Limpiar</button>
+    <span class="count" id="ccnt"></span>
+  </div>
+  <table><thead><tr><th>Lote</th><th>Objeto</th><th>Lineas</th><th>En BD_prod</th><th>ID_POLIZA</th>
+    <th>NOLOCK</th><th>Cursores</th><th>Patron transaccional</th></tr></thead>
+  <tbody id="cbody">
+{cob_rows}
+  </tbody></table>"""
 
     return f"""<!DOCTYPE html>
 <html lang="es"><head><meta charset="utf-8">
@@ -148,7 +172,7 @@ footer{{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3
 </style></head><body>
 <header class="top">
   <h1>Auditoria de codigo SQL &mdash; KARDIA / SAF</h1>
-  <p>Lote {data['lote']} &middot; 20 objetos de mayor riesgo &middot; {data['alcance']['lineas_revisadas']:,} lineas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (produccion) &middot; {data['fecha']}</p>
+  <p>Lote {data['lote']} &middot; {len(cob) or 20} objetos de mayor riesgo &middot; {data['alcance']['lineas_revisadas']:,} lineas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (produccion) &middot; {data['fecha']}</p>
 </header>
 <div class="wrap">
 
@@ -172,11 +196,14 @@ footer{{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3
     <label>Severidad</label><select id="fs"><option value="">Todas</option>{''.join(f'<option>{s}</option>' for s in sevs)}</select>
     <label>Categoria</label><select id="fc"><option value="">Todas</option>{''.join(f'<option>{e(c)}</option>' for c in cats)}</select>
     <label>Entorno</label><select id="fe"><option value="">Ambos</option>{''.join(f'<option>{x}</option>' for x in envs)}</select>
+    {'<label>Lote</label><select id="fl"><option value="">Todos</option>' + ''.join(f'<option>{x}</option>' for x in lotes) + '</select>' if lotes else ''}
     <input type="search" id="fq" placeholder="Buscar objeto, evidencia, texto...">
     <button class="rst" onclick="reset()">Limpiar</button>
     <span class="count" id="cnt"></span>
   </div>
   <div id="lista">{''.join(rows)}</div>
+
+{cob_block}
 
   <h2>Catalogo de valores hardcodeados y clasificacion de parametrizacion</h2>
   <div class="bar">
@@ -197,22 +224,34 @@ footer{{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3
   <ul class="va">{va}</ul>
 </div>
 <footer>Generado por la auditoria automatizada + revision manual del codigo. Los hallazgos se sustentan en el codigo fuente;
-los que dependen de datos o de plan de ejecucion se marcan como tales en el impacto. Siguiente paso: validar el lote y continuar con el lote {data['lote']+1}.</footer>
+los que dependen de datos o de plan de ejecucion se marcan como tales en el impacto. Siguiente paso: validar los hallazgos y continuar con el siguiente lote.</footer>
 <script>
-const $=s=>document.querySelector(s), fs=$('#fs'),fc=$('#fc'),fe=$('#fe'),fq=$('#fq');
+const $=s=>document.querySelector(s), fs=$('#fs'),fc=$('#fc'),fe=$('#fe'),fq=$('#fq'),fl=$('#fl');
 function apply(){{
   let n=0, all=document.querySelectorAll('.f');
   all.forEach(f=>{{
     const ok=(!fs.value||f.dataset.sev===fs.value)
       &&(!fc.value||f.dataset.cat===fc.value)
       &&(!fe.value||f.dataset.env.split(' ').includes(fe.value))
+      &&(!fl||!fl.value||f.dataset.lote===fl.value)
       &&(!fq.value||f.dataset.txt.includes(fq.value.toLowerCase()));
     f.classList.toggle('hide',!ok); if(ok)n++;
   }});
   $('#cnt').textContent=n+' de '+all.length+' hallazgos';
 }}
-[fs,fc,fe].forEach(x=>x.onchange=apply); fq.oninput=apply;
-function reset(){{fs.value=fc.value=fe.value='';fq.value='';apply();}}
+[fs,fc,fe,fl].forEach(x=>{{if(x)x.onchange=apply;}}); fq.oninput=apply;
+function reset(){{fs.value=fc.value=fe.value='';if(fl)fl.value='';fq.value='';apply();}}
+const cl=$('#cl'),cq=$('#cq');
+function applyCob(){{
+  if(!cl)return; let n=0, rows=document.querySelectorAll('#cbody tr');
+  rows.forEach(r=>{{
+    const ok=(!cl.value||r.dataset.lote===cl.value)&&(!cq.value||r.dataset.txt.includes(cq.value.toLowerCase()));
+    r.classList.toggle('hide',!ok); if(ok)n++;
+  }});
+  $('#ccnt').textContent=n+' de '+rows.length+' objetos';
+}}
+if(cl){{cl.onchange=applyCob; cq.oninput=applyCob;}}
+function resetCob(){{cl.value='';cq.value='';applyCob();}}
 const hc=$('#hc'),hq=$('#hq');
 function applyHc(){{
   let n=0, rows=document.querySelectorAll('#hbody tr');
@@ -224,7 +263,7 @@ function applyHc(){{
 }}
 hc.onchange=applyHc; hq.oninput=applyHc;
 function resetHc(){{hc.value='';hq.value='';applyHc();}}
-apply();applyHc();
+apply();applyHc();applyCob();
 </script>
 </body></html>
 """

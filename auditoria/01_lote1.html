@@ -90,12 +90,14 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
     <label>Severidad</label><select id="fs"><option value="">Todas</option><option>Critico</option><option>Alto</option><option>Medio</option><option>Bajo</option></select>
     <label>Categoria</label><select id="fc"><option value="">Todas</option><option>Codificacion</option><option>Concurrencia</option><option>Correccion funcional</option><option>Estandares</option><option>Integridad de datos</option><option>Mantenibilidad</option><option>Observabilidad</option><option>Parametrizacion</option><option>Proceso</option><option>Rendimiento</option><option>Seguridad</option><option>Transaccional</option></select>
     <label>Entorno</label><select id="fe"><option value="">Ambos</option><option>BD</option><option>BD_prod</option></select>
+    
     <input type="search" id="fq" placeholder="Buscar objeto, evidencia, texto...">
     <button class="rst" onclick="reset()">Limpiar</button>
     <span class="count" id="cnt"></span>
   </div>
   <div id="lista">
     <article class="f" data-sev="Critico" data-cat="Correccion funcional" data-env="BD"
+             data-lote=""
              data-txt="l1-001 cierre mensual comercial lee &#x27;otras comisiones&#x27; de una fecha fija (&#x27;20260123&#x27;) cierre.sp_cmr_gen_mes from [cierre].[saf_saldos] where fecha_sistema=&#x27;20260123&#x27; and tipo=&#x27;n&#x27; and rubro in (&#x27;comision_prepago&#x27;,&#x27;visita_extra&#x27;,...)">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev c">Critico</span>
@@ -113,6 +115,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Critico" data-cat="Correccion funcional" data-env="BD"
+             data-lote=""
              data-txt="l1-002 precedencia or/and anula el filtro de periodo en el update de etapa de riesgo cierre.sp_ind_gen_mes_mod inner join ... on c.credito = a.num_credito and (cond_a) or (cond_b) and c.periodo = dateadd(day,-1,@fecha)">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev c">Critico</span>
@@ -130,6 +133,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Critico" data-cat="Transaccional" data-env="BD"
+             data-lote=""
              data-txt="l1-003 transaccion sin try/catch en el cierre mensual individual: queda abierta ante error cierre.sp_ind_gen_mes_mod begin transaction ... 4 update masivos sobre cierre.ind_rep ... commit transaction  (sin begin try/catch, sin set xact_abort on)">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev c">Critico</span>
@@ -147,6 +151,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Critico" data-cat="Transaccional" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-004 los catch hacen rollback y se tragan el error: el proceso reporta exito tras revertir 11 de 20 sps del lote (po.sp_ind_cobranza, po.sp_com_cobranza, po.sp_com_desembolso, po.sp_snd_*, cierre.sp_cmr_gen_dia, cierre.sp_cmr_gen_mes, ...) begin catch rollback insert into po.saf_poliza_errores (...) values (getdate(), @fecha_inicio, @id_poliza, &#x27;linea:&#x27;+cast(error_line() as varchar)+&#x27;. &#x27;+error_message()) end catch">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev c">Critico</span>
@@ -164,6 +169,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Critico" data-cat="Transaccional" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-005 rollback incondicional en catch puede enmascarar el error original (error 3903) 12 sps del lote begin catch  rollback  ...">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev c">Critico</span>
@@ -181,6 +187,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Critico" data-cat="Integridad de datos" data-env="BD"
+             data-lote=""
              data-txt="l1-006 el cierre mensual no es idempotente: reejecutar suma de nuevo los montos cierre.sp_ind_gen_mes_mod update c set c.principal_final = c.principal_final + b.monto ... from kardia.po.pr_ballon_det where cod_concepto=&#x27;principal&#x27; and id_secuencia is null (sin filtro de fecha)">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev c">Critico</span>
@@ -198,6 +205,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Critico" data-cat="Seguridad" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-007 codigo de produccion consulta una base de datos de qa po.sys_sp_mov_abono, po.sys_sp_mov_cargo, po.sys_sp_mov_interes, po.sys_sp_avaluo_and_update (identicos en bd y bd_prod) from quiero_confianza_creditopuente_qa.pr.pr_encabezado_pago a with (nolock) ... join quiero_confianza_creditopuente_qa.cg.cg_catalogo_x_empresa">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev c">Critico</span>
@@ -215,6 +223,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Seguridad" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-008 sql dinamico con concatenacion de parametros (inyeccion y planes no reutilizables) po.sys_sp_avaluo_and_update (11 exec), po.sys_sp_mov_abono, po.sys_sp_account_balance_orden, po.sys_sp_balance_detail_sql, po.sys_sp_actualiza_estado_poliza set @u_tipo_vivienda = concat(&#x27;update h set ... from po.saf_mov_&#x27;, @tabla, &#x27; h where ... between &#x27;&#x27;&#x27;,@fecha_inicio,&#x27;&#x27;&#x27; and &#x27;&#x27;&#x27;,@fecha_fin,&#x27;&#x27;&#x27;&#x27;)  exec(@u_tipo_vivienda)">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -232,6 +241,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Correccion funcional" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-009 asignacion nula @id_secuencia = @id_secuencia en el bucle de movimientos po.sys_sp_mov_abono @id_secuencia = @id_secuencia, @id_cuenta = id_cuenta, ...">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -249,6 +259,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Correccion funcional" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-010 rango de fechas invertido en el insert dinamico de separacion balance/orden po.sys_sp_mov_abono ... and fecha_movimiento between &#x27;&#x27;&#x27;,@fecha_fin,&#x27;&#x27;&#x27; and &#x27;&#x27;&#x27;, @fecha_fin,&#x27;&#x27;&#x27;&#x27;">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -266,6 +277,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Proceso" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-011 las alertas de tasas se marcan como enviadas antes de construir el envio saf.sp_tasas_alertas_envio update saf.tasas_alertas set estado = &#x27;e&#x27; where estado=&#x27;p&#x27; and activo=1 and fecha &lt;= @fecha_hoy   -- antes del cursor que arma #alertas">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -283,6 +295,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Concurrencia" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-012 cursores globales (no local) con workaround cursorclosedeallocate 9 sps del lote (po.sp_ind_cobranza, po.sp_com_cobranza*, po.sp_snd_*, saf.sp_tasas_alertas_envio) exec cursorclosedeallocate &#x27;db_cursor_com_snd_cap&#x27;  declare db_cursor_com_snd_cap cursor for ...">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -300,6 +313,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Rendimiento" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-013 procesamiento fila a fila (rbar) dentro de la transaccion contable po.sys_sp_mov_abono (while sobre @movs), po.sp_ind_cobranza, po.sp_com_cobranza_castigos, po.sp_snd_* insert into @movs select row_number() ... from po.saf_mov_abono where fecha_movimiento between @fecha_inicio and @fecha_fin;  while @indice &lt; @max_indice ... select @... from @movs where id = @indice+1">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -317,6 +331,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Integridad de datos" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-014 nolock generalizado en las lecturas que alimentan la poliza contable 14 de 20 sps del lote (347 ocurrencias); cierre.sp_cmr_gen_mes 72, edc.sp_inseredccredito 63, cierre.sp_cmr_rpt_intereses_devengados_vis 37 from quiero_confianza_shadow.pr.pr_creditos c with (nolock) inner join po.pr_capital_det a with (nolock) ...">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -334,6 +349,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-015 regla de negocio covid con corte de credito hardcodeado y distinto entre ambientes dbo.fn_es_covid bd:  ... and @num_credito &lt; 6051 then ...        bd_prod: ... and @num_credito &lt; 6086 then ...">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -351,6 +367,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-016 nombre de base externa embebido 6.480 veces (principal diferenciador entre bd y bd_prod) todo el lote; global: 3.613 referencias en bd, 2.867 en bd_prod bd usa quiero_confianza_shadow (3.201) y quiero_confianza_shadow con otra capitalizacion (250), mas 119 a quiero_confianza; bd_prod usa quiero_confianza (2.824); 4 sps usan quiero_confianza_creditopuente_qa en ambos (43 y 43). cierre.sp_cmr_gen_mes mezcla ambas en el mismo sp (90 shadow + 1 productiva)">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -368,6 +385,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-017 linked server y servidor de polizas hardcodeados (y apuntando a qa en bd) po.sp_saf_poliza_envio_1p_con (drift real bd vs bd_prod), edc.sp_inseredccredito 4-part name con nombre de instancia embebido; edc usa [kardia].[edc].[edc]">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -385,6 +403,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-018 factor del 10% (&#x27;porcentaje afirme&#x27;) aplicado a montos contables como literal po.sp_ind_cobranza update po.saf_mov_abono set monto = monto * 0.10 where fecha_movimiento=@fecha_inicio and id_poliza=@id_poliza and id_tipo_credito=4 and concepto not like &#x27;trs %&#x27;">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -402,6 +421,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-019 iva 16% embebido en calculos de devengo y de iva de intereses/moratorios po.sys_sp_avaluo_and_update (monto*0.16 x2), cierre.sp_cmr_gen_mes (0.16 x6), po.sp_ind_cobranza (*0.16 x7) sum(case when x.ind_iva = &#x27;n&#x27; then 0 else 0.16 * a.mon_diario end) as iva">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -419,6 +439,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-020 umbral de avaluo para clasificar vivienda, con vigencia expresada en el codigo po.sys_sp_avaluo_and_update declare @monto_avaluo numeric(11,2) = iif(@fecha_inicio &gt;= &#x27;2024-01-01&#x27;, 2648615.20, 2207161.60)">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -436,6 +457,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-021 identificadores de poliza (id_poliza) hardcodeados uno por sp 13 sps del lote @id_poliza int = 7 (ind_cobranza), 35 (cobranza empleado), 40 (com_cobranza), 24, 51, 99, 23, 74, 33, 73, 84 (snd_capital), 36 ...">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -453,6 +475,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-022 cuentas contables y mascaras escritas como literales en el codigo po.sp_ind_cobranza, po.sys_sp_avaluo_and_update, po.sys_sp_mov_abono set h.cuenta_cargo = &#x27;1020-0105-0205-0100&#x27; where h.id_cuenta in (2041,2039) ... / case when id_producto in(1,2) then &#x27;2020-0508-0203-0000&#x27; when id_producto in(50,51) then &#x27;2020-0508-0201-0000&#x27; ... where h.cuenta_cargo=&#x27;2401-9000-0003-0001&#x27;">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
@@ -470,6 +493,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Medio" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-023 codigos de producto, tipo de credito y tipo de transaccion como numeros magicos todo el lote id_producto in (50,51) &#x27;consumo&#x27;/&#x27;empleado&#x27;; id_tipo_credito in (1,3,4,9,10,11,16,17,20,23,26); tip_transaccion = 3/4/113; id_cuenta 2073 &#x27;dacion&#x27;, 2074 &#x27;adjudicacion&#x27;, 2068 &#x27;siniestro&#x27;, 2076/2080/2041/2039">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
@@ -487,6 +511,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Medio" data-cat="Parametrizacion" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-024 conceptos y leyendas de poliza construidos con literales en el codigo po.sys_sp_mov_abono, po.sp_ind_cobranza, po.sp_com_cobranza_castigos y resto de sps de poliza concat(case when id_producto=50 and tip_transaccion=3 then &#x27;consumo desembolso &#x27; ... end, iif(ind_covid=&#x27;s&#x27;,&#x27;covid &#x27;,&#x27;&#x27;), ..., &#x27;restringido &#x27;, ind_etapa)">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
@@ -504,6 +529,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Medio" data-cat="Observabilidad" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-025 fecha centinela &#x27;00010101&#x27; en el registro de errores po.sp_snd_capital, po.sp_snd_dev_comisiones, po.sp_snd_reverso_comision insert into po.saf_poliza_errores (fecha_generacion, fecha_sistema, id_poliza, descripcion) values (getdate(), &#x27;00010101&#x27;, @id_poliza, ...)">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
@@ -521,6 +547,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Medio" data-cat="Rendimiento" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-026 121 select ... into #temp dentro de transacciones y ddl en caliente 14 sps del lote; cierre.sp_cmr_rpt_intereses_devengados_vis crea y elimina 8 tablas temporales create table #polizaf(...) dentro del begin transaction; drop table #iva_intereses; ... (lineas 481-487)">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
@@ -538,6 +565,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Medio" data-cat="Rendimiento" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-027 predicados no sargables y conversiones implicitas en los joins entre bases 14 sps del lote (75 cast en on/where) where cuenta_contable = cast(a.id_cuenta as varchar(25)) ... on cast(h.id_cuenta as varchar(50)) = d.cuenta_contable ... case when len(a.id_cuenta)=4 then ...">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
@@ -555,6 +583,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Medio" data-cat="Transaccional" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-028 ningun sp del lote usa set xact_abort on 13 sps con transaccion explicita ausencia de set xact_abort on antes de begin transaction">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
@@ -572,6 +601,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Medio" data-cat="Mantenibilidad" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-029 familias de sps clonados: la misma logica repetida con variaciones minimas po.sp_(com|ind)_castigos_* y cobranza_*: 24 sps de ~950 lineas con estructura identica mismo esqueleto (delete por poliza, insert extractor, updates de concepto/cuentas, doble cursor de poliza) cambiando el id_poliza y algunos rubros">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
@@ -589,6 +619,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Medio" data-cat="Correccion funcional" data-env="BD_prod"
+             data-lote=""
              data-txt="l1-030 version productiva de po.sys_sp_balance_detail_sql con token @tabla sin resolver po.sys_sp_balance_detail_sql bd_prod: from po.saf_mov_@tabla a ... replace(@query_traspaso,&#x27;@tabla&#x27;,&#x27;traspaso&#x27;)   /   bd: from po.saf_mov_traspaso a (directo) y filtro extra a.concepto&lt;&gt;&#x27;totales&#x27;">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
@@ -606,6 +637,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Medio" data-cat="Correccion funcional" data-env="BD_prod"
+             data-lote=""
              data-txt="l1-031 produccion atrasada en tres objetos del cierre y de devoluciones cierre.sp_saf_saldos, po.sp_ind_devoluciones, po.sys_sp_control_historico_traspasos, po.control_historico_traspasos prod no maneja el tipo de saldo &#x27;k:castigo&#x27; ni el update de saldos asociado; prod solo considera descripcion_transaccion=&#x27;devolucion cheque&#x27; (dev agrega &#x27;reversion&#x27; con monto negativo); prod no inserta cod_origen ni actualiza id_producto y la tabla no tiene esas columnas ni el indice unico (fecha_sistema, num_credito)">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
@@ -623,6 +655,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Medio" data-cat="Codificacion" data-env="BD"
+             data-lote=""
              data-txt="l1-032 comentarios con doble codificacion (mojibake) y mezcla de encodings en bd/ 30 archivos po.* en utf-8 bom frente a 473 en utf-16le; comentarios corrompidos -- declaraciatildeacirceuroldquon de variables (original: declaracion); -- validaciatilde...n caso de iva">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
@@ -640,6 +673,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Bajo" data-cat="Mantenibilidad" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-033 codigo muerto, bloques comentados y logica pendiente marcada en el codigo po.sys_sp_avaluo_and_update (bloque iva completo comentado), po.sys_sp_mov_abono (subconsulta de secuencia comentada), po.sys_sp_account_balance_orden (exec comentado) concat(&#x27;reverso secuencia r &#x27;, &#x27;&#x27; /* (select top 1 id_secuencia ...) */ )">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev b">Bajo</span>
@@ -657,6 +691,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Bajo" data-cat="Estandares" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-034 varchar sin longitud, exec sin esquema y falta de encabezado estandar 12 sps con varchar sin longitud (161 casos), 9 con exec sin esquema (11 casos) &#x27;linea:&#x27;+cast(error_line() as varchar)+&#x27;. &#x27;+error_message()  /  exec cursorclosedeallocate &#x27;db_cursor_...&#x27;">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev b">Bajo</span>
@@ -674,6 +709,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
       </div>
     </article>
     <article class="f" data-sev="Bajo" data-cat="Observabilidad" data-env="BD BD_prod"
+             data-lote=""
              data-txt="l1-035 sin trazabilidad de ejecucion: no hay bitacora de inicio/fin ni id de corrida los 20 sps del lote solo existe po.saf_poliza_errores, poblada en el catch; no hay registro de ejecuciones exitosas, duracion, filas afectadas ni usuario">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev b">Bajo</span>
@@ -690,6 +726,8 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
         <div class="kv rem"><b>Remediacion</b><span>Tabla de bitacora (ID_EJECUCION, SP, parametros, usuario, inicio, fin, filas, estado) escrita al inicio/fin de cada SP y correlacionada con el ID_EJECUCION en la tabla de errores.</span></div>
       </div>
     </article></div>
+
+
 
   <h2>Catalogo de valores hardcodeados y clasificacion de parametrizacion</h2>
   <div class="bar">
@@ -802,22 +840,34 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
   <ul class="va"><li>Prueba de regresion contable: congelar un periodo (entradas y salidas) y ejecutarlo en cada cambio; hoy no existe forma objetiva de saber si un ajuste altero cifras historicas.</li><li>Tablero de descuadres: comparar CIERRE.CMR_REP/IND_REP contra la suma de PO.SAF_MOV_* por concepto y fecha, con alerta automatica; detecta en horas lo que hoy se detecta en la conciliacion mensual.</li><li>Detector de reprocesos: con el ID_EJECUCION de la bitacora, alertar cuando un mismo periodo se procesa dos veces (riesgo real por la falta de idempotencia).</li><li>Linter SQL en CI (tsqllint o reglas propias) que bloquee NOLOCK en procesos contables, literales de tasa/cuenta, EXEC() con concatenacion y varchar sin longitud.</li><li>Catalogo de dependencias navegable (que SP usa que tabla, que reporte usa que SP) generado desde el mismo parser de esta auditoria: base para estimar el impacto de cada cambio.</li><li>Separacion de lectura: replicar las bases origen a un area de staging para eliminar la necesidad de NOLOCK contra la base transaccional.</li><li>Definir el RPO/RTO del proceso de cierre y documentar el procedimiento de reproceso, hoy implicito en el conocimiento del equipo.</li></ul>
 </div>
 <footer>Generado por la auditoria automatizada + revision manual del codigo. Los hallazgos se sustentan en el codigo fuente;
-los que dependen de datos o de plan de ejecucion se marcan como tales en el impacto. Siguiente paso: validar el lote y continuar con el lote 2.</footer>
+los que dependen de datos o de plan de ejecucion se marcan como tales en el impacto. Siguiente paso: validar los hallazgos y continuar con el siguiente lote.</footer>
 <script>
-const $=s=>document.querySelector(s), fs=$('#fs'),fc=$('#fc'),fe=$('#fe'),fq=$('#fq');
+const $=s=>document.querySelector(s), fs=$('#fs'),fc=$('#fc'),fe=$('#fe'),fq=$('#fq'),fl=$('#fl');
 function apply(){
   let n=0, all=document.querySelectorAll('.f');
   all.forEach(f=>{
     const ok=(!fs.value||f.dataset.sev===fs.value)
       &&(!fc.value||f.dataset.cat===fc.value)
       &&(!fe.value||f.dataset.env.split(' ').includes(fe.value))
+      &&(!fl||!fl.value||f.dataset.lote===fl.value)
       &&(!fq.value||f.dataset.txt.includes(fq.value.toLowerCase()));
     f.classList.toggle('hide',!ok); if(ok)n++;
   });
   $('#cnt').textContent=n+' de '+all.length+' hallazgos';
 }
-[fs,fc,fe].forEach(x=>x.onchange=apply); fq.oninput=apply;
-function reset(){fs.value=fc.value=fe.value='';fq.value='';apply();}
+[fs,fc,fe,fl].forEach(x=>{if(x)x.onchange=apply;}); fq.oninput=apply;
+function reset(){fs.value=fc.value=fe.value='';if(fl)fl.value='';fq.value='';apply();}
+const cl=$('#cl'),cq=$('#cq');
+function applyCob(){
+  if(!cl)return; let n=0, rows=document.querySelectorAll('#cbody tr');
+  rows.forEach(r=>{
+    const ok=(!cl.value||r.dataset.lote===cl.value)&&(!cq.value||r.dataset.txt.includes(cq.value.toLowerCase()));
+    r.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  $('#ccnt').textContent=n+' de '+rows.length+' objetos';
+}
+if(cl){cl.onchange=applyCob; cq.oninput=applyCob;}
+function resetCob(){cl.value='';cq.value='';applyCob();}
 const hc=$('#hc'),hq=$('#hq');
 function applyHc(){
   let n=0, rows=document.querySelectorAll('#hbody tr');
@@ -829,6 +879,6 @@ function applyHc(){
 }
 hc.onchange=applyHc; hq.oninput=applyHc;
 function resetHc(){hc.value='';hq.value='';applyHc();}
-apply();applyHc();
+apply();applyHc();applyCob();
 </script>
 </body></html>
