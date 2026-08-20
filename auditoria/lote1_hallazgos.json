@@ -1,0 +1,392 @@
+{
+ "lote": 1,
+ "fecha": "2026-08-19",
+ "alcance": {
+  "criterio": "20 objetos programables de mayor riesgo (score de riesgo automatico: transaccionalidad, SQL dinamico, DDL/TRUNCATE, NOLOCK, cursores, movimientos de dinero)",
+  "objetos": [
+   "PO.SP_IND_COBRANZA", "PO.SP_COM_COBRANZA", "PO.SP_IND_REVERSO_COBRANZA",
+   "PO.SP_COM_COBRANZA_CASTIGOS", "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS", "PO.SP_COM_DESEMBOLSO",
+   "PO.SP_SND_REVERSO_COMISION", "PO.SP_SND_DEV_COMISIONES", "PO.SP_SND_CAPITAL",
+   "PO.SYS_SP_AVALUO_AND_UPDATE", "PO.SYS_SP_MOV_ABONO", "PO.SYS_SP_ACCOUNT_BALANCE_ORDEN",
+   "PO.SYS_SP_BALANCE_DETAIL_SQL", "PO.SYS_SP_ACTUALIZA_ESTADO_POLIZA",
+   "CIERRE.SP_CMR_GEN_MES", "CIERRE.SP_CMR_GEN_DIA", "CIERRE.SP_IND_GEN_MES_MOD",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS", "edc.sp_inserEdcCredito", "SAF.SP_TASAS_ALERTAS_ENVIO"
+  ],
+  "lineas_revisadas": 9313
+ },
+ "hallazgos": [
+  {
+   "id": "L1-001", "sev": "Critico", "cat": "Correccion funcional", "env": "BD",
+   "titulo": "Cierre mensual comercial lee 'otras comisiones' de una fecha fija ('20260123')",
+   "obj": "CIERRE.SP_CMR_GEN_MES", "loc": "linea 461",
+   "evidencia": "FROM [CIERRE].[SAF_SALDOS] WHERE FECHA_SISTEMA='20260123' AND TIPO='N' AND RUBRO IN ('COMISION_PREPAGO','VISITA_EXTRA',...)",
+   "impacto": "El SP recibe @FechaIni/@FechaFin, pero este bloque ignora el periodo y siempre lee los saldos del 23-ene-2026. Cualquier cierre de otro mes reporta comisiones de esa fecha: las cifras de CMR_REP quedan mal para todos los periodos distintos. Parece un parche temporal que quedo en el codigo.",
+   "remediacion": "Sustituir por el parametro de periodo (FECHA_SISTEMA = @FechaCorte, derivado de @FechaIni/@FechaFin) y agregar una prueba de regresion que ejecute dos meses distintos y compare que el bloque cambia de universo.",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-002", "sev": "Critico", "cat": "Correccion funcional", "env": "BD",
+   "titulo": "Precedencia OR/AND anula el filtro de periodo en el UPDATE de etapa de riesgo",
+   "obj": "CIERRE.SP_IND_GEN_MES_MOD", "loc": "lineas 210-222",
+   "evidencia": "INNER JOIN ... ON C.CREDITO = A.NUM_CREDITO AND (cond_A) OR (cond_B) AND C.PERIODO = DATEADD(DAY,-1,@FECHA)",
+   "impacto": "AND liga mas fuerte que OR, por lo que la expresion equivale a (C.CREDITO=A.NUM_CREDITO AND cond_A) OR (cond_B AND C.PERIODO=...). La primera rama pierde el filtro de periodo y la condicion de credito de la segunda rama queda suelta: se actualiza ETAPA_RIESGO de filas de otros periodos.",
+   "remediacion": "Parentizar explicitamente: ON C.CREDITO = A.NUM_CREDITO AND ((cond_A) OR (cond_B)) y mover C.PERIODO al WHERE. Validar contra un periodo cerrado antes/despues.",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-003", "sev": "Critico", "cat": "Transaccional", "env": "BD",
+   "titulo": "Transaccion sin TRY/CATCH en el cierre mensual individual: queda abierta ante error",
+   "obj": "CIERRE.SP_IND_GEN_MES_MOD", "loc": "linea 13 (BEGIN TRANSACTION) y 224 (COMMIT)",
+   "evidencia": "BEGIN TRANSACTION ... 4 UPDATE masivos sobre CIERRE.IND_REP ... COMMIT TRANSACTION  (sin BEGIN TRY/CATCH, sin SET XACT_ABORT ON)",
+   "impacto": "Si cualquiera de los UPDATE falla, la sesion se queda con transaccion abierta bloqueando CIERRE.IND_REP; el resto del cierre se detiene por bloqueo y puede requerir KILL manual. No hay registro del error.",
+   "remediacion": "Envolver en SET XACT_ABORT ON + BEGIN TRY/CATCH con IF XACT_STATE() <> 0 ROLLBACK, registro en tabla de errores y THROW.",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-004", "sev": "Critico", "cat": "Transaccional", "env": "BD+BD_prod",
+   "titulo": "Los CATCH hacen ROLLBACK y se tragan el error: el proceso reporta exito tras revertir",
+   "obj": "11 de 20 SPs del lote (PO.SP_IND_COBRANZA, PO.SP_COM_COBRANZA, PO.SP_COM_DESEMBOLSO, PO.SP_SND_*, CIERRE.SP_CMR_GEN_DIA, CIERRE.SP_CMR_GEN_MES, ...)",
+   "loc": "bloque CATCH final de cada SP",
+   "evidencia": "BEGIN CATCH ROLLBACK INSERT INTO PO.SAF_POLIZA_ERRORES (...) VALUES (getdate(), @FECHA_INICIO, @ID_POLIZA, 'Linea:'+cast(ERROR_LINE() as varchar)+'. '+ERROR_MESSAGE()) END CATCH",
+   "impacto": "Sin RAISERROR/THROW el SP termina con exito: el orquestador (job/portal) continua con la siguiente poliza como si se hubiera generado. La unica huella queda en una tabla que nadie consulta en linea. Es la causa mas probable de polizas faltantes silenciosas.",
+   "remediacion": "Patron unico: SET XACT_ABORT ON; IF XACT_STATE()<>0 ROLLBACK; INSERT en la tabla de errores; THROW. Complementar con un check post-proceso que compare polizas esperadas vs generadas.",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-005", "sev": "Critico", "cat": "Transaccional", "env": "BD+BD_prod",
+   "titulo": "ROLLBACK incondicional en CATCH puede enmascarar el error original (error 3903)",
+   "obj": "12 SPs del lote", "loc": "primera sentencia del CATCH",
+   "evidencia": "BEGIN CATCH  ROLLBACK  ...",
+   "impacto": "Si el error ocurre antes del BEGIN TRANSACTION (o la transaccion ya fue revertida por XACT_ABORT), el ROLLBACK lanza el error 3903 'ROLLBACK TRANSACTION request has no corresponding BEGIN' y se pierde el mensaje real. El diagnostico se vuelve imposible.",
+   "remediacion": "IF XACT_STATE() <> 0 ROLLBACK TRANSACTION.",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-006", "sev": "Critico", "cat": "Integridad de datos", "env": "BD",
+   "titulo": "El cierre mensual no es idempotente: reejecutar suma de nuevo los montos",
+   "obj": "CIERRE.SP_IND_GEN_MES_MOD", "loc": "lineas 14-60",
+   "evidencia": "UPDATE C SET C.PRINCIPAL_FINAL = C.PRINCIPAL_FINAL + B.MONTO ... FROM KARDIA.PO.PR_BALLON_DET WHERE COD_CONCEPTO='PRINCIPAL' AND ID_SECUENCIA IS NULL (sin filtro de fecha)",
+   "impacto": "El acumulado se calcula sobre todo el historico de PR_BALLON_DET y se suma al valor previo. Una segunda ejecucion del mismo periodo (reproceso, reintento del job) duplica PRINCIPAL_FINAL y PRINCIPAL_COVID19. En un cierre contable esto es un error de reporte regulatorio.",
+   "remediacion": "Hacer el calculo determinista (SET = valor_base + agregado del periodo, o borrar-e-insertar el periodo) y filtrar PR_BALLON_DET por el periodo. Agregar control de reproceso (marca de periodo procesado).",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-007", "sev": "Critico", "cat": "Seguridad", "env": "BD+BD_prod",
+   "titulo": "Codigo de PRODUCCION consulta una base de datos de QA",
+   "obj": "PO.SYS_SP_MOV_ABONO, PO.SYS_SP_MOV_CARGO, PO.SYS_SP_MOV_INTERES, PO.SYS_SP_AVALUO_AND_UPDATE (identicos en BD y BD_prod)",
+   "loc": "43 referencias en BD_prod (4 objetos)",
+   "evidencia": "FROM Quiero_Confianza_CreditoPuente_QA.PR.PR_ENCABEZADO_PAGO A WITH (NOLOCK) ... JOIN Quiero_Confianza_CreditoPuente_QA.CG.CG_CATALOGO_X_EMPRESA",
+   "impacto": "Los extractores de movimientos de abono/cargo/interes de produccion leen pagos, clientes y catalogo contable desde la base de QA. El resto de los SPs de BD_prod usan Quiero_Confianza (produccion). Riesgo doble: cifras contables construidas con datos no productivos y exposicion de datos de clientes entre ambientes.",
+   "remediacion": "Reemplazar por sinonimos (CREATE SYNONYM) resueltos por ambiente y desplegar la version productiva apuntando a Quiero_Confianza. Verificar de inmediato si las polizas generadas en produccion usaron datos de QA.",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-008", "sev": "Alto", "cat": "Seguridad", "env": "BD+BD_prod",
+   "titulo": "SQL dinamico con concatenacion de parametros (inyeccion y planes no reutilizables)",
+   "obj": "PO.SYS_SP_AVALUO_AND_UPDATE (11 EXEC), PO.SYS_SP_MOV_ABONO, PO.SYS_SP_ACCOUNT_BALANCE_ORDEN, PO.SYS_SP_BALANCE_DETAIL_SQL, PO.SYS_SP_ACTUALIZA_ESTADO_POLIZA",
+   "loc": "AVALUO lineas 34-228; MOV_ABONO linea 325-335",
+   "evidencia": "SET @U_TIPO_VIVIENDA = CONCAT('UPDATE H SET ... FROM PO.SAF_MOV_', @TABLA, ' H WHERE ... BETWEEN ''',@FECHA_INICIO,''' AND ''',@FECHA_FIN,'''')  EXEC(@U_TIPO_VIVIENDA)",
+   "impacto": "@TABLA (varchar(35)) se concatena sin QUOTENAME: quien pueda ejecutar el SP puede inyectar DDL/DML arbitrario. Con EXEC() en lugar de sp_executesql no hay parametrizacion, se llena la cache de planes y se pierde la reutilizacion.",
+   "remediacion": "Validar @TABLA contra una lista blanca (catalogo de tablas permitidas), aplicar QUOTENAME y ejecutar con sp_executesql pasando fechas como parametros tipados. En los casos con pocas variantes, sustituir el dinamico por ramas estaticas.",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-009", "sev": "Alto", "cat": "Correccion funcional", "env": "BD+BD_prod",
+   "titulo": "Asignacion nula @ID_SECUENCIA = @ID_SECUENCIA en el bucle de movimientos",
+   "obj": "PO.SYS_SP_MOV_ABONO", "loc": "linea 232",
+   "evidencia": "@ID_SECUENCIA = @ID_SECUENCIA, @ID_CUENTA = ID_CUENTA, ...",
+   "impacto": "Deberia ser @ID_SECUENCIA = ID_SECUENCIA. La variable nunca toma el valor de la fila, queda NULL (o el valor de la iteracion previa) y se propaga a los INSERT de cancelacion de firma: los movimientos generados quedan sin ID_SECUENCIA, rompiendo la trazabilidad al pago origen.",
+   "remediacion": "Corregir la asignacion y revisar historicamente los registros de PO.SAF_MOV_ABONO con ID_SECUENCIA nulo o repetido generados por este bloque.",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-010", "sev": "Alto", "cat": "Correccion funcional", "env": "BD+BD_prod",
+   "titulo": "Rango de fechas invertido en el INSERT dinamico de separacion balance/orden",
+   "obj": "PO.SYS_SP_MOV_ABONO", "loc": "linea 334",
+   "evidencia": "... AND FECHA_MOVIMIENTO BETWEEN ''',@FECHA_FIN,''' AND ''', @FECHA_FIN,''''",
+   "impacto": "Usa @FECHA_FIN en ambos extremos del BETWEEN. Cuando el proceso corre con un rango de varios dias, el movimiento en orden solo se crea para el ultimo dia y se pierde la separacion balance/orden de los dias intermedios.",
+   "remediacion": "Usar @FECHA_INICIO y @FECHA_FIN (y parametrizar via sp_executesql en lugar de concatenar).",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-011", "sev": "Alto", "cat": "Proceso", "env": "BD+BD_prod",
+   "titulo": "Las alertas de tasas se marcan como enviadas antes de construir el envio",
+   "obj": "SAF.SP_TASAS_ALERTAS_ENVIO", "loc": "lineas 37-40",
+   "evidencia": "UPDATE SAF.TASAS_ALERTAS SET ESTADO = 'E' WHERE ESTADO='P' AND ACTIVO=1 AND FECHA <= @FECHA_HOY   -- antes del cursor que arma #ALERTAS",
+   "impacto": "El marcado 'E' (enviado) ocurre fuera de transaccion y antes de generar el resultado. Si el cursor o el consumidor del resultado falla, las alertas quedan como enviadas y nunca se notifican: perdida silenciosa de avisos de cambio de tasa al cliente.",
+   "remediacion": "Marcar 'E' solo despues de confirmar el envio (o dentro de la misma transaccion que entrega el lote, con estado intermedio 'EN_PROCESO'). Ademas el UPDATE usa FECHA <= hoy mientras el cursor toma FECHA en los 5 dias siguientes: son dos universos distintos, conviene unificar el criterio.",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-012", "sev": "Alto", "cat": "Concurrencia", "env": "BD+BD_prod",
+   "titulo": "Cursores globales (no LOCAL) con workaround CursorCloseDeallocate",
+   "obj": "9 SPs del lote (PO.SP_IND_COBRANZA, PO.SP_COM_COBRANZA*, PO.SP_SND_*, SAF.SP_TASAS_ALERTAS_ENVIO)",
+   "loc": "exec CursorCloseDeallocate 'db_cursor_...' antes de cada DECLARE CURSOR",
+   "evidencia": "exec CursorCloseDeallocate 'db_cursor_COM_SND_CAP'  DECLARE db_cursor_COM_SND_CAP CURSOR FOR ...",
+   "impacto": "Los cursores se declaran globales a la conexion, por lo que el codigo necesita un SP auxiliar que cierre restos de ejecuciones anteriores. Dos ejecuciones concurrentes en la misma sesion (o un error previo) chocan por el nombre del cursor. Es un sintoma de fuga de cursores por errores no manejados.",
+   "remediacion": "Declarar DECLARE ... CURSOR LOCAL FAST_FORWARD y eliminar la dependencia de CursorCloseDeallocate; idealmente reescribir los bucles por operaciones de conjunto.",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-013", "sev": "Alto", "cat": "Rendimiento", "env": "BD+BD_prod",
+   "titulo": "Procesamiento fila a fila (RBAR) dentro de la transaccion contable",
+   "obj": "PO.SYS_SP_MOV_ABONO (WHILE sobre @MOVS), PO.SP_IND_COBRANZA, PO.SP_COM_COBRANZA_CASTIGOS, PO.SP_SND_*",
+   "loc": "MOV_ABONO lineas 205-361",
+   "evidencia": "INSERT INTO @MOVS SELECT ROW_NUMBER() ... FROM PO.SAF_MOV_ABONO WHERE FECHA_MOVIMIENTO BETWEEN @FECHA_INICIO AND @FECHA_FIN;  WHILE @INDICE < @MAX_INDICE ... SELECT @... FROM @MOVS WHERE ID = @INDICE+1",
+   "impacto": "Se recorre movimiento por movimiento (una consulta por fila, sobre una tabla variable sin indices) y todo dentro de una unica transaccion abierta. El tiempo crece linealmente con el volumen del dia y los bloqueos sobre PO.SAF_MOV_ABONO duran todo el proceso; es el cuello de botella del cierre diario.",
+   "remediacion": "Reescribir la separacion balance/orden con funciones de ventana (SUM() OVER, LAG) y UPDATE/INSERT por conjunto; si se conserva el bucle, usar tabla temporal con indice y acotar la transaccion a bloques.",
+   "esfuerzo": "L"
+  },
+  {
+   "id": "L1-014", "sev": "Alto", "cat": "Integridad de datos", "env": "BD+BD_prod",
+   "titulo": "NOLOCK generalizado en las lecturas que alimentan la poliza contable",
+   "obj": "14 de 20 SPs del lote (347 ocurrencias); CIERRE.SP_CMR_GEN_MES 72, edc.sp_inserEdcCredito 63, CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS 37",
+   "loc": "clausulas WITH (NOLOCK) en joins a Quiero_Confianza*.PR.*",
+   "evidencia": "FROM Quiero_Confianza_shadow.PR.PR_CREDITOS C WITH (NOLOCK) INNER JOIN PO.PR_CAPITAL_DET A WITH (NOLOCK) ...",
+   "impacto": "READ UNCOMMITTED admite lecturas sucias, filas duplicadas y filas omitidas por movimiento de paginas. Aplicado al calculo de saldos, devengos y polizas contables significa que dos ejecuciones pueden dar cifras distintas y que un cierre puede incluir transacciones que luego se revirtieron. No es aceptable en un proceso contable auditable.",
+   "remediacion": "Eliminar NOLOCK de todo lo que alimente cifras contables y aislar la lectura con SNAPSHOT / READ COMMITTED SNAPSHOT sobre la base origen. Donde el NOLOCK exista solo por bloqueos de la base transaccional, replicar a un area de staging y leer de ahi.",
+   "esfuerzo": "L"
+  },
+  {
+   "id": "L1-015", "sev": "Alto", "cat": "Parametrizacion", "env": "BD+BD_prod",
+   "titulo": "Regla de negocio COVID con corte de credito hardcodeado y distinto entre ambientes",
+   "obj": "dbo.FN_ES_COVID", "loc": "BD linea 12 / BD_prod linea 12",
+   "evidencia": "BD:  ... AND @NUM_CREDITO < 6051 THEN ...        BD_prod: ... AND @NUM_CREDITO < 6086 THEN ...",
+   "impacto": "La frontera del universo COVID es una constante embebida y ya divergio entre desarrollo y produccion (6051 vs 6086). Las pruebas en QA no reproducen el universo real y cualquier ajuste requiere redeploy de la funcion. Esta funcion se usa dentro del cierre mensual (CIERRE.SP_CMR_GEN_MES linea 111).",
+   "remediacion": "Mover el umbral a un catalogo parametrico (PARAM.VALOR vigente por fecha) y dejar la funcion como lectura del catalogo; alinear inmediatamente el valor entre ambientes.",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-016", "sev": "Alto", "cat": "Parametrizacion", "env": "BD+BD_prod",
+   "titulo": "Nombre de base externa embebido 6.480 veces (principal diferenciador entre BD y BD_prod)",
+   "obj": "todo el lote; global: 3.613 referencias en BD, 2.867 en BD_prod",
+   "loc": "3-part names Quiero_Confianza[_shadow|_CreditoPuente_QA].PR/CG/BA/CL.*",
+   "evidencia": "BD usa Quiero_Confianza_shadow (3.201) y Quiero_Confianza_Shadow con otra capitalizacion (250), mas 119 a Quiero_Confianza; BD_prod usa Quiero_Confianza (2.824); 4 SPs usan Quiero_Confianza_CreditoPuente_QA en ambos (43 y 43). CIERRE.SP_CMR_GEN_MES mezcla ambas en el mismo SP (90 shadow + 1 productiva)",
+   "impacto": "119 de los 126 objetos que difieren entre ambientes lo hacen UNICAMENTE por este nombre o por formato (solo 7 tienen drift funcional real): el 'drift' entre ambientes es artificial y obliga a mantener dos copias del codigo, con el riesgo de promover la version equivocada. La mezcla de capitalizacion falla si la instancia usa collation sensible a mayusculas.",
+   "remediacion": "Sustituir los 3-part names por SYNONYMs por ambiente (o vistas de fachada en un esquema EXT). Con eso el codigo queda identico en BD y BD_prod y el despliegue se reduce a crear los sinonimos.",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-017", "sev": "Alto", "cat": "Parametrizacion", "env": "BD+BD_prod",
+   "titulo": "Linked server y servidor de polizas hardcodeados (y apuntando a QA en BD)",
+   "obj": "PO.SP_SAF_POLIZA_ENVIO_1P_CON (drift real BD vs BD_prod), edc.sp_inserEdcCredito",
+   "loc": "BD: EXEC [SRV-IONDWHQA\\GPQA].[ION02].[dbo].[AXTSP_POLIZAS] / BD_prod: EXEC [SRV-IONDYNA].[ION02].[dbo].[AXTSP_POLIZAS]",
+   "evidencia": "4-part name con nombre de instancia embebido; edc usa [KARDIA].[edc].[EDC]",
+   "impacto": "El envio de polizas al ERP depende del nombre fisico del servidor escrito en el codigo. Promover el objeto de un ambiente a otro rompe el envio o, peor, envia polizas productivas al servidor de QA.",
+   "remediacion": "Encapsular la llamada en un SP fachada que resuelva el linked server desde configuracion (o usar un nombre de linked server logico identico en todos los ambientes, p.ej. LS_ERP, apuntando a distinto destino).",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-018", "sev": "Alto", "cat": "Parametrizacion", "env": "BD+BD_prod",
+   "titulo": "Factor del 10% ('porcentaje Afirme') aplicado a montos contables como literal",
+   "obj": "PO.SP_IND_COBRANZA", "loc": "lineas 755-759",
+   "evidencia": "UPDATE PO.SAF_MOV_ABONO SET MONTO = MONTO * 0.10 WHERE FECHA_MOVIMIENTO=@FECHA_INICIO AND ID_POLIZA=@ID_POLIZA AND ID_TIPO_CREDITO=4 AND CONCEPTO NOT LIKE 'TRS %'",
+   "impacto": "Un acuerdo comercial (participacion Afirme) esta expresado como constante que reescribe montos ya registrados. Si el porcentaje cambia hay que modificar el SP; si el UPDATE se ejecuta dos veces, el monto queda al 1%. No hay rastro del monto original.",
+   "remediacion": "Catalogo de participaciones por convenio/tipo de credito con vigencia, aplicado en el calculo (no como reescritura posterior) y conservando el monto bruto en columna separada.",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-019", "sev": "Alto", "cat": "Parametrizacion", "env": "BD+BD_prod",
+   "titulo": "IVA 16% embebido en calculos de devengo y de IVA de intereses/moratorios",
+   "obj": "PO.SYS_SP_AVALUO_AND_UPDATE (MONTO*0.16 x2), CIERRE.SP_CMR_GEN_MES (0.16 x6), PO.SP_IND_COBRANZA (*0.16 x7)",
+   "loc": "AVALUO 144 y 159; CMR_GEN_MES 115",
+   "evidencia": "SUM(CASE WHEN X.IND_IVA = 'N' THEN 0 ELSE 0.16 * A.MON_DIARIO END) AS IVA",
+   "impacto": "Una tasa fiscal (sujeta a cambio normativo y con tasa distinta en region frontera) esta escrita en 15+ lugares. Un cambio de tasa implica localizar y modificar cada SP, con riesgo alto de inconsistencia entre reportes.",
+   "remediacion": "Catalogo de tasas de impuesto con vigencia (fecha_inicio, fecha_fin, zona) y funcion/lectura unica; prohibir el literal por regla de revision.",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-020", "sev": "Alto", "cat": "Parametrizacion", "env": "BD+BD_prod",
+   "titulo": "Umbral de avaluo para clasificar vivienda, con vigencia expresada en el codigo",
+   "obj": "PO.SYS_SP_AVALUO_AND_UPDATE", "loc": "linea 32",
+   "evidencia": "DECLARE @MONTO_AVALUO NUMERIC(11,2) = IIF(@FECHA_INICIO >= '2024-01-01', 2648615.20, 2207161.60)",
+   "impacto": "El limite entre INTERES SOCIAL y MEDIA RESIDENCIAL (que define producto, cuenta contable y reporte regulatorio) es una constante con su propia vigencia hardcodeada. Cada actualizacion anual del valor obliga a modificar y desplegar el SP.",
+   "remediacion": "Tabla de umbrales con vigencia (VALOR, FECHA_INICIO, FECHA_FIN) consultada por fecha de movimiento. Es el caso tipico de parametro de portal.",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-021", "sev": "Alto", "cat": "Parametrizacion", "env": "BD+BD_prod",
+   "titulo": "Identificadores de poliza (ID_POLIZA) hardcodeados uno por SP",
+   "obj": "13 SPs del lote", "loc": "declaracion inicial de cada SP",
+   "evidencia": "@ID_POLIZA int = 7 (IND_COBRANZA), 35 (cobranza empleado), 40 (COM_COBRANZA), 24, 51, 99, 23, 74, 33, 73, 84 (SND_CAPITAL), 36 ...",
+   "impacto": "La relacion proceso-poliza vive en el codigo, no en un catalogo. Agregar una poliza o reasignar un numero exige tocar SPs; el numero se repite en filtros DELETE/UPDATE, por lo que un valor equivocado borra movimientos de otra poliza.",
+   "remediacion": "Catalogo PO.SAF_CAT_POLIZA (clave logica -> ID_POLIZA) y lectura por clave logica al inicio del SP.",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-022", "sev": "Alto", "cat": "Parametrizacion", "env": "BD+BD_prod",
+   "titulo": "Cuentas contables y mascaras escritas como literales en el codigo",
+   "obj": "PO.SP_IND_COBRANZA, PO.SYS_SP_AVALUO_AND_UPDATE, PO.SYS_SP_MOV_ABONO",
+   "loc": "IND_COBRANZA 705; AVALUO 218-226; MOV_ABONO 117-122",
+   "evidencia": "SET H.CUENTA_CARGO = '1020-0105-0205-0100' WHERE H.ID_CUENTA IN (2041,2039) ... / CASE WHEN ID_PRODUCTO IN(1,2) THEN '2020-0508-0203-0000' WHEN ID_PRODUCTO IN(50,51) THEN '2020-0508-0201-0000' ... WHERE H.CUENTA_CARGO='2401-9000-0003-0001'",
+   "impacto": "Convive con el catalogo PO.SAF_CAT_CONTABLE que si esta parametrizado: hay reglas de cuentas que el area contable no puede ver ni cambiar. Un cambio de catalogo contable deja estos casos desalineados sin aviso.",
+   "remediacion": "Migrar los casos especiales al catalogo contable con su criterio (producto, cuenta origen, tipo de credito) y dejar el SP como aplicacion del catalogo.",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-023", "sev": "Medio", "cat": "Parametrizacion", "env": "BD+BD_prod",
+   "titulo": "Codigos de producto, tipo de credito y tipo de transaccion como numeros magicos",
+   "obj": "todo el lote", "loc": "70 usos de ID_PRODUCTO, 50 de ID_TIPO_CREDITO, 124 de TIP_TRANSACCION solo en el lote",
+   "evidencia": "ID_PRODUCTO IN (50,51) 'CONSUMO'/'EMPLEADO'; ID_TIPO_CREDITO IN (1,3,4,9,10,11,16,17,20,23,26); TIP_TRANSACCION = 3/4/113; ID_CUENTA 2073 'DACION', 2074 'ADJUDICACION', 2068 'SINIESTRO', 2076/2080/2041/2039",
+   "impacto": "El significado del codigo esta en el comentario o en la cabeza del desarrollador. Alta probabilidad de error al agregar un producto o tipo de credito: hay que encontrar todas las listas IN(...) dispersas.",
+   "remediacion": "Catalogos con banderas de comportamiento (es_consumo, es_empleado, aplica_iva, es_castigo) y sustituir las listas IN(...) por joins al catalogo.",
+   "esfuerzo": "L"
+  },
+  {
+   "id": "L1-024", "sev": "Medio", "cat": "Parametrizacion", "env": "BD+BD_prod",
+   "titulo": "Conceptos y leyendas de poliza construidos con literales en el codigo",
+   "obj": "PO.SYS_SP_MOV_ABONO, PO.SP_IND_COBRANZA, PO.SP_COM_COBRANZA_CASTIGOS y resto de SPs de poliza",
+   "loc": "MOV_ABONO 99-126 y 147-160; 63 literales distintos en el lote",
+   "evidencia": "CONCAT(CASE WHEN ID_PRODUCTO=50 AND TIP_TRANSACCION=3 THEN 'CONSUMO DESEMBOLSO ' ... END, IIF(IND_COVID='S','COVID ',''), ..., 'RESTRINGIDO ', IND_ETAPA)",
+   "impacto": "El concepto resultante se usa como llave para buscar en PO.SAF_CATALOGO_CONCEPTOS y derivar cuentas. Cualquier diferencia de espacio o texto rompe el match y deja la cuenta nula: el catalogo depende de que el codigo escriba exactamente la misma cadena. Ademas CONCEPTO_FINAL se trunca a 30 caracteres con LEFT(), perdiendo informacion.",
+   "remediacion": "Construir el concepto desde el catalogo (plantillas con tokens) en lugar de armar cadenas en cada SP, y validar por FK/lookup obligatorio con error explicito cuando no exista el concepto.",
+   "esfuerzo": "L"
+  },
+  {
+   "id": "L1-025", "sev": "Medio", "cat": "Observabilidad", "env": "BD+BD_prod",
+   "titulo": "Fecha centinela '00010101' en el registro de errores",
+   "obj": "PO.SP_SND_CAPITAL, PO.SP_SND_DEV_COMISIONES, PO.SP_SND_REVERSO_COMISION",
+   "loc": "bloque CATCH",
+   "evidencia": "INSERT INTO PO.SAF_POLIZA_ERRORES (FECHA_GENERACION, FECHA_SISTEMA, ID_POLIZA, DESCRIPCION) VALUES (getdate(), '00010101', @ID_POLIZA, ...)",
+   "impacto": "El error se registra sin la fecha de negocio afectada (estos SPs reciben un tipo tabla de fechas). Al investigar una poliza faltante no se puede saber que fecha fallo.",
+   "remediacion": "Registrar la fecha en proceso (o el rango completo) y agregar el nombre del SP y el ID de ejecucion.",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-026", "sev": "Medio", "cat": "Rendimiento", "env": "BD+BD_prod",
+   "titulo": "121 SELECT ... INTO #temp dentro de transacciones y DDL en caliente",
+   "obj": "14 SPs del lote; CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS crea y elimina 8 tablas temporales",
+   "loc": "CREATE TABLE #POLIZAF / SELECT INTO #... / TRUNCATE TABLE #POLIZA",
+   "evidencia": "CREATE TABLE #POLIZAF(...) dentro del BEGIN TRANSACTION; DROP TABLE #IVA_INTERESES; ... (lineas 481-487)",
+   "impacto": "El DDL sobre tempdb dentro de la transaccion toma bloqueos en las tablas de sistema de tempdb y alarga la transaccion; en concurrencia produce contencion de asignacion (PFS/GAM). Ademas las temporales se crean sin indices y luego se usan en joins masivos.",
+   "remediacion": "Declarar las temporales al inicio con CREATE TABLE explicito e indices, mover el DDL fuera de la transaccion y evaluar tablas variables/temporales indexadas segun volumen.",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-027", "sev": "Medio", "cat": "Rendimiento", "env": "BD+BD_prod",
+   "titulo": "Predicados no SARGables y conversiones implicitas en los joins entre bases",
+   "obj": "14 SPs del lote (75 CAST en ON/WHERE)",
+   "loc": "PO.SYS_SP_MOV_ABONO 39-47; PO.SYS_SP_AVALUO_AND_UPDATE 194 y 207",
+   "evidencia": "WHERE CUENTA_CONTABLE = CAST(A.ID_CUENTA AS VARCHAR(25)) ... ON CAST(H.ID_CUENTA AS VARCHAR(50)) = D.CUENTA_CONTABLE ... CASE WHEN LEN(A.ID_CUENTA)=4 THEN ...",
+   "impacto": "El CAST sobre la columna impide el uso de indices y fuerza scans en tablas de catalogo y de pagos, ademas de riesgo de truncamiento. LEN() sobre la columna para decidir la logica indica tipos inconsistentes entre bases (numerico vs varchar para la misma cuenta).",
+   "remediacion": "Homologar el tipo de dato de ID_CUENTA/CUENTA_CONTABLE entre bases (o mantener una columna persistida y indexada con el tipo destino) y quitar los CAST de los predicados.",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-028", "sev": "Medio", "cat": "Transaccional", "env": "BD+BD_prod",
+   "titulo": "Ningun SP del lote usa SET XACT_ABORT ON",
+   "obj": "13 SPs con transaccion explicita", "loc": "cabecera de cada SP",
+   "evidencia": "ausencia de SET XACT_ABORT ON antes de BEGIN TRANSACTION",
+   "impacto": "Sin XACT_ABORT, errores como violacion de constraint o timeout de linked server no abortan el lote: la transaccion sigue con parte del trabajo hecho y puede llegar al COMMIT con datos incompletos. Con llamadas a servidores vinculados es requisito.",
+   "remediacion": "Estandar: SET NOCOUNT, XACT_ABORT ON en la cabecera de todo SP transaccional (5 SPs del lote tampoco tienen SET NOCOUNT ON).",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-029", "sev": "Medio", "cat": "Mantenibilidad", "env": "BD+BD_prod",
+   "titulo": "Familias de SPs clonados: la misma logica repetida con variaciones minimas",
+   "obj": "PO.SP_(COM|IND)_CASTIGOS_* y COBRANZA_*: 24 SPs de ~950 lineas con estructura identica",
+   "loc": "PO.SP_COM_COBRANZA_CASTIGOS vs PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS vs PO.SP_IND_CASTIGOS_*",
+   "evidencia": "mismo esqueleto (DELETE por poliza, INSERT extractor, updates de concepto/cuentas, doble cursor de poliza) cambiando el ID_POLIZA y algunos rubros",
+   "impacto": "Un fix (por ejemplo el manejo de error o el rango de fechas) hay que aplicarlo 24 veces; en la practica se aplica en unos y no en otros, que es exactamente el patron de divergencia que ya se observa entre SPs hermanos.",
+   "remediacion": "Extraer el nucleo comun a un SP parametrizado por tipo de poliza/rubro (o generar el codigo desde plantilla) y dejar los SPs actuales como fachadas delgadas.",
+   "esfuerzo": "L"
+  },
+  {
+   "id": "L1-030", "sev": "Medio", "cat": "Correccion funcional", "env": "BD_prod",
+   "titulo": "Version productiva de PO.SYS_SP_BALANCE_DETAIL_SQL con token @TABLA sin resolver",
+   "obj": "PO.SYS_SP_BALANCE_DETAIL_SQL", "loc": "BD_prod, bloque de traspasos",
+   "evidencia": "BD_prod: FROM PO.SAF_MOV_@TABLA A ... REPLACE(@QUERY_TRASPASO,'@TABLA','TRASPASO')   /   BD: FROM PO.SAF_MOV_TRASPASO A (directo) y filtro extra A.CONCEPTO<>'TOTALES'",
+   "impacto": "Produccion arma el SQL con un token textual reemplazado por REPLACE, patron fragil, y le falta el filtro CONCEPTO<>'TOTALES' que si esta en desarrollo: el detalle de balance de produccion puede duplicar los renglones de totales.",
+   "remediacion": "Alinear ambas versiones (promover la de desarrollo) y eliminar el REPLACE de tokens.",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-031", "sev": "Medio", "cat": "Correccion funcional", "env": "BD_prod",
+   "titulo": "Produccion atrasada en tres objetos del cierre y de devoluciones",
+   "obj": "CIERRE.SP_SAF_SALDOS, PO.SP_IND_DEVOLUCIONES, PO.SYS_SP_CONTROL_HISTORICO_TRASPASOS, PO.CONTROL_HISTORICO_TRASPASOS",
+   "loc": "drift real BD vs BD_prod (7 objetos en total)",
+   "evidencia": "prod no maneja el tipo de saldo 'K:Castigo' ni el UPDATE de saldos asociado; prod solo considera DESCRIPCION_TRANSACCION='Devolucion Cheque' (dev agrega 'Reversion' con monto negativo); prod no inserta COD_ORIGEN ni actualiza ID_PRODUCTO y la tabla no tiene esas columnas ni el indice unico (FECHA_SISTEMA, NUM_CREDITO)",
+   "impacto": "Diferencias funcionales reales entre ambientes: los castigos no se reflejan en SAF_SALDOS de produccion, las reversiones de devolucion no se registran y la tabla de control admite duplicados por credito/fecha al no tener el indice unico.",
+   "remediacion": "Plan de alineacion con script de migracion de la tabla (agregar columnas + indice unico previa depuracion de duplicados) y promover los tres SPs en un mismo despliegue.",
+   "esfuerzo": "M"
+  },
+  {
+   "id": "L1-032", "sev": "Medio", "cat": "Codificacion", "env": "BD",
+   "titulo": "Comentarios con doble codificacion (mojibake) y mezcla de encodings en BD/",
+   "obj": "30 archivos PO.* en UTF-8 BOM frente a 473 en UTF-16LE; comentarios corrompidos",
+   "loc": "PO.SYS_SP_AVALUO_AND_UPDATE lineas 16 y 86",
+   "evidencia": "-- DECLARACIAtildeAcircEuroLdquoN DE VARIABLES (original: DECLARACION); -- VALIDACIAtilde...N CASO DE IVA",
+   "impacto": "Los archivos ya sufrieron un ciclo UTF-8 -> UTF-16 mal interpretado: los acentos de los comentarios estan destruidos. Si el mismo ciclo toca cadenas de datos (conceptos con acentos, 'Devolucion Cheque'), el codigo deja de coincidir con el catalogo. Tambien impide diffs limpios entre BD y BD_prod.",
+   "remediacion": "Normalizar todo el repositorio a UTF-8 con BOM en un unico commit dedicado (sin cambios de logica), fijar .gitattributes (*.sql text working-tree-encoding=UTF-8 eol=CRLF) y estandarizar la exportacion desde SSMS. Los espacios que aparecen entre caracteres NO deben limpiarse: son los bytes 0x00 de UTF-16, se resuelven decodificando por BOM.",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-033", "sev": "Bajo", "cat": "Mantenibilidad", "env": "BD+BD_prod",
+   "titulo": "Codigo muerto, bloques comentados y logica pendiente marcada en el codigo",
+   "obj": "PO.SYS_SP_AVALUO_AND_UPDATE (bloque IVA completo comentado), PO.SYS_SP_MOV_ABONO (subconsulta de secuencia comentada), PO.SYS_SP_ACCOUNT_BALANCE_ORDEN (EXEC comentado)",
+   "loc": "AVALUO 87-105; MOV_ABONO 285-288; MOV_ABONO 131 ('## VALIDAR SI HACE FALTA AGREGAR UN FILTRO')",
+   "evidencia": "CONCAT('REVERSO SECUENCIA R ', '' /* (SELECT TOP 1 ID_SECUENCIA ...) */ )",
+   "impacto": "El concepto de reverso queda literalmente sin la secuencia que deberia referenciar. Los bloques comentados hacen que la version vigente sea ambigua y los TODO en el codigo indican reglas sin cerrar en un proceso contable.",
+   "remediacion": "Eliminar el codigo muerto (el historial de Git lo conserva), convertir los TODO en tickets y cerrar la regla del concepto de reverso.",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-034", "sev": "Bajo", "cat": "Estandares", "env": "BD+BD_prod",
+   "titulo": "varchar sin longitud, EXEC sin esquema y falta de encabezado estandar",
+   "obj": "12 SPs con varchar sin longitud (161 casos), 9 con EXEC sin esquema (11 casos)",
+   "loc": "cast(ERROR_LINE() as varchar); exec CursorCloseDeallocate ...",
+   "evidencia": "'Linea:'+cast(ERROR_LINE() as varchar)+'. '+ERROR_MESSAGE()  /  exec CursorCloseDeallocate 'db_cursor_...'",
+   "impacto": "varchar sin longitud toma 30 caracteres en CAST (truncamiento silencioso de mensajes de error) y 1 en declaraciones. EXEC sin esquema fuerza resolucion por esquema por defecto del usuario: cambia de comportamiento segun quien ejecute y agrega busqueda en cache.",
+   "remediacion": "Regla de linting: longitud explicita en todo varchar y nombre en dos partes en todo EXEC. Encabezado obligatorio (autor, fecha, proposito, parametros) que hoy solo aparece en algunos objetos.",
+   "esfuerzo": "S"
+  },
+  {
+   "id": "L1-035", "sev": "Bajo", "cat": "Observabilidad", "env": "BD+BD_prod",
+   "titulo": "Sin trazabilidad de ejecucion: no hay bitacora de inicio/fin ni id de corrida",
+   "obj": "los 20 SPs del lote", "loc": "n/a",
+   "evidencia": "solo existe PO.SAF_POLIZA_ERRORES, poblada en el CATCH; no hay registro de ejecuciones exitosas, duracion, filas afectadas ni usuario",
+   "impacto": "No se puede reconstruir quien ejecuto un cierre, cuando, con que parametros ni cuanto tardo. En un ambiente bancario es un requisito de auditoria y es indispensable para detectar reprocesos (ver hallazgo de idempotencia).",
+   "remediacion": "Tabla de bitacora (ID_EJECUCION, SP, parametros, usuario, inicio, fin, filas, estado) escrita al inicio/fin de cada SP y correlacionada con el ID_EJECUCION en la tabla de errores.",
+   "esfuerzo": "M"
+  }
+ ],
+ "hardcode": [
+  {"valor": "Quiero_Confianza_shadow / Quiero_Confianza / Quiero_Confianza_CreditoPuente_QA", "tipo": "Base de datos externa", "ocurrencias": "3613 en BD / 2867 en BD_prod (571 en el lote)", "clasificacion": "Configuracion de ambiente", "destino": "Sinonimos por ambiente (no portal)", "nota": "Unico diferenciador en 119 de los 126 objetos con diferencias"},
+  {"valor": "[SRV-IONDWHQA\\GPQA] / [SRV-IONDYNA]", "tipo": "Linked server", "ocurrencias": "1 SP (drift real)", "clasificacion": "Configuracion de ambiente", "destino": "Linked server logico + secreto en Key Vault", "nota": "Envio de polizas al ERP"},
+  {"valor": "10.10.8.22\\SAF, 10.10.9.125\\SAF, SRV-IONSQLAWS\\SAF", "tipo": "Cadena de conexion", "ocurrencias": "30 archivos .rdl", "clasificacion": "Configuracion de ambiente", "destino": "Shared DataSource en el servidor de reportes", "nota": "Ningun .rdl usa datasource compartido"},
+  {"valor": "2648615.20 / 2207161.60 (umbral de avaluo) con corte '2024-01-01'", "tipo": "Umbral monetario con vigencia", "ocurrencias": "2 (AVALUO_AND_UPDATE)", "clasificacion": "Parametrizable en portal", "destino": "PARAM.UMBRAL_AVALUO (valor, vigencia)", "nota": "Define INTERES SOCIAL vs MEDIA RESIDENCIAL"},
+  {"valor": "0.16 (IVA)", "tipo": "Tasa impositiva", "ocurrencias": "15+ en el lote", "clasificacion": "Parametrizable en portal", "destino": "PARAM.TASA_IMPUESTO (tasa, zona, vigencia)", "nota": "Cambio normativo probable; tasa frontera distinta"},
+  {"valor": "0.10 (participacion Afirme)", "tipo": "Porcentaje comercial", "ocurrencias": "1 (SP_IND_COBRANZA)", "clasificacion": "Parametrizable en portal", "destino": "PARAM.PARTICIPACION_CONVENIO (convenio, tipo_credito, vigencia)", "nota": "Reescribe MONTO ya registrado"},
+  {"valor": "NUM_CREDITO < 6051 (BD) / < 6086 (BD_prod)", "tipo": "Umbral de universo COVID", "ocurrencias": "1 UDF usada por el cierre", "clasificacion": "Parametrizable en portal", "destino": "PARAM.UNIVERSO_COVID (corte, vigencia)", "nota": "Ya divergio entre ambientes"},
+  {"valor": "ID_POLIZA = 7, 23, 24, 33, 35, 36, 40, 51, 73, 74, 84, 99", "tipo": "Identificador de poliza", "ocurrencias": "13 en el lote (uno por SP)", "clasificacion": "Parametrizable en portal (catalogo)", "destino": "PO.SAF_CAT_POLIZA (clave_logica -> id)", "nota": "Se usa en DELETE/UPDATE: un valor erroneo borra otra poliza"},
+  {"valor": "'2020-0508-0203-0000', '2020-0508-0201-0000', '2401-9000-0003-0001', '1020-0105-0205-0100'", "tipo": "Cuenta contable", "ocurrencias": "5 en el lote", "clasificacion": "Parametrizable en portal (catalogo contable)", "destino": "PO.SAF_CAT_CONTABLE (ampliar criterios)", "nota": "Conviven con el catalogo ya existente"},
+  {"valor": "'1401030090010000', '1401030090020000', '140103009001..3', '5050260901000300', '1020010502130300'", "tipo": "Mascara de cuenta", "ocurrencias": "66 en el lote", "clasificacion": "Parametrizable en portal (catalogo contable)", "destino": "PO.SAF_CAT_CONTABLE / catalogo de mascaras", "nota": "Concentradas en SP_IND_COBRANZA"},
+  {"valor": "ID_CUENTA 2073 (dacion), 2074 (adjudicacion), 2068 (siniestro), 2076, 2080, 2041, 2039", "tipo": "Cuenta operativa con semantica", "ocurrencias": "19 en el lote", "clasificacion": "Parametrizable en portal (catalogo)", "destino": "Catalogo de cuentas con banderas de comportamiento", "nota": "Hoy el significado esta en comentarios"},
+  {"valor": "ID_PRODUCTO 1, 2, 50 (consumo), 51 (empleado)", "tipo": "Codigo de producto", "ocurrencias": "70 en el lote", "clasificacion": "Catalogo en BD (no editable en portal)", "destino": "PO.PR_CAT_PRODUCTO con banderas", "nota": "Sustituir listas IN(...) por join a catalogo"},
+  {"valor": "ID_TIPO_CREDITO 1,3,4,5,9,10,11,12..29 (26=castigo, 20=QBILLETE, 23=SHCH)", "tipo": "Codigo de tipo de credito", "ocurrencias": "50 en el lote", "clasificacion": "Catalogo en BD (no editable en portal)", "destino": "PO.SAF_CAT_DESC_TIPO con banderas", "nota": "Listas IN(...) duplicadas y divergentes entre SPs"},
+  {"valor": "TIP_TRANSACCION 3 (desembolso), 4 (pago), 113 (saldo a favor); SUBTIP_TRANSAC 5", "tipo": "Codigo de transaccion", "ocurrencias": "124 en el lote", "clasificacion": "Catalogo en BD (no editable en portal)", "destino": "Catalogo de transacciones del core", "nota": "Definido por el core SAF, no por negocio"},
+  {"valor": "63 literales de concepto ('PAGO CO ', 'CMR CASTIGO ', 'DESEM FIRMA ', 'REVERSO COBRANZA', ...)", "tipo": "Concepto / leyenda de poliza", "ocurrencias": "151 en el lote", "clasificacion": "Parametrizable en portal (plantillas)", "destino": "PO.SAF_CATALOGO_CONCEPTOS con plantillas y tokens", "nota": "La cadena es la llave del catalogo: cualquier espacio de mas rompe el match"},
+  {"valor": "'20260123' (fecha fija en cierre mensual)", "tipo": "Fecha de negocio", "ocurrencias": "1", "clasificacion": "No parametrizable: es un defecto", "destino": "Usar el parametro de periodo", "nota": "Ver hallazgo L1-001"},
+  {"valor": "'00010101' (fecha centinela en log de errores)", "tipo": "Valor centinela", "ocurrencias": "3", "clasificacion": "No parametrizable: es un defecto", "destino": "Registrar la fecha real en proceso", "nota": "Ver hallazgo L1-025"},
+  {"valor": "5 dias de anticipacion de alerta de tasa; fallback de 1 anio", "tipo": "Parametro de proceso", "ocurrencias": "2 (SP_TASAS_ALERTAS_ENVIO)", "clasificacion": "Parametrizable en portal", "destino": "PARAM.DIAS_ANTICIPACION_ALERTA", "nota": "Hoy exige cambiar el SP para mover la ventana"},
+  {"valor": "IND_ESTADO IN ('C','D'), IND_LINEA='N', IND_ESTADO IN ('A','T','D'), IND_COVID='S'", "tipo": "Filtro de universo", "ocurrencias": "212 en el lote (47 variantes)", "clasificacion": "Parametrizable en portal (definicion de universo)", "destino": "Vista/funcion unica de universo elegible por proceso", "nota": "Las variantes divergen entre SPs hermanos: fuente de descuadres"},
+  {"valor": "COD_ORIGEN IN ('008','031') -> ID_FONDEO 2 'NO RESTRINGIDO'", "tipo": "Regla de fondeo", "ocurrencias": "varias", "clasificacion": "Parametrizable en portal (catalogo)", "destino": "Catalogo de origen de fondos", "nota": "Determina restringido/no restringido en el concepto contable"}
+ ],
+ "plan_despliegue": [
+  {"fase": "Fase 0 - Cimientos (1 sesion)", "objetivo": "Habilitar la parametrizacion sin cambiar comportamiento", "acciones": ["Crear esquema PARAM con PARAMETRO (clave, descripcion, tipo_dato, ambito, requiere_4_ojos), PARAMETRO_VALOR (valor, fecha_inicio, fecha_fin, usuario, motivo) y PARAMETRO_AUDITORIA (historico completo, append-only)", "Funcion PARAM.FN_VALOR(@clave, @fecha) y SP PARAM.SP_SET_VALOR con validacion de tipo, vigencia y doble autorizacion", "Normalizar el repositorio a UTF-8 con BOM y fijar .gitattributes (commit sin cambios de logica)", "Crear los SYNONYM por ambiente para las bases externas y el linked server logico"], "riesgo": "Bajo: solo agrega objetos"},
+  {"fase": "Fase 1 - Defectos criticos (1 sesion)", "objetivo": "Cerrar los hallazgos que ya producen cifras incorrectas", "acciones": ["L1-001 fecha fija del cierre mensual", "L1-002 precedencia OR/AND", "L1-003 transaccion sin TRY/CATCH", "L1-009 y L1-010 en SYS_SP_MOV_ABONO", "L1-007 apuntar produccion a la base productiva", "Comparativa antes/despues de un periodo cerrado como criterio de aceptacion"], "riesgo": "Medio: cambia cifras; requiere validacion contable del periodo de control"},
+  {"fase": "Fase 2 - Patron transaccional y trazabilidad (1-2 sesiones)", "objetivo": "Que ningun error quede silencioso", "acciones": ["Plantilla SET NOCOUNT/XACT_ABORT ON + TRY/CATCH con XACT_STATE + THROW aplicada a los SPs del lote y luego al resto", "Tabla de bitacora de ejecucion con ID_EJECUCION correlacionado a SAF_POLIZA_ERRORES", "Cursores a LOCAL FAST_FORWARD y retiro de CursorCloseDeallocate", "Monitor que alerte cuando un SP termina con error registrado"], "riesgo": "Medio: cambia el contrato de error hacia el orquestador (antes exito, ahora falla)"},
+  {"fase": "Fase 3 - Migracion de parametros por oleadas (2-3 sesiones)", "objetivo": "Sacar del codigo los valores de negocio", "acciones": ["Oleada A (valor unico, bajo riesgo): IVA, umbral de avaluo, universo COVID, dias de anticipacion de alerta, participacion de convenio", "Oleada B (catalogos): ID_POLIZA, cuentas y mascaras contables, origen de fondos", "Oleada C (semantica): plantillas de concepto y definicion de universo elegible", "Cada oleada: doble calculo (valor del codigo vs valor del catalogo) en paralelo durante un cierre y comparacion automatica antes de retirar el literal"], "riesgo": "Controlado por el doble calculo"},
+  {"fase": "Fase 4 - Portal de parametrizacion (1-2 sesiones)", "objetivo": "Entregar la operacion a negocio", "acciones": ["Alta/baja/cambio de valor con vigencia, sin escribir SQL", "Flujo de aprobacion de cuatro ojos (captura y autorizacion por usuarios distintos) y bitacora inmutable de quien cambio que y por que", "Vista de impacto: que procesos usan el parametro (derivada del catalogo de hardcodeos de esta auditoria)", "Simulador: recalcular un periodo con el valor propuesto antes de publicarlo", "Permisos por dominio: contable, comercial, riesgos"], "riesgo": "Bajo si los parametros ya estan migrados"},
+  {"fase": "Fase 5 - Alineacion de ambientes y CI (1 sesion)", "objetivo": "Que BD y BD_prod dejen de divergir", "acciones": ["Promover los 7 objetos con drift real (incluye migracion de PO.CONTROL_HISTORICO_TRASPASOS con indice unico previa depuracion de duplicados)", "Un unico juego de fuentes: con sinonimos, BD y BD_prod quedan identicos", "Pipeline que valide en cada PR: encoding, literales prohibidos (tasas, cuentas, nombres de base), patron de TRY/CATCH y diff dev-prod vacio", "Prueba de regresion de cierre sobre un periodo congelado"], "riesgo": "Bajo"}
+ ],
+ "valor_agregado": [
+  "Prueba de regresion contable: congelar un periodo (entradas y salidas) y ejecutarlo en cada cambio; hoy no existe forma objetiva de saber si un ajuste altero cifras historicas.",
+  "Tablero de descuadres: comparar CIERRE.CMR_REP/IND_REP contra la suma de PO.SAF_MOV_* por concepto y fecha, con alerta automatica; detecta en horas lo que hoy se detecta en la conciliacion mensual.",
+  "Detector de reprocesos: con el ID_EJECUCION de la bitacora, alertar cuando un mismo periodo se procesa dos veces (riesgo real por la falta de idempotencia).",
+  "Linter SQL en CI (tsqllint o reglas propias) que bloquee NOLOCK en procesos contables, literales de tasa/cuenta, EXEC() con concatenacion y varchar sin longitud.",
+  "Catalogo de dependencias navegable (que SP usa que tabla, que reporte usa que SP) generado desde el mismo parser de esta auditoria: base para estimar el impacto de cada cambio.",
+  "Separacion de lectura: replicar las bases origen a un area de staging para eliminar la necesidad de NOLOCK contra la base transaccional.",
+  "Definir el RPO/RTO del proceso de cierre y documentar el procedimiento de reproceso, hoy implicito en el conocimiento del equipo."
+ ]
+}
