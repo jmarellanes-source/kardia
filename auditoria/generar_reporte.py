@@ -123,7 +123,8 @@ header.top p{{margin:6px 0 0;color:#93a1bb}}
 .kpi.c b{{color:#ff6b6b}} .kpi.a b{{color:#ffa94d}} .kpi.m b{{color:#ffd43b}} .kpi.b b{{color:#74c0fc}}
 h2{{margin:34px 0 12px;font-size:17px;border-left:3px solid #4c8dff;padding-left:10px}}
 .bar{{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#161e2e;border:1px solid #2a3549;
- border-radius:10px;padding:12px 14px;position:sticky;top:0;z-index:5}}
+ border-radius:10px;padding:12px 14px;position:sticky;top:0;z-index:5;
+ box-shadow:0 6px 14px rgba(8,12,20,.55)}}
 .bar label{{font-size:12px;color:#93a1bb;margin-right:4px}}
 select,input[type=search]{{background:#0e1420;color:#e8edf6;border:1px solid #35415a;border-radius:6px;padding:7px 9px;font:13px inherit}}
 input[type=search]{{min-width:230px}}
@@ -150,9 +151,9 @@ button.rst{{background:#243149;color:#e8edf6;border:1px solid #35415a;border-rad
 .kv.rem span{{color:#8ce99a}}
 pre{{margin:0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:10px;overflow-x:auto;
  font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}}
-table{{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden}}
+table{{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}}
 th,td{{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}}
-th{{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px;position:sticky;top:56px}}
+th{{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}}
 td.mono{{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#c9d6ee;max-width:330px;word-break:break-word}}
 td.num{{white-space:nowrap;color:#93a1bb}} td.nota{{color:#93a1bb;max-width:300px}}
 .pill{{font-size:11px;padding:3px 8px;border-radius:20px;white-space:nowrap;display:inline-block}}
