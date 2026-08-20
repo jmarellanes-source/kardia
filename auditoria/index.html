@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Auditoria SQL KARDIA / SAF &mdash; consolidado lotes 1-5</title>
+<title>Auditoria SQL KARDIA / SAF &mdash; consolidado lotes 1-6</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font:14px/1.55 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
@@ -31,18 +31,18 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
 </style></head><body>
 <header class="top">
   <h1>Auditoria de codigo SQL &mdash; KARDIA / SAF</h1>
-  <p>Consolidado de los lotes 1 a 5 &middot; 100 objetos programables &middot; 50.929 lineas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (produccion)</p>
+  <p>Consolidado de los lotes 1 a 6 &middot; 156 objetos programables + 251 tablas &middot; 54.634 lineas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (produccion)</p>
 </header>
 <div class="wrap">
 
   <div class="kpis">
-    <div class="kpi c"><b>11</b><span>Criticos</span></div>
-    <div class="kpi a"><b>24</b><span>Altos</span></div>
-    <div class="kpi m"><b>18</b><span>Medios</span></div>
-    <div class="kpi b"><b>4</b><span>Bajos</span></div>
-    <div class="kpi"><b>33</b><span>Grupos de hardcodeo</span></div>
-    <div class="kpi"><b>100</b><span>Objetos revisados</span></div>
-    <div class="kpi"><b>20%</b><span>Del portafolio de SPs</span></div>
+    <div class="kpi c"><b>15</b><span>Criticos</span></div>
+    <div class="kpi a"><b>35</b><span>Altos</span></div>
+    <div class="kpi m"><b>25</b><span>Medios</span></div>
+    <div class="kpi b"><b>7</b><span>Bajos</span></div>
+    <div class="kpi"><b>46</b><span>Grupos de hardcodeo</span></div>
+    <div class="kpi"><b>156</b><span>Objetos revisados</span></div>
+    <div class="kpi"><b>100%</b><span>De las familias funcionales</span></div>
   </div>
 
   <h2>Reportes</h2>
@@ -56,12 +56,38 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
     <div class="card"><h3>Lotes 2-5 &mdash; 80 objetos, 22 hallazgos</h3>
       <p>Familias clonadas de castigos, condonacion, dacion, reestructura, devengos y venta de cartera. Enfocado en divergencias entre SPs hermanos.</p>
       <a class="go" href="02_lotes2-5.html">Abrir</a></div>
+    <div class="card"><h3>Lote 6 &mdash; 56 objetos, 25 hallazgos</h3>
+      <p>Muestreo dirigido a las familias no vistas: portal de pagos (PAG), estados de cuenta (edc), alertas de tasas (SAF), reportes de dbo/RPT, las 18 funciones y los 251 scripts de tabla.</p>
+      <a class="go" href="03_lote6.html">Abrir</a></div>
   </div>
   <p class="lead" style="margin-top:14px">Los lotes 2 a 5 se entregan en un solo reporte con filtro por lote: al ser 62 variantes reales
   dentro de 80 archivos, los hallazgos son de familia (un patron con su lista de objetos y ocurrencias) y separarlos por lote habria
-  duplicado el mismo hallazgo cuatro veces. La tabla de cobertura del reporte lista los 80 objetos con sus metricas individuales.</p>
+  duplicado el mismo hallazgo cuatro veces. La tabla de cobertura del reporte lista los 80 objetos con sus metricas individuales.
+  El lote 6 cambia de estrategia: en vez de continuar por ranking de riesgo dentro de PO y CIERRE, cubre todas las familias
+  funcionales que ningun lote habia tocado, con lo que la auditoria ya no deja modulos sin revisar.</p>
 
-  <h2>Patrones sistemicos medidos sobre los 100 objetos</h2>
+  <h2>Lo que cambio con el lote 6</h2>
+  <p class="lead">Los lotes 1 a 5 midieron el riesgo de los procesos grandes de cierre y poliza. El lote 6 muestra que el
+  riesgo de mayor <b>alcance</b> esta en los objetos chicos: cinco funciones escalares de 20 a 40 lineas gobiernan entre 43 y
+  78 SPs cada una, y una de ellas decide el tratamiento COVID con el umbral <span class="mono">NUM_CREDITO &lt; 6051</span>.
+  Tambien aparece la causa unica del drift dev-prod (el nombre de la base escrito dentro del codigo) y tres defectos con
+  impacto directo en el cliente o en datos personales.</p>
+  <table><thead><tr><th>Hecho medido en el lote 6</th><th>Escala</th><th>Por que importa</th></tr></thead><tbody>
+    <tr><td>UDF escalares con acceso a datos, invocadas fila por fila</td><td class="num bad">5 funciones / 78, 69, 66, 44 y 43 SPs</td>
+        <td>Punto de apalancamiento del rendimiento: corregir 5 objetos pesa mas que optimizar 100 SPs.</td></tr>
+    <tr><td>Nombre de base externa dentro del codigo (shadow vs real)</td><td class="num bad">7 objetos comunes divergen</td>
+        <td>Causa unica del drift dev-prod; se resuelve con sinonimos y deja de generarse.</td></tr>
+    <tr><td>Listas literales de tipo de credito</td><td class="num bad">37 listas / 230 usos / 104 archivos</td>
+        <td>El mismo tipo se clasifica distinto segun el objeto (20/23, 26, 8): los reportes no cuadran entre si.</td></tr>
+    <tr><td>Objetos programables del repositorio que no existen en BD_prod</td><td class="num warn">26 de 56 (PAG, edc, dbo.REPORTE*)</td>
+        <td>Siete esquemas completos no aparecen en el export de produccion: falta promover o falta exportar.</td></tr>
+    <tr><td>Tablas con dato personal o bancario sin mascara ni cifrado</td><td class="num warn">52 con PII / 0 protegidas</td>
+        <td>Solo 30 de 251 tablas registran quien escribio: complica trazabilidad de acceso.</td></tr>
+    <tr><td>Indices no agrupados en el export de esquema</td><td class="num warn">0 en 251 tablas</td>
+        <td>O no existen (explica los tiempos de cierre) o el artefacto de despliegue no describe la base.</td></tr>
+  </tbody></table>
+
+  <h2>Patrones sistemicos medidos sobre los 100 objetos de los lotes 1-5</h2>
   <table><thead><tr><th>Patron</th><th>Objetos</th><th>Ocurrencias</th><th>Lectura</th></tr></thead><tbody>
     <tr><td>Transacciones sin <span class="mono">SET XACT_ABORT ON</span></td><td class="num bad">100 / 100</td><td class="num">&mdash;</td>
         <td>Ningun objeto aborta el lote ante error de ejecucion.</td></tr>
@@ -83,7 +109,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
         <td>Control de cambios: no se puede saber desde el codigo si falta promover o falta exportar.</td></tr>
   </tbody></table>
 
-  <h2>Los 11 criticos, en una linea cada uno</h2>
+  <h2>Los 15 criticos, en una linea cada uno</h2>
   <table><thead><tr><th>ID</th><th>Hallazgo</th><th>Efecto</th></tr></thead><tbody>
     <tr><td class="mono">L1-001</td><td>El cierre mensual comercial lee comisiones de la fecha fija <span class="mono">'20260123'</span></td><td>Cifras de CMR_REP mal en todo periodo distinto de esa fecha</td></tr>
     <tr><td class="mono">L1-002</td><td>El cierre mensual individual no es idempotente</td><td>Reprocesar duplica PRINCIPAL_FINAL</td></tr>
@@ -96,6 +122,10 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
     <tr><td class="mono">L2-002</td><td>El filtro de esa regla omite <span class="mono">CONCEPTO NOT LIKE 'TRS %'</span> en dos SPs</td><td>Escala tambien los traspasos</td></tr>
     <tr><td class="mono">L2-003</td><td><span class="mono">PO.SYS_SP_MOV_CARGO</span> borra PRINCIPAL de todas las polizas del rango</td><td>Perdida silenciosa de cargos de otros procesos</td></tr>
     <tr><td class="mono">L2-004</td><td>El patron de error defectuoso es el estandar de la plataforma (89 de 100)</td><td>Confirma que la correccion debe ser masiva, no puntual</td></tr>
+    <tr><td class="mono">L6-001</td><td><span class="mono">edc.SP_Genera_Ordenes_Dummy</span> inserta montos aleatorios en las tablas de facturacion (CFDI)</td><td>Ordenes de factura con importes inventados sobre creditos reales</td></tr>
+    <tr><td class="mono">L6-002</td><td>El identificador de pagos empareja con un LIKE invertido y elige el credito mas antiguo</td><td>Pago aplicado a un credito equivocado</td></tr>
+    <tr><td class="mono">L6-003</td><td>El tratamiento COVID se decide con el umbral <span class="mono">NUM_CREDITO &lt; 6051</span></td><td>Un solo literal gobierna la clasificacion en 66 SPs</td></tr>
+    <tr><td class="mono">L6-004</td><td>El nombre de la base externa vive en el codigo y difiere entre dev y prod</td><td>Despliegue no reproducible; produccion puede quedar leyendo la replica</td></tr>
   </tbody></table>
 
   <h2>Hardcodeo acumulado: los grupos con mayor retorno para el portal</h2>
@@ -110,26 +140,39 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
     <tr><td>Rubros contables</td><td class="num">23 distintos / 1.305 usos</td><td>Catalogo en BD</td><td>Catalogo + homologacion FN_RUBRO_POL en todos los segmentos</td></tr>
     <tr><td>Servidores, bases y cuenta bancaria STP</td><td class="num">&mdash;</td><td>Configuracion tecnica</td><td>Sinonimos por ambiente; datos bancarios fuera del codigo</td></tr>
     <tr><td>Fecha fija de cierre y centinela <span class="mono">'00010101'</span></td><td class="num">15 archivos</td><td>No parametrizable: defecto</td><td>Corregir, no configurar</td></tr>
+    <tr><td>Umbral COVID <span class="mono">NUM_CREDITO &lt; 6051</span></td><td class="num">66 SPs / 230 usos</td><td>Portal (con cuatro ojos)</td><td>Vigencia del programa en catalogo; parametro como paso intermedio</td></tr>
+    <tr><td>Codigos institucionales <span class="mono">'001'</span> / <span class="mono">'PR'</span> / <span class="mono">COD_ENTE=1</span></td><td class="num">6 SPs de PAG + edc</td><td>Configuracion tecnica</td><td>Tabla de configuracion institucional</td></tr>
+    <tr><td>Bancos como columnas fijas (HSBC, BBVA, Santander)</td><td class="num">3 SPs de PAG</td><td>Catalogo en BD</td><td>PAG.CAT_BANCO; el portal pivotea</td></tr>
+    <tr><td>Dato de prueba <span class="mono">'Prueba@ion.com'</span> y leyendas <span class="mono">'ERROR'</span> / <span class="mono">'0.00'</span></td><td class="num">5 ocurrencias</td><td>No parametrizable: defecto</td><td>Eliminar; lo no mapeado va a excepciones</td></tr>
   </tbody></table>
 
-  <h2>Conclusion de la fase y ajuste recomendado</h2>
-  <p class="lead">Con 100 objetos revisados (20% del portafolio) los hallazgos dejaron de ser nuevos: los lotes 2 a 5 no
-  encontraron categorias distintas, encontraron la <b>escala</b> de las mismas y tres defectos concretos adicionales
-  (L2-001/002/003, L2-005). El hallazgo estructural es que ~30.000 de las 41.596 lineas revisadas en estos lotes son
-  copia con variaciones minimas: 62 variantes reales en 80 archivos.</p>
-  <ul class="lead">
-    <li><b>Cambia la prioridad:</b> no conviene seguir auditando lote por lote hasta agotar los 227 SPs; conviene
-      cerrar la revision con un muestreo dirigido a las familias aun no vistas (PAG, edc, SAF, UDFs) y pasar a remediar.</li>
-    <li><b>Las correcciones de patron son mecanicas:</b> patron transaccional, cursores locales, centinela y NOCOUNT
-      se aplican por script sobre familias clonadas, no SP por SP.</li>
-    <li><b>El refactor a un SP nucleo parametrizado es prerrequisito de la parametrizacion:</b> migrar 80 copias por
-      separado cuesta mas que consolidarlas primero.</li>
+  <h2>Conclusion de la auditoria y orden de remediacion propuesto</h2>
+  <p class="lead">La fase de diagnostico se puede cerrar. Con los lotes 1 a 5 se agotaron las <b>categorias</b> de
+  hallazgo dentro de los procesos de cierre y poliza (los lotes 2 a 5 encontraron la escala, no categorias nuevas: 62
+  variantes reales en 80 archivos), y el lote 6 cubrio las familias restantes sin dejar modulos sin revisar. Seguir
+  auditando SP por SP hasta agotar los 227 objetos agregaria ocurrencias, no conocimiento.</p>
+  <ol class="lead">
+    <li><b>Correcciones pequeñas con efecto inmediato:</b> L6-001 (generador de facturas dummy), L6-009 (correo de
+      prueba), L6-007 (rubro mal escrito en el reporte Afirme), L2-003 (DELETE sin filtro de poliza), L1-001 (fecha fija
+      de cierre). Son cambios de pocas lineas con impacto en cifras y en datos personales.</li>
+    <li><b>Quitar el ambiente del codigo (L6-004):</b> sinonimos por base de datos. Es prerrequisito de todo lo demas,
+      porque hoy cada correccion hay que aplicarla dos veces y verificarla a mano en cada release.</li>
+    <li><b>Catalogos antes que portal:</b> tipo de credito (L6-015), conceptos y rubros (L2-006, L2-017), polizas
+      (L2-012), bancos (L6-021). Sin catalogo, el portal solo mueve el hardcodeo de lugar.</li>
+    <li><b>Patron transaccional y cursores locales:</b> mecanico y por script sobre familias clonadas, no SP por SP.
+      Va despues del refactor a SP nucleo parametrizado, que reduce 80 copias a unas pocas.</li>
+    <li><b>Rendimiento estructural:</b> las cinco UDF escalares (L6-005) y la estrategia de indices (L6-018), con
+      medicion antes y despues sobre el mismo periodo de cierre.</li>
     <li><b>Compuerta de CI:</b> convertir los conteos de este consolidado en un control automatico, para que ningun
-      objeto nuevo entre sin patron transaccional ni con NOLOCK en calculo contable.</li>
-  </ul>
-  <p class="lead">Pendientes de decision de negocio antes de remediar: si la cartera sindicada debe aplicar COVID y
-  separacion balance/orden de etapa 3 (L2-007), si dos procesos pueden compartir numero de poliza (L2-012), y si los
-  dos objetos de cierre que solo existen en desarrollo deben promoverse o exportarse (L2-019).</p>
+      objeto nuevo entre sin patron transaccional, con NOLOCK en calculo contable, con nombre de base literal o con
+      listas de tipo de credito escritas a mano.</li>
+  </ol>
+  <p class="lead">Pendientes de decision de negocio o infraestructura antes de remediar: si la cartera sindicada debe
+  aplicar COVID y separacion balance/orden de etapa 3 (L2-007); si dos procesos pueden compartir numero de poliza
+  (L2-012); si los esquemas PAG, edc, edcc, juicios, demandas, ori y cierre_puente existen en produccion, porque 26
+  objetos programables del repositorio no aparecen en el export de BD_prod (L2-019, L6-004); el alcance del
+  enmascaramiento de datos personales (L6-017); y si el canal minorista/comercial puede seguir derivandose de
+  <span class="mono">TIP_TASA='F'</span> para efectos de reporte regulatorio.</p>
 
 </div>
 <footer>Los hallazgos se sustentan en la lectura del codigo fuente de los archivos del repositorio. No se ejecuto
