@@ -153,6 +153,13 @@ pre{{margin:0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padd
  font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}}
 table{{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}}
 th,td{{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}}
+table.hard{{table-layout:fixed}}
+table.hard th:nth-child(1),table.hard td:nth-child(1){{width:19%;word-break:break-word}}
+table.hard th:nth-child(2),table.hard td:nth-child(2){{width:11%}}
+table.hard th:nth-child(3),table.hard td:nth-child(3){{width:16%;word-break:break-word;white-space:normal}}
+table.hard td .pill{{white-space:normal}}
+table.hard th:nth-child(4),table.hard td:nth-child(4){{width:14%}}
+table.hard th:nth-child(5),table.hard td:nth-child(5){{width:18%}}
 th{{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}}
 td.mono{{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#c9d6ee;max-width:330px;word-break:break-word}}
 td.num{{white-space:nowrap;color:#93a1bb}} td.nota{{color:#93a1bb;max-width:300px}}
@@ -213,7 +220,7 @@ footer{{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3
     <button class="rst" onclick="resetHc()">Limpiar</button>
     <span class="count" id="hcnt"></span>
   </div>
-  <table><thead><tr><th>Valor</th><th>Tipo</th><th>Ocurrencias</th><th>Clasificacion</th><th>Destino propuesto</th><th>Nota</th></tr></thead>
+  <table class="hard"><thead><tr><th>Valor</th><th>Tipo</th><th>Ocurrencias</th><th>Clasificacion</th><th>Destino propuesto</th><th>Nota</th></tr></thead>
   <tbody id="hbody">
 {''.join(hc)}
   </tbody></table>

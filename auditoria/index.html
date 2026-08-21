@@ -31,17 +31,17 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
 </style></head><body>
 <header class="top">
   <h1>Auditoria de codigo SQL &mdash; KARDIA / SAF</h1>
-  <p>Consolidado de los lotes 1 a 6 &middot; 156 objetos programables + 251 tablas &middot; 54.634 lineas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (produccion)</p>
+  <p>Consolidado de los lotes 1 a 6 y 10-11 &middot; 177 objetos programables + 251 tablas &middot; 59.218 lineas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (produccion)</p>
 </header>
 <div class="wrap">
 
   <div class="kpis">
-    <div class="kpi c"><b>15</b><span>Criticos</span></div>
-    <div class="kpi a"><b>35</b><span>Altos</span></div>
-    <div class="kpi m"><b>25</b><span>Medios</span></div>
-    <div class="kpi b"><b>7</b><span>Bajos</span></div>
-    <div class="kpi"><b>46</b><span>Grupos de hardcodeo</span></div>
-    <div class="kpi"><b>156</b><span>Objetos revisados</span></div>
+    <div class="kpi c"><b>20</b><span>Criticos</span></div>
+    <div class="kpi a"><b>46</b><span>Altos</span></div>
+    <div class="kpi m"><b>32</b><span>Medios</span></div>
+    <div class="kpi b"><b>9</b><span>Bajos</span></div>
+    <div class="kpi"><b>58</b><span>Grupos de hardcodeo</span></div>
+    <div class="kpi"><b>177</b><span>Objetos revisados</span></div>
     <div class="kpi"><b>100%</b><span>De las familias funcionales</span></div>
   </div>
 
@@ -59,6 +59,9 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
     <div class="card"><h3>Lote 6 &mdash; 56 objetos, 25 hallazgos</h3>
       <p>Muestreo dirigido a las familias no vistas: portal de pagos (PAG), estados de cuenta (edc), alertas de tasas (SAF), reportes de dbo/RPT, las 18 funciones y los 251 scripts de tabla.</p>
       <a class="go" href="03_lote6.html">Abrir</a></div>
+    <div class="card"><h3>Lotes 10-11 &mdash; 27 objetos, 25 hallazgos</h3>
+      <p>Familia completa de cierre: los 26 procedimientos de CIERRE, el de RPT y las cuatro tablas del esquema. Concentra los hallazgos de integridad contable, paridad dev-prod y observabilidad del cierre.</p>
+      <a class="go" href="04_lotes10-11.html">Abrir</a></div>
   </div>
   <p class="lead" style="margin-top:14px">Los lotes 2 a 5 se entregan en un solo reporte con filtro por lote: al ser 62 variantes reales
   dentro de 80 archivos, los hallazgos son de familia (un patron con su lista de objetos y ocurrencias) y separarlos por lote habria
@@ -87,6 +90,28 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
         <td>O no existen (explica los tiempos de cierre) o el artefacto de despliegue no describe la base.</td></tr>
   </tbody></table>
 
+  <h2>Lo que cambio con los lotes 10-11 (familia de cierre completa)</h2>
+  <p class="lead">Los lotes 1 a 6 recorrieron el cierre por sus procesos mas grandes; esta fase cubre los 27 objetos de la
+  familia como conjunto y compara objetos hermanos entre si. Ahi aparecen los defectos que no se ven leyendo un solo
+  procedimiento: reglas contradictorias dentro del mismo SP, dos definiciones del mismo concepto de negocio y dos clones
+  que publican cifras del mismo dia que nunca conciliaran.</p>
+  <table><thead><tr><th>Hecho medido en los lotes 10-11</th><th>Escala</th><th>Por que importa</th></tr></thead><tbody>
+    <tr><td>Objetos de la familia de cierre ausentes en el export de BD_prod</td><td class="num bad">19 de 27</td>
+        <td>Incluye el cierre individual mensual completo; y <span class="mono">SP_SAF_SALDOS</span> esta en produccion con 223 de sus 573 lineas.</td></tr>
+    <tr><td>Referencias literales a la base externa dentro del cierre</td><td class="num bad">753 en 17 objetos</td>
+        <td><span class="mono">SP_CMR_GEN_MES</span> mezcla 90 lecturas del espejo con 1 de la base real en el mismo calculo.</td></tr>
+    <tr><td>Etiquetas de bitacora que no corresponden a ningun objeto</td><td class="num bad">5 de 5 procesos</td>
+        <td>Tres cierres distintos escriben la misma etiqueta y ninguno propaga el error: el job termina en exito.</td></tr>
+    <tr><td>Definiciones distintas del mismo concepto de negocio</td><td class="num bad">2 de cartera sin restriccion / 6 de cuentas excluidas</td>
+        <td>Los reportes del mismo periodo no cuadran por construccion, no por datos.</td></tr>
+    <tr><td>Lecturas con <span class="mono">NOLOCK</span> en la familia de cierre</td><td class="num bad">287 en 15 objetos</td>
+        <td>Cifras contables no reproducibles entre dos corridas de la misma fecha.</td></tr>
+    <tr><td>Procedimientos de reporte que validan sus parametros de fecha</td><td class="num warn">0 de 20</td>
+        <td>Un rango abierto recorre el historico de la base nucleo durante la ventana de cierre.</td></tr>
+    <tr><td>Tablas de cierre con llave natural unica</td><td class="num warn">3 de 4</td>
+        <td><span class="mono">CIERRE.IND_REP</span> no la tiene: nada impide duplicar el periodo si el borrado previo falla.</td></tr>
+  </tbody></table>
+
   <h2>Patrones sistemicos medidos sobre los 100 objetos de los lotes 1-5</h2>
   <table><thead><tr><th>Patron</th><th>Objetos</th><th>Ocurrencias</th><th>Lectura</th></tr></thead><tbody>
     <tr><td>Transacciones sin <span class="mono">SET XACT_ABORT ON</span></td><td class="num bad">100 / 100</td><td class="num">&mdash;</td>
@@ -109,7 +134,7 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
         <td>Control de cambios: no se puede saber desde el codigo si falta promover o falta exportar.</td></tr>
   </tbody></table>
 
-  <h2>Los 15 criticos, en una linea cada uno</h2>
+  <h2>Los 20 criticos, en una linea cada uno</h2>
   <table><thead><tr><th>ID</th><th>Hallazgo</th><th>Efecto</th></tr></thead><tbody>
     <tr><td class="mono">L1-001</td><td>El cierre mensual comercial lee comisiones de la fecha fija <span class="mono">'20260123'</span></td><td>Cifras de CMR_REP mal en todo periodo distinto de esa fecha</td></tr>
     <tr><td class="mono">L1-002</td><td>El cierre mensual individual no es idempotente</td><td>Reprocesar duplica PRINCIPAL_FINAL</td></tr>
@@ -126,6 +151,11 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
     <tr><td class="mono">L6-002</td><td>El identificador de pagos empareja con un LIKE invertido y elige el credito mas antiguo</td><td>Pago aplicado a un credito equivocado</td></tr>
     <tr><td class="mono">L6-003</td><td>El tratamiento COVID se decide con el umbral <span class="mono">NUM_CREDITO &lt; 6051</span></td><td>Un solo literal gobierna la clasificacion en 66 SPs</td></tr>
     <tr><td class="mono">L6-004</td><td>El nombre de la base externa vive en el codigo y difiere entre dev y prod</td><td>Despliegue no reproducible; produccion puede quedar leyendo la replica</td></tr>
+    <tr><td class="mono">L10-001</td><td>El UPDATE etiquetado MONTOEXIGIBLECOM suma intereses, comisiones y moratorios a <span class="mono">PRINCIPAL_FINAL</span></td><td>Capital del cierre individual inflado con accesorios</td></tr>
+    <tr><td class="mono">L10-002</td><td><span class="mono">SP_IND_GEN_MES_MOD</span> confirma 12 UPDATE sin TRY/CATCH ni XACT_ABORT</td><td>Ajuste parcial confirmado y sin registro de error</td></tr>
+    <tr><td class="mono">L10-003</td><td>Los cinco procesos de cierre registran errores con nombres de SP inexistentes</td><td>No se sabe que cierre fallo; el orquestador ve exito</td></tr>
+    <tr><td class="mono">L10-004</td><td><span class="mono">SP_CMR_GEN_MES</span> lee 90 tablas del espejo y 1 de la base real</td><td>El cierre consolida dos fotografias distintas del mismo credito</td></tr>
+    <tr><td class="mono">L10-005</td><td>Criterio de cancelacion invertido entre los universos de <span class="mono">SP_SAF_SALDOS</span></td><td>Saldos normales y en cuentas de orden sobre poblaciones complementarias</td></tr>
   </tbody></table>
 
   <h2>Hardcodeo acumulado: los grupos con mayor retorno para el portal</h2>
@@ -147,6 +177,10 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
   </tbody></table>
 
   <h2>Conclusion de la auditoria y orden de remediacion propuesto</h2>
+  <p class="lead">Los lotes 10-11 anaden un prerrequisito al orden de abajo: antes de corregir codigo hay que reconciliar
+  ambientes, porque 19 de los 27 objetos de cierre no aparecen en el export de produccion y el proceso que genera los
+  saldos esta desplegado con menos de la mitad de su logica. Sin esa matriz de paridad, cualquier remediacion se aplica
+  sobre una version que quizas no es la que corre.</p>
   <p class="lead">La fase de diagnostico se puede cerrar. Con los lotes 1 a 5 se agotaron las <b>categorias</b> de
   hallazgo dentro de los procesos de cierre y poliza (los lotes 2 a 5 encontraron la escala, no categorias nuevas: 62
   variantes reales en 80 archivos), y el lote 6 cubrio las familias restantes sin dejar modulos sin revisar. Seguir
