@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auditoria SQL KARDIA &mdash; Lote 12 (dependencias y capa de reportes)</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.55 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+.wrap{padding:22px 32px 60px;max-width:1500px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:132px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b} .kpi.a b{color:#ffa94d} .kpi.m b{color:#ffd43b} .kpi.b b{color:#74c0fc}
+h2{margin:34px 0 12px;font-size:17px;border-left:3px solid #4c8dff;padding-left:10px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#161e2e;border:1px solid #2a3549;
+ border-radius:10px;padding:12px 14px;position:sticky;top:0;z-index:5;
+ box-shadow:0 6px 14px rgba(8,12,20,.55)}
+.bar label{font-size:12px;color:#93a1bb;margin-right:4px}
+select,input[type=search]{background:#0e1420;color:#e8edf6;border:1px solid #35415a;border-radius:6px;padding:7px 9px;font:13px inherit}
+input[type=search]{min-width:230px}
+button.rst{background:#243149;color:#e8edf6;border:1px solid #35415a;border-radius:6px;padding:7px 12px;cursor:pointer}
+.count{margin-left:auto;color:#93a1bb;font-size:12px}
+.f{background:#161e2e;border:1px solid #2a3549;border-radius:9px;margin:9px 0;overflow:hidden}
+.f>header{display:flex;gap:12px;align-items:center;padding:11px 14px;cursor:pointer}
+.f>header:hover{background:#1d2739}
+.sev{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.sev.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.sev.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.sev.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.sev.b{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+.id{color:#93a1bb;font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.ti{font-weight:600;flex:1}
+.meta{color:#93a1bb;font-size:12px;white-space:nowrap}
+.chev{color:#93a1bb;transition:.15s}
+.f.open .chev{transform:rotate(180deg)}
+.body{display:none;padding:4px 16px 16px;border-top:1px solid #2a3549;background:#131b29}
+.f.open .body{display:block}
+.kv{display:grid;grid-template-columns:118px 1fr;gap:12px;padding:8px 0;border-bottom:1px dashed #263148}
+.kv:last-child{border:0}
+.kv b{color:#93a1bb;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.kv.rem span{color:#8ce99a}
+pre{margin:0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:10px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+table.hard{table-layout:fixed}
+table.hard th:nth-child(1),table.hard td:nth-child(1){width:19%;word-break:break-word}
+table.hard th:nth-child(2),table.hard td:nth-child(2){width:11%}
+table.hard th:nth-child(3),table.hard td:nth-child(3){width:16%;word-break:break-word;white-space:normal}
+table.hard td .pill{white-space:normal}
+table.hard th:nth-child(4),table.hard td:nth-child(4){width:14%}
+table.hard th:nth-child(5),table.hard td:nth-child(5){width:18%}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#c9d6ee;max-width:330px;word-break:break-word}
+td.num{white-space:nowrap;color:#93a1bb} td.nota{color:#93a1bb;max-width:300px}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;white-space:nowrap;display:inline-block}
+.pill.p1{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.p2{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+.pill.p3{background:#33270f;color:#ffd8a8;border:1px solid #6b4d1f}
+.pill.p4{background:#3d1420;color:#ffa8b6;border:1px solid #7d2038}
+.fase{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 18px;margin:10px 0}
+.fase h3{margin:0 0 4px;font-size:15px} .fase .obj{margin:0 0 8px;color:#93a1bb}
+.fase ul{margin:0 0 8px;padding-left:20px} .fase li{margin:3px 0}
+.fase .riesgo{margin:0;font-size:12px;color:#93a1bb}
+ul.va li{margin:6px 0}
+details.alc{background:#161e2e;border:1px solid #2a3549;border-radius:9px;padding:12px 16px}
+details.alc summary{cursor:pointer;color:#93a1bb}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+.hide{display:none!important}
+</style></head><body>
+<header class="top">
+  <h1>Auditoria de codigo SQL &mdash; KARDIA / SAF</h1>
+  <p>Fase transversal de dependencias &middot; 245 objetos programables, 251 tablas y 30 reportes .rdl &middot; grafo completo sobre <b>BD</b> y la capa de entrega &middot; 2026-08-19</p>
+</header>
+<div class="wrap">
+
+  <div class="kpis">
+    <div class="kpi c"><b>2</b><span>Criticos</span></div>
+    <div class="kpi a"><b>5</b><span>Altos</span></div>
+    <div class="kpi m"><b>3</b><span>Medios</span></div>
+    <div class="kpi b"><b>0</b><span>Bajos</span></div>
+    <div class="kpi"><b>5</b><span>Grupos de hardcodeo</span></div>
+    <div class="kpi"><b>0</b><span>Parametrizables en portal</span></div>
+  </div>
+
+  <details class="alc"><summary>Alcance y criterio de seleccion del lote</summary>
+    <p>Fase transversal, previa a la remediacion: en vez de leer objetos nuevos, se construye el grafo de dependencias sobre los 503 archivos de BD/ (245 objetos programables y 251 tablas) y se audita la capa de entrega, los 30 archivos .rdl de reportes/, que ningun lote anterior habia revisado mas alla de la cadena de conexion. El objetivo es responder tres preguntas que la remediacion necesita: quien llama a cada objeto, que se rompe si se cambia, y por donde sale la informacion hacia el usuario. El analisis es estatico sobre el codigo del repositorio: no se ejecuto ningun objeto ni se leyeron metadatos de una instancia de SQL Server, por lo que las referencias resueltas por SQL dinamico o por la aplicacion no pueden aparecer en el grafo.</p><ul><li>BD/: 245 objetos programables (227 procedimientos + 18 funciones) y 251 tablas</li><li>reportes/: 30 archivos .rdl (18 reportes logicos)</li><li>Grafo: referencias objeto -&gt; objeto, objeto -&gt; tabla y reporte -&gt; procedimiento</li></ul>
+    <p><b>Nota de codificacion:</b> los archivos se decodifican por BOM (UTF-16LE en la mayoria, UTF-8 BOM en 30 archivos de BD/).
+    Los &quot;caracteres espaciados&quot; son los bytes 0x00 de UTF-16 leidos como ASCII: <b>no deben limpiarse</b>, se resuelven decodificando correctamente.</p>
+  </details>
+
+  <h2>Hallazgos</h2>
+  <div class="bar">
+    <label>Severidad</label><select id="fs"><option value="">Todas</option><option>Critico</option><option>Alto</option><option>Medio</option><option>Bajo</option></select>
+    <label>Categoria</label><select id="fc"><option value="">Todas</option><option>Capa de reportes</option><option>Control de ambientes</option><option>Control de dependencias</option><option>Mantenibilidad</option><option>Modelo de datos</option><option>Observabilidad</option><option>Riesgo concentrado</option><option>Trazabilidad</option></select>
+    <label>Entorno</label><select id="fe"><option value="">Ambos</option><option>BD</option><option>BD_prod</option></select>
+    <label>Lote</label><select id="fl"><option value="">Todos</option><option>12</option></select>
+    <input type="search" id="fq" placeholder="Buscar objeto, evidencia, texto...">
+    <button class="rst" onclick="reset()">Limpiar</button>
+    <span class="count" id="cnt"></span>
+  </div>
+  <div id="lista">
+    <article class="f" data-sev="Critico" data-cat="Observabilidad" data-env="BD BD_prod"
+             data-lote="12"
+             data-txt="l12-004 102 objetos escriben en la bitacora de errores de poliza y solo 6 la leen; ninguno vigila el resultado po.saf_poliza_errores escriben (insert into po.saf_poliza_errores): 102 objetos programables.
+leen: 6, y todos son pantallas o listados del propio envio de poliza
+  po.sp_saf_poliza_cuentas_val, po.sp_saf_poliza_envio_1p_con,
+  po.sp_saf_poliza_envio_1p_err_lis, po.sp_saf_poliza_envio_1p_estado_rep,
+  po.sp_saf_poliza_envio_estado_rep, po.sp_snd_poliza_diaria
+ningun objeto del repositorio consulta la bitacora para alertar, ni cuenta errores por ejecucion.">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Critico</span>
+        <span class="id">L12-004</span>
+        <span class="ti">102 objetos escriben en la bitacora de errores de poliza y solo 6 la leen; ninguno vigila el resultado</span>
+        <span class="meta">Observabilidad &middot; BD + BD_prod &middot; esfuerzo ?</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SAF_POLIZA_ERRORES</span></div>
+        <div class="kv"><b>Ubicacion</b><span>PO.SAF_POLIZA_ERRORES: 102 objetos con INSERT, 6 con SELECT</span></div>
+        <div class="kv"><b>Evidencia</b><pre>Escriben (INSERT INTO PO.SAF_POLIZA_ERRORES): 102 objetos programables.
+Leen: 6, y todos son pantallas o listados del propio envio de poliza
+  PO.SP_SAF_POLIZA_CUENTAS_VAL, PO.SP_SAF_POLIZA_ENVIO_1P_CON,
+  PO.SP_SAF_POLIZA_ENVIO_1P_ERR_LIS, PO.SP_SAF_POLIZA_ENVIO_1P_ESTADO_REP,
+  PO.SP_SAF_POLIZA_ENVIO_ESTADO_REP, PO.SP_SND_POLIZA_DIARIA
+Ningun objeto del repositorio consulta la bitacora para alertar, ni cuenta errores por ejecucion.</pre></div>
+        <div class="kv"><b>Impacto</b><span>Es la unica evidencia de que un proceso contable fallo, y se combina con dos patrones ya documentados: los CATCH no propagan el error (89 de 100 objetos de los lotes 1-5) y las etiquetas de proceso escritas en la bitacora no corresponden a objetos existentes (L10-003). El resultado es que el error se registra, el job termina en exito y nadie mira la tabla salvo que alguien abra la pantalla de envio. Un cierre parcial puede llegar a contabilidad sin que ningun control automatico lo detecte.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Convertir la bitacora en el centro de control del proceso: identificador de ejecucion por corrida, severidad, y un monitor que alerte por correo o Teams cuando una ejecucion cierre con errores. En el portal de administracion propuesto, esta tabla es la fuente del tablero de ejecuciones. Complementar con THROW al final de cada CATCH para que el orquestador vea el fallo.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Critico" data-cat="Capa de reportes" data-env="reportes"
+             data-lote="12"
+             data-txt="l12-005 dos variantes del mismo reporte de poliza contable ejecutan el mismo procedimiento con filtros fijos distintos poliza contable ion 100.rdl / poliza contable ion 100 kardia.rdl poliza contable ion 100.rdl
+  exec [po].[sys_sp_balance_account_sql] @fecha=@fecha, @id_externo=&#x27;&#x27;, @id_producto=0,
+       @id_fondeo=0, @id_etapa=0, @id_poliza=@id_poliza, @id_grupo=...
+poliza contable ion 100 kardia.rdl
+  exec [po].[sys_sp_balance_account_sql] @fecha=@fecha, @id_externo=&#x27;0&#x27;, @id_producto=3,
+       @id_fondeo=3, @id_etapa=4, @id_poliza=@id_poliza, @id_grupo=...">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Critico</span>
+        <span class="id">L12-005</span>
+        <span class="ti">Dos variantes del mismo reporte de poliza contable ejecutan el mismo procedimiento con filtros fijos distintos</span>
+        <span class="meta">Capa de reportes &middot; reportes &middot; esfuerzo ?</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>Poliza Contable ION 100.rdl / Poliza Contable ION 100 KARDIA.rdl</span></div>
+        <div class="kv"><b>Ubicacion</b><span>reportes/Poliza Contable ION 100*.rdl (CommandText del dataset principal)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>Poliza Contable ION 100.rdl
+  EXEC [PO].[SYS_SP_BALANCE_ACCOUNT_SQL] @FECHA=@FECHA, @ID_EXTERNO=&#x27;&#x27;, @ID_PRODUCTO=0,
+       @ID_FONDEO=0, @ID_ETAPA=0, @ID_POLIZA=@ID_POLIZA, @ID_GRUPO=...
+Poliza Contable ION 100 KARDIA.rdl
+  EXEC [PO].[SYS_SP_BALANCE_ACCOUNT_SQL] @FECHA=@FECHA, @ID_EXTERNO=&#x27;0&#x27;, @ID_PRODUCTO=3,
+       @ID_FONDEO=3, @ID_ETAPA=4, @ID_POLIZA=@ID_POLIZA, @ID_GRUPO=...</pre></div>
+        <div class="kv"><b>Impacto</b><span>El universo del reporte de poliza contable esta escrito dentro del artefacto del reporte, no en el procedimiento, y las dos copias del mismo reporte piden productos, fondeos y etapas distintos. Quien abra una u otra vera cifras diferentes para la misma fecha y no habra nada en la base que explique la diferencia. Ademas &#x27;&#x27; y &#x27;0&#x27; como @ID_EXTERNO no son equivalentes: la comparacion dentro del procedimiento decide si el filtro se aplica o se ignora.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Sacar los filtros del .rdl: que el procedimiento reciba NULL como &#x27;sin filtro&#x27; y que el reporte pase parametros visibles al usuario, con valores por defecto definidos en el catalogo de parametros. Dejar un unico artefacto por reporte logico y validar que ambas variantes deben producir la misma cifra antes de eliminar una.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Control de dependencias" data-env="BD"
+             data-lote="12"
+             data-txt="l12-001 110 de los 245 objetos programables no son invocados por ningun otro objeto del repositorio ni por los 30 reportes po (66), pag (17), cierre (13), saf (7), edc (6), dbo (1) objetos sin invocador dentro del repositorio, por esquema:
+  po 66, pag 17, cierre 13, saf 7, edc 6, dbo 1  (total 110 de 245)
+solo 18 procedimientos alimentan los 30 archivos .rdl.
+ejemplos de puntos de entrada sin disparador visible: cierre.sp_cmr_gen_mes, cierre.sp_saf_saldos,
+po.sys_sp_mov_cargo, pag.sp_*, edc.sp_genera_ordenes_dummy.">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L12-001</span>
+        <span class="ti">110 de los 245 objetos programables no son invocados por ningun otro objeto del repositorio ni por los 30 reportes</span>
+        <span class="meta">Control de dependencias &middot; BD &middot; esfuerzo ?</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO (66), PAG (17), CIERRE (13), SAF (7), edc (6), dbo (1)</span></div>
+        <div class="kv"><b>Ubicacion</b><span>grafo de dependencias construido sobre los 503 archivos de BD/ y los 30 .rdl</span></div>
+        <div class="kv"><b>Evidencia</b><pre>Objetos sin invocador dentro del repositorio, por esquema:
+  PO 66, PAG 17, CIERRE 13, SAF 7, edc 6, dbo 1  (total 110 de 245)
+Solo 18 procedimientos alimentan los 30 archivos .rdl.
+Ejemplos de puntos de entrada sin disparador visible: CIERRE.SP_CMR_GEN_MES, CIERRE.SP_SAF_SALDOS,
+PO.SYS_SP_MOV_CARGO, PAG.SP_*, edc.SP_Genera_Ordenes_Dummy.</pre></div>
+        <div class="kv"><b>Impacto</b><span>Los 110 objetos se disparan desde fuera del repositorio (jobs del Agent, orquestador, aplicacion o ejecucion manual), y ese disparador no esta versionado. Consecuencias practicas: (1) no se puede estimar el impacto de un cambio, porque el codigo no dice quien lo llama ni con que parametros; (2) no se puede distinguir un punto de entrada legitimo de codigo muerto, asi que nadie se atreve a borrar nada y el portafolio solo crece; (3) el orden y las dependencias del cierre viven en el conocimiento del equipo, no en un artefacto.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Exportar los jobs del SQL Server Agent y las tareas del orquestador al repositorio (script de creacion por job, versionado). Publicar la matriz disparador -&gt; procedimiento -&gt; tablas escritas -&gt; reportes que consumen. Marcar como candidato a baja todo objeto sin disparador tras un periodo de observacion con sys.dm_exec_procedure_stats o Extended Events.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Modelo de datos" data-env="BD"
+             data-lote="12"
+             data-txt="l12-002 187 de las 251 tablas no son referenciadas por ningun procedimiento ni funcion del repositorio, y son esquemas completos juicios (43), cierre_puente (42), ori (35), edc (20), edcc (16), demandas + demandas_archivo (10), po (9), dbo (7), pag (3), cierres (2) tablas sin ningun objeto que las lea o escriba dentro del repositorio, por esquema:
+  juicios 43, cierre_puente 42, ori 35, edc 20, edcc 16, demandas 5, demandas_archivo 5,
+  po 9, dbo 7, pag 3, cierres 2   (total 187 de 251)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L12-002</span>
+        <span class="ti">187 de las 251 tablas no son referenciadas por ningun procedimiento ni funcion del repositorio, y son esquemas completos</span>
+        <span class="meta">Modelo de datos &middot; BD &middot; esfuerzo ?</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>juicios (43), cierre_puente (42), ori (35), edc (20), edcc (16), demandas + demandas_archivo (10), PO (9), dbo (7), PAG (3), cierres (2)</span></div>
+        <div class="kv"><b>Ubicacion</b><span>grafo de dependencias tabla &lt;- objeto programable sobre BD/</span></div>
+        <div class="kv"><b>Evidencia</b><pre>Tablas sin ningun objeto que las lea o escriba dentro del repositorio, por esquema:
+  juicios 43, cierre_puente 42, ori 35, edc 20, edcc 16, demandas 5, demandas_archivo 5,
+  PO 9, dbo 7, PAG 3, cierres 2   (total 187 de 251)</pre></div>
+        <div class="kv"><b>Impacto</b><span>Cuatro esquemas completos (juicios, cierre_puente, ori, edcc) no tienen codigo asociado en el repositorio: o los escribe la aplicacion / un ETL que no esta versionado aqui, o son remanentes de proyectos anteriores. En ambos casos el repositorio no es la fuente unica de verdad de la base, que es el supuesto sobre el que se apoya cualquier control de cambios y cualquier estimacion de impacto. Ademas son tablas con dato personal (juicios, demandas) sin codigo visible que documente su ciclo de vida.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Contrastar las 187 tablas contra sys.dm_db_index_usage_stats y sys.tables (fecha de creacion y modificacion) en produccion para separar tres grupos: escritas por la aplicacion, escritas por un ETL externo, y sin actividad. Documentar el propietario de cada esquema y bajar o archivar lo inactivo, empezando por lo que contiene dato personal.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Riesgo concentrado" data-env="BD"
+             data-lote="12"
+             data-txt="l12-003 el riesgo esta concentrado en siete objetos: un procedimiento con 92 llamadores y seis funciones escalares entre 31 y 78 po.sp_saf_poliza_finaliza, dbo.fn_origen_fondos, dbo.fn_forma_nombre, dbo.fn_es_covid, dbo.cursorclosedeallocate, dbo.fn_tipo_canal, dbo.fecha_impago, dbo.fn_rubro_pol objetos con mas invocadores dentro del repositorio:
+  po.sp_saf_poliza_finaliza      92
+  dbo.fn_origen_fondos           78
+  dbo.fn_forma_nombre            69
+  dbo.fn_es_covid                66
+  dbo.cursorclosedeallocate      56
+  dbo.fn_tipo_canal              44
+  dbo.fecha_impago               43
+  dbo.fn_rubro_pol               31
+tablas mas referenciadas: po.saf_poliza_errores 104, po.saf_catalogo_conceptos 97,
+po.saf_cat_contable 96, po.control_historico_traspasos 85, po.saf_mov_abono 81.">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L12-003</span>
+        <span class="ti">El riesgo esta concentrado en siete objetos: un procedimiento con 92 llamadores y seis funciones escalares entre 31 y 78</span>
+        <span class="meta">Riesgo concentrado &middot; BD &middot; esfuerzo ?</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SP_SAF_POLIZA_FINALIZA, dbo.FN_ORIGEN_FONDOS, dbo.FN_FORMA_NOMBRE, dbo.FN_ES_COVID, dbo.CursorCloseDeallocate, dbo.FN_TIPO_CANAL, dbo.FECHA_IMPAGO, dbo.FN_RUBRO_POL</span></div>
+        <div class="kv"><b>Ubicacion</b><span>conteo de invocadores por objeto</span></div>
+        <div class="kv"><b>Evidencia</b><pre>Objetos con mas invocadores dentro del repositorio:
+  PO.SP_SAF_POLIZA_FINALIZA      92
+  dbo.FN_ORIGEN_FONDOS           78
+  dbo.FN_FORMA_NOMBRE            69
+  dbo.FN_ES_COVID                66
+  dbo.CursorCloseDeallocate      56
+  dbo.FN_TIPO_CANAL              44
+  dbo.FECHA_IMPAGO               43
+  dbo.FN_RUBRO_POL               31
+Tablas mas referenciadas: PO.SAF_POLIZA_ERRORES 104, PO.SAF_CATALOGO_CONCEPTOS 97,
+PO.SAF_CAT_CONTABLE 96, PO.CONTROL_HISTORICO_TRASPASOS 85, PO.SAF_MOV_ABONO 81.</pre></div>
+        <div class="kv"><b>Impacto</b><span>Es la mejor noticia de la auditoria y define el orden de trabajo: corregir ocho objetos alcanza a casi todo el portafolio, mientras que cualquier defecto introducido en ellos tambien se propaga a todo. Tambien fija donde poner las pruebas primero: una prueba unitaria sobre FN_ES_COVID o FN_RUBRO_POL protege mas cifras que veinte pruebas sobre procedimientos hoja.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Tratar estos ocho objetos como codigo critico: revision obligatoria de dos personas, bateria de pruebas con casos de borde antes de tocarlos, y medicion de rendimiento antes y despues. Convertir las funciones escalares con acceso a datos en funciones en linea (TVF) o en columnas materializadas del universo de cierre.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Control de ambientes" data-env="reportes"
+             data-lote="12"
+             data-txt="l12-006 los 30 archivos .rdl son 18 reportes logicos duplicados por ambiente, con la cadena de conexion embebida y sin origen de datos compartido los 30 archivos de reportes/ 30 archivos = 18 reportes logicos; 10 de ellos tienen 2 o 3 variantes.
+en 8 de los 10 grupos la unica diferencia real es la cadena de conexion.
+cadenas embebidas encontradas:
+  data source=10.10.8.22\saf;initial catalog=kardia      18 archivos
+  data source=10.10.9.125\saf;initial catalog=kardia      8 archivos
+  data source=10.10.8.22\saf;initial catalog=informes     2 archivos
+  data source=srv-ionsqlaws\saf;initial catalog=kardia    2 archivos
+archivos con datasourcereference (origen de datos compartido de ssrs): 0 de 30.">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L12-006</span>
+        <span class="ti">Los 30 archivos .rdl son 18 reportes logicos duplicados por ambiente, con la cadena de conexion embebida y sin origen de datos compartido</span>
+        <span class="meta">Control de ambientes &middot; reportes &middot; esfuerzo ?</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>los 30 archivos de reportes/</span></div>
+        <div class="kv"><b>Ubicacion</b><span>reportes/*.rdl (ConnectString y DataSourceReference)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>30 archivos = 18 reportes logicos; 10 de ellos tienen 2 o 3 variantes.
+En 8 de los 10 grupos la unica diferencia real es la cadena de conexion.
+Cadenas embebidas encontradas:
+  Data Source=10.10.8.22\SAF;Initial Catalog=KARDIA      18 archivos
+  Data Source=10.10.9.125\SAF;Initial Catalog=KARDIA      8 archivos
+  Data Source=10.10.8.22\SAF;Initial Catalog=INFORMES     2 archivos
+  Data Source=SRV-IONSQLAWS\SAF;Initial Catalog=KARDIA    2 archivos
+Archivos con DataSourceReference (origen de datos compartido de SSRS): 0 de 30.</pre></div>
+        <div class="kv"><b>Impacto</b><span>El ambiente vive dentro del artefacto, igual que en el codigo SQL: el mismo reporte se duplica para apuntar a otro servidor. Cada cambio de formato o de campo hay que aplicarlo dos o tres veces, y basta publicar el archivo equivocado para que un usuario consulte otro ambiente sin notarlo. Tambien deja tres direcciones de servidor y dos catalogos escritos en archivos que se comparten por correo.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Migrar los 30 archivos a un unico juego de 18, con origen de datos compartido de SSRS por ambiente (DataSourceReference). El despliegue selecciona el origen; el artefacto deja de conocer servidores. Publicar por script (rs.exe o la API de SSRS) desde el repositorio, no manualmente.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Control de ambientes" data-env="reportes"
+             data-lote="12"
+             data-txt="l12-007 las variantes qa apuntan a un esquema que no existe en el repositorio y a otro catalogo, y conviven en la misma carpeta que las de produccion poliza contable ion 100 qa.rdl, poliza contable ion historico qa.rdl, rep-pol-010-0226 ... qa.rdl poliza contable ion historico qa.rdl
+  exec [ap].[sys_sp_balance_detail_sql] ...
+  select [id],[descripcion] from [informes].[po].[cat_tipo_poliza] order by id
+  connectstring: data source=10.10.8.22\saf;initial catalog=informes
+los esquemas presentes en el repositorio son po, cierre, pag, rpt, saf, edc y dbo: el esquema ap no existe.
+las variantes no qa del mismo reporte usan [po].[sys_sp_balance_detail_sql] y order by descripcion.">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L12-007</span>
+        <span class="ti">Las variantes QA apuntan a un esquema que no existe en el repositorio y a otro catalogo, y conviven en la misma carpeta que las de produccion</span>
+        <span class="meta">Control de ambientes &middot; reportes &middot; esfuerzo ?</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>Poliza Contable ION 100 QA.rdl, Poliza Contable ION Historico QA.rdl, REP-POL-010-0226 ... QA.rdl</span></div>
+        <div class="kv"><b>Ubicacion</b><span>reportes/*QA.rdl</span></div>
+        <div class="kv"><b>Evidencia</b><pre>Poliza Contable ION Historico QA.rdl
+  EXEC [AP].[SYS_SP_BALANCE_DETAIL_SQL] ...
+  SELECT [ID],[DESCRIPCION] FROM [INFORMES].[PO].[CAT_TIPO_POLIZA] ORDER BY ID
+  ConnectString: Data Source=10.10.8.22\SAF;Initial Catalog=INFORMES
+Los esquemas presentes en el repositorio son PO, CIERRE, PAG, RPT, SAF, edc y dbo: el esquema AP no existe.
+Las variantes no QA del mismo reporte usan [PO].[SYS_SP_BALANCE_DETAIL_SQL] y ORDER BY DESCRIPCION.</pre></div>
+        <div class="kv"><b>Impacto</b><span>Hay una tercera copia de la logica de poliza contable en un esquema y catalogo que la auditoria no puede ver (AP en INFORMES), por lo que no es posible afirmar que produzca las mismas cifras. El orden del catalogo de tipo de poliza tambien difiere (ID contra DESCRIPCION), lo que cambia la opcion preseleccionada del reporte. Artefactos de QA guardados junto a los productivos, sin marca de ambiente fuera del nombre del archivo, hacen probable una publicacion equivocada.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Decidir si el esquema AP en el catalogo INFORMES es un ambiente de pruebas o una segunda implementacion en uso; si es lo primero, retirar los artefactos QA de la carpeta y separarlos por rama o carpeta de ambiente. Si es lo segundo, incorporarlo al alcance de la auditoria y al control de cambios.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Mantenibilidad" data-env="reportes"
+             data-lote="12"
+             data-txt="l12-008 dos reportes con nombres distintos ejecutan el mismo dataset: el nombre del archivo no describe su contenido reporte de pagos kardia.rdl, reporte no identificados.rdl, reporte no identificados kardia.rdl reporte de pagos kardia.rdl        -&gt; commandtext: reporte_no_identificados
+reporte no identificados.rdl        -&gt; commandtext: reporte_no_identificados
+reporte no identificados kardia.rdl -&gt; commandtext: reporte_no_identificados">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L12-008</span>
+        <span class="ti">Dos reportes con nombres distintos ejecutan el mismo dataset: el nombre del archivo no describe su contenido</span>
+        <span class="meta">Mantenibilidad &middot; reportes &middot; esfuerzo ?</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>Reporte de Pagos KARDIA.rdl, Reporte no identificados.rdl, Reporte no identificados KARDIA.rdl</span></div>
+        <div class="kv"><b>Ubicacion</b><span>reportes/Reporte de Pagos KARDIA.rdl</span></div>
+        <div class="kv"><b>Evidencia</b><pre>Reporte de Pagos KARDIA.rdl        -&gt; CommandText: REPORTE_NO_IDENTIFICADOS
+Reporte no identificados.rdl        -&gt; CommandText: REPORTE_NO_IDENTIFICADOS
+Reporte no identificados KARDIA.rdl -&gt; CommandText: REPORTE_NO_IDENTIFICADOS</pre></div>
+        <div class="kv"><b>Impacto</b><span>El reporte de pagos entrega, en realidad, los pagos no identificados. Es el mismo patron de copia y renombrado que se documento en el codigo SQL (clones divergentes), ahora en la capa de reportes: quien pida &#x27;el reporte de pagos&#x27; recibira otra poblacion.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Confirmar con el area usuaria cual es el contenido esperado del reporte de pagos; si no existe, retirar el archivo en vez de dejarlo con un nombre que no corresponde.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Trazabilidad" data-env="reportes"
+             data-lote="12"
+             data-txt="l12-009 solo 18 de los 245 objetos programables alimentan reportes versionados: el resto de la entrega de informacion no es visible reportes/ frente a bd/ procedimientos consumidos por los 30 .rdl: 18 (los mas usados: po.sp_saf_poliza_movxdia en 4 archivos,
+cierre.sp_cmr_mes_vis, po.sys_sp_balance_account_sql, po.sys_sp_balance_detail_sql,
+rpt.castigo_reest_saldos y dbo.reporte_cobranza_integracion en 2 cada uno).
+los 20 procedimientos *_vis y *_rpt de cierre existen, pero solo una parte aparece en un .rdl.">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L12-009</span>
+        <span class="ti">Solo 18 de los 245 objetos programables alimentan reportes versionados: el resto de la entrega de informacion no es visible</span>
+        <span class="meta">Trazabilidad &middot; reportes &middot; esfuerzo ?</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>reportes/ frente a BD/</span></div>
+        <div class="kv"><b>Ubicacion</b><span>grafo .rdl -&gt; procedimiento</span></div>
+        <div class="kv"><b>Evidencia</b><pre>Procedimientos consumidos por los 30 .rdl: 18 (los mas usados: PO.SP_SAF_POLIZA_MOVxDIA en 4 archivos,
+CIERRE.SP_CMR_MES_VIS, PO.SYS_SP_BALANCE_ACCOUNT_SQL, PO.SYS_SP_BALANCE_DETAIL_SQL,
+RPT.CASTIGO_REEST_SALDOS y dbo.REPORTE_COBRANZA_INTEGRACION en 2 cada uno).
+Los 20 procedimientos *_VIS y *_RPT de CIERRE existen, pero solo una parte aparece en un .rdl.</pre></div>
+        <div class="kv"><b>Impacto</b><span>Los procedimientos con sufijo VIS y RPT estan escritos para alimentar reportes, pero no todos tienen un artefacto asociado en el repositorio. La hipotesis mas probable es que se consuman desde Excel, desde consultas directas o desde reportes que no estan versionados; conviene confirmarlo, porque de ahi puede salir informacion que llega a comites sin control de cambios ni trazabilidad de la cifra.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Inventariar el catalogo de SSRS y los libros de Excel con conexion a KARDIA en produccion, y cerrar la matriz procedimiento -&gt; consumidor. Todo consumidor de cifra contable deberia quedar versionado.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Capa de reportes" data-env="reportes"
+             data-lote="12"
+             data-txt="l12-010 consultas sql escritas dentro de los artefactos de reporte poliza contable ion 100*.rdl, poliza contable ion historico*.rdl select [id],[descripcion] from [po].[cat_tipo_poliza] order by descripcion asc
+(en la variante qa: from [informes].[po].[cat_tipo_poliza] order by id)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L12-010</span>
+        <span class="ti">Consultas SQL escritas dentro de los artefactos de reporte</span>
+        <span class="meta">Capa de reportes &middot; reportes &middot; esfuerzo ?</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>Poliza Contable ION 100*.rdl, Poliza Contable ION Historico*.rdl</span></div>
+        <div class="kv"><b>Ubicacion</b><span>reportes/*.rdl (datasets secundarios)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>SELECT [ID],[DESCRIPCION] FROM [PO].[CAT_TIPO_POLIZA] ORDER BY DESCRIPCION ASC
+(en la variante QA: FROM [INFORMES].[PO].[CAT_TIPO_POLIZA] ORDER BY ID)</pre></div>
+        <div class="kv"><b>Impacto</b><span>Consultas embebidas en el reporte quedan fuera del control de cambios de la base: no aparecen en una revision de codigo SQL, no se pueden probar y cambian de significado si el catalogo cambia. En este caso es solo un catalogo de apoyo, pero es el mismo mecanismo por el que la logica de negocio termina distribuida entre capas.</span></div>
+        <div class="kv rem"><b>Remediacion</b><span>Sustituir por un procedimiento de catalogo unico y, cuando exista el portal, exponerlo como servicio de catalogos para reportes y aplicaciones.</span></div>
+      </div>
+    </article></div>
+
+
+
+  <h2>Catalogo de valores hardcodeados y clasificacion de parametrizacion</h2>
+  <div class="bar">
+    <label>Clasificacion</label><select id="hc"><option value="">Todas</option><option>Catalogo en BD (no editable en portal)</option><option>Configuracion de ambiente</option><option>No parametrizable: es un defecto</option></select>
+    <input type="search" id="hq" placeholder="Buscar valor, tipo, destino...">
+    <button class="rst" onclick="resetHc()">Limpiar</button>
+    <span class="count" id="hcnt"></span>
+  </div>
+  <table class="hard"><thead><tr><th>Valor</th><th>Tipo</th><th>Ocurrencias</th><th>Clasificacion</th><th>Destino propuesto</th><th>Nota</th></tr></thead>
+  <tbody id="hbody">
+      <tr data-clas="Configuracion de ambiente"
+          data-txt="10.10.8.22\saf, 10.10.9.125\saf, srv-ionsqlaws\saf direccion de servidor origen de datos compartido de ssrs por ambiente ningun artefacto usa datasourcereference: la cadena viaja dentro del archivo">
+        <td class="mono">10.10.8.22\SAF, 10.10.9.125\SAF, SRV-IONSQLAWS\SAF</td><td>Direccion de servidor</td><td class="num">30 de 30 archivos .rdl</td>
+        <td><span class="pill p3">Configuracion de ambiente</span></td>
+        <td>Origen de datos compartido de SSRS por ambiente</td><td class="nota">Ningun artefacto usa DataSourceReference: la cadena viaja dentro del archivo</td></tr>      <tr data-clas="Configuracion de ambiente"
+          data-txt="initial catalog=kardia / informes catalogo de base origen de datos compartido; el artefacto no nombra la base informes aparece solo en las variantes qa, junto al esquema ap que no existe en el repositorio">
+        <td class="mono">Initial Catalog=KARDIA / INFORMES</td><td>Catalogo de base</td><td class="num">28 y 2 archivos</td>
+        <td><span class="pill p3">Configuracion de ambiente</span></td>
+        <td>Origen de datos compartido; el artefacto no nombra la base</td><td class="nota">INFORMES aparece solo en las variantes QA, junto al esquema AP que no existe en el repositorio</td></tr>      <tr data-clas="No parametrizable: es un defecto"
+          data-txt="@id_producto=3, @id_fondeo=3, @id_etapa=4 / 0,0,0 filtro de universo del reporte parametro visible con valor por defecto en catalogo dos copias del mismo reporte con universos distintos (l12-005)">
+        <td class="mono">@ID_PRODUCTO=3, @ID_FONDEO=3, @ID_ETAPA=4 / 0,0,0</td><td>Filtro de universo del reporte</td><td class="num">2 variantes de Poliza Contable ION 100</td>
+        <td><span class="pill p4">No parametrizable: es un defecto</span></td>
+        <td>Parametro visible con valor por defecto en catalogo</td><td class="nota">Dos copias del mismo reporte con universos distintos (L12-005)</td></tr>      <tr data-clas="No parametrizable: es un defecto"
+          data-txt="@id_externo=&#x27;&#x27; y @id_externo=&#x27;0&#x27; convencion de &#x27;sin filtro&#x27; null como unica convencion de &#x27;sin filtro&#x27; cadena vacia y cero no son equivalentes para la comparacion del procedimiento">
+        <td class="mono">@ID_EXTERNO=&#x27;&#x27; y @ID_EXTERNO=&#x27;0&#x27;</td><td>Convencion de &#x27;sin filtro&#x27;</td><td class="num">2 variantes</td>
+        <td><span class="pill p4">No parametrizable: es un defecto</span></td>
+        <td>NULL como unica convencion de &#x27;sin filtro&#x27;</td><td class="nota">Cadena vacia y cero no son equivalentes para la comparacion del procedimiento</td></tr>      <tr data-clas="Catalogo en BD (no editable en portal)"
+          data-txt="order by id / order by descripcion en el catalogo de tipo de poliza consulta embebida en el reporte procedimiento de catalogo unico cambia la opcion preseleccionada del reporte segun el artefacto">
+        <td class="mono">ORDER BY ID / ORDER BY DESCRIPCION en el catalogo de tipo de poliza</td><td>Consulta embebida en el reporte</td><td class="num">6 archivos</td>
+        <td><span class="pill p2">Catalogo en BD (no editable en portal)</span></td>
+        <td>Procedimiento de catalogo unico</td><td class="nota">Cambia la opcion preseleccionada del reporte segun el artefacto</td></tr>
+  </tbody></table>
+
+  <h2>Plan de despliegue de la parametrizacion</h2>
+      <div class="fase"><h3>Fase A - Cerrar el mapa de dependencias (prerrequisito)</h3>
+        <p class="obj">Poder estimar el impacto de cualquier cambio antes de hacerlo</p><ul><li>Exportar al repositorio los jobs del SQL Server Agent y las tareas del orquestador (un script por job)</li><li>Publicar la matriz disparador -&gt; procedimiento -&gt; tablas escritas -&gt; reportes que consumen, generada desde el mismo analizador de esta auditoria</li><li>Medir uso real en produccion con sys.dm_exec_procedure_stats y sys.dm_db_index_usage_stats durante un ciclo de cierre completo</li><li>Clasificar los 110 objetos sin invocador y las 187 tablas sin codigo asociado en: en uso, escritos desde fuera, inactivos</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Nulo: solo lectura de metadatos y exportacion de configuracion</p></div>      <div class="fase"><h3>Fase B - Reportes: un artefacto por reporte logico</h3>
+        <p class="obj">Que el ambiente y los filtros salgan del archivo del reporte</p><ul><li>Migrar los 30 .rdl a 18 con origen de datos compartido por ambiente</li><li>Corregir L12-005 (filtros fijos divergentes) y L12-008 (reporte con nombre equivocado) previa confirmacion del area usuaria</li><li>Decidir el destino de los artefactos QA y del esquema AP en el catalogo INFORMES (L12-007)</li><li>Publicar por script desde el repositorio y comparar cifras del reporte antiguo y del nuevo sobre un periodo cerrado</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Bajo: cambia la entrega, no el calculo, y es verificable comparando cifras</p></div>      <div class="fase"><h3>Fase C - Observabilidad del proceso contable</h3>
+        <p class="obj">Que ningun error quede sin vigilancia</p><ul><li>Identificador de ejecucion y severidad en PO.SAF_POLIZA_ERRORES, con las etiquetas de proceso corregidas (L10-003, L12-004)</li><li>Monitor que alerte cuando una ejecucion cierre con errores, antes de que la poliza llegue a contabilidad</li><li>THROW al final de cada CATCH para que el orquestador distinga exito de exito aparente</li><li>Tablero de ejecuciones como primer modulo del portal de administracion</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Medio: cambia el contrato de error hacia el orquestador (antes exito, ahora falla)</p></div>      <div class="fase"><h3>Fase D - Objetos de alto apalancamiento</h3>
+        <p class="obj">Corregir ocho objetos que alcanzan a casi todo el portafolio</p><ul><li>Pruebas con casos de borde sobre las seis funciones escalares y sobre PO.SP_SAF_POLIZA_FINALIZA antes de tocarlas</li><li>Convertirlas en funciones en linea o en columnas materializadas del universo de cierre, midiendo duracion antes y despues</li><li>Revision obligatoria de dos personas para cualquier cambio en esos objetos</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Medio: alcance amplio; exige la bateria de pruebas antes del cambio</p></div>
+
+  <h2>Valor agregado propuesto</h2>
+  <ul class="va"><li>El analizador de dependencias que produjo estos numeros queda como herramienta, no como reporte: puede ejecutarse en cada rama para responder &#x27;que se rompe si cambio este objeto&#x27; y para alimentar el catalogo de dependencias del portal de administracion.</li><li>El hallazgo mas util para planear la remediacion no es un defecto, es la forma del grafo: ocho objetos concentran el alcance y 18 procedimientos concentran la entrega de informacion. Eso permite proteger el 90% del riesgo con pruebas sobre menos del 5% del portafolio.</li><li>La capa de reportes repite exactamente los patrones del codigo SQL (ambiente embebido, clones divergentes, filtros hardcodeados). Conviene tratarla en el mismo plan y con la misma compuerta de CI, en vez de como un tema de infraestructura aparte.</li></ul>
+</div>
+<footer>Generado por la auditoria automatizada + revision manual del codigo. Los hallazgos se sustentan en el codigo fuente;
+los que dependen de datos o de plan de ejecucion se marcan como tales en el impacto. Siguiente paso: validar los hallazgos y continuar con el siguiente lote.</footer>
+<script>
+const $=s=>document.querySelector(s), fs=$('#fs'),fc=$('#fc'),fe=$('#fe'),fq=$('#fq'),fl=$('#fl');
+function apply(){
+  let n=0, all=document.querySelectorAll('.f');
+  all.forEach(f=>{
+    const ok=(!fs.value||f.dataset.sev===fs.value)
+      &&(!fc.value||f.dataset.cat===fc.value)
+      &&(!fe.value||f.dataset.env.split(' ').includes(fe.value))
+      &&(!fl||!fl.value||f.dataset.lote===fl.value)
+      &&(!fq.value||f.dataset.txt.includes(fq.value.toLowerCase()));
+    f.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  $('#cnt').textContent=n+' de '+all.length+' hallazgos';
+}
+[fs,fc,fe,fl].forEach(x=>{if(x)x.onchange=apply;}); fq.oninput=apply;
+function reset(){fs.value=fc.value=fe.value='';if(fl)fl.value='';fq.value='';apply();}
+const cl=$('#cl'),cq=$('#cq');
+function applyCob(){
+  if(!cl)return; let n=0, rows=document.querySelectorAll('#cbody tr');
+  rows.forEach(r=>{
+    const ok=(!cl.value||r.dataset.lote===cl.value)&&(!cq.value||r.dataset.txt.includes(cq.value.toLowerCase()));
+    r.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  $('#ccnt').textContent=n+' de '+rows.length+' objetos';
+}
+if(cl){cl.onchange=applyCob; cq.oninput=applyCob;}
+function resetCob(){cl.value='';cq.value='';applyCob();}
+const hc=$('#hc'),hq=$('#hq');
+function applyHc(){
+  let n=0, rows=document.querySelectorAll('#hbody tr');
+  rows.forEach(r=>{
+    const ok=(!hc.value||r.dataset.clas===hc.value)&&(!hq.value||r.dataset.txt.includes(hq.value.toLowerCase()));
+    r.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  $('#hcnt').textContent=n+' de '+rows.length+' grupos';
+}
+hc.onchange=applyHc; hq.oninput=applyHc;
+function resetHc(){hc.value='';hq.value='';applyHc();}
+apply();applyHc();applyCob();
+</script>
+</body></html>

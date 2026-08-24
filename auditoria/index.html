@@ -31,21 +31,34 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
 </style></head><body>
 <header class="top">
   <h1>Auditoria de codigo SQL &mdash; KARDIA / SAF</h1>
-  <p>Consolidado de los lotes 1 a 6 y 10-11 &middot; 177 objetos programables + 251 tablas &middot; 59.218 lineas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (produccion)</p>
+  <p>Consolidado de los lotes 1 a 6, 10-11 y la fase de dependencias &middot; 177 objetos programables + 251 tablas + 30 reportes .rdl &middot; 59.218 lineas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (produccion)</p>
 </header>
 <div class="wrap">
 
   <div class="kpis">
-    <div class="kpi c"><b>20</b><span>Criticos</span></div>
-    <div class="kpi a"><b>46</b><span>Altos</span></div>
-    <div class="kpi m"><b>32</b><span>Medios</span></div>
+    <div class="kpi c"><b>22</b><span>Criticos</span></div>
+    <div class="kpi a"><b>51</b><span>Altos</span></div>
+    <div class="kpi m"><b>35</b><span>Medios</span></div>
     <div class="kpi b"><b>9</b><span>Bajos</span></div>
-    <div class="kpi"><b>58</b><span>Grupos de hardcodeo</span></div>
+    <div class="kpi"><b>63</b><span>Grupos de hardcodeo</span></div>
     <div class="kpi"><b>177</b><span>Objetos revisados</span></div>
     <div class="kpi"><b>100%</b><span>De las familias funcionales</span></div>
   </div>
 
-  <h2>Reportes</h2>
+  <h2>Para presentar al cliente</h2>
+  <div class="cards">
+    <div class="card"><h3>Resumen ejecutivo</h3>
+      <p>Los seis riesgos que importan, con evidencia, impacto de negocio y accion; los cuatro niveles de certeza de los hallazgos; y las decisiones que se necesitan de contabilidad, negocio, tecnologia y riesgos.</p>
+      <a class="go" href="06_ejecutivo.html">Abrir</a></div>
+    <div class="card"><h3>Plan de remediacion</h3>
+      <p>Ocho olas ordenadas por dependencia, con criterios de aceptacion verificables, riesgo por ola y las tres esperas externas que determinan el calendario.</p>
+      <a class="go" href="07_plan_remediacion.html">Abrir</a></div>
+    <div class="card"><h3>Portal de administracion</h3>
+      <p>Ocho modulos, modelo de parametros con vigencia, cuatro ojos, roles y stack recomendado: ASP.NET Core 8 + React con TypeScript sobre SQL Server.</p>
+      <a class="go" href="08_portal_admin.html">Abrir</a></div>
+  </div>
+
+  <h2>Reportes tecnicos por lote</h2>
   <div class="cards">
     <div class="card"><h3>Fase 0 &mdash; Inventario</h3>
       <p>Estructura confirmada de BD, BD_prod y reportes; codificacion, esquemas, drift dev-prod y cadenas de conexion de los .rdl.</p>
@@ -62,6 +75,9 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
     <div class="card"><h3>Lotes 10-11 &mdash; 27 objetos, 25 hallazgos</h3>
       <p>Familia completa de cierre: los 26 procedimientos de CIERRE, el de RPT y las cuatro tablas del esquema. Concentra los hallazgos de integridad contable, paridad dev-prod y observabilidad del cierre.</p>
       <a class="go" href="04_lotes10-11.html">Abrir</a></div>
+    <div class="card"><h3>Dependencias y reportes &mdash; 10 hallazgos</h3>
+      <p>Grafo completo de dependencias (245 objetos programables, 251 tablas) y auditoria de los 30 archivos .rdl: quien llama a cada objeto, que se rompe si se cambia y por donde sale la informacion al usuario.</p>
+      <a class="go" href="05_dependencias.html">Abrir</a></div>
   </div>
   <p class="lead" style="margin-top:14px">Los lotes 2 a 5 se entregan en un solo reporte con filtro por lote: al ser 62 variantes reales
   dentro de 80 archivos, los hallazgos son de familia (un patron con su lista de objetos y ocurrencias) y separarlos por lote habria
@@ -207,6 +223,26 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
   objetos programables del repositorio no aparecen en el export de BD_prod (L2-019, L6-004); el alcance del
   enmascaramiento de datos personales (L6-017); y si el canal minorista/comercial puede seguir derivandose de
   <span class="mono">TIP_TASA='F'</span> para efectos de reporte regulatorio.</p>
+
+  <h2>Cierre del diagnostico: la forma del grafo define el orden del trabajo</h2>
+  <p class="lead">La fase de dependencias reemplaza el orden de arriba por el <a href="07_plan_remediacion.html">plan de
+  ocho olas</a>, y agrega el dato que faltaba para planear: el riesgo esta concentrado. Ocho objetos son invocados por
+  casi todo el portafolio (<span class="mono">PO.SP_SAF_POLIZA_FINALIZA</span> con 92 llamadores y seis funciones
+  escalares con 31 a 78 cada una) y solo 18 procedimientos alimentan los 30 reportes, asi que proteger menos del 5% del
+  codigo con pruebas cubre la mayor parte del riesgo.</p>
+  <table><thead><tr><th>Hecho medido en la fase de dependencias</th><th>Escala</th><th>Por que importa</th></tr></thead><tbody>
+    <tr><td>Objetos programables sin invocador visible en el repositorio ni en los reportes</td><td class="num warn">110 de 245</td>
+        <td>Se disparan desde jobs u aplicaciones que no estan versionados: no se puede estimar impacto ni distinguir codigo muerto.</td></tr>
+    <tr><td>Tablas sin ningun objeto del repositorio que las use</td><td class="num warn">187 de 251</td>
+        <td>Cuatro esquemas completos (juicios, cierre_puente, ori, edcc) sin codigo asociado: el repositorio no es la fuente unica de verdad.</td></tr>
+    <tr><td>Objetos que escriben la bitacora de errores de poliza contra los que la leen</td><td class="num bad">102 escriben / 6 leen</td>
+        <td>Es la unica evidencia de fallo del proceso contable y nadie la vigila; con los CATCH sin THROW, el job termina en exito.</td></tr>
+    <tr><td>Archivos .rdl con la direccion del servidor embebida y sin origen de datos compartido</td><td class="num bad">30 de 30</td>
+        <td>18 reportes logicos duplicados por ambiente; dos copias del mismo reporte de poliza filtran productos y etapas distintos.</td></tr>
+  </tbody></table>
+  <p class="lead">Documentos para llevar al cliente: el <a href="06_ejecutivo.html">resumen ejecutivo</a> (riesgos,
+  impacto y decisiones requeridas), el <a href="07_plan_remediacion.html">plan de remediacion</a> con criterios de
+  aceptacion, y la <a href="08_portal_admin.html">propuesta del portal</a> con el stack recomendado.</p>
 
 </div>
 <footer>Los hallazgos se sustentan en la lectura del codigo fuente de los archivos del repositorio. No se ejecuto

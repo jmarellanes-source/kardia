@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plan de remediacion &mdash; KARDIA / SAF</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+nav.docs{padding:10px 32px;background:#131b29;border-bottom:1px solid #2a3549;font-size:13px}
+nav.docs a{margin-right:16px;text-decoration:none}
+.wrap{padding:22px 32px 60px;max-width:1180px}
+h2{margin:34px 0 12px;font-size:18px;border-left:3px solid #4c8dff;padding-left:10px}
+h3{margin:22px 0 6px;font-size:15px}
+p.lead{color:#c9d6ee;font-size:15px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:140px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b}.kpi.a b{color:#ffa94d}.kpi.m b{color:#ffd43b}.kpi.b b{color:#74c0fc}
+.card{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:16px 20px;margin:12px 0}
+.card.rojo{border-left:3px solid #ff6b6b}
+.card.ambar{border-left:3px solid #ffa94d}
+.card.azul{border-left:3px solid #4c8dff}
+.card.verde{border-left:3px solid #51cf66}
+.card h3{margin-top:0}
+.card .q{color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.num{white-space:nowrap;color:#93a1bb}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#c9d6ee}
+pre{margin:8px 0 0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:12px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
+.pill.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.pill.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.pill.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.pill.ok{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.info{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+ul{margin:6px 0;padding-left:20px}li{margin:4px 0}
+.ola{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 20px;margin:12px 0}
+.ola h3{margin:0 0 2px}
+.ola .obj{color:#93a1bb;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.tag{font-size:11px;color:#93a1bb;border:1px solid #35415a;border-radius:5px;padding:2px 7px;margin-right:6px}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px solid #35415a;color:#c9d6ee}
+</style></head><body>
+<header class="top"><h1>Plan de remediacion</h1><p>8 olas &middot; criterios de aceptacion verificables &middot; 31-42 sesiones de esfuerzo estimado</p></header>
+<nav class="docs">
+<a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
+<a href="07_plan_remediacion.html">Plan de remediacion</a><a href="08_portal_admin.html">Portal de administracion</a>
+<a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
+</nav>
+<div class="wrap">
+
+<p class="lead">Plan de remediacion en ocho olas, ordenadas por dependencia y no por severidad: las primeras dos
+no corrigen ningun calculo, pero sin ellas cualquier correccion se aplica sobre una version equivocada del
+codigo. Cada ola tiene criterios de aceptacion verificables, para que el avance se mida con evidencia y no con
+porcentajes.</p>
+
+<div class="card azul">
+<h3>Tres principios del plan</h3>
+<ul>
+<li><b>Nada se corrige sin linea base.</b> Primero se establece que corre en produccion y cuanto tarda; despues se cambia. Sin eso no hay forma de demostrar que la correccion mejoro algo.</li>
+<li><b>Ninguna cifra cambia sin aprobacion del area responsable.</b> Los hallazgos contables se corrigen con confirmacion escrita de contabilidad, no por criterio tecnico.</li>
+<li><b>Cada patron corregido queda protegido por una compuerta.</b> De lo contrario vuelve a entrar en el siguiente proyecto, que es exactamente como se llego al estado actual.</li>
+</ul>
+</div>
+
+<h2>Olas</h2>
+
+<div class="ola">
+  <h3>Ola 0 &mdash; Reconciliacion de ambientes y linea base <span class="tag">3-4 sesiones</span></h3>
+  <p class="obj">Saber que corre en produccion antes de tocar una linea de codigo.</p>
+  <div class="grid2">
+    <div><p class="q"><b>Acciones</b></p><ul><li>Comparar los 256 objetos comunes contra sys.sql_modules de produccion (nombre, fecha de modificacion y hash) y resolver los 19 objetos de cierre ausentes en el export.</li><li>Aclarar SP_SAF_SALDOS: 573 lineas en desarrollo contra 223 en produccion.</li><li>Exportar al repositorio los jobs del SQL Server Agent y las tareas del orquestador, un script por job.</li><li>Definir la rama por ambiente y congelar cambios manuales en produccion.</li><li>Publicar la matriz de paridad como linea base del control de cambios.</li></ul></div>
+    <div><p class="q"><b>Criterios de aceptacion</b></p><ul><li>Existe una matriz objeto x ambiente con hash y fecha, sin celdas desconocidas.</li><li>Todo objeto productivo tiene su equivalente identico en el repositorio, o una excepcion documentada y con responsable.</li><li>Cada procedimiento de cierre tiene identificado su disparador.</li></ul></div>
+  </div>
+  <p style="margin:8px 0 0;font-size:12.5px;color:#93a1bb"><b>Riesgo de la ola:</b> Nulo en produccion: solo lectura de metadatos.<br>
+  <b>Depende de:</b> Ninguna. Es el punto de partida.</p>
+</div>
+<div class="ola">
+  <h3>Ola 1 &mdash; Eliminar la causa del drift: nombres de base y ambiente en el codigo <span class="tag">2-3 sesiones</span></h3>
+  <p class="obj">Que el mismo script se despliegue sin editar en los tres ambientes.</p>
+  <div class="grid2">
+    <div><p class="q"><b>Acciones</b></p><ul><li>Crear sinonimos por ambiente para las bases externas (Quiero_Confianza, Quiero_Confianza_shadow, Quiero_Confianza_CreditoPuente_QA) y sustituir los nombres embebidos en los 7 objetos afectados.</li><li>Eliminar toda referencia a bases de QA desde objetos productivos (4 procedimientos).</li><li>Reemplazar los nombres de base de tres partes por sinonimos en el resto del portafolio.</li><li>Compuerta de integracion continua que rechace cualquier script con un nombre de base literal.</li></ul></div>
+    <div><p class="q"><b>Criterios de aceptacion</b></p><ul><li>Ningun objeto productivo referencia una base de QA o shadow.</li><li>El mismo archivo .sql se aplica sin modificacion en desarrollo, QA y produccion.</li><li>La compuerta falla en una prueba deliberada con un nombre de base literal.</li></ul></div>
+  </div>
+  <p style="margin:8px 0 0;font-size:12.5px;color:#93a1bb"><b>Riesgo de la ola:</b> Bajo: cambia la resolucion de nombres, no la logica. Verificable comparando el plan y el resultado sobre un periodo cerrado.<br>
+  <b>Depende de:</b> Ola 0.</p>
+</div>
+<div class="ola">
+  <h3>Ola 2 &mdash; Correcciones criticas de cifra <span class="tag">4-6 sesiones</span></h3>
+  <p class="obj">Cerrar los defectos que hoy pueden alterar una cifra contable.</p>
+  <div class="grid2">
+    <div><p class="q"><b>Acciones</b></p><ul><li>Idempotencia del cierre mensual individual: reprocesar un periodo debe dejar el mismo resultado (borrado por periodo con llave, o UPSERT por llave natural).</li><li>Sustituir la fecha fija &#x27;20260123&#x27; del cierre comercial por el periodo recibido como parametro.</li><li>Corregir el DELETE de PRINCIPAL sin filtro de poliza en PO.SYS_SP_MOV_CARGO.</li><li>Retirar edc.SP_Genera_Ordenes_Dummy de produccion o protegerlo con guarda de ambiente, y limpiar el correo de prueba del padron de clientes.</li><li>Resolver, ya con respuesta de contabilidad, los cuatro hallazgos contables pendientes de validacion.</li></ul></div>
+    <div><p class="q"><b>Criterios de aceptacion</b></p><ul><li>Ejecutar dos veces el cierre de un periodo cerrado produce cifras identicas (prueba automatizada).</li><li>El cierre de un periodo historico reproduce la cifra publicada en su momento.</li><li>Ningun objeto productivo genera datos aleatorios ni de prueba.</li><li>Cada correccion contable tiene aprobacion escrita del area responsable.</li></ul></div>
+  </div>
+  <p style="margin:8px 0 0;font-size:12.5px;color:#93a1bb"><b>Riesgo de la ola:</b> Alto: toca calculo. Exige ambiente de pruebas con copia de datos y comparacion de cifras antes y despues.<br>
+  <b>Depende de:</b> Ola 0, Ola 1 y las respuestas de contabilidad y negocio.</p>
+</div>
+<div class="ola">
+  <h3>Ola 3 &mdash; Transacciones y observabilidad <span class="tag">4-5 sesiones</span></h3>
+  <p class="obj">Que un fallo se detenga, se vea y se pueda reprocesar.</p>
+  <div class="grid2">
+    <div><p class="q"><b>Acciones</b></p><ul><li>Plantilla transaccional estandar: SET XACT_ABORT ON, control de XACT_STATE() y THROW al final de cada CATCH.</li><li>Aplicarla a los objetos con transaccion, empezando por la familia de cierre.</li><li>Identificador de ejecucion y severidad en PO.SAF_POLIZA_ERRORES, con las etiquetas de proceso corregidas.</li><li>Monitor que alerte cuando una ejecucion cierre con errores, antes de que la poliza llegue a contabilidad.</li><li>Bitacora de inicio y fin por proceso, con duracion y filas afectadas.</li></ul></div>
+    <div><p class="q"><b>Criterios de aceptacion</b></p><ul><li>Un error simulado a mitad del cierre deja la base sin cambios parciales y el job en estado fallido.</li><li>Toda ejecucion queda registrada con identificador, duracion y conteo de errores.</li><li>La alerta llega antes del envio de la poliza en una prueba controlada.</li></ul></div>
+  </div>
+  <p style="margin:8px 0 0;font-size:12.5px;color:#93a1bb"><b>Riesgo de la ola:</b> Medio: cambia el contrato de error hacia el orquestador. Procesos que hoy terminan en &#x27;exito&#x27; empezaran a fallar de forma visible, lo cual es el objetivo.<br>
+  <b>Depende de:</b> Ola 0. Puede avanzar en paralelo con la Ola 2.</p>
+</div>
+<div class="ola">
+  <h3>Ola 4 &mdash; Catalogos y parametrizacion <span class="tag">6-8 sesiones</span></h3>
+  <p class="obj">Sacar las reglas de negocio del codigo y ponerlas bajo administracion con vigencia.</p>
+  <div class="grid2">
+    <div><p class="q"><b>Acciones</b></p><ul><li>Modelo de catalogos con vigencia (parametro, valor, vigencia desde y hasta, ambiente, autor, aprobador).</li><li>Cargar los 63 grupos de hardcodeo segun su clasificacion: parametrizables en portal, catalogos en base y defectos.</li><li>Unificar las reglas duplicadas: dos definiciones de cuota COVID, dos de cartera, dos de cuentas excluidas.</li><li>Reemplazar en el codigo los valores fijos por lectura del catalogo con la vigencia del periodo procesado.</li><li>Primer modulo del portal: consulta, edicion con cuatro ojos y bitacora.</li></ul></div>
+    <div><p class="q"><b>Criterios de aceptacion</b></p><ul><li>Recalcular un periodo historico usa los valores vigentes en ese periodo y reproduce la cifra publicada.</li><li>Ningun valor de la lista de parametrizables aparece como literal en el codigo (verificado por la compuerta de integracion continua).</li><li>Todo cambio de parametro tiene autor, aprobador distinto y fecha en la bitacora.</li></ul></div>
+  </div>
+  <p style="margin:8px 0 0;font-size:12.5px;color:#93a1bb"><b>Riesgo de la ola:</b> Medio-alto: el calculo pasa a depender de datos. Obliga a versionar el catalogo con vigencia, nunca a sobrescribirlo.<br>
+  <b>Depende de:</b> Ola 1 y la definicion de fuentes oficiales por parte de negocio.</p>
+</div>
+<div class="ola">
+  <h3>Ola 5 &mdash; Rendimiento y concurrencia <span class="tag">5-7 sesiones</span></h3>
+  <p class="obj">Cifras reproducibles y una ventana de cierre que no crezca con la cartera.</p>
+  <div class="grid2">
+    <div><p class="q"><b>Acciones</b></p><ul><li>Sustituir WITH (NOLOCK) por nivel de aislamiento snapshot en los calculos financieros, empezando por la familia de cierre.</li><li>Convertir las funciones escalares con acceso a datos en funciones en linea o columnas materializadas (seis funciones con 31 a 78 invocadores).</li><li>Eliminar cursores en los procedimientos de saldos y reescribirlos en operaciones de conjunto.</li><li>Revisar tipos MONEY y las agregaciones con granularidad inconsistente.</li><li>Medir duracion y lecturas antes y despues de cada cambio.</li></ul></div>
+    <div><p class="q"><b>Criterios de aceptacion</b></p><ul><li>El cierre produce la misma cifra en ejecuciones concurrentes con carga.</li><li>Duracion del cierre igual o menor que la linea base, documentada objeto por objeto.</li><li>Ninguna lectura sucia en los calculos que alimentan la poliza.</li></ul></div>
+  </div>
+  <p style="margin:8px 0 0;font-size:12.5px;color:#93a1bb"><b>Riesgo de la ola:</b> Medio: sin cambio funcional esperado, pero exige medicion antes y despues y ventana de pruebas con volumen.<br>
+  <b>Depende de:</b> Ola 0 y linea base de duracion.</p>
+</div>
+<div class="ola">
+  <h3>Ola 6 &mdash; Capa de reportes <span class="tag">3-4 sesiones</span></h3>
+  <p class="obj">Que el ambiente y los filtros salgan de los artefactos de reporte.</p>
+  <div class="grid2">
+    <div><p class="q"><b>Acciones</b></p><ul><li>Consolidar los 30 archivos .rdl en 18 reportes logicos con origen de datos compartido por ambiente.</li><li>Corregir los filtros fijos divergentes de la poliza contable y el reporte con nombre equivocado.</li><li>Decidir el destino de los artefactos QA y del esquema AP en el catalogo INFORMES.</li><li>Publicar por script desde el repositorio y cerrar la matriz procedimiento a consumidor.</li></ul></div>
+    <div><p class="q"><b>Criterios de aceptacion</b></p><ul><li>Un solo artefacto por reporte logico, sin direcciones de servidor dentro del archivo.</li><li>El reporte nuevo y el anterior producen la misma cifra sobre un periodo cerrado.</li><li>La publicacion es reproducible desde el repositorio, sin pasos manuales.</li></ul></div>
+  </div>
+  <p style="margin:8px 0 0;font-size:12.5px;color:#93a1bb"><b>Riesgo de la ola:</b> Bajo: cambia la entrega, no el calculo.<br>
+  <b>Depende de:</b> Ola 1 (definicion de ambientes).</p>
+</div>
+<div class="ola">
+  <h3>Ola 7 &mdash; Controles preventivos y cierre del ciclo <span class="tag">4-5 sesiones</span></h3>
+  <p class="obj">Que los patrones corregidos no vuelvan a entrar.</p>
+  <div class="grid2">
+    <div><p class="q"><b>Acciones</b></p><ul><li>Compuerta de integracion continua sobre cada cambio: nombres de base literales, NOLOCK en calculos, transacciones sin XACT_ABORT, CATCH sin THROW, valores de la lista de parametrizables.</li><li>Deteccion automatica de clones divergentes: agrupar procedimientos por similitud y alertar cuando dos copias se separen.</li><li>Pruebas de regresion de cifra sobre un periodo cerrado, ejecutadas en cada despliegue.</li><li>Despliegue automatizado por ambiente con aprobacion, y evidencia de conciliacion por cierre.</li></ul></div>
+    <div><p class="q"><b>Criterios de aceptacion</b></p><ul><li>Ningun cambio llega a produccion sin pasar la compuerta.</li><li>La suite de regresion de cifra corre en cada despliegue y bloquea diferencias no explicadas.</li><li>Existe evidencia de conciliacion archivada por cierre.</li></ul></div>
+  </div>
+  <p style="margin:8px 0 0;font-size:12.5px;color:#93a1bb"><b>Riesgo de la ola:</b> Bajo, y es lo que evita repetir la auditoria en dos anios.<br>
+  <b>Depende de:</b> Olas 1 a 6 (cada compuerta se activa cuando su patron ya fue corregido).</p>
+</div>
+
+<h2>Nota sobre el esfuerzo</h2>
+<div class="card">
+<p>Las estimaciones estan en <b>sesiones de trabajo asistido</b> (una sesion equivale a una jornada de desarrollo
+enfocado con generacion de codigo asistida), y suman aproximadamente <b>31 a 42 sesiones</b> para las ocho olas.
+El tiempo de calendario no lo determina el esfuerzo, sino tres esperas externas que conviene planear desde el
+inicio:</p>
+<ul>
+<li>Respuestas de contabilidad y negocio sobre los cuatro hallazgos contables y las fuentes oficiales de catalogos (bloquea las Olas 2 y 4).</li>
+<li>Provision del ambiente de pruebas con copia de datos y de las autorizaciones de lectura de metadatos en produccion (bloquea las Olas 0, 2 y 5).</li>
+<li>Ventanas de cierre disponibles para probar con volumen (bloquea la Ola 5).</li>
+</ul>
+<p>Recomendacion: iniciar hoy las Olas 0 y 1, que no dependen de ninguna de las tres esperas, y usar ese tiempo
+para conseguir las definiciones que las Olas 2 y 4 necesitan.</p>
+</div>
+
+<h2>Secuencia sugerida</h2>
+<table><thead><tr><th>Bloque</th><th>Olas</th><th>Resultado al terminar</th></tr></thead><tbody>
+<tr><td><b>Bloque 1: control</b></td><td>0 y 1</td><td>Se sabe que corre en produccion y el mismo script se despliega en los tres ambientes. Sin cambios de calculo.</td></tr>
+<tr><td><b>Bloque 2: cifra y visibilidad</b></td><td>2 y 3 (en paralelo)</td><td>El cierre es repetible, los errores detienen el proceso y se alertan antes de contabilidad.</td></tr>
+<tr><td><b>Bloque 3: reglas</b></td><td>4</td><td>Las reglas de negocio se administran desde el portal con vigencia y cuatro ojos.</td></tr>
+<tr><td><b>Bloque 4: desempenio y entrega</b></td><td>5 y 6</td><td>Cifras reproducibles bajo concurrencia y un solo artefacto por reporte.</td></tr>
+<tr><td><b>Bloque 5: sostenibilidad</b></td><td>7</td><td>Los patrones corregidos no pueden volver a entrar.</td></tr>
+</tbody></table>
+
+</div>
+<footer>Auditoria de codigo SQL KARDIA / SAF &middot; analisis estatico del repositorio (BD, BD_prod y reportes).
+No se ejecuto ningun objeto contra una instancia de SQL Server ni se leyeron datos productivos:
+los hallazgos que dependen de datos, de plan de ejecucion o de reglas contables se marcan como pendientes de validacion.</footer>
+</body></html>

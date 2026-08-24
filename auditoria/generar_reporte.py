@@ -84,6 +84,10 @@ def build(data):
     objs = "".join(f"<li>{e(o)}</li>" for o in data["alcance"]["objetos"])
 
     cob = data.get("cobertura") or []
+    sub = data["alcance"].get("subtitulo") or (
+        f"Lote {data['lote']} &middot; {len(cob) or 20} objetos de mayor riesgo &middot; "
+        f"{data['alcance'].get('lineas_revisadas', 0):,} lineas revisadas en <b>BD</b> (dev/QA) "
+        "y <b>BD_prod</b> (produccion)")
     cob_rows = "".join(
         f"""      <tr data-lote="{e(str(c['lote']))}" data-txt="{e(c['obj'].lower())}">
         <td class="num">{e(str(c['lote']))}</td><td class="mono">{e(c['obj'])}</td>
@@ -180,7 +184,7 @@ footer{{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3
 </style></head><body>
 <header class="top">
   <h1>Auditoria de codigo SQL &mdash; KARDIA / SAF</h1>
-  <p>Lote {data['lote']} &middot; {len(cob) or 20} objetos de mayor riesgo &middot; {data['alcance']['lineas_revisadas']:,} lineas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (produccion) &middot; {data['fecha']}</p>
+  <p>{sub} &middot; {data['fecha']}</p>
 </header>
 <div class="wrap">
 

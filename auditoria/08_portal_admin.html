@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Portal de administracion de parametros y ambientes &mdash; KARDIA / SAF</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+nav.docs{padding:10px 32px;background:#131b29;border-bottom:1px solid #2a3549;font-size:13px}
+nav.docs a{margin-right:16px;text-decoration:none}
+.wrap{padding:22px 32px 60px;max-width:1180px}
+h2{margin:34px 0 12px;font-size:18px;border-left:3px solid #4c8dff;padding-left:10px}
+h3{margin:22px 0 6px;font-size:15px}
+p.lead{color:#c9d6ee;font-size:15px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:140px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b}.kpi.a b{color:#ffa94d}.kpi.m b{color:#ffd43b}.kpi.b b{color:#74c0fc}
+.card{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:16px 20px;margin:12px 0}
+.card.rojo{border-left:3px solid #ff6b6b}
+.card.ambar{border-left:3px solid #ffa94d}
+.card.azul{border-left:3px solid #4c8dff}
+.card.verde{border-left:3px solid #51cf66}
+.card h3{margin-top:0}
+.card .q{color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.num{white-space:nowrap;color:#93a1bb}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#c9d6ee}
+pre{margin:8px 0 0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:12px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
+.pill.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.pill.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.pill.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.pill.ok{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.info{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+ul{margin:6px 0;padding-left:20px}li{margin:4px 0}
+.ola{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 20px;margin:12px 0}
+.ola h3{margin:0 0 2px}
+.ola .obj{color:#93a1bb;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.tag{font-size:11px;color:#93a1bb;border:1px solid #35415a;border-radius:5px;padding:2px 7px;margin-right:6px}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px solid #35415a;color:#c9d6ee}
+</style></head><body>
+<header class="top"><h1>Portal de administracion de parametros y ambientes</h1><p>8 modulos &middot; parametros con vigencia y cuatro ojos &middot; ASP.NET Core 8 + React con TypeScript sobre SQL Server</p></header>
+<nav class="docs">
+<a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
+<a href="07_plan_remediacion.html">Plan de remediacion</a><a href="08_portal_admin.html">Portal de administracion</a>
+<a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
+</nav>
+<div class="wrap">
+
+<p class="lead">Propuesta del portal de administracion: el lugar donde las reglas de negocio, los catalogos y la
+configuracion por ambiente dejan de vivir dentro del codigo SQL. No es una herramienta de reportes ni un
+reemplazo del sistema: es la capa de gobierno que hoy no existe, y es lo que hace sostenible la remediacion.</p>
+
+<div class="card azul">
+<h3>El problema que resuelve, en concreto</h3>
+<p>La auditoria encontro <b>63 grupos de valores hardcodeados</b>, y el caso mas ilustrativo es la participacion
+ION/Afirme partida en 0.10 y 0.90 dentro de <b>28 archivos distintos</b>. Cambiar ese porcentaje hoy significa
+un proyecto de desarrollo con 28 oportunidades de equivocarse, sin bitacora de quien lo pidio ni de quien lo
+autorizo, y sin forma de recalcular un periodo anterior con el valor que estaba vigente entonces. Con el
+portal es un cambio con autor, aprobador, vigencia y trazabilidad.</p>
+</div>
+
+<h2>Modulos</h2>
+<table><thead><tr><th>&nbsp;</th><th>Modulo</th><th>Alcance</th><th>Prioridad</th></tr></thead><tbody>
+<tr><td class="num">M1</td><td><b>Catalogo de parametros con vigencia</b></td><td>Consulta, alta y edicion de los valores hoy hardcodeados: IVA, participacion ION/Afirme, umbrales, vigencias de programa, fechas de negocio. Todo valor tiene vigencia desde y hasta, y nunca se sobrescribe: se cierra la vigencia anterior y se abre una nueva.</td><td>Alta prioridad. Es el modulo que devuelve el control a negocio y el que habilita la Ola 4.</td></tr><tr><td class="num">M2</td><td><b>Catalogos de negocio</b></td><td>Rubros contables, conceptos, tipos de credito, origenes de fondos, cuentas excluidas, convenios. Con validacion referencial, comparacion entre ambientes y deteccion de definiciones duplicadas.</td><td>Alta prioridad. Resuelve las reglas duplicadas detectadas en la auditoria.</td></tr><tr><td class="num">M3</td><td><b>Flujo de aprobacion de cuatro ojos</b></td><td>Todo cambio nace como solicitud: autor, justificacion, ambiente destino, vista previa del antes y despues, y aprobacion de una persona distinta con rol autorizado. Sin aprobacion el valor no entra en vigencia.</td><td>Alta prioridad. Es el requisito de control interno que hoy no existe.</td></tr><tr><td class="num">M4</td><td><b>Bitacora y trazabilidad</b></td><td>Registro inmutable de quien cambio que, cuando, con que justificacion y quien aprobo; y la consulta &#x27;con que valores se calculo el cierre de este periodo&#x27;, que es la pregunta que hace un auditor.</td><td>Alta prioridad. Convierte la auditabilidad en una consulta, no en una investigacion.</td></tr><tr><td class="num">M5</td><td><b>Tablero de ejecuciones del cierre</b></td><td>Estado de cada proceso por fecha: inicio, fin, duracion, filas afectadas y errores, leidos de la bitacora de errores de poliza ya normalizada. Con alertas por correo o Teams.</td><td>Alta prioridad. Es el modulo que cierra el hallazgo critico de observabilidad.</td></tr><tr><td class="num">M6</td><td><b>Paridad y promocion entre ambientes</b></td><td>Matriz objeto x ambiente con hash y fecha, diferencias resaltadas, y promocion de parametros y catalogos de desarrollo a QA y a produccion con aprobacion. El codigo se sigue promoviendo por integracion continua; el portal gobierna los datos de configuracion.</td><td>Media-alta. Mantiene vivo el resultado de la Ola 0.</td></tr><tr><td class="num">M7</td><td><b>Catalogo de dependencias e impacto</b></td><td>El grafo construido en esta auditoria, consultable: quien llama a este objeto, que tablas escribe, que reportes lo consumen, que se rompe si cambia. Se regenera en cada despliegue.</td><td>Media. Reduce el riesgo de cada cambio posterior.</td></tr><tr><td class="num">M8</td><td><b>Inventario de reportes</b></td><td>Los 18 reportes logicos con su procedimiento, su ambiente y su origen de datos, para evitar que vuelvan a duplicarse por ambiente.</td><td>Media-baja. Se construye junto con la Ola 6.</td></tr>
+</tbody></table>
+
+<h2>Modelo de parametros con vigencia</h2>
+<p>Es la decision de diseno mas importante del portal: <b>nunca se sobrescribe un valor</b>. Recalcular un
+periodo anterior debe reproducir la cifra publicada en su momento, y eso solo se logra si el valor se lee con
+la fecha del periodo procesado.</p>
+<pre>CFG.PARAMETRO        (ID, CLAVE, DESCRIPCION, TIPO_DATO, DOMINIO, ID_DUENIO, REQUIERE_APROBACION)
+CFG.PARAMETRO_VALOR  (ID, ID_PARAMETRO, ID_AMBIENTE, VALOR, VIGENTE_DESDE, VIGENTE_HASTA,
+                      ID_SOLICITUD, FEC_ALTA, USR_ALTA)
+CFG.SOLICITUD        (ID, ID_AMBIENTE, ESTADO, JUSTIFICACION, USR_SOLICITA, FEC_SOLICITA,
+                      USR_APRUEBA, FEC_APRUEBA, MOTIVO_RECHAZO)
+CFG.BITACORA         (ID, ENTIDAD, ID_ENTIDAD, ACCION, VALOR_ANTERIOR, VALOR_NUEVO,
+                      USR, FEC, ID_SOLICITUD)          -- solo insercion
+
+-- Lectura desde el codigo de cierre: no llama al portal, lee el catalogo
+CREATE FUNCTION CFG.FN_PARAMETRO_VIGENTE (@CLAVE varchar(60), @FECHA date)
+RETURNS TABLE AS RETURN
+  SELECT TOP 1 V.VALOR
+  FROM CFG.PARAMETRO_VALOR V
+  JOIN CFG.PARAMETRO P ON P.ID = V.ID_PARAMETRO
+  WHERE P.CLAVE = @CLAVE
+    AND V.ID_AMBIENTE = CFG.FN_AMBIENTE_ACTUAL()
+    AND @FECHA &gt;= V.VIGENTE_DESDE
+    AND (V.VIGENTE_HASTA IS NULL OR @FECHA &lt; V.VIGENTE_HASTA)
+  ORDER BY V.VIGENTE_DESDE DESC;</pre>
+<p>Restricciones que el modelo debe imponer en la base, no solo en la aplicacion: sin traslapes de vigencia por
+parametro y ambiente, sin valor sin solicitud aprobada cuando el parametro lo exige, aprobador distinto del
+solicitante, y bitacora sin actualizacion ni borrado (permisos, no confianza).</p>
+
+<h2>Roles y segregacion de funciones</h2>
+<table><thead><tr><th>Rol</th><th>Puede</th><th>Perfil tipico</th></tr></thead><tbody>
+<tr><td><b>Consulta</b></td><td>Ve parametros, catalogos, bitacora y tablero. No modifica.</td><td>Negocio, contabilidad, auditoria</td></tr><tr><td><b>Solicitante</b></td><td>Crea solicitudes de cambio de parametro o catalogo. No puede aprobar las propias.</td><td>Negocio, producto</td></tr><tr><td><b>Aprobador</b></td><td>Aprueba o rechaza solicitudes de su dominio. No puede aprobar lo que el mismo solicito.</td><td>Responsables de area</td></tr><tr><td><b>Operador</b></td><td>Ejecuta la promocion entre ambientes de lo ya aprobado.</td><td>Tecnologia</td></tr><tr><td><b>Administrador</b></td><td>Administra usuarios, roles y definicion de parametros (no sus valores).</td><td>Tecnologia con supervision de riesgos</td></tr><tr><td><b>Auditor</b></td><td>Acceso de solo lectura a toda la bitacora, incluidas las solicitudes rechazadas.</td><td>Auditoria interna</td></tr>
+</tbody></table>
+<p>Regla no negociable: <b>quien solicita no aprueba</b>, y la restriccion vive en la base de datos. Si el
+control depende solo de la interfaz, no es un control.</p>
+
+<h2>Stack recomendado</h2>
+<table><thead><tr><th>Capa</th><th>Tecnologia</th><th>Por que</th></tr></thead><tbody>
+<tr><td><b>Backend</b></td><td>ASP.NET Core 8 (C#) con Minimal APIs, Entity Framework Core para configuracion y Dapper para las consultas al modelo existente</td><td>Es el mismo ecosistema del motor de datos: autenticacion integrada con Active Directory sin piezas intermedias, driver de SQL Server de primera clase, y despliegue tanto en IIS on-premise como en contenedor. Soporte de largo plazo de Microsoft y el perfil de desarrollador mas facil de contratar en un entorno SQL Server / SSRS como este.</td></tr><tr><td><b>Frontend</b></td><td>React 18 con TypeScript, Vite, TanStack Query y una libreria de tabla de datos (AG Grid o TanStack Table) con MUI</td><td>El portal es esencialmente rejillas densas, formularios con validacion y flujos de aprobacion; TypeScript evita los errores de tipo en un dominio donde un dato mal tipado es un error contable. React es el ecosistema con mas componentes de tabla y mas talento disponible.</td></tr><tr><td><b>Base de datos</b></td><td>SQL Server: esquema nuevo dedicado (por ejemplo CFG) en la misma instancia</td><td>Los parametros deben ser legibles por los procedimientos de cierre en la misma transaccion: ponerlos en otro motor obligaria a replicarlos y reintroduciria el problema de dos verdades.</td></tr><tr><td><b>Autenticacion</b></td><td>Microsoft Entra ID o Active Directory federado (OpenID Connect), roles por grupo de directorio</td><td>Sin usuarios locales: el alta y la baja de personas ya estan resueltos por el directorio corporativo, que es lo que espera control interno.</td></tr><tr><td><b>Integracion con el motor</b></td><td>Vistas y funciones en linea de lectura de parametros vigentes, consumidas por los procedimientos</td><td>El codigo SQL no llama al portal: lee el catalogo. Asi el cierre no depende de que un servicio web este arriba.</td></tr><tr><td><b>Despliegue</b></td><td>Contenedores (Docker) o IIS, con integracion continua en Azure DevOps o GitHub Actions y migraciones versionadas del esquema de configuracion</td><td>Permite que el portal viaje por el mismo camino de aprobacion que el resto de los cambios.</td></tr>
+</tbody></table>
+
+<div class="card verde">
+<h3>Recomendacion en una linea</h3>
+<p><b>ASP.NET Core 8 (C#) en el backend y React 18 con TypeScript en el frontend, sobre SQL Server y con
+autenticacion contra el directorio corporativo.</b> La razon principal no es tecnica sino de contexto: el
+sistema, los reportes y el equipo ya son de ecosistema Microsoft, y el mayor riesgo de este portal no es
+escribirlo, es mantenerlo despues.</p>
+</div>
+
+<h3>Alternativas consideradas</h3>
+<div class="card"><h3>Node.js con NestJS y React</h3><p>Viable y con buen ecosistema. Se descarta como primera opcion porque la integracion con Active Directory y con SQL Server exige mas piezas intermedias, y porque el equipo de este sistema es de perfil Microsoft: la curva de mantenimiento seria mas alta.</p></div><div class="card"><h3>Python con FastAPI y React</h3><p>Excelente para analitica y para reutilizar el analizador de dependencias de esta auditoria (que ya esta en Python). Recomendacion: usarlo para los procesos de analisis y generacion de reportes, y no para el portal transaccional.</p></div><div class="card"><h3>Blazor Server (solo .NET, sin JavaScript)</h3><p>Reduce el stack a un solo lenguaje y acelera el desarrollo si el equipo no tiene perfil frontend. Se descarta como primera opcion por la dependencia de conexion permanente y por el ecosistema de componentes de tabla, mas limitado.</p></div><div class="card"><h3>Herramienta de bajo codigo (Power Apps y similares)</h3><p>Permite un primer modulo en dias, pero el flujo de cuatro ojos, la bitacora inmutable y las vigencias terminan implementandose a la fuerza. Solo recomendable si la decision es no construir software propio.</p></div>
+
+<h2>Como se construye: entregas cortas y utiles</h2>
+<table><thead><tr><th>Entrega</th><th>Contenido</th><th>Esfuerzo</th><th>Valor al terminar</th></tr></thead><tbody>
+<tr><td><b>E1 &mdash; Nucleo</b></td><td>Esquema de configuracion con vigencias, autenticacion contra el directorio, roles, bitacora, y M1 con solo lectura de los parametros ya cargados</td><td class="num">4-6 sesiones</td><td>Negocio ve, por primera vez y en un solo lugar, con que valores calcula el sistema</td></tr>
+<tr><td><b>E2 &mdash; Cuatro ojos</b></td><td>M3 completo, edicion con solicitud y aprobacion, vista previa del antes y despues, y M4</td><td class="num">4-5 sesiones</td><td>Los parametros se pueden cambiar sin desarrollo y con control interno satisfecho</td></tr>
+<tr><td><b>E3 &mdash; Catalogos</b></td><td>M2 con validacion referencial y comparacion entre ambientes</td><td class="num">4-6 sesiones</td><td>Rubros, conceptos y cuentas excluidas dejan de estar en el codigo</td></tr>
+<tr><td><b>E4 &mdash; Operacion</b></td><td>M5 (tablero de ejecuciones con alertas) y M6 (paridad y promocion)</td><td class="num">5-7 sesiones</td><td>El cierre se vigila desde una pantalla y las promociones dejan rastro</td></tr>
+<tr><td><b>E5 &mdash; Conocimiento</b></td><td>M7 (dependencias e impacto) y M8 (inventario de reportes)</td><td class="num">3-4 sesiones</td><td>Cada cambio posterior se estima con datos y no con memoria</td></tr>
+</tbody></table>
+<p>Total aproximado: <b>20 a 28 sesiones</b> de trabajo asistido para los cinco bloques. E1 y E2 son la
+condicion para la Ola 4 del plan de remediacion, por lo que conviene arrancarlos en paralelo con las Olas 0 y 1.</p>
+
+<h2>Lo que el portal no debe hacer</h2>
+<div class="card ambar">
+<ul>
+<li><b>No ejecutar el cierre.</b> Lo dispara el orquestador; el portal lo observa. Mezclar ambas cosas convierte una pantalla en un riesgo operativo.</li>
+<li><b>No editar codigo SQL.</b> El codigo viaja por integracion continua con revision; el portal gobierna datos de configuracion.</li>
+<li><b>No ser la unica copia de la verdad.</b> Los parametros viven en la base y se versionan; el portal es la interfaz, no el almacen exclusivo.</li>
+<li><b>No permitir cambios sin vigencia.</b> Un valor sin fecha de inicio destruye la capacidad de recalcular periodos anteriores, que es el motivo principal para construirlo.</li>
+</ul>
+</div>
+
+</div>
+<footer>Auditoria de codigo SQL KARDIA / SAF &middot; analisis estatico del repositorio (BD, BD_prod y reportes).
+No se ejecuto ningun objeto contra una instancia de SQL Server ni se leyeron datos productivos:
+los hallazgos que dependen de datos, de plan de ejecucion o de reglas contables se marcan como pendientes de validacion.</footer>
+</body></html>
