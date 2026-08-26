@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KARDIA · Portal de administración (prototipo navegable)</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#0d1117; --panel:#161b26; --panel2:#1b2130; --line:#26303f;
+  --tx:#e6edf3; --tx2:#93a1bb; --tx3:#6b7a94;
+  --ac:#4a8fe7; --ok:#3fb950; --warn:#d29922; --bad:#f0616d; --info:#58a6ff;
+}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+a{color:var(--info)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px}
+
+/* ---------------- banner de prototipo ---------------- */
+#proto{background:linear-gradient(90deg,#3a2a12,#2a1f10);border-bottom:1px solid #5a4416;
+  padding:7px 20px;font-size:12.5px;color:#e8c98a;display:flex;gap:10px;align-items:center}
+#proto b{color:#ffd98a}
+#proto span.x{margin-left:auto;cursor:pointer;color:#b99a5c}
+
+/* ---------------- barra superior ---------------- */
+header{display:flex;align-items:center;gap:18px;padding:10px 20px;background:var(--panel);
+  border-bottom:1px solid var(--line)}
+header .logo{font-weight:700;letter-spacing:.5px}
+header .logo em{color:var(--ac);font-style:normal}
+header .sep{width:1px;height:26px;background:var(--line)}
+select,input[type=text],input[type=date],textarea{background:var(--panel2);color:var(--tx);
+  border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:13px;font-family:inherit}
+input[type=text]::placeholder{color:var(--tx3)}
+header .env{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tx2)}
+header .user{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--tx2)}
+header .avatar{width:28px;height:28px;border-radius:50%;background:#2c4a75;color:#cfe3ff;
+  display:grid;place-items:center;font-size:11.5px;font-weight:700}
+.envpill{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid}
+.envpill.dev{color:#79c0ff;border-color:#1f4e79;background:#122336}
+.envpill.qa{color:#e3b341;border-color:#5a4416;background:#2a2110}
+.envpill.prod{color:#ff9d9d;border-color:#6e2b2b;background:#2c1517}
+
+/* ---------------- layout ---------------- */
+.wrap{display:flex;min-height:calc(100vh - 90px)}
+nav{width:250px;flex:0 0 250px;background:var(--panel);border-right:1px solid var(--line);padding:12px 0}
+nav .grp{padding:10px 18px 5px;font-size:10.5px;letter-spacing:.9px;color:var(--tx3);text-transform:uppercase}
+nav button{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:none;border:0;
+  color:var(--tx2);padding:8px 18px;font:inherit;cursor:pointer;border-left:3px solid transparent}
+nav button:hover{background:#1b2130;color:var(--tx)}
+nav button.on{background:#18243a;color:#fff;border-left-color:var(--ac)}
+nav button .n{margin-left:auto;font-size:11px;color:var(--tx3);background:#0f1420;border:1px solid var(--line);
+  border-radius:10px;padding:0 7px}
+nav button.on .n{color:#cfe3ff}
+main{flex:1;padding:22px 26px 60px;min-width:0}
+
+h1{font-size:20px;margin:0 0 4px}
+h2{font-size:15px;margin:26px 0 10px;padding-left:9px;border-left:3px solid var(--ac)}
+.sub{color:var(--tx2);font-size:13px;margin:0 0 18px}
+
+/* ---------------- kpis ---------------- */
+.kpis{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0 6px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:11px 16px;min-width:120px}
+.kpi b{display:block;font-size:21px;line-height:1.2}
+.kpi span{font-size:10.5px;letter-spacing:.7px;color:var(--tx2);text-transform:uppercase}
+.kpi.c b{color:var(--bad)} .kpi.w b{color:var(--warn)} .kpi.g b{color:var(--ok)} .kpi.i b{color:var(--info)}
+
+/* ---------------- barra de filtros ---------------- */
+.filters{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:11px 13px;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.filters label{font-size:12px;color:var(--tx2)}
+.filters .right{margin-left:auto;font-size:12.5px;color:var(--tx2)}
+.btn{background:#22304a;color:#dce9ff;border:1px solid #2e4468;border-radius:6px;padding:6px 12px;
+  font:inherit;font-size:12.5px;cursor:pointer}
+.btn:hover{background:#2b3d5e}
+.btn.p{background:#1f6feb;border-color:#1f6feb;color:#fff}
+.btn.p:hover{background:#2b7cf5}
+.btn.g{background:#18351f;border-color:#245c2f;color:#9be3ac}
+.btn.r{background:#3a1a1d;border-color:#6e2b2b;color:#ffb3b3}
+.btn.s{padding:3px 9px;font-size:12px}
+
+/* ---------------- tablas ---------------- */
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);
+  border-radius:9px;overflow:hidden;font-size:13px}
+th{background:#131a25;color:var(--tx2);text-align:left;font-size:11px;letter-spacing:.6px;
+  text-transform:uppercase;padding:9px 11px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 11px;border-bottom:1px solid #1d2534;vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+tbody tr.click{cursor:pointer}
+tbody tr.click:hover{background:#1a2434}
+td.num{text-align:right;font-family:ui-monospace,Menlo,Consolas,monospace;white-space:nowrap}
+.t-fix{table-layout:fixed}
+.t-fix td{word-break:break-word}
+#tb-p td:nth-child(2){white-space:normal}
+
+/* ---------------- etiquetas ---------------- */
+.tag{display:inline-block;padding:1px 8px;border-radius:20px;font-size:11px;font-weight:600;
+  border:1px solid;white-space:nowrap}
+.tag.vig{color:#9be3ac;border-color:#245c2f;background:#132b19}
+.tag.fut{color:#a9c7ff;border-color:#26406e;background:#141f33}
+.tag.exp{color:#9aa7bd;border-color:#33405a;background:#171d29}
+.tag.pen{color:#e8c98a;border-color:#5a4416;background:#241c0e}
+.tag.rej{color:#ffb3b3;border-color:#6e2b2b;background:#2a1416}
+.tag.dup{color:#ffb3b3;border-color:#6e2b2b;background:#2a1416}
+.tag.ok{color:#9be3ac;border-color:#245c2f;background:#132b19}
+.tag.err{color:#ffb3b3;border-color:#6e2b2b;background:#2a1416}
+.tag.war{color:#e8c98a;border-color:#5a4416;background:#241c0e}
+.tag.n{color:#9aa7bd;border-color:#33405a;background:#171d29}
+.dom{font-size:11.5px;color:var(--tx2)}
+
+/* ---------------- panel lateral de detalle ---------------- */
+#ov{position:fixed;inset:0;background:rgba(4,7,12,.62);display:none;z-index:40}
+#ov.on{display:block}
+#dw{position:fixed;top:0;right:0;bottom:0;width:640px;max-width:94vw;background:var(--bg);
+  border-left:1px solid var(--line);z-index:41;transform:translateX(100%);transition:transform .18s ease;
+  display:flex;flex-direction:column}
+#dw.on{transform:none}
+#dw .dh{padding:16px 20px;border-bottom:1px solid var(--line);background:var(--panel)}
+#dw .dh .cl{float:right;cursor:pointer;color:var(--tx2);font-size:18px;line-height:1}
+#dw .db{padding:18px 20px;overflow:auto;flex:1}
+#dw .df{padding:12px 20px;border-top:1px solid var(--line);background:var(--panel);display:flex;gap:10px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;margin:0 0 16px}
+.kv b{color:var(--tx2);font-weight:600;font-size:12px;padding-top:2px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:13px 15px;margin:0 0 14px}
+.card h4{margin:0 0 8px;font-size:13px}
+.diff{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;border-radius:7px;overflow:hidden;
+  border:1px solid var(--line)}
+.diff div{padding:5px 10px}
+.diff .o{background:#2a1416;color:#ffc0c0}
+.diff .n{background:#132b19;color:#b6f0c4}
+.note{background:#121a28;border:1px solid #24344f;border-left:3px solid var(--ac);border-radius:7px;
+  padding:10px 13px;color:var(--tx2);font-size:12.5px;margin:0 0 14px}
+.warnbox{background:#241c0e;border:1px solid #5a4416;border-left:3px solid var(--warn);border-radius:7px;
+  padding:10px 13px;color:#e8c98a;font-size:12.5px;margin:0 0 14px}
+
+/* ---------------- misc ---------------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:1000px){.grid2,.grid3{grid-template-columns:1fr}nav{display:none}}
+.bar{height:7px;border-radius:4px;background:#1d2534;overflow:hidden;min-width:90px}
+.bar i{display:block;height:100%}
+.hide{display:none!important}
+.foot{color:var(--tx3);font-size:12px;margin-top:26px;border-top:1px solid var(--line);padding-top:12px}
+.chip{display:inline-block;background:#141c2a;border:1px solid var(--line);border-radius:20px;
+  padding:2px 10px;font-size:11.5px;color:var(--tx2);margin:0 6px 6px 0}
+.tl{list-style:none;margin:0;padding:0 0 0 18px;border-left:1px solid var(--line)}
+.tl li{position:relative;padding:0 0 14px 14px;font-size:12.5px;color:var(--tx2)}
+.tl li:before{content:"";position:absolute;left:-23px;top:5px;width:9px;height:9px;border-radius:50%;
+  background:#2c3d5a;border:2px solid var(--bg)}
+.tl li.now:before{background:var(--ok)}
+.tl li b{color:var(--tx);display:block;font-size:13px}
+</style>
+</head>
+<body>
+
+<div id="proto">
+  <b>PROTOTIPO NO FUNCIONAL</b>
+  <span>Maqueta de interfaz con datos hardcodeados tomados de los hallazgos reales de la auditoría. No hay backend, no se guarda nada y no toca ninguna base de datos.</span>
+  <span class="x" onclick="this.parentNode.classList.add('hide')">ocultar &times;</span>
+</div>
+
+<header>
+  <div class="logo">KARDIA <em>·</em> Administración de parámetros</div>
+  <div class="sep"></div>
+  <div class="env">
+    Ambiente
+    <select id="env" onchange="setEnv()">
+      <option value="dev">Desarrollo</option>
+      <option value="qa">QA</option>
+      <option value="prod" selected>Producción</option>
+    </select>
+    <span id="envp" class="envpill prod">PROD</span>
+  </div>
+  <div class="user">
+    <span>Rol activo</span>
+    <select id="rol" onchange="setRol()">
+      <option>Consulta</option>
+      <option selected>Solicitante</option>
+      <option>Aprobador</option>
+      <option>Operador</option>
+      <option>Auditor</option>
+    </select>
+    <div class="avatar">JM</div>
+  </div>
+</header>
+
+<div class="wrap">
+<nav>
+  <div class="grp">Configuración</div>
+  <button class="on" data-m="m1" onclick="go('m1')">M1 · Parámetros <span class="n">18</span></button>
+  <button data-m="m2" onclick="go('m2')">M2 · Catálogos <span class="n">6</span></button>
+  <div class="grp">Control</div>
+  <button data-m="m3" onclick="go('m3')">M3 · Aprobaciones <span class="n" id="nsol">4</span></button>
+  <button data-m="m4" onclick="go('m4')">M4 · Bitácora</button>
+  <div class="grp">Operación</div>
+  <button data-m="m5" onclick="go('m5')">M5 · Cierre <span class="n">2</span></button>
+  <button data-m="m6" onclick="go('m6')">M6 · Ambientes <span class="n">126</span></button>
+  <div class="grp">Conocimiento</div>
+  <button data-m="m7" onclick="go('m7')">M7 · Dependencias</button>
+  <button data-m="m8" onclick="go('m8')">M8 · Reportes <span class="n">18</span></button>
+</nav>
+
+<main>
+
+<!-- ============================= M1 PARÁMETROS ============================= -->
+<section id="m1">
+  <h1>Catálogo de parámetros con vigencia</h1>
+  <p class="sub">Los valores que hoy están escritos dentro del código SQL, administrados con vigencia,
+     ambiente y aprobación de cuatro ojos. Un valor nunca se sobrescribe: se cierra la vigencia anterior
+     y se abre una nueva.</p>
+
+  <div class="kpis">
+    <div class="kpi i"><b>63</b><span>grupos detectados</span></div>
+    <div class="kpi g"><b>18</b><span>ya parametrizados</span></div>
+    <div class="kpi w"><b>31</b><span>en migración</span></div>
+    <div class="kpi c"><b>14</b><span>sin dueño asignado</span></div>
+  </div>
+
+  <div class="filters">
+    <label>Dominio</label>
+    <select id="f-dom" onchange="renderP()">
+      <option>Todos</option><option>Fiscal</option><option>Comercial</option><option>Contable</option>
+      <option>Riesgo</option><option>Operación</option><option>Ambiente</option>
+    </select>
+    <label>Vigencia</label>
+    <select id="f-vig" onchange="renderP()">
+      <option>Todas</option><option>Vigente</option><option>Futura</option><option>Expirada</option>
+    </select>
+    <label>Estado</label>
+    <select id="f-est" onchange="renderP()">
+      <option>Todos</option><option>Aprobado</option><option>Pendiente</option><option>Rechazado</option>
+    </select>
+    <label>Origen</label>
+    <select id="f-ori" onchange="renderP()">
+      <option>Todos</option><option>Portal</option><option>Hardcodeado en SQL</option>
+    </select>
+    <input type="text" id="f-txt" oninput="renderP()" placeholder="Buscar clave, valor, objeto SQL..." style="min-width:230px">
+    <button class="btn" onclick="limpiaP()">Limpiar</button>
+    <span class="right" id="cnt-p"></span>
+  </div>
+
+  <table class="t-fix">
+    <colgroup><col style="width:23%"><col style="width:14%"><col style="width:12%"><col style="width:8%">
+      <col style="width:11%"><col style="width:10%"><col style="width:16%"></colgroup>
+    <thead><tr><th>Clave</th><th>Valor</th><th>Dominio / dueño</th><th>Vigencia</th>
+      <th>Rige desde</th><th>Estado</th><th>Origen actual</th></tr></thead>
+    <tbody id="tb-p"></tbody>
+  </table>
+  <p class="foot">Clic en cualquier fila para ver el detalle, el historial de vigencias y solicitar un cambio.</p>
+</section>
+
+<!-- ============================= M2 CATÁLOGOS ============================= -->
+<section id="m2" class="hide">
+  <h1>Catálogos de negocio</h1>
+  <p class="sub">Listas que hoy viven como literales repetidos en el código. El portal las centraliza, valida
+     su integridad y marca las definiciones duplicadas que la auditoría encontró.</p>
+
+  <div class="filters">
+    <label>Catálogo</label>
+    <select id="f-cat" onchange="renderC()">
+      <option>Rubros contables</option><option>Tipos de crédito (cartera)</option>
+      <option>Conceptos de movimiento</option><option>Cuentas excluidas</option>
+    </select>
+    <input type="text" id="f-ctxt" oninput="renderC()" placeholder="Buscar clave o descripción..." style="min-width:220px">
+    <label style="margin-left:6px"><input type="checkbox" id="f-cdup" onchange="renderC()"> Solo definiciones en conflicto</label>
+    <span class="right" id="cnt-c"></span>
+  </div>
+
+  <div class="warnbox" id="c-warn"></div>
+
+  <table>
+    <thead><tr><th>Clave</th><th>Descripción</th><th>Usos en SQL</th><th>Definiciones distintas</th><th>Estado</th></tr></thead>
+    <tbody id="tb-c"></tbody>
+  </table>
+</section>
+
+<!-- ============================= M3 APROBACIONES ============================= -->
+<section id="m3" class="hide">
+  <h1>Bandeja de aprobación · cuatro ojos</h1>
+  <p class="sub">Todo cambio nace como solicitud con autor, justificación, ambiente destino y vista previa del
+     antes y después. Nadie aprueba su propia solicitud.</p>
+
+  <div class="filters">
+    <label>Estado</label>
+    <select id="f-sest" onchange="renderS()">
+      <option>Pendientes</option><option>Todas</option><option>Aprobadas</option><option>Rechazadas</option>
+    </select>
+    <label>Ambiente destino</label>
+    <select id="f-samb" onchange="renderS()">
+      <option>Todos</option><option>Desarrollo</option><option>QA</option><option>Producción</option>
+    </select>
+    <span class="right" id="cnt-s"></span>
+  </div>
+
+  <div class="note" id="s-note">Con el rol <b>Solicitante</b> puedes crear solicitudes pero no aprobarlas.
+    Cambia el rol a <b>Aprobador</b> en la barra superior para habilitar los botones.</div>
+
+  <div id="tb-s"></div>
+</section>
+
+<!-- ============================= M4 BITÁCORA ============================= -->
+<section id="m4" class="hide">
+  <h1>Bitácora y trazabilidad</h1>
+  <p class="sub">Registro inmutable de quién cambió qué, cuándo, con qué justificación y quién aprobó.
+     Responde la pregunta del auditor: con qué valores se calculó el cierre de un periodo.</p>
+
+  <div class="filters">
+    <label>Periodo</label><input type="date" value="2026-08-01"><span style="color:var(--tx3)">a</span>
+    <input type="date" value="2026-08-19">
+    <label>Acción</label>
+    <select id="f-bacc" onchange="renderB()">
+      <option>Todas</option><option>Alta</option><option>Cambio de valor</option><option>Aprobación</option>
+      <option>Rechazo</option><option>Promoción</option>
+    </select>
+    <input type="text" id="f-btxt" oninput="renderB()" placeholder="Buscar usuario, clave..." style="min-width:200px">
+    <button class="btn" onclick="alert('Prototipo: aquí se exportaría la evidencia en CSV o PDF firmado.')">Exportar evidencia</button>
+    <span class="right" id="cnt-b"></span>
+  </div>
+
+  <table>
+    <thead><tr><th>Fecha y hora</th><th>Usuario</th><th>Acción</th><th>Objeto</th><th>Antes</th><th>Después</th>
+      <th>Aprobó</th></tr></thead>
+    <tbody id="tb-b"></tbody>
+  </table>
+
+  <h2>Foto de parámetros usada en un cierre</h2>
+  <div class="filters">
+    <label>Cierre</label>
+    <select onchange="document.getElementById('foto').classList.remove('hide')">
+      <option>Seleccionar…</option><option>Cierre mensual comercial · 2026-07</option>
+      <option>Cierre mensual individual · 2026-07</option>
+    </select>
+  </div>
+  <div id="foto" class="card hide">
+    <h4>Cierre mensual comercial · periodo 2026-07 · ejecutado 2026-08-01 03:12</h4>
+    <table style="border:0">
+      <thead><tr><th>Parámetro</th><th>Valor usado</th><th>Vigencia aplicada</th><th>Aprobó</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">FISCAL.IVA_TASA</td><td class="mono">0.16</td><td>2022-01-01 → abierta</td><td>M. Ríos</td></tr>
+        <tr><td class="mono">COMERCIAL.PARTICIPACION_ION</td><td class="mono">0.10</td><td>2024-03-01 → abierta</td><td>L. Fuentes</td></tr>
+        <tr><td class="mono">COMERCIAL.PARTICIPACION_AFIRME</td><td class="mono">0.90</td><td>2024-03-01 → abierta</td><td>L. Fuentes</td></tr>
+        <tr><td class="mono">OPERACION.FECHA_CORTE_COMISIONES</td><td class="mono">2026-07-31</td><td>calculada del periodo</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p class="foot" style="margin-top:10px">Esta consulta es la que hoy no existe: el valor del cálculo está en el
+      texto del procedimiento, no en un registro con vigencia.</p>
+  </div>
+</section>
+
+<!-- ============================= M5 CIERRE ============================= -->
+<section id="m5" class="hide">
+  <h1>Tablero de ejecuciones del cierre</h1>
+  <p class="sub">Estado de cada proceso por fecha con duración, filas afectadas y errores leídos de la bitácora
+     de errores de póliza. Hoy 102 objetos escriben esa bitácora y ninguno la vigila.</p>
+
+  <div class="kpis">
+    <div class="kpi g"><b>14</b><span>procesos en éxito</span></div>
+    <div class="kpi c"><b>1</b><span>con error</span></div>
+    <div class="kpi w"><b>1</b><span>reproceso detectado</span></div>
+    <div class="kpi i"><b>02:41</b><span>duración total</span></div>
+  </div>
+
+  <div class="filters">
+    <label>Fecha de proceso</label><input type="date" value="2026-08-19">
+    <label>Estado</label>
+    <select id="f-eest" onchange="renderE()">
+      <option>Todos</option><option>Éxito</option><option>Error</option><option>Alerta</option>
+    </select>
+    <label>Familia</label>
+    <select id="f-efam" onchange="renderE()">
+      <option>Todas</option><option>CIERRE</option><option>PO</option><option>PAG</option><option>SAF</option>
+    </select>
+    <span class="right" id="cnt-e"></span>
+  </div>
+
+  <table class="t-fix">
+    <colgroup><col style="width:29%"><col style="width:9%"><col style="width:10%"><col style="width:11%">
+      <col style="width:11%"><col style="width:16%"><col style="width:14%"></colgroup>
+    <thead><tr><th>Proceso</th><th>Inicio</th><th>Duración</th><th>Filas</th><th>Errores</th>
+      <th>Estado</th><th>Duración vs. media</th></tr></thead>
+    <tbody id="tb-e"></tbody>
+  </table>
+
+  <h2>Alertas activas</h2>
+  <div class="card">
+    <p style="margin:0 0 10px"><span class="tag err">Error</span> &nbsp;<b>CIERRE.SP_IND_GEN_MES</b> terminó con
+      3 errores en la bitácora de póliza y el proceso reportó éxito al orquestador
+      (rollback sin propagación). <span class="dom">Detectado 03:26 · sin acuse</span></p>
+    <p style="margin:0"><span class="tag war">Alerta</span> &nbsp;El periodo <b>2026-07</b> se procesó dos veces
+      (03:12 y 04:48). El proceso no es idempotente: revisar duplicidad en PRINCIPAL_FINAL.
+      <span class="dom">Regla: mismo periodo, dos ID_EJECUCION</span></p>
+  </div>
+</section>
+
+<!-- ============================= M6 AMBIENTES ============================= -->
+<section id="m6" class="hide">
+  <h1>Paridad y promoción entre ambientes</h1>
+  <p class="sub">Matriz objeto × ambiente con huella y fecha de despliegue. La auditoría encontró 126 de 256
+     objetos comunes con diferencias: 119 solo por el nombre de la base embebido y 7 con diferencia funcional real.</p>
+
+  <div class="kpis">
+    <div class="kpi c"><b>49%</b><span>drift dev vs prod</span></div>
+    <div class="kpi w"><b>119</b><span>solo por nombre de base</span></div>
+    <div class="kpi c"><b>7</b><span>drift funcional real</span></div>
+    <div class="kpi i"><b>26</b><span>no existen en prod</span></div>
+  </div>
+
+  <div class="filters">
+    <label>Tipo de diferencia</label>
+    <select id="f-adif" onchange="renderA()">
+      <option>Todas</option><option>Funcional</option><option>Nombre de base</option><option>Ausente en prod</option>
+      <option>Idéntico</option>
+    </select>
+    <label>Esquema</label>
+    <select id="f-aesq" onchange="renderA()">
+      <option>Todos</option><option>CIERRE</option><option>PO</option><option>PAG</option><option>edc</option>
+    </select>
+    <input type="text" id="f-atxt" oninput="renderA()" placeholder="Buscar objeto..." style="min-width:200px">
+    <span class="right" id="cnt-a"></span>
+  </div>
+
+  <table class="t-fix">
+    <colgroup><col style="width:31%"><col style="width:13%"><col style="width:13%"><col style="width:13%">
+      <col style="width:16%"><col style="width:14%"></colgroup>
+    <thead><tr><th>Objeto</th><th>Desarrollo</th><th>QA</th><th>Producción</th><th>Diferencia</th><th></th></tr></thead>
+    <tbody id="tb-a"></tbody>
+  </table>
+  <p class="foot">El portal gobierna datos de configuración; el código se sigue promoviendo por integración continua.
+    Esta pantalla es el resultado vivo de la Ola 0 del plan de remediación.</p>
+</section>
+
+<!-- ============================= M7 DEPENDENCIAS ============================= -->
+<section id="m7" class="hide">
+  <h1>Dependencias e impacto</h1>
+  <p class="sub">El grafo construido en la auditoría, consultable: quién llama a un objeto, qué tablas escribe,
+     qué reportes lo consumen y qué se rompe si cambia.</p>
+
+  <div class="filters">
+    <label>Objeto</label>
+    <select id="f-obj" onchange="renderD()">
+      <option>CIERRE.SP_SAF_SALDOS</option>
+      <option>dbo.FN_RUBRO_POL</option>
+      <option>PO.SP_SAF_POLIZA_MOVxDIA</option>
+    </select>
+    <span class="right">Grafo: 245 objetos programables · 251 tablas · 30 reportes</span>
+  </div>
+
+  <div class="grid3" id="dep-cards"></div>
+
+  <h2>Simulación de impacto</h2>
+  <div class="card" id="dep-imp"></div>
+</section>
+
+<!-- ============================= M8 REPORTES ============================= -->
+<section id="m8" class="hide">
+  <h1>Inventario de reportes</h1>
+  <p class="sub">Los 18 reportes lógicos con su procedimiento y su origen de datos. Hoy son 30 archivos con la
+     dirección del servidor escrita dentro del artefacto y ninguno usa origen de datos compartido.</p>
+
+  <div class="filters">
+    <label>Origen de datos</label>
+    <select id="f-rds" onchange="renderR()">
+      <option>Todos</option><option>Embebido</option><option>Compartido</option>
+    </select>
+    <input type="text" id="f-rtxt" oninput="renderR()" placeholder="Buscar reporte o procedimiento..." style="min-width:230px">
+    <span class="right" id="cnt-r"></span>
+  </div>
+
+  <table>
+    <thead><tr><th>Reporte lógico</th><th>Artefactos</th><th>Procedimiento</th><th>Servidor embebido</th>
+      <th>Origen de datos</th><th>Observación</th></tr></thead>
+    <tbody id="tb-r"></tbody>
+  </table>
+</section>
+
+</main>
+</div>
+
+<!-- ============================= PANEL DE DETALLE ============================= -->
+<div id="ov" onclick="closeDw()"></div>
+<div id="dw">
+  <div class="dh"><span class="cl" onclick="closeDw()">&times;</span>
+    <div id="dw-t" style="font-weight:700"></div>
+    <div id="dw-s" class="dom"></div>
+  </div>
+  <div class="db" id="dw-b"></div>
+  <div class="df" id="dw-f"></div>
+</div>
+
+<script>
+/* =========================================================================
+   Datos hardcodeados. Provienen de los hallazgos de la auditoría del
+   repositorio KARDIA (lotes 1 a 6, 10-11 y fase de dependencias).
+   ========================================================================= */
+const PARAMS = [
+ {k:'FISCAL.IVA_TASA', v:'0.16', dom:'Fiscal', dueno:'Contabilidad', vig:'Vigente', desde:'2022-01-01',
+  est:'Aprobado', ori:'Hardcodeado en SQL', obj:'PO.SP_IND_GEN_MES_MOD, PO.SP_COM_DEV_COMISIONES (+9)',
+  tipo:'Decimal', nota:'Literal 0.16 repetido en 11 procedimientos. Un cambio de tasa exige editar cada copia.'},
+ {k:'COMERCIAL.PARTICIPACION_ION', v:'0.10', dom:'Comercial', dueno:'Dirección comercial', vig:'Vigente',
+  desde:'2024-03-01', est:'Aprobado', ori:'Hardcodeado en SQL', obj:'PO.SYS_SP_MOV_* (28 archivos)', tipo:'Decimal',
+  nota:'La participación del acuerdo aparece partida en dos constantes (0.10 / 0.90) en 28 archivos.'},
+ {k:'COMERCIAL.PARTICIPACION_AFIRME', v:'0.90', dom:'Comercial', dueno:'Dirección comercial', vig:'Vigente',
+  desde:'2024-03-01', est:'Aprobado', ori:'Hardcodeado en SQL', obj:'PO.SYS_SP_MOV_* (28 archivos)', tipo:'Decimal',
+  nota:'Debe validarse siempre contra la constante ION: la suma tiene que ser 1.'},
+ {k:'OPERACION.FECHA_CORTE_COMISIONES', v:"'20260123'", dom:'Operación', dueno:'Operación', vig:'Vigente',
+  desde:'2026-01-23', est:'Pendiente', ori:'Hardcodeado en SQL', obj:'CIERRE.SP_CMR_GEN_MES', tipo:'Fecha',
+  nota:'HALLAZGO CRÍTICO L1-001: el cierre mensual comercial lee otras comisiones de esta fecha fija en lugar del periodo procesado.'},
+ {k:'RIESGO.UMBRAL_NUM_CREDITO_COVID', v:'6051', dom:'Riesgo', dueno:'Riesgos', vig:'Vigente', desde:'2020-06-01',
+  est:'Aprobado', ori:'Hardcodeado en SQL', obj:'dbo.FN_CUOTA_COVID (invocada por 43 SPs)', tipo:'Entero',
+  nota:'Una función escalar de 30 líneas decide el tratamiento COVID de toda la cartera con este umbral.'},
+ {k:'RIESGO.DIAS_ALERTA_TASA', v:'5', dom:'Riesgo', dueno:'Riesgos', vig:'Vigente', desde:'2023-05-01',
+  est:'Aprobado', ori:'Hardcodeado en SQL', obj:'SAF.SP_ALERTA_TASA', tipo:'Entero',
+  nota:'Con fallback de 1 año cuando no hay dato; la regla está implementada dos veces con criterios distintos.'},
+ {k:'CONTABLE.ID_POLIZA_BANCO', v:'7', dom:'Contable', dueno:'Contabilidad', vig:'Vigente', desde:'2021-09-01',
+  est:'Aprobado', ori:'Hardcodeado en SQL', obj:'dbo.REPORTE_POLIZA_BANCO', tipo:'Entero',
+  nota:'La póliza está fija en el reporte: si cambia el catálogo contable, el reporte queda apuntando a otra cuenta.'},
+ {k:'CONTABLE.RUBRO_ADMINISTRACION', v:"'COMISION_ADMISISTRACION'", dom:'Contable', dueno:'Contabilidad',
+  vig:'Vigente', desde:'2021-09-01', est:'Rechazado', ori:'Hardcodeado en SQL', obj:'dbo.REPORTE_POLIZA_BANCO',
+  tipo:'Texto', nota:'El literal tiene la sílaba SIS duplicada y no existe como rubro: la columna sale en cero mientras el importe sí entra en el total.'},
+ {k:'COVID.VIGENCIA_PROGRAMA_INICIO', v:"'20200401'", dom:'Riesgo', dueno:'Riesgos', vig:'Expirada',
+  desde:'2020-04-01', est:'Aprobado', ori:'Hardcodeado en SQL', obj:'PO.SP_IND_GEN_MES_MOD (45 apariciones)',
+  tipo:'Fecha', nota:'Las fechas de vigencia del programa COVID aparecen 45 veces en un solo procedimiento.'},
+ {k:'COVID.VIGENCIA_PROGRAMA_FIN', v:"'20211231'", dom:'Riesgo', dueno:'Riesgos', vig:'Expirada',
+  desde:'2021-12-31', est:'Aprobado', ori:'Hardcodeado en SQL', obj:'PO.SP_IND_GEN_MES_MOD (45 apariciones)',
+  tipo:'Fecha', nota:'Conviven dos definiciones distintas de cuota COVID.'},
+ {k:'AMBIENTE.BD_EXTERNA_NUCLEO', v:'Quiero_Confianza', dom:'Ambiente', dueno:'Tecnología', vig:'Vigente',
+  desde:'2026-01-01', est:'Aprobado', ori:'Hardcodeado en SQL', obj:'753 referencias en 17 de 27 objetos de CIERRE',
+  tipo:'Texto', nota:'Causa única del 49% de drift: en desarrollo dice Quiero_Confianza_shadow. Se resuelve con sinónimos por ambiente.'},
+ {k:'AMBIENTE.BD_EXTERNA_PUENTE', v:'Quiero_Confianza_CreditoPuente', dom:'Ambiente', dueno:'Tecnología',
+  vig:'Futura', desde:'2026-09-01', est:'Pendiente', ori:'Hardcodeado en SQL', obj:'4 SPs productivos',
+  tipo:'Texto', nota:'HALLAZGO CRÍTICO L1-007: hoy producción apunta al sufijo _QA. La solicitud corrige el destino.'},
+ {k:'OPERACION.EMAIL_PRUEBA_EDC', v:"'Prueba@ion.com'", dom:'Operación', dueno:'Operación', vig:'Vigente',
+  desde:'2023-02-01', est:'Rechazado', ori:'Hardcodeado en SQL', obj:'edc.spUpsertCClienteDaily', tipo:'Texto',
+  nota:'Se escribe como EMAIL2 de todos los clientes. No es configuración: es un defecto con posible impacto en datos personales.'},
+ {k:'CONTABLE.CUENTAS_EXCLUIDAS', v:'12 cuentas', dom:'Contable', dueno:'Contabilidad', vig:'Vigente',
+  desde:'2022-04-01', est:'Aprobado', ori:'Hardcodeado en SQL', obj:'CIERRE.SP_SAF_SALDOS', tipo:'Lista',
+  nota:'Lista literal dentro de un NOT IN. Debe ser catálogo con vigencia.'},
+ {k:'CARTERA.TIPOS_CREDITO_VIGENTE', v:'20, 23', dom:'Riesgo', dueno:'Riesgos', vig:'Vigente', desde:'2021-01-01',
+  est:'Pendiente', ori:'Hardcodeado en SQL', obj:'104 archivos, 37 listas distintas', tipo:'Lista',
+  nota:'El mismo tipo se clasifica distinto según el objeto (20/23, 26, 8): los reportes no cuadran entre sí.'},
+ {k:'OPERACION.DIAS_GRACIA_PAGO', v:'3', dom:'Operación', dueno:'Cobranza', vig:'Vigente', desde:'2024-07-01',
+  est:'Aprobado', ori:'Portal', obj:'PAG.SP_APLICA_PAGO', tipo:'Entero',
+  nota:'Ejemplo de parámetro ya migrado al portal: se cambia sin desplegar código.'},
+ {k:'OPERACION.TOPE_REINTENTOS_SAF', v:'5', dom:'Operación', dueno:'Tecnología', vig:'Vigente', desde:'2025-11-01',
+  est:'Aprobado', ori:'Portal', obj:'SAF.SP_ENVIA_POLIZA', tipo:'Entero',
+  nota:'Ejemplo de parámetro ya migrado al portal.'},
+ {k:'CONTABLE.RUBROS_POLIZA', v:'23 rubros', dom:'Contable', dueno:'Contabilidad', vig:'Futura',
+  desde:'2026-09-01', est:'Pendiente', ori:'Hardcodeado en SQL', obj:'dbo.FN_RUBRO_POL (invocada por 31 objetos)',
+  tipo:'Lista', nota:'El catálogo de rubros está dentro de una función escalar. Migrarlo a tabla es prerrequisito de la Ola 4.'}
+];
+
+const CATS = {
+ 'Rubros contables':{warn:'2 rubros con definición en conflicto entre dbo.FN_RUBRO_POL y PO.SAF_CAT_CONTABLE.',
+  rows:[
+   ['COMISION_APERTURA','Comisión por apertura de crédito',43,1,'ok'],
+   ['COMISION_ADMISISTRACION','Comisión por administración (literal con SIS duplicada)',6,2,'dup'],
+   ['INTERES_ORDINARIO','Interés ordinario devengado',112,1,'ok'],
+   ['INTERES_MORATORIO','Interés moratorio',87,1,'ok'],
+   ['IVA_COMISION','IVA de comisiones',11,1,'ok'],
+   ['PRINCIPAL_FINAL','Saldo de principal al cierre',54,2,'dup'],
+   ['SEGURO_VIDA','Prima de seguro de vida',22,1,'ok'],
+   ['CASTIGO_CARTERA','Castigo de cartera',18,1,'ok']]},
+ 'Tipos de crédito (cartera)':{warn:'37 listas distintas en 104 archivos clasifican los mismos tipos de crédito de forma diferente.',
+  rows:[
+   ['20','Crédito individual vigente',230,3,'dup'],
+   ['23','Crédito comercial vigente',198,3,'dup'],
+   ['26','Crédito reestructurado',77,2,'dup'],
+   ['8','Crédito puente',41,2,'dup'],
+   ['31','Crédito castigado',12,1,'ok']]},
+ 'Conceptos de movimiento':{warn:'Sin conflictos detectados en este catálogo.',
+  rows:[
+   ['CARGO','Cargo a la cuenta del crédito',164,1,'ok'],
+   ['ABONO','Abono a la cuenta del crédito',159,1,'ok'],
+   ['MORATORIO','Cargo por mora',88,1,'ok'],
+   ['DEVENGO','Devengo de intereses',73,1,'ok']]},
+ 'Cuentas excluidas':{warn:'La lista vive dentro de un NOT IN en CIERRE.SP_SAF_SALDOS: no es consultable ni versionada.',
+  rows:[
+   ['1103-01','Cuenta puente de conciliación',1,1,'ok'],
+   ['1103-02','Cuenta puente de saldos en orden',1,1,'ok'],
+   ['2201-07','Provisión no aplicable a cierre',1,1,'ok'],
+   ['9999-99','Cuenta técnica de ajuste',1,1,'war']]}
+};
+
+let SOLS = [
+ {id:'SOL-2026-0141', k:'AMBIENTE.BD_EXTERNA_PUENTE', de:'Quiero_Confianza_CreditoPuente_QA',
+  a:'Quiero_Confianza_CreditoPuente', amb:'Producción', aut:'J. Marellanes', rol:'Solicitante',
+  fecha:'2026-08-19 10:12', est:'Pendiente', crit:'Crítica',
+  just:'Cuatro procedimientos productivos leen la base de QA (hallazgo L1-007). Se sustituye por el sinónimo del ambiente.',
+  imp:'4 procedimientos · afecta el cierre diario de crédito puente'},
+ {id:'SOL-2026-0140', k:'OPERACION.FECHA_CORTE_COMISIONES', de:"'20260123' (fija)",
+  a:'Calculada del periodo procesado', amb:'Producción', aut:'M. Ríos', rol:'Solicitante',
+  fecha:'2026-08-19 09:40', est:'Pendiente', crit:'Crítica',
+  just:'El cierre mensual comercial lee otras comisiones de una fecha fija (hallazgo L1-001). Requiere validación de contabilidad.',
+  imp:'CIERRE.SP_CMR_GEN_MES · afecta la cifra publicada'},
+ {id:'SOL-2026-0139', k:'FISCAL.IVA_TASA', de:'0.16', a:'0.16 (migración a parámetro, sin cambio de valor)',
+  amb:'QA', aut:'L. Fuentes', rol:'Solicitante', fecha:'2026-08-18 17:05', est:'Pendiente', crit:'Alta',
+  just:'Ola 4: extraer el literal a catálogo con vigencia sin alterar el resultado. Se compara cifra antes y después.',
+  imp:'11 procedimientos · cambio neutro esperado'},
+ {id:'SOL-2026-0138', k:'RIESGO.DIAS_ALERTA_TASA', de:'5', a:'7', amb:'Desarrollo', aut:'C. Peña',
+  rol:'Solicitante', fecha:'2026-08-18 12:22', est:'Pendiente', crit:'Media',
+  just:'Ampliar la ventana de aviso al cliente por cambio de tasa.', imp:'SAF.SP_ALERTA_TASA'},
+ {id:'SOL-2026-0137', k:'OPERACION.DIAS_GRACIA_PAGO', de:'2', a:'3', amb:'Producción', aut:'C. Peña',
+  rol:'Solicitante', fecha:'2026-08-11 15:31', est:'Aprobada', crit:'Media',
+  just:'Alineación con la política de cobranza aprobada en comité.', imp:'PAG.SP_APLICA_PAGO',
+  apr:'A. Duarte', fapr:'2026-08-11 16:02'},
+ {id:'SOL-2026-0136', k:'OPERACION.EMAIL_PRUEBA_EDC', de:"'Prueba@ion.com'", a:"'soporte@ion.com'",
+  amb:'Producción', aut:'C. Peña', rol:'Solicitante', fecha:'2026-08-10 11:02', est:'Rechazada', crit:'Alta',
+  just:'Cambiar el correo de prueba que se escribe a todos los clientes.', imp:'edc.spUpsertCClienteDaily',
+  apr:'A. Duarte', fapr:'2026-08-10 12:15',
+  mot:'No es parámetro: el procedimiento no debe escribir un correo fijo en el padrón. Se atiende como defecto en la Ola 2.'}
+];
+
+const BITA = [
+ ['2026-08-19 10:12','J. Marellanes','Alta','SOL-2026-0141 · AMBIENTE.BD_EXTERNA_PUENTE','—','solicitud creada','pendiente'],
+ ['2026-08-19 09:40','M. Ríos','Alta','SOL-2026-0140 · OPERACION.FECHA_CORTE_COMISIONES','—','solicitud creada','pendiente'],
+ ['2026-08-18 17:05','L. Fuentes','Alta','SOL-2026-0139 · FISCAL.IVA_TASA','—','solicitud creada','pendiente'],
+ ['2026-08-11 16:02','A. Duarte','Aprobación','OPERACION.DIAS_GRACIA_PAGO','2','3','A. Duarte'],
+ ['2026-08-11 16:03','sistema','Promoción','OPERACION.DIAS_GRACIA_PAGO','QA','Producción','A. Duarte'],
+ ['2026-08-10 12:15','A. Duarte','Rechazo','OPERACION.EMAIL_PRUEBA_EDC',"'Prueba@ion.com'",'sin cambio','A. Duarte'],
+ ['2026-07-31 18:44','A. Duarte','Aprobación','OPERACION.TOPE_REINTENTOS_SAF','3','5','A. Duarte'],
+ ['2026-07-15 09:11','M. Ríos','Cambio de valor','CONTABLE.CUENTAS_EXCLUIDAS','11 cuentas','12 cuentas','A. Duarte']
+];
+
+const EJEC = [
+ ['CIERRE.SP_CMR_GEN_MES','03:12','00:41:12',184320,0,'Éxito','CIERRE',96],
+ ['CIERRE.SP_IND_GEN_MES','03:53','00:28:04',151902,3,'Error','CIERRE',88],
+ ['CIERRE.SP_SAF_SALDOS','04:22','00:52:39',402118,0,'Éxito','CIERRE',148],
+ ['CIERRE.SP_IND_GEN_MES (reproceso)','04:48','00:27:51',151902,0,'Alerta','CIERRE',87],
+ ['PO.SP_SAF_POLIZA_MOVxDIA','05:16','00:11:02',88240,0,'Éxito','PO',72],
+ ['PO.SYS_SP_MOV_CARGO','05:28','00:06:41',44120,0,'Éxito','PO',64],
+ ['PAG.SP_APLICA_PAGO','05:35','00:03:12',12880,0,'Éxito','PAG',58],
+ ['SAF.SP_ENVIA_POLIZA','05:39','00:02:04',1,0,'Éxito','SAF',61],
+ ['edc.spUpsertCClienteDaily','05:42','00:09:38',96410,0,'Éxito','PO',77]
+];
+
+const AMBS = [
+ ['CIERRE.SP_SAF_SALDOS','573 líneas','573 líneas','223 líneas','Funcional','CIERRE'],
+ ['CIERRE.SP_CMR_GEN_MES','90 ref. shadow','90 ref. shadow','91 ref. núcleo','Nombre de base','CIERRE'],
+ ['CIERRE.SP_IND_GEN_MES','a1f4c2','a1f4c2','a1f4c2','Idéntico','CIERRE'],
+ ['CIERRE.SP_CASTIGO_MES','existe','existe','no existe','Ausente en prod','CIERRE'],
+ ['PO.SP_IND_GEN_MES_MOD','2c88de','2c88de','7b31aa','Funcional','PO'],
+ ['PO.SYS_SP_MOV_CARGO','ref. shadow','ref. shadow','ref. núcleo','Nombre de base','PO'],
+ ['PO.SP_SAF_POLIZA_MOVxDIA','9d02f1','9d02f1','9d02f1','Idéntico','PO'],
+ ['PAG.SP_APLICA_PAGO','existe','existe','no existe','Ausente en prod','PAG'],
+ ['edc.SP_Genera_Ordenes_Dummy','existe','existe','existe','Funcional','edc'],
+ ['edc.spUpsertCClienteDaily','4ab7c9','4ab7c9','4ab7c9','Idéntico','edc']
+];
+
+const DEPS = {
+ 'CIERRE.SP_SAF_SALDOS':{
+  llaman:['CIERRE.SP_ORQ_CIERRE_DIARIO','CIERRE.SP_ORQ_CIERRE_MES'],
+  tablas:['CIERRE.SAF_SALDOS (escribe)','PO.SAF_POLIZA_ERRORES (escribe)','#impagos (temporal)','PR.PR_CREDITO (lee)'],
+  funcs:['KARDIA.dbo.FECHA_IMPAGO','dbo.FN_CUOTA_COVID'],
+  reportes:['Saldos por cuenta de orden','Cartera post-castigo'],
+  imp:'223 de 573 líneas desplegadas en producción. Cambiarlo afecta 2 orquestadores, 2 reportes y la póliza contable del día. Contiene 2 cursores y 287 usos de NOLOCK en su familia.'},
+ 'dbo.FN_RUBRO_POL':{
+  llaman:['31 objetos programables (CIERRE 12, PO 17, dbo 2)'],
+  tablas:['ninguna (catálogo literal dentro de la función)'],
+  funcs:[],
+  reportes:['Póliza contable ION','Póliza contable Afirme','Resumen de rubros'],
+  imp:'Función escalar con el catálogo de rubros embebido, invocada fila por fila desde 31 objetos. Es el punto de mayor apalancamiento: migrar su catálogo a tabla habilita la Ola 4 y mejora el rendimiento del cierre.'},
+ 'PO.SP_SAF_POLIZA_MOVxDIA':{
+  llaman:['4 artefactos .rdl','CIERRE.SP_ORQ_CIERRE_DIARIO'],
+  tablas:['PO.SAF_POLIZA (escribe)','PO.SAF_POLIZA_ERRORES (escribe)','PO.SAF_MOV_CARGO (lee)','PO.SAF_MOV_ABONO (lee)'],
+  funcs:['dbo.FN_RUBRO_POL'],
+  reportes:['Póliza contable ION','Póliza contable Afirme','Póliza diaria (QA)','Movimientos por día'],
+  imp:'Es el procedimiento más consumido por la capa de reportes. Dos variantes del mismo reporte filtran productos distintos, así que un cambio de contrato de salida afecta cifras que hoy ya no coinciden entre sí.'}
+};
+
+const REPS = [
+ ['Póliza contable ION','2 (dev, prod)','PO.SP_SAF_POLIZA_MOVxDIA','10.10.8.22\\SAF','Embebido','Dos copias filtran productos y etapas distintos'],
+ ['Póliza contable Afirme','2 (dev, prod)','PO.SP_SAF_POLIZA_MOVxDIA','10.10.9.125\\SAF','Embebido','—'],
+ ['Saldos por cuenta de orden','2','CIERRE.SP_SAF_SALDOS','SRV-IONSQLAWS\\SAF','Embebido','—'],
+ ['Cartera post-castigo','1','RPT.CASTIGO_REEST_SALDOS','10.10.8.22\\SAF','Embebido','—'],
+ ['Estado de cuenta individual','2','edc.SP_EDC_INDIVIDUAL','10.10.8.22\\SAF','Embebido','—'],
+ ['Movimientos por día','2','PO.SP_SAF_POLIZA_MOVxDIA','10.10.9.125\\SAF','Embebido','El nombre del archivo no corresponde al procedimiento que ejecuta'],
+ ['Póliza diaria (QA)','2','PO.SP_SAF_POLIZA_MOVxDIA','SRV-IONSQLAWS\\SAF','Embebido','Variante QA con esquema AP y catálogo INFORMES'],
+ ['Alertas de tasa','1','SAF.SP_ALERTA_TASA','10.10.8.22\\SAF','Embebido','—'],
+ ['Pagos aplicados del día','2','PAG.SP_RPT_PAGOS','10.10.8.22\\SAF','Embebido','—'],
+ ['Reporte de comisiones','1','PO.SP_COM_DEV_COMISIONES','10.10.9.125\\SAF','Embebido','—']
+];
+
+/* ========================= utilidades ========================= */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const VIGC = {Vigente:'vig', Futura:'fut', Expirada:'exp'};
+const ESTC = {Aprobado:'ok', Pendiente:'pen', Rechazado:'rej', Aprobada:'ok', Pendiente_:'pen', Rechazada:'rej'};
+
+function go(m){
+  document.querySelectorAll('main > section').forEach(s => s.classList.toggle('hide', s.id !== m));
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+  if (location.hash !== '#' + m) history.replaceState(null, '', '#' + m);
+  window.scrollTo(0,0);
+}
+function setEnv(){
+  const v = $('env').value, p = $('envp');
+  p.className = 'envpill ' + v;
+  p.textContent = {dev:'DEV', qa:'QA', prod:'PROD'}[v];
+}
+function setRol(){
+  $('s-note').innerHTML = $('rol').value === 'Aprobador'
+    ? 'Rol <b>Aprobador</b>: puedes resolver solicitudes de otros. El sistema bloquea la aprobación de tus propias solicitudes.'
+    : 'Con el rol <b>' + $('rol').value + '</b> no puedes aprobar. Cambia a <b>Aprobador</b> en la barra superior para habilitar los botones.';
+  renderS();
+}
+
+/* ========================= M1 parámetros ========================= */
+function limpiaP(){
+  ['f-dom','f-vig','f-est','f-ori'].forEach(i => $(i).selectedIndex = 0);
+  $('f-txt').value = ''; renderP();
+}
+function renderP(){
+  const d = $('f-dom').value, v = $('f-vig').value, e = $('f-est').value, o = $('f-ori').value,
+        q = $('f-txt').value.toLowerCase();
+  const rows = PARAMS.filter(p =>
+    (d === 'Todos' || p.dom === d) && (v === 'Todas' || p.vig === v) &&
+    (e === 'Todos' || p.est === e) && (o === 'Todos' || p.ori === o) &&
+    (!q || (p.k + ' ' + p.v + ' ' + p.obj + ' ' + p.nota).toLowerCase().includes(q)));
+  $('tb-p').innerHTML = rows.map((p,i) => `
+    <tr class="click" onclick="detP(${PARAMS.indexOf(p)})">
+      <td><span class="mono">${esc(p.k)}</span><div class="dom">${esc(p.obj)}</div></td>
+      <td class="mono">${esc(p.v)}</td>
+      <td>${p.dom}<div class="dom">${p.dueno}</div></td>
+      <td><span class="tag ${VIGC[p.vig]}">${p.vig}</span></td>
+      <td class="mono">${p.desde}</td>
+      <td><span class="tag ${ESTC[p.est]}">${p.est}</span></td>
+      <td><span class="tag ${p.ori === 'Portal' ? 'ok' : 'n'}">${p.ori}</span></td>
+    </tr>`).join('') ||
+    '<tr><td colspan="7" style="color:var(--tx3)">Ningún parámetro cumple los filtros.</td></tr>';
+  $('cnt-p').textContent = rows.length + ' de ' + PARAMS.length + ' parámetros';
+}
+function detP(i){
+  const p = PARAMS[i];
+  $('dw-t').textContent = p.k;
+  $('dw-s').textContent = p.dom + ' · dueño: ' + p.dueno + ' · tipo: ' + p.tipo;
+  $('dw-b').innerHTML = `
+    <div class="kv">
+      <b>Valor vigente</b><span class="mono">${esc(p.v)}</span>
+      <b>Vigencia</b><span><span class="tag ${VIGC[p.vig]}">${p.vig}</span> desde ${p.desde}</span>
+      <b>Estado</b><span><span class="tag ${ESTC[p.est]}">${p.est}</span></span>
+      <b>Origen actual</b><span><span class="tag ${p.ori === 'Portal' ? 'ok' : 'n'}">${p.ori}</span></span>
+      <b>Objetos SQL</b><span class="mono">${esc(p.obj)}</span>
+    </div>
+    <div class="${p.nota.startsWith('HALLAZGO') || p.est === 'Rechazado' ? 'warnbox' : 'note'}">${esc(p.nota)}</div>
+    <div class="card">
+      <h4>Historial de vigencias</h4>
+      <ul class="tl">
+        <li class="now"><b>${esc(p.v)}</b>desde ${p.desde} · ${p.est === 'Aprobado' ? 'aprobado por A. Duarte' : 'sin aprobación'}</li>
+        <li><b>valor anterior</b>2021-01-01 a ${p.desde} · aprobado por M. Ríos</li>
+        <li><b>alta inicial</b>migración desde el código SQL · sin aprobación registrada</li>
+      </ul>
+      <p class="foot" style="margin:0">Cerrar una vigencia nunca borra la anterior: el cierre de un periodo pasado
+        sigue siendo reproducible con el valor que estaba vigente.</p>
+    </div>
+    <div class="card">
+      <h4>Valor por ambiente</h4>
+      <table style="border:0">
+        <thead><tr><th>Ambiente</th><th>Valor</th><th>Última promoción</th></tr></thead>
+        <tbody>
+          <tr><td><span class="envpill dev">DEV</span></td><td class="mono">${esc(p.v)}</td><td class="dom">2026-08-01</td></tr>
+          <tr><td><span class="envpill qa">QA</span></td><td class="mono">${esc(p.v)}</td><td class="dom">2026-08-05</td></tr>
+          <tr><td><span class="envpill prod">PROD</span></td><td class="mono">${esc(p.v)}</td><td class="dom">2026-08-11</td></tr>
+        </tbody>
+      </table>
+    </div>`;
+  $('dw-f').innerHTML = `
+    <button class="btn p" onclick="solicitar('${esc(p.k)}')">Solicitar cambio</button>
+    <button class="btn" onclick="alert('Prototipo: mostraría las 3 ejecuciones de cierre que usaron este valor.')">Ver usos en cierres</button>
+    <button class="btn" onclick="closeDw()">Cerrar</button>`;
+  openDw();
+}
+function solicitar(k){
+  $('dw-t').textContent = 'Nueva solicitud de cambio';
+  $('dw-s').textContent = k + ' · requiere aprobación de una persona distinta';
+  $('dw-b').innerHTML = `
+    <div class="kv">
+      <b>Parámetro</b><span class="mono">${esc(k)}</span>
+      <b>Ambiente destino</b><span><select><option>Desarrollo</option><option>QA</option><option selected>Producción</option></select></span>
+      <b>Nuevo valor</b><span><input type="text" value="" placeholder="escribe el valor propuesto" style="width:220px"></span>
+      <b>Rige desde</b><span><input type="date" value="2026-09-01"></span>
+      <b>Justificación</b><span><textarea rows="3" style="width:100%" placeholder="Motivo del cambio, acuerdo o normativa que lo respalda"></textarea></span>
+    </div>
+    <div class="card"><h4>Vista previa del cambio</h4>
+      <div class="diff"><div class="o">− valor vigente (se cierra su vigencia el 2026-08-31)</div>
+      <div class="n">+ valor propuesto (rige desde 2026-09-01, tras aprobación)</div></div>
+    </div>
+    <div class="note">Al enviar, la solicitud entra en la bandeja de <b>M3 · Aprobaciones</b>. No se aplica ningún
+      cambio hasta que un aprobador distinto del autor la resuelva, y todo el flujo queda en la bitácora.</div>`;
+  $('dw-f').innerHTML = `<button class="btn p" onclick="enviar()">Enviar solicitud</button>
+    <button class="btn" onclick="closeDw()">Cancelar</button>`;
+}
+function enviar(){
+  SOLS.unshift({id:'SOL-2026-0142', k:'(nueva solicitud del prototipo)', de:'valor vigente', a:'valor propuesto',
+    amb:'Producción', aut:'J. Marellanes', rol:'Solicitante', fecha:'2026-08-19 19:58', est:'Pendiente',
+    crit:'Media', just:'Solicitud creada desde el prototipo para mostrar el flujo.', imp:'—'});
+  closeDw(); renderS(); go('m3');
+  $('nsol').textContent = SOLS.filter(s => s.est === 'Pendiente').length;
+}
+
+/* ========================= M2 catálogos ========================= */
+function renderC(){
+  const c = CATS[$('f-cat').value], q = $('f-ctxt').value.toLowerCase(), dup = $('f-cdup').checked;
+  $('c-warn').textContent = c.warn;
+  const rows = c.rows.filter(r => (!q || (r[0] + ' ' + r[1]).toLowerCase().includes(q)) && (!dup || r[4] !== 'ok'));
+  $('tb-c').innerHTML = rows.map(r => `
+    <tr><td class="mono">${esc(r[0])}</td><td>${esc(r[1])}</td><td class="num">${r[2]}</td>
+    <td class="num">${r[3]}</td>
+    <td>${r[4] === 'ok' ? '<span class="tag ok">Consistente</span>'
+        : r[4] === 'dup' ? '<span class="tag dup">En conflicto</span>' : '<span class="tag war">Revisar</span>'}</td></tr>`
+  ).join('') || '<tr><td colspan="5" style="color:var(--tx3)">Sin resultados.</td></tr>';
+  $('cnt-c').textContent = rows.length + ' de ' + c.rows.length + ' entradas';
+}
+
+/* ========================= M3 solicitudes ========================= */
+function renderS(){
+  const e = $('f-sest').value, a = $('f-samb').value, aprobador = $('rol').value === 'Aprobador';
+  const mapa = {Pendientes:'Pendiente', Aprobadas:'Aprobada', Rechazadas:'Rechazada'};
+  const rows = SOLS.filter(s =>
+    (e === 'Todas' || s.est === mapa[e]) && (a === 'Todos' || s.amb === a));
+  $('tb-s').innerHTML = rows.map(s => `
+    <div class="card">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <b class="mono">${s.id}</b>
+        <span class="tag ${s.est === 'Pendiente' ? 'pen' : s.est === 'Aprobada' ? 'ok' : 'rej'}">${s.est}</span>
+        <span class="tag ${s.crit === 'Crítica' ? 'err' : s.crit === 'Alta' ? 'war' : 'n'}">${s.crit}</span>
+        <span class="envpill ${s.amb === 'Producción' ? 'prod' : s.amb === 'QA' ? 'qa' : 'dev'}">${s.amb}</span>
+        <span class="dom" style="margin-left:auto">${s.aut} · ${s.fecha}</span>
+      </div>
+      <div class="mono" style="margin:9px 0 7px">${esc(s.k)}</div>
+      <div class="diff"><div class="o">− ${esc(s.de)}</div><div class="n">+ ${esc(s.a)}</div></div>
+      <p style="margin:9px 0 4px;color:var(--tx2);font-size:12.5px">${esc(s.just)}</p>
+      <p class="dom" style="margin:0 0 10px">Impacto: ${esc(s.imp)}</p>
+      ${s.est === 'Pendiente' ? `
+        <button class="btn g s" ${aprobador ? '' : 'disabled style="opacity:.45;cursor:not-allowed"'}
+          onclick="resolver('${s.id}','Aprobada')">Aprobar</button>
+        <button class="btn r s" ${aprobador ? '' : 'disabled style="opacity:.45;cursor:not-allowed"'}
+          onclick="resolver('${s.id}','Rechazada')">Rechazar</button>
+        <button class="btn s" onclick="alert('Prototipo: abriría el diff completo del objeto SQL afectado.')">Ver evidencia</button>`
+      : `<p class="dom" style="margin:0">${s.est} por ${s.apr || 'A. Duarte'} · ${s.fapr || s.fecha}
+         ${s.mot ? '<br>Motivo: ' + esc(s.mot) : ''}</p>`}
+    </div>`).join('') || '<div class="card" style="color:var(--tx3)">Sin solicitudes con estos filtros.</div>';
+  $('cnt-s').textContent = rows.length + ' solicitudes';
+  $('nsol').textContent = SOLS.filter(s => s.est === 'Pendiente').length;
+}
+function resolver(id, est){
+  const s = SOLS.find(x => x.id === id);
+  if (s.aut === 'J. Marellanes' && est === 'Aprobada'){
+    alert('Cuatro ojos: no puedes aprobar una solicitud que tú mismo creaste (' + id + ').');
+    return;
+  }
+  s.est = est; s.apr = 'J. Marellanes (rol Aprobador)'; s.fapr = '2026-08-19 20:03';
+  renderS();
+}
+
+/* ========================= M4 bitácora ========================= */
+function renderB(){
+  const a = $('f-bacc').value, q = $('f-btxt').value.toLowerCase();
+  const rows = BITA.filter(r => (a === 'Todas' || r[2] === a) && (!q || r.join(' ').toLowerCase().includes(q)));
+  $('tb-b').innerHTML = rows.map(r => `
+    <tr><td class="mono">${r[0]}</td><td>${r[1]}</td>
+    <td><span class="tag ${r[2] === 'Rechazo' ? 'rej' : r[2] === 'Aprobación' ? 'ok' : 'n'}">${r[2]}</span></td>
+    <td class="mono">${esc(r[3])}</td><td class="mono">${esc(r[4])}</td><td class="mono">${esc(r[5])}</td>
+    <td>${r[6]}</td></tr>`).join('') ||
+    '<tr><td colspan="7" style="color:var(--tx3)">Sin movimientos.</td></tr>';
+  $('cnt-b').textContent = rows.length + ' de ' + BITA.length + ' movimientos';
+}
+
+/* ========================= M5 ejecuciones ========================= */
+function renderE(){
+  const e = $('f-eest').value, f = $('f-efam').value;
+  const rows = EJEC.filter(r => (e === 'Todos' || r[5] === e) && (f === 'Todas' || r[6] === f));
+  $('tb-e').innerHTML = rows.map(r => {
+    const pct = Math.min(100, r[7]);
+    const col = r[7] > 120 ? 'var(--bad)' : r[7] > 90 ? 'var(--warn)' : 'var(--ok)';
+    return `<tr><td class="mono">${esc(r[0])}</td><td class="mono">${r[1]}</td><td class="mono">${r[2]}</td>
+      <td class="num">${r[3].toLocaleString('es-MX')}</td>
+      <td class="num" style="color:${r[4] ? 'var(--bad)' : 'var(--tx2)'}">${r[4]}</td>
+      <td><span class="tag ${r[5] === 'Éxito' ? 'ok' : r[5] === 'Error' ? 'err' : 'war'}">${r[5]}</span></td>
+      <td><div class="bar"><i style="width:${pct}%;background:${col}"></i></div>
+        <span class="dom">${r[7]}% de la media</span></td></tr>`;
+  }).join('') || '<tr><td colspan="7" style="color:var(--tx3)">Sin ejecuciones.</td></tr>';
+  $('cnt-e').textContent = rows.length + ' de ' + EJEC.length + ' procesos';
+}
+
+/* ========================= M6 ambientes ========================= */
+function renderA(){
+  const d = $('f-adif').value, e = $('f-aesq').value, q = $('f-atxt').value.toLowerCase();
+  const rows = AMBS.filter(r => (d === 'Todas' || r[4] === d) && (e === 'Todos' || r[5] === e) &&
+    (!q || r[0].toLowerCase().includes(q)));
+  const cls = {Funcional:'err','Nombre de base':'war','Ausente en prod':'err','Idéntico':'ok'};
+  $('tb-a').innerHTML = rows.map(r => `
+    <tr><td class="mono">${esc(r[0])}</td>
+    <td class="mono dom">${esc(r[1])}</td><td class="mono dom">${esc(r[2])}</td>
+    <td class="mono dom" style="color:${r[3].includes('no existe') ? 'var(--bad)' : 'inherit'}">${esc(r[3])}</td>
+    <td><span class="tag ${cls[r[4]]}">${r[4]}</span></td>
+    <td>${r[4] === 'Idéntico' ? '<span class="dom">sin acción</span>'
+      : '<button class="btn s" onclick="alert(\'Prototipo: mostraría el diff línea a línea y permitiría abrir una solicitud de promoción.\')">Ver diff</button>'}</td></tr>`
+  ).join('') || '<tr><td colspan="6" style="color:var(--tx3)">Sin objetos.</td></tr>';
+  $('cnt-a').textContent = rows.length + ' de ' + AMBS.length + ' objetos (muestra del inventario de 256)';
+}
+
+/* ========================= M7 dependencias ========================= */
+function renderD(){
+  const d = DEPS[$('f-obj').value];
+  const lista = (t, arr) => `<div class="card"><h4>${t}</h4>${
+    arr.length ? arr.map(x => `<div class="chip mono">${esc(x)}</div>`).join('') : '<span class="dom">ninguno</span>'}</div>`;
+  $('dep-cards').innerHTML =
+    lista('Quién lo invoca', d.llaman) + lista('Tablas que toca', d.tablas) +
+    lista('Funciones que usa', d.funcs) + lista('Reportes que lo consumen', d.reportes);
+  $('dep-imp').innerHTML = `<h4>Qué se rompe si cambia</h4><p style="margin:0;color:var(--tx2)">${esc(d.imp)}</p>`;
+}
+
+/* ========================= M8 reportes ========================= */
+function renderR(){
+  const o = $('f-rds').value, q = $('f-rtxt').value.toLowerCase();
+  const rows = REPS.filter(r => (o === 'Todos' || r[4] === o) && (!q || (r[0] + ' ' + r[2]).toLowerCase().includes(q)));
+  $('tb-r').innerHTML = rows.map(r => `
+    <tr><td>${esc(r[0])}</td><td class="num">${esc(r[1])}</td><td class="mono">${esc(r[2])}</td>
+    <td class="mono dom">${esc(r[3])}</td>
+    <td><span class="tag ${r[4] === 'Embebido' ? 'err' : 'ok'}">${r[4]}</span></td>
+    <td class="dom">${esc(r[5])}</td></tr>`).join('') ||
+    '<tr><td colspan="6" style="color:var(--tx3)">Sin reportes.</td></tr>';
+  $('cnt-r').textContent = rows.length + ' de ' + REPS.length + ' reportes lógicos';
+}
+
+/* ========================= panel lateral ========================= */
+function openDw(){ $('ov').classList.add('on'); $('dw').classList.add('on'); }
+function closeDw(){ $('ov').classList.remove('on'); $('dw').classList.remove('on'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDw(); });
+
+renderP(); renderC(); renderS(); renderB(); renderE(); renderA(); renderD(); renderR();
+if (/^#m[1-8]$/.test(location.hash)) go(location.hash.slice(1));
+</script>
+</body>
+</html>
