@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Genera el reporte HTML interactivo de un lote de auditoria a partir del JSON de hallazgos.
+"""Genera el reporte HTML interactivo de un lote de auditoría a partir del JSON de hallazgos.
 
 Uso:  python3 generar_reporte.py lote1_hallazgos.json 01_lote1.html
 """
@@ -10,17 +10,18 @@ from pathlib import Path
 
 SEV_ORDER = {"Critico": 0, "Alto": 1, "Medio": 2, "Bajo": 3}
 SEV_CLASS = {"Critico": "c", "Alto": "a", "Medio": "m", "Bajo": "b"}
+SEV_LABEL = {"Critico": "Crítico", "Alto": "Alto", "Medio": "Medio", "Bajo": "Bajo"}
 CLAS_CLASS = {
     "Parametrizable en portal": "p1",
-    "Parametrizable en portal (catalogo)": "p1",
-    "Parametrizable en portal (catalogo contable)": "p1",
+    "Parametrizable en portal (catálogo)": "p1",
+    "Parametrizable en portal (catálogo contable)": "p1",
     "Parametrizable en portal (plantillas)": "p1",
-    "Parametrizable en portal (definicion de universo)": "p1",
-    "Catalogo en BD (no editable en portal)": "p2",
-    "Configuracion de ambiente": "p3",
+    "Parametrizable en portal (definición de universo)": "p1",
+    "Catálogo en BD (no editable en portal)": "p2",
+    "Configuración de ambiente": "p3",
     "No parametrizable: es un defecto": "p4",
 }
-ESFUERZO = {"S": "S (&lt;1 dia)", "M": "M (1-3 dias)", "L": "L (&gt;3 dias)"}
+ESFUERZO = {"S": "S (&lt;1 día)", "M": "M (1-3 días)", "L": "L (&gt;3 días)"}
 
 
 def e(x):
@@ -44,11 +45,11 @@ def build(data):
     for h in hs:
         tags = " ".join(env_tags(h["env"]))
         rows.append(f"""
-    <article class="f" data-sev="{e(h['sev'])}" data-cat="{e(h['cat'])}" data-env="{e(tags)}"
+    <article class="f" data-sev="{e(SEV_LABEL[h['sev']])}" data-cat="{e(h['cat'])}" data-env="{e(tags)}"
              data-lote="{e(str(h.get('lote','')))}"
              data-txt="{e((h['id'] + ' ' + h['titulo'] + ' ' + h['obj'] + ' ' + h['evidencia']).lower())}">
       <header onclick="this.parentNode.classList.toggle('open')">
-        <span class="sev {SEV_CLASS[h['sev']]}">{e(h['sev'])}</span>
+        <span class="sev {SEV_CLASS[h['sev']]}">{e(SEV_LABEL[h['sev']])}</span>
         <span class="id">{e(h['id'])}</span>
         <span class="ti">{e(h['titulo'])}</span>
         <span class="meta">{e(h['cat'])} &middot; {e(h['env'])} &middot; esfuerzo {ESFUERZO.get(h.get('esfuerzo', ''), '?')}</span>
@@ -56,10 +57,10 @@ def build(data):
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>{e(h['obj'])}</span></div>
-        <div class="kv"><b>Ubicacion</b><span>{e(h['loc'])}</span></div>
+        <div class="kv"><b>Ubicación</b><span>{e(h['loc'])}</span></div>
         <div class="kv"><b>Evidencia</b><pre>{e(h['evidencia'])}</pre></div>
         <div class="kv"><b>Impacto</b><span>{e(h['impacto'])}</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>{e(h['remediacion'])}</span></div>
+        <div class="kv rem"><b>Remediación</b><span>{e(h['remediacion'])}</span></div>
       </div>
     </article>""")
 
@@ -86,12 +87,12 @@ def build(data):
     cob = data.get("cobertura") or []
     sub = data["alcance"].get("subtitulo") or (
         f"Lote {data['lote']} &middot; {len(cob) or 20} objetos de mayor riesgo &middot; "
-        f"{data['alcance'].get('lineas_revisadas', 0):,} lineas revisadas en <b>BD</b> (dev/QA) "
-        "y <b>BD_prod</b> (produccion)")
+        f"{data['alcance'].get('lineas_revisadas', 0):,} líneas revisadas en <b>BD</b> (dev/QA) "
+        "y <b>BD_prod</b> (producción)")
     cob_rows = "".join(
         f"""      <tr data-lote="{e(str(c['lote']))}" data-txt="{e(c['obj'].lower())}">
         <td class="num">{e(str(c['lote']))}</td><td class="mono">{e(c['obj'])}</td>
-        <td class="num">{c['lineas']:,}</td><td>{'si' if c['prod'] else '<b>no</b>'}</td>
+        <td class="num">{c['lineas']:,}</td><td>{'sí' if c['prod'] else '<b>no</b>'}</td>
         <td class="num">{e(str(c['poliza']))}</td><td class="num">{c['nolock']}</td>
         <td class="num">{c['cursor']}</td><td>{e(c['patron'])}</td></tr>""" for c in cob)
     cob_block = "" if not cob else f"""
@@ -102,8 +103,8 @@ def build(data):
     <button class="rst" onclick="resetCob()">Limpiar</button>
     <span class="count" id="ccnt"></span>
   </div>
-  <table><thead><tr><th>Lote</th><th>Objeto</th><th>Lineas</th><th>En BD_prod</th><th>ID_POLIZA</th>
-    <th>NOLOCK</th><th>Cursores</th><th>Patron transaccional</th></tr></thead>
+  <table><thead><tr><th>Lote</th><th>Objeto</th><th>Líneas</th><th>En BD_prod</th><th>ID_POLIZA</th>
+    <th>NOLOCK</th><th>Cursores</th><th>Patrón transaccional</th></tr></thead>
   <tbody id="cbody">
 {cob_rows}
   </tbody></table>"""
@@ -111,7 +112,7 @@ def build(data):
     return f"""<!DOCTYPE html>
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Auditoria SQL KARDIA &mdash; Lote {data['lote']}</title>
+<title>Auditoría SQL KARDIA &mdash; Lote {data['lote']}</title>
 <style>
 *{{box-sizing:border-box}}
 body{{margin:0;font:14px/1.55 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}}
@@ -183,13 +184,13 @@ footer{{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3
 .hide{{display:none!important}}
 </style></head><body>
 <header class="top">
-  <h1>Auditoria de codigo SQL &mdash; KARDIA / SAF</h1>
+  <h1>Auditoría de código SQL &mdash; KARDIA / SAF</h1>
   <p>{sub} &middot; {data['fecha']}</p>
 </header>
 <div class="wrap">
 
   <div class="kpis">
-    <div class="kpi c"><b>{counts['Critico']}</b><span>Criticos</span></div>
+    <div class="kpi c"><b>{counts['Critico']}</b><span>Críticos</span></div>
     <div class="kpi a"><b>{counts['Alto']}</b><span>Altos</span></div>
     <div class="kpi m"><b>{counts['Medio']}</b><span>Medios</span></div>
     <div class="kpi b"><b>{counts['Bajo']}</b><span>Bajos</span></div>
@@ -197,16 +198,16 @@ footer{{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3
     <div class="kpi"><b>{sum(1 for r in data['hardcode'] if r['clasificacion'].startswith('Parametrizable'))}</b><span>Parametrizables en portal</span></div>
   </div>
 
-  <details class="alc"><summary>Alcance y criterio de seleccion del lote</summary>
+  <details class="alc"><summary>Alcance y criterio de selección del lote</summary>
     <p>{e(data['alcance']['criterio'])}</p><ul>{objs}</ul>
-    <p><b>Nota de codificacion:</b> los archivos se decodifican por BOM (UTF-16LE en la mayoria, UTF-8 BOM en 30 archivos de BD/).
-    Los &quot;caracteres espaciados&quot; son los bytes 0x00 de UTF-16 leidos como ASCII: <b>no deben limpiarse</b>, se resuelven decodificando correctamente.</p>
+    <p><b>Nota de codificación:</b> los archivos se decodifican por BOM (UTF-16LE en la mayoría, UTF-8 BOM en 30 archivos de BD/).
+    Los &quot;caracteres espaciados&quot; son los bytes 0x00 de UTF-16 leídos como ASCII: <b>no deben limpiarse</b>, se resuelven decodificando correctamente.</p>
   </details>
 
   <h2>Hallazgos</h2>
   <div class="bar">
-    <label>Severidad</label><select id="fs"><option value="">Todas</option>{''.join(f'<option>{s}</option>' for s in sevs)}</select>
-    <label>Categoria</label><select id="fc"><option value="">Todas</option>{''.join(f'<option>{e(c)}</option>' for c in cats)}</select>
+    <label>Severidad</label><select id="fs"><option value="">Todas</option>{''.join(f'<option>{SEV_LABEL[s]}</option>' for s in sevs)}</select>
+    <label>Categoría</label><select id="fc"><option value="">Todas</option>{''.join(f'<option>{e(c)}</option>' for c in cats)}</select>
     <label>Entorno</label><select id="fe"><option value="">Ambos</option>{''.join(f'<option>{x}</option>' for x in envs)}</select>
     {'<label>Lote</label><select id="fl"><option value="">Todos</option>' + ''.join(f'<option>{x}</option>' for x in lotes) + '</select>' if lotes else ''}
     <input type="search" id="fq" placeholder="Buscar objeto, evidencia, texto...">
@@ -217,26 +218,26 @@ footer{{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3
 
 {cob_block}
 
-  <h2>Catalogo de valores hardcodeados y clasificacion de parametrizacion</h2>
+  <h2>Catálogo de valores hardcodeados y clasificación de parametrización</h2>
   <div class="bar">
-    <label>Clasificacion</label><select id="hc"><option value="">Todas</option>{''.join(f'<option>{e(c)}</option>' for c in clases)}</select>
+    <label>Clasificación</label><select id="hc"><option value="">Todas</option>{''.join(f'<option>{e(c)}</option>' for c in clases)}</select>
     <input type="search" id="hq" placeholder="Buscar valor, tipo, destino...">
     <button class="rst" onclick="resetHc()">Limpiar</button>
     <span class="count" id="hcnt"></span>
   </div>
-  <table class="hard"><thead><tr><th>Valor</th><th>Tipo</th><th>Ocurrencias</th><th>Clasificacion</th><th>Destino propuesto</th><th>Nota</th></tr></thead>
+  <table class="hard"><thead><tr><th>Valor</th><th>Tipo</th><th>Ocurrencias</th><th>Clasificación</th><th>Destino propuesto</th><th>Nota</th></tr></thead>
   <tbody id="hbody">
 {''.join(hc)}
   </tbody></table>
 
-  <h2>Plan de despliegue de la parametrizacion</h2>
+  <h2>Plan de despliegue de la parametrización</h2>
 {''.join(fases)}
 
   <h2>Valor agregado propuesto</h2>
   <ul class="va">{va}</ul>
 </div>
-<footer>Generado por la auditoria automatizada + revision manual del codigo. Los hallazgos se sustentan en el codigo fuente;
-los que dependen de datos o de plan de ejecucion se marcan como tales en el impacto. Siguiente paso: validar los hallazgos y continuar con el siguiente lote.</footer>
+<footer>Generado por la auditoría automatizada + revisión manual del código. Los hallazgos se sustentan en el código fuente;
+los que dependen de datos o de plan de ejecución se marcan como tales en el impacto. Siguiente paso: validar los hallazgos y continuar con el siguiente lote.</footer>
 <script>
 const $=s=>document.querySelector(s), fs=$('#fs'),fc=$('#fc'),fe=$('#fe'),fq=$('#fq'),fl=$('#fl');
 function apply(){{

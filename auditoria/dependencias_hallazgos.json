@@ -3,10 +3,10 @@
  "fecha": "2026-08-19",
  "alcance": {
   "subtitulo": "Fase transversal de dependencias &middot; 245 objetos programables, 251 tablas y 30 reportes .rdl &middot; grafo completo sobre <b>BD</b> y la capa de entrega",
-  "criterio": "Fase transversal, previa a la remediacion: en vez de leer objetos nuevos, se construye el grafo de dependencias sobre los 503 archivos de BD/ (245 objetos programables y 251 tablas) y se audita la capa de entrega, los 30 archivos .rdl de reportes/, que ningun lote anterior habia revisado mas alla de la cadena de conexion. El objetivo es responder tres preguntas que la remediacion necesita: quien llama a cada objeto, que se rompe si se cambia, y por donde sale la informacion hacia el usuario. El analisis es estatico sobre el codigo del repositorio: no se ejecuto ningun objeto ni se leyeron metadatos de una instancia de SQL Server, por lo que las referencias resueltas por SQL dinamico o por la aplicacion no pueden aparecer en el grafo.",
+  "criterio": "Fase transversal, previa a la remediación: en vez de leer objetos nuevos, se construye el grafo de dependencias sobre los 503 archivos de BD/ (245 objetos programables y 251 tablas) y se audita la capa de entrega, los 30 archivos .rdl de reportes/, que ningún lote anterior había revisado más allá de la cadena de conexión. El objetivo es responder tres preguntas que la remediación necesita: quién llama a cada objeto, qué se rompe si se cambia, y por dónde sale la información hacia el usuario. El análisis es estático sobre el código del repositorio: no se ejecutó ningún objeto ni se leyeron metadatos de una instancia de SQL Server, por lo que las referencias resueltas por SQL dinámico o por la aplicación no pueden aparecer en el grafo.",
   "objetos": [
    "BD/: 245 objetos programables (227 procedimientos + 18 funciones) y 251 tablas",
-   "reportes/: 30 archivos .rdl (18 reportes logicos)",
+   "reportes/: 30 archivos .rdl (18 reportes lógicos)",
    "Grafo: referencias objeto -> objeto, objeto -> tabla y reporte -> procedimiento"
   ]
  },
@@ -17,13 +17,13 @@
    "cat": "Control de dependencias",
    "env": "BD",
    "lote": 12,
-   "titulo": "110 de los 245 objetos programables no son invocados por ningun otro objeto del repositorio ni por los 30 reportes",
+   "titulo": "110 de los 245 objetos programables no son invocados por ningún otro objeto del repositorio ni por los 30 reportes",
    "obj": "PO (66), PAG (17), CIERRE (13), SAF (7), edc (6), dbo (1)",
    "loc": "grafo de dependencias construido sobre los 503 archivos de BD/ y los 30 .rdl",
    "evidencia": "Objetos sin invocador dentro del repositorio, por esquema:\n  PO 66, PAG 17, CIERRE 13, SAF 7, edc 6, dbo 1  (total 110 de 245)\nSolo 18 procedimientos alimentan los 30 archivos .rdl.\nEjemplos de puntos de entrada sin disparador visible: CIERRE.SP_CMR_GEN_MES, CIERRE.SP_SAF_SALDOS,\nPO.SYS_SP_MOV_CARGO, PAG.SP_*, edc.SP_Genera_Ordenes_Dummy.",
-   "impacto": "Los 110 objetos se disparan desde fuera del repositorio (jobs del Agent, orquestador, aplicacion o ejecucion manual), y ese disparador no esta versionado. Consecuencias practicas: (1) no se puede estimar el impacto de un cambio, porque el codigo no dice quien lo llama ni con que parametros; (2) no se puede distinguir un punto de entrada legitimo de codigo muerto, asi que nadie se atreve a borrar nada y el portafolio solo crece; (3) el orden y las dependencias del cierre viven en el conocimiento del equipo, no en un artefacto.",
-   "remediacion": "Exportar los jobs del SQL Server Agent y las tareas del orquestador al repositorio (script de creacion por job, versionado). Publicar la matriz disparador -> procedimiento -> tablas escritas -> reportes que consumen. Marcar como candidato a baja todo objeto sin disparador tras un periodo de observacion con sys.dm_exec_procedure_stats o Extended Events.",
-   "esfuerzo": "M (1-3 dias)"
+   "impacto": "Los 110 objetos se disparan desde fuera del repositorio (jobs del Agent, orquestador, aplicación o ejecución manual), y ese disparador no está versionado. Consecuencias prácticas: (1) no se puede estimar el impacto de un cambio, porque el código no dice quien lo llama ni con que parámetros; (2) no se puede distinguir un punto de entrada legitimo de código muerto, así que nadie se atreve a borrar nada y el portafolio solo crece; (3) el orden y las dependencias del cierre viven en el conocimiento del equipo, no en un artefacto.",
+   "remediacion": "Exportar los jobs del SQL Server Agent y las tareas del orquestador al repositorio (script de creación por job, versionado). Publicar la matriz disparador -> procedimiento -> tablas escritas -> reportes que consumen. Marcar como candidato a baja todo objeto sin disparador tras un periodo de observación con sys.dm_exec_procedure_stats o Extended Events.",
+   "esfuerzo": "M (1-3 días)"
   },
   {
    "id": "L12-002",
@@ -31,13 +31,13 @@
    "cat": "Modelo de datos",
    "env": "BD",
    "lote": 12,
-   "titulo": "187 de las 251 tablas no son referenciadas por ningun procedimiento ni funcion del repositorio, y son esquemas completos",
+   "titulo": "187 de las 251 tablas no son referenciadas por ningún procedimiento ni función del repositorio, y son esquemas completos",
    "obj": "juicios (43), cierre_puente (42), ori (35), edc (20), edcc (16), demandas + demandas_archivo (10), PO (9), dbo (7), PAG (3), cierres (2)",
    "loc": "grafo de dependencias tabla <- objeto programable sobre BD/",
    "evidencia": "Tablas sin ningun objeto que las lea o escriba dentro del repositorio, por esquema:\n  juicios 43, cierre_puente 42, ori 35, edc 20, edcc 16, demandas 5, demandas_archivo 5,\n  PO 9, dbo 7, PAG 3, cierres 2   (total 187 de 251)",
-   "impacto": "Cuatro esquemas completos (juicios, cierre_puente, ori, edcc) no tienen codigo asociado en el repositorio: o los escribe la aplicacion / un ETL que no esta versionado aqui, o son remanentes de proyectos anteriores. En ambos casos el repositorio no es la fuente unica de verdad de la base, que es el supuesto sobre el que se apoya cualquier control de cambios y cualquier estimacion de impacto. Ademas son tablas con dato personal (juicios, demandas) sin codigo visible que documente su ciclo de vida.",
-   "remediacion": "Contrastar las 187 tablas contra sys.dm_db_index_usage_stats y sys.tables (fecha de creacion y modificacion) en produccion para separar tres grupos: escritas por la aplicacion, escritas por un ETL externo, y sin actividad. Documentar el propietario de cada esquema y bajar o archivar lo inactivo, empezando por lo que contiene dato personal.",
-   "esfuerzo": "M (1-3 dias)"
+   "impacto": "Cuatro esquemas completos (juicios, cierre_puente, ori, edcc) no tienen código asociado en el repositorio: o los escribe la aplicación / un ETL que no está versionado aquí, o son remanentes de proyectos anteriores. En ambos casos el repositorio no es la fuente única de verdad de la base, que es el supuesto sobre el que se apoya cualquier control de cambios y cualquier estimación de impacto. Además son tablas con dato personal (juicios, demandas) sin código visible que documente su ciclo de vida.",
+   "remediacion": "Contrastar las 187 tablas contra sys.dm_db_index_usage_stats y sys.tables (fecha de creación y modificación) en producción para separar tres grupos: escritas por la aplicación, escritas por un ETL externo, y sin actividad. Documentar el propietario de cada esquema y bajar o archivar lo inactivo, empezando por lo que contiene dato personal.",
+   "esfuerzo": "M (1-3 días)"
   },
   {
    "id": "L12-003",
@@ -45,13 +45,13 @@
    "cat": "Riesgo concentrado",
    "env": "BD",
    "lote": 12,
-   "titulo": "El riesgo esta concentrado en siete objetos: un procedimiento con 92 llamadores y seis funciones escalares entre 31 y 78",
+   "titulo": "El riesgo está concentrado en siete objetos: un procedimiento con 92 llamadores y seis funciones escalares entre 31 y 78",
    "obj": "PO.SP_SAF_POLIZA_FINALIZA, dbo.FN_ORIGEN_FONDOS, dbo.FN_FORMA_NOMBRE, dbo.FN_ES_COVID, dbo.CursorCloseDeallocate, dbo.FN_TIPO_CANAL, dbo.FECHA_IMPAGO, dbo.FN_RUBRO_POL",
    "loc": "conteo de invocadores por objeto",
    "evidencia": "Objetos con mas invocadores dentro del repositorio:\n  PO.SP_SAF_POLIZA_FINALIZA      92\n  dbo.FN_ORIGEN_FONDOS           78\n  dbo.FN_FORMA_NOMBRE            69\n  dbo.FN_ES_COVID                66\n  dbo.CursorCloseDeallocate      56\n  dbo.FN_TIPO_CANAL              44\n  dbo.FECHA_IMPAGO               43\n  dbo.FN_RUBRO_POL               31\nTablas mas referenciadas: PO.SAF_POLIZA_ERRORES 104, PO.SAF_CATALOGO_CONCEPTOS 97,\nPO.SAF_CAT_CONTABLE 96, PO.CONTROL_HISTORICO_TRASPASOS 85, PO.SAF_MOV_ABONO 81.",
-   "impacto": "Es la mejor noticia de la auditoria y define el orden de trabajo: corregir ocho objetos alcanza a casi todo el portafolio, mientras que cualquier defecto introducido en ellos tambien se propaga a todo. Tambien fija donde poner las pruebas primero: una prueba unitaria sobre FN_ES_COVID o FN_RUBRO_POL protege mas cifras que veinte pruebas sobre procedimientos hoja.",
-   "remediacion": "Tratar estos ocho objetos como codigo critico: revision obligatoria de dos personas, bateria de pruebas con casos de borde antes de tocarlos, y medicion de rendimiento antes y despues. Convertir las funciones escalares con acceso a datos en funciones en linea (TVF) o en columnas materializadas del universo de cierre.",
-   "esfuerzo": "L (>3 dias)"
+   "impacto": "Es la mejor noticia de la auditoría y define el orden de trabajo: corregir ocho objetos alcanza a casi todo el portafolio, mientras que cualquier defecto introducido en ellos también se propaga a todo. También fija donde poner las pruebas primero: una prueba unitaria sobre FN_ES_COVID o FN_RUBRO_POL protege más cifras que veinte pruebas sobre procedimientos hoja.",
+   "remediacion": "Tratar estos ocho objetos como código crítico: revisión obligatoria de dos personas, batería de pruebas con casos de borde antes de tocarlos, y medición de rendimiento antes y después. Convertir las funciones escalares con acceso a datos en funciones en línea (TVF) o en columnas materializadas del universo de cierre.",
+   "esfuerzo": "L (>3 días)"
   },
   {
    "id": "L12-004",
@@ -59,13 +59,13 @@
    "cat": "Observabilidad",
    "env": "BD + BD_prod",
    "lote": 12,
-   "titulo": "102 objetos escriben en la bitacora de errores de poliza y solo 6 la leen; ninguno vigila el resultado",
+   "titulo": "102 objetos escriben en la bitácora de errores de póliza y solo 6 la leen; ninguno vigila el resultado",
    "obj": "PO.SAF_POLIZA_ERRORES",
    "loc": "PO.SAF_POLIZA_ERRORES: 102 objetos con INSERT, 6 con SELECT",
    "evidencia": "Escriben (INSERT INTO PO.SAF_POLIZA_ERRORES): 102 objetos programables.\nLeen: 6, y todos son pantallas o listados del propio envio de poliza\n  PO.SP_SAF_POLIZA_CUENTAS_VAL, PO.SP_SAF_POLIZA_ENVIO_1P_CON,\n  PO.SP_SAF_POLIZA_ENVIO_1P_ERR_LIS, PO.SP_SAF_POLIZA_ENVIO_1P_ESTADO_REP,\n  PO.SP_SAF_POLIZA_ENVIO_ESTADO_REP, PO.SP_SND_POLIZA_DIARIA\nNingun objeto del repositorio consulta la bitacora para alertar, ni cuenta errores por ejecucion.",
-   "impacto": "Es la unica evidencia de que un proceso contable fallo, y se combina con dos patrones ya documentados: los CATCH no propagan el error (89 de 100 objetos de los lotes 1-5) y las etiquetas de proceso escritas en la bitacora no corresponden a objetos existentes (L10-003). El resultado es que el error se registra, el job termina en exito y nadie mira la tabla salvo que alguien abra la pantalla de envio. Un cierre parcial puede llegar a contabilidad sin que ningun control automatico lo detecte.",
-   "remediacion": "Convertir la bitacora en el centro de control del proceso: identificador de ejecucion por corrida, severidad, y un monitor que alerte por correo o Teams cuando una ejecucion cierre con errores. En el portal de administracion propuesto, esta tabla es la fuente del tablero de ejecuciones. Complementar con THROW al final de cada CATCH para que el orquestador vea el fallo.",
-   "esfuerzo": "M (1-3 dias)"
+   "impacto": "Es la única evidencia de que un proceso contable fallo, y se combina con dos patrones ya documentados: los CATCH no propagan el error (89 de 100 objetos de los lotes 1-5) y las etiquetas de proceso escritas en la bitácora no corresponden a objetos existentes (L10-003). El resultado es que el error se registra, el job termina en éxito y nadie mira la tabla salvo que alguien abra la pantalla de envío. Un cierre parcial puede llegar a contabilidad sin que ningún control automático lo detecte.",
+   "remediacion": "Convertir la bitácora en el centro de control del proceso: identificador de ejecución por corrida, severidad, y un monitor que alerte por correo o Teams cuando una ejecución cierre con errores. En el portal de administración propuesto, esta tabla es la fuente del tablero de ejecuciones. Complementar con THROW al final de cada CATCH para que el orquestador vea el fallo.",
+   "esfuerzo": "M (1-3 días)"
   },
   {
    "id": "L12-005",
@@ -73,13 +73,13 @@
    "cat": "Capa de reportes",
    "env": "reportes",
    "lote": 12,
-   "titulo": "Dos variantes del mismo reporte de poliza contable ejecutan el mismo procedimiento con filtros fijos distintos",
-   "obj": "Poliza Contable ION 100.rdl / Poliza Contable ION 100 KARDIA.rdl",
-   "loc": "reportes/Poliza Contable ION 100*.rdl (CommandText del dataset principal)",
+   "titulo": "Dos variantes del mismo reporte de póliza contable ejecutan el mismo procedimiento con filtros fijos distintos",
+   "obj": "Póliza Contable ION 100.rdl / Póliza Contable ION 100 KARDIA.rdl",
+   "loc": "reportes/Póliza Contable ION 100*.rdl (CommandText del dataset principal)",
    "evidencia": "Poliza Contable ION 100.rdl\n  EXEC [PO].[SYS_SP_BALANCE_ACCOUNT_SQL] @FECHA=@FECHA, @ID_EXTERNO='', @ID_PRODUCTO=0,\n       @ID_FONDEO=0, @ID_ETAPA=0, @ID_POLIZA=@ID_POLIZA, @ID_GRUPO=...\nPoliza Contable ION 100 KARDIA.rdl\n  EXEC [PO].[SYS_SP_BALANCE_ACCOUNT_SQL] @FECHA=@FECHA, @ID_EXTERNO='0', @ID_PRODUCTO=3,\n       @ID_FONDEO=3, @ID_ETAPA=4, @ID_POLIZA=@ID_POLIZA, @ID_GRUPO=...",
-   "impacto": "El universo del reporte de poliza contable esta escrito dentro del artefacto del reporte, no en el procedimiento, y las dos copias del mismo reporte piden productos, fondeos y etapas distintos. Quien abra una u otra vera cifras diferentes para la misma fecha y no habra nada en la base que explique la diferencia. Ademas '' y '0' como @ID_EXTERNO no son equivalentes: la comparacion dentro del procedimiento decide si el filtro se aplica o se ignora.",
-   "remediacion": "Sacar los filtros del .rdl: que el procedimiento reciba NULL como 'sin filtro' y que el reporte pase parametros visibles al usuario, con valores por defecto definidos en el catalogo de parametros. Dejar un unico artefacto por reporte logico y validar que ambas variantes deben producir la misma cifra antes de eliminar una.",
-   "esfuerzo": "S (<1 dia)"
+   "impacto": "El universo del reporte de póliza contable está escrito dentro del artefacto del reporte, no en el procedimiento, y las dos copias del mismo reporte piden productos, fondeos y etapas distintos. Quien abra una u otra vera cifras diferentes para la misma fecha y no habrá nada en la base que explique la diferencia. Además '' y '0' como @ID_EXTERNO no son equivalentes: la comparación dentro del procedimiento decide si el filtro se aplica o se ignora.",
+   "remediacion": "Sacar los filtros del .rdl: que el procedimiento reciba NULL como 'sin filtro' y que el reporte pase parámetros visibles al usuario, con valores por defecto definidos en el catálogo de parámetros. Dejar un único artefacto por reporte lógico y validar que ambas variantes deben producir la misma cifra antes de eliminar una.",
+   "esfuerzo": "S (<1 día)"
   },
   {
    "id": "L12-006",
@@ -87,13 +87,13 @@
    "cat": "Control de ambientes",
    "env": "reportes",
    "lote": 12,
-   "titulo": "Los 30 archivos .rdl son 18 reportes logicos duplicados por ambiente, con la cadena de conexion embebida y sin origen de datos compartido",
+   "titulo": "Los 30 archivos .rdl son 18 reportes lógicos duplicados por ambiente, con la cadena de conexión embebida y sin origen de datos compartido",
    "obj": "los 30 archivos de reportes/",
    "loc": "reportes/*.rdl (ConnectString y DataSourceReference)",
    "evidencia": "30 archivos = 18 reportes logicos; 10 de ellos tienen 2 o 3 variantes.\nEn 8 de los 10 grupos la unica diferencia real es la cadena de conexion.\nCadenas embebidas encontradas:\n  Data Source=10.10.8.22\\SAF;Initial Catalog=KARDIA      18 archivos\n  Data Source=10.10.9.125\\SAF;Initial Catalog=KARDIA      8 archivos\n  Data Source=10.10.8.22\\SAF;Initial Catalog=INFORMES     2 archivos\n  Data Source=SRV-IONSQLAWS\\SAF;Initial Catalog=KARDIA    2 archivos\nArchivos con DataSourceReference (origen de datos compartido de SSRS): 0 de 30.",
-   "impacto": "El ambiente vive dentro del artefacto, igual que en el codigo SQL: el mismo reporte se duplica para apuntar a otro servidor. Cada cambio de formato o de campo hay que aplicarlo dos o tres veces, y basta publicar el archivo equivocado para que un usuario consulte otro ambiente sin notarlo. Tambien deja tres direcciones de servidor y dos catalogos escritos en archivos que se comparten por correo.",
-   "remediacion": "Migrar los 30 archivos a un unico juego de 18, con origen de datos compartido de SSRS por ambiente (DataSourceReference). El despliegue selecciona el origen; el artefacto deja de conocer servidores. Publicar por script (rs.exe o la API de SSRS) desde el repositorio, no manualmente.",
-   "esfuerzo": "M (1-3 dias)"
+   "impacto": "El ambiente vive dentro del artefacto, igual que en el código SQL: el mismo reporte se duplica para apuntar a otro servidor. Cada cambio de formato o de campo hay que aplicarlo dos o tres veces, y basta publicar el archivo equivocado para que un usuario consulte otro ambiente sin notarlo. También deja tres direcciones de servidor y dos catálogos escritos en archivos que se comparten por correo.",
+   "remediacion": "Migrar los 30 archivos a un único juego de 18, con origen de datos compartido de SSRS por ambiente (DataSourceReference). El despliegue selecciona el origen; el artefacto deja de conocer servidores. Publicar por script (rs.exe o la API de SSRS) desde el repositorio, no manualmente.",
+   "esfuerzo": "M (1-3 días)"
   },
   {
    "id": "L12-007",
@@ -101,13 +101,13 @@
    "cat": "Control de ambientes",
    "env": "reportes",
    "lote": 12,
-   "titulo": "Las variantes QA apuntan a un esquema que no existe en el repositorio y a otro catalogo, y conviven en la misma carpeta que las de produccion",
-   "obj": "Poliza Contable ION 100 QA.rdl, Poliza Contable ION Historico QA.rdl, REP-POL-010-0226 ... QA.rdl",
+   "titulo": "Las variantes QA apuntan a un esquema que no existe en el repositorio y a otro catálogo, y conviven en la misma carpeta que las de producción",
+   "obj": "Póliza Contable ION 100 QA.rdl, Póliza Contable ION Histórico QA.rdl, REP-POL-010-0226 ... QA.rdl",
    "loc": "reportes/*QA.rdl",
    "evidencia": "Poliza Contable ION Historico QA.rdl\n  EXEC [AP].[SYS_SP_BALANCE_DETAIL_SQL] ...\n  SELECT [ID],[DESCRIPCION] FROM [INFORMES].[PO].[CAT_TIPO_POLIZA] ORDER BY ID\n  ConnectString: Data Source=10.10.8.22\\SAF;Initial Catalog=INFORMES\nLos esquemas presentes en el repositorio son PO, CIERRE, PAG, RPT, SAF, edc y dbo: el esquema AP no existe.\nLas variantes no QA del mismo reporte usan [PO].[SYS_SP_BALANCE_DETAIL_SQL] y ORDER BY DESCRIPCION.",
-   "impacto": "Hay una tercera copia de la logica de poliza contable en un esquema y catalogo que la auditoria no puede ver (AP en INFORMES), por lo que no es posible afirmar que produzca las mismas cifras. El orden del catalogo de tipo de poliza tambien difiere (ID contra DESCRIPCION), lo que cambia la opcion preseleccionada del reporte. Artefactos de QA guardados junto a los productivos, sin marca de ambiente fuera del nombre del archivo, hacen probable una publicacion equivocada.",
-   "remediacion": "Decidir si el esquema AP en el catalogo INFORMES es un ambiente de pruebas o una segunda implementacion en uso; si es lo primero, retirar los artefactos QA de la carpeta y separarlos por rama o carpeta de ambiente. Si es lo segundo, incorporarlo al alcance de la auditoria y al control de cambios.",
-   "esfuerzo": "S (<1 dia)"
+   "impacto": "Hay una tercera copia de la lógica de póliza contable en un esquema y catálogo que la auditoría no puede ver (AP en INFORMES), por lo que no es posible afirmar que produzca las mismas cifras. El orden del catálogo de tipo de póliza también difiere (ID contra DESCRIPCION), lo que cambia la opción preseleccionada del reporte. Artefactos de QA guardados junto a los productivos, sin marca de ambiente fuera del nombre del archivo, hacen probable una publicación equivocada.",
+   "remediacion": "Decidir si el esquema AP en el catálogo INFORMES es un ambiente de pruebas o una segunda implementación en uso; si es lo primero, retirar los artefactos QA de la carpeta y separarlos por rama o carpeta de ambiente. Si es lo segundo, incorporarlo al alcance de la auditoría y al control de cambios.",
+   "esfuerzo": "S (<1 día)"
   },
   {
    "id": "L12-008",
@@ -119,9 +119,9 @@
    "obj": "Reporte de Pagos KARDIA.rdl, Reporte no identificados.rdl, Reporte no identificados KARDIA.rdl",
    "loc": "reportes/Reporte de Pagos KARDIA.rdl",
    "evidencia": "Reporte de Pagos KARDIA.rdl        -> CommandText: REPORTE_NO_IDENTIFICADOS\nReporte no identificados.rdl        -> CommandText: REPORTE_NO_IDENTIFICADOS\nReporte no identificados KARDIA.rdl -> CommandText: REPORTE_NO_IDENTIFICADOS",
-   "impacto": "El reporte de pagos entrega, en realidad, los pagos no identificados. Es el mismo patron de copia y renombrado que se documento en el codigo SQL (clones divergentes), ahora en la capa de reportes: quien pida 'el reporte de pagos' recibira otra poblacion.",
-   "remediacion": "Confirmar con el area usuaria cual es el contenido esperado del reporte de pagos; si no existe, retirar el archivo en vez de dejarlo con un nombre que no corresponde.",
-   "esfuerzo": "S (<1 dia)"
+   "impacto": "El reporte de pagos entrega, en realidad, los pagos no identificados. Es el mismo patrón de copia y renombrado que se documento en el código SQL (clones divergentes), ahora en la capa de reportes: quien pida 'el reporte de pagos' recibirá otra población.",
+   "remediacion": "Confirmar con el área usuaria cual es el contenido esperado del reporte de pagos; si no existe, retirar el archivo en vez de dejarlo con un nombre que no corresponde.",
+   "esfuerzo": "S (<1 día)"
   },
   {
    "id": "L12-009",
@@ -129,13 +129,13 @@
    "cat": "Trazabilidad",
    "env": "reportes",
    "lote": 12,
-   "titulo": "Solo 18 de los 245 objetos programables alimentan reportes versionados: el resto de la entrega de informacion no es visible",
+   "titulo": "Solo 18 de los 245 objetos programables alimentan reportes versionados: el resto de la entrega de información no es visible",
    "obj": "reportes/ frente a BD/",
    "loc": "grafo .rdl -> procedimiento",
    "evidencia": "Procedimientos consumidos por los 30 .rdl: 18 (los mas usados: PO.SP_SAF_POLIZA_MOVxDIA en 4 archivos,\nCIERRE.SP_CMR_MES_VIS, PO.SYS_SP_BALANCE_ACCOUNT_SQL, PO.SYS_SP_BALANCE_DETAIL_SQL,\nRPT.CASTIGO_REEST_SALDOS y dbo.REPORTE_COBRANZA_INTEGRACION en 2 cada uno).\nLos 20 procedimientos *_VIS y *_RPT de CIERRE existen, pero solo una parte aparece en un .rdl.",
-   "impacto": "Los procedimientos con sufijo VIS y RPT estan escritos para alimentar reportes, pero no todos tienen un artefacto asociado en el repositorio. La hipotesis mas probable es que se consuman desde Excel, desde consultas directas o desde reportes que no estan versionados; conviene confirmarlo, porque de ahi puede salir informacion que llega a comites sin control de cambios ni trazabilidad de la cifra.",
-   "remediacion": "Inventariar el catalogo de SSRS y los libros de Excel con conexion a KARDIA en produccion, y cerrar la matriz procedimiento -> consumidor. Todo consumidor de cifra contable deberia quedar versionado.",
-   "esfuerzo": "M (1-3 dias)"
+   "impacto": "Los procedimientos con sufijo VIS y RPT están escritos para alimentar reportes, pero no todos tienen un artefacto asociado en el repositorio. La hipótesis más probable es que se consuman desde Excel, desde consultas directas o desde reportes que no están versionados; conviene confirmarlo, porque de ahí puede salir información que llega a comités sin control de cambios ni trazabilidad de la cifra.",
+   "remediacion": "Inventariar el catálogo de SSRS y los libros de Excel con conexión a KARDIA en producción, y cerrar la matriz procedimiento -> consumidor. Todo consumidor de cifra contable debería quedar versionado.",
+   "esfuerzo": "M (1-3 días)"
   },
   {
    "id": "L12-010",
@@ -144,54 +144,54 @@
    "env": "reportes",
    "lote": 12,
    "titulo": "Consultas SQL escritas dentro de los artefactos de reporte",
-   "obj": "Poliza Contable ION 100*.rdl, Poliza Contable ION Historico*.rdl",
+   "obj": "Póliza Contable ION 100*.rdl, Póliza Contable ION Historico*.rdl",
    "loc": "reportes/*.rdl (datasets secundarios)",
    "evidencia": "SELECT [ID],[DESCRIPCION] FROM [PO].[CAT_TIPO_POLIZA] ORDER BY DESCRIPCION ASC\n(en la variante QA: FROM [INFORMES].[PO].[CAT_TIPO_POLIZA] ORDER BY ID)",
-   "impacto": "Consultas embebidas en el reporte quedan fuera del control de cambios de la base: no aparecen en una revision de codigo SQL, no se pueden probar y cambian de significado si el catalogo cambia. En este caso es solo un catalogo de apoyo, pero es el mismo mecanismo por el que la logica de negocio termina distribuida entre capas.",
-   "remediacion": "Sustituir por un procedimiento de catalogo unico y, cuando exista el portal, exponerlo como servicio de catalogos para reportes y aplicaciones.",
-   "esfuerzo": "S (<1 dia)"
+   "impacto": "Consultas embebidas en el reporte quedan fuera del control de cambios de la base: no aparecen en una revisión de código SQL, no se pueden probar y cambian de significado si el catálogo cambia. En este caso es solo un catálogo de apoyo, pero es el mismo mecanismo por el que la lógica de negocio termina distribuida entre capas.",
+   "remediacion": "Sustituir por un procedimiento de catálogo único y, cuando exista el portal, exponerlo como servicio de catálogos para reportes y aplicaciones.",
+   "esfuerzo": "S (<1 día)"
   }
  ],
  "hardcode": [
   {
    "valor": "10.10.8.22\\SAF, 10.10.9.125\\SAF, SRV-IONSQLAWS\\SAF",
-   "tipo": "Direccion de servidor",
+   "tipo": "Dirección de servidor",
    "ocurrencias": "30 de 30 archivos .rdl",
-   "clasificacion": "Configuracion de ambiente",
+   "clasificacion": "Configuración de ambiente",
    "destino": "Origen de datos compartido de SSRS por ambiente",
-   "nota": "Ningun artefacto usa DataSourceReference: la cadena viaja dentro del archivo"
+   "nota": "Ningún artefacto usa DataSourceReference: la cadena viaja dentro del archivo"
   },
   {
    "valor": "Initial Catalog=KARDIA / INFORMES",
-   "tipo": "Catalogo de base",
+   "tipo": "Catálogo de base",
    "ocurrencias": "28 y 2 archivos",
-   "clasificacion": "Configuracion de ambiente",
+   "clasificacion": "Configuración de ambiente",
    "destino": "Origen de datos compartido; el artefacto no nombra la base",
    "nota": "INFORMES aparece solo en las variantes QA, junto al esquema AP que no existe en el repositorio"
   },
   {
    "valor": "@ID_PRODUCTO=3, @ID_FONDEO=3, @ID_ETAPA=4 / 0,0,0",
    "tipo": "Filtro de universo del reporte",
-   "ocurrencias": "2 variantes de Poliza Contable ION 100",
+   "ocurrencias": "2 variantes de Póliza Contable ION 100",
    "clasificacion": "No parametrizable: es un defecto",
-   "destino": "Parametro visible con valor por defecto en catalogo",
+   "destino": "Parámetro visible con valor por defecto en catálogo",
    "nota": "Dos copias del mismo reporte con universos distintos (L12-005)"
   },
   {
    "valor": "@ID_EXTERNO='' y @ID_EXTERNO='0'",
-   "tipo": "Convencion de 'sin filtro'",
+   "tipo": "Convención de 'sin filtro'",
    "ocurrencias": "2 variantes",
    "clasificacion": "No parametrizable: es un defecto",
-   "destino": "NULL como unica convencion de 'sin filtro'",
-   "nota": "Cadena vacia y cero no son equivalentes para la comparacion del procedimiento"
+   "destino": "NULL como única convención de 'sin filtro'",
+   "nota": "Cadena vacía y cero no son equivalentes para la comparación del procedimiento"
   },
   {
-   "valor": "ORDER BY ID / ORDER BY DESCRIPCION en el catalogo de tipo de poliza",
+   "valor": "ORDER BY ID / ORDER BY DESCRIPCION en el catálogo de tipo de póliza",
    "tipo": "Consulta embebida en el reporte",
    "ocurrencias": "6 archivos",
-   "clasificacion": "Catalogo en BD (no editable en portal)",
-   "destino": "Procedimiento de catalogo unico",
-   "nota": "Cambia la opcion preseleccionada del reporte segun el artefacto"
+   "clasificacion": "Catálogo en BD (no editable en portal)",
+   "destino": "Procedimiento de catálogo único",
+   "nota": "Cambia la opción preseleccionada del reporte según el artefacto"
   }
  ],
  "plan_despliegue": [
@@ -200,49 +200,49 @@
    "objetivo": "Poder estimar el impacto de cualquier cambio antes de hacerlo",
    "acciones": [
     "Exportar al repositorio los jobs del SQL Server Agent y las tareas del orquestador (un script por job)",
-    "Publicar la matriz disparador -> procedimiento -> tablas escritas -> reportes que consumen, generada desde el mismo analizador de esta auditoria",
-    "Medir uso real en produccion con sys.dm_exec_procedure_stats y sys.dm_db_index_usage_stats durante un ciclo de cierre completo",
-    "Clasificar los 110 objetos sin invocador y las 187 tablas sin codigo asociado en: en uso, escritos desde fuera, inactivos"
+    "Publicar la matriz disparador -> procedimiento -> tablas escritas -> reportes que consumen, generada desde el mismo analizador de esta auditoría",
+    "Medir uso real en producción con sys.dm_exec_procedure_stats y sys.dm_db_index_usage_stats durante un ciclo de cierre completo",
+    "Clasificar los 110 objetos sin invocador y las 187 tablas sin código asociado en: en uso, escritos desde fuera, inactivos"
    ],
-   "riesgo": "Nulo: solo lectura de metadatos y exportacion de configuracion"
+   "riesgo": "Nulo: solo lectura de metadatos y exportación de configuración"
   },
   {
-   "fase": "Fase B - Reportes: un artefacto por reporte logico",
+   "fase": "Fase B - Reportes: un artefacto por reporte lógico",
    "objetivo": "Que el ambiente y los filtros salgan del archivo del reporte",
    "acciones": [
     "Migrar los 30 .rdl a 18 con origen de datos compartido por ambiente",
-    "Corregir L12-005 (filtros fijos divergentes) y L12-008 (reporte con nombre equivocado) previa confirmacion del area usuaria",
-    "Decidir el destino de los artefactos QA y del esquema AP en el catalogo INFORMES (L12-007)",
+    "Corregir L12-005 (filtros fijos divergentes) y L12-008 (reporte con nombre equivocado) previa confirmación del área usuaria",
+    "Decidir el destino de los artefactos QA y del esquema AP en el catálogo INFORMES (L12-007)",
     "Publicar por script desde el repositorio y comparar cifras del reporte antiguo y del nuevo sobre un periodo cerrado"
    ],
-   "riesgo": "Bajo: cambia la entrega, no el calculo, y es verificable comparando cifras"
+   "riesgo": "Bajo: cambia la entrega, no el cálculo, y es verificable comparando cifras"
   },
   {
    "fase": "Fase C - Observabilidad del proceso contable",
-   "objetivo": "Que ningun error quede sin vigilancia",
+   "objetivo": "Que ningún error quede sin vigilancia",
    "acciones": [
-    "Identificador de ejecucion y severidad en PO.SAF_POLIZA_ERRORES, con las etiquetas de proceso corregidas (L10-003, L12-004)",
-    "Monitor que alerte cuando una ejecucion cierre con errores, antes de que la poliza llegue a contabilidad",
-    "THROW al final de cada CATCH para que el orquestador distinga exito de exito aparente",
-    "Tablero de ejecuciones como primer modulo del portal de administracion"
+    "Identificador de ejecución y severidad en PO.SAF_POLIZA_ERRORES, con las etiquetas de proceso corregidas (L10-003, L12-004)",
+    "Monitor que alerte cuando una ejecución cierre con errores, antes de que la póliza llegue a contabilidad",
+    "THROW al final de cada CATCH para que el orquestador distinga éxito de éxito aparente",
+    "Tablero de ejecuciones como primer modulo del portal de administración"
    ],
-   "riesgo": "Medio: cambia el contrato de error hacia el orquestador (antes exito, ahora falla)"
+   "riesgo": "Medio: cambia el contrato de error hacia el orquestador (antes éxito, ahora falla)"
   },
   {
    "fase": "Fase D - Objetos de alto apalancamiento",
    "objetivo": "Corregir ocho objetos que alcanzan a casi todo el portafolio",
    "acciones": [
     "Pruebas con casos de borde sobre las seis funciones escalares y sobre PO.SP_SAF_POLIZA_FINALIZA antes de tocarlas",
-    "Convertirlas en funciones en linea o en columnas materializadas del universo de cierre, midiendo duracion antes y despues",
-    "Revision obligatoria de dos personas para cualquier cambio en esos objetos"
+    "Convertirlas en funciones en línea o en columnas materializadas del universo de cierre, midiendo duración antes y después",
+    "Revisión obligatoria de dos personas para cualquier cambio en esos objetos"
    ],
-   "riesgo": "Medio: alcance amplio; exige la bateria de pruebas antes del cambio"
+   "riesgo": "Medio: alcance amplio; exige la batería de pruebas antes del cambio"
   }
  ],
  "valor_agregado": [
-  "El analizador de dependencias que produjo estos numeros queda como herramienta, no como reporte: puede ejecutarse en cada rama para responder 'que se rompe si cambio este objeto' y para alimentar el catalogo de dependencias del portal de administracion.",
-  "El hallazgo mas util para planear la remediacion no es un defecto, es la forma del grafo: ocho objetos concentran el alcance y 18 procedimientos concentran la entrega de informacion. Eso permite proteger el 90% del riesgo con pruebas sobre menos del 5% del portafolio.",
-  "La capa de reportes repite exactamente los patrones del codigo SQL (ambiente embebido, clones divergentes, filtros hardcodeados). Conviene tratarla en el mismo plan y con la misma compuerta de CI, en vez de como un tema de infraestructura aparte."
+  "El analizador de dependencias que produjo estos números queda como herramienta, no como reporte: puede ejecutarse en cada rama para responder 'qué se rompe si cambio este objeto' y para alimentar el catálogo de dependencias del portal de administración.",
+  "El hallazgo más útil para planear la remediación no es un defecto, es la forma del grafo: ocho objetos concentran el alcance y 18 procedimientos concentran la entrega de información. Eso permite proteger el 90% del riesgo con pruebas sobre menos del 5% del portafolio.",
+  "La capa de reportes repite exactamente los patrones del código SQL (ambiente embebido, clones divergentes, filtros hardcodeados). Conviene tratarla en el mismo plan y con la misma compuerta de CI, en vez de como un tema de infraestructura aparte."
  ],
  "cobertura": []
 }

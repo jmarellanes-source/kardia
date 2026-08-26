@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Auditoria SQL KARDIA &mdash; Lote 6</title>
+<title>Auditoría SQL KARDIA &mdash; Lote 6</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font:14px/1.55 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
@@ -73,13 +73,13 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
 .hide{display:none!important}
 </style></head><body>
 <header class="top">
-  <h1>Auditoria de codigo SQL &mdash; KARDIA / SAF</h1>
-  <p>Lote 6 &middot; 56 objetos de mayor riesgo &middot; 3,705 lineas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (produccion) &middot; 2026-08-19</p>
+  <h1>Auditoría de código SQL &mdash; KARDIA / SAF</h1>
+  <p>Lote 6 &middot; 56 objetos de mayor riesgo &middot; 3,705 líneas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (producción) &middot; 2026-08-19</p>
 </header>
 <div class="wrap">
 
   <div class="kpis">
-    <div class="kpi c"><b>4</b><span>Criticos</span></div>
+    <div class="kpi c"><b>4</b><span>Críticos</span></div>
     <div class="kpi a"><b>11</b><span>Altos</span></div>
     <div class="kpi m"><b>7</b><span>Medios</span></div>
     <div class="kpi b"><b>3</b><span>Bajos</span></div>
@@ -87,16 +87,16 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
     <div class="kpi"><b>6</b><span>Parametrizables en portal</span></div>
   </div>
 
-  <details class="alc"><summary>Alcance y criterio de seleccion del lote</summary>
-    <p>Muestreo dirigido a las familias no cubiertas por los lotes 1-5: todos los objetos programables que no pertenecen a los esquemas PO y CIERRE, es decir 17 SPs de PAG (portal de pagos y conciliacion), 7 de SAF (alertas de tasas), 7 de edc (estados de cuenta), 4 reportes de dbo, 1 de RPT, el utilitario dbo.CursorCloseDeallocate y las 18 funciones definidas por el usuario. Se agrega una revision transversal de los 251 scripts de tabla (llaves, integridad, datos personales, indices) que cubre los esquemas juicios, demandas, ori, cierre_puente y edcc, que solo contienen tablas. Con esto la auditoria cubre el 100% de las familias funcionales del repositorio.</p><ul><li>PAG.NO_IDENTIFICADOS_ENVIO (35 lineas)</li><li>PAG.PR_RESUMEN_PAGOS_HISTORICO (30 lineas)</li><li>PAG.SP_CONSULTAR_DETALLE_PAGO (57 lineas)</li><li>PAG.SP_CONSULTAR_DETALLE_POR_BANCO (35 lineas)</li><li>PAG.SP_CONSULTAR_DETALLE_POR_BANCO_IDENTIFICADOS (39 lineas)</li><li>PAG.SP_CONSULTAR_DETALLE_POR_NO_IDEN_ID (45 lineas)</li><li>PAG.SP_CONSULTAR_DETALLE_POR_NO_IDEN_ID_RESUMEN (45 lineas)</li><li>PAG.SP_CONSULTAR_DETALLE_REPORTE_PAGOS (46 lineas)</li><li>PAG.SP_CONSULTAR_INFO_CREDITO (41 lineas)</li><li>PAG.SP_CONSULTAR_TOTALES_BANCOS (39 lineas)</li><li>PAG.SP_CONSULTAR_TOTALES_BANCOS_CONCILIACION (39 lineas)</li><li>PAG.SP_OBTENER_CUENTA_REFERENCIA (20 lineas)</li><li>PAG.SP_OBTENER_DETALLE_CONCILIACION (43 lineas)</li><li>PAG.SP_OBTENER_FECHA_SAF (17 lineas)</li><li>PAG.SP_OBTENER_ID_CUENTA (20 lineas)</li><li>PAG.SP_OBTENER_NUC_DINAMICO (21 lineas)</li><li>PAG.SP_PAGOS_CONSULTA_NOMBRE_CLIENTE (35 lineas)</li><li>RPT.CASTIGO_REEST_SALDOS (31 lineas)</li><li>SAF.SP_TASAS_ALERTAS_DESACTIVA (22 lineas)</li><li>SAF.SP_TASAS_ALERTAS_DEST (24 lineas)</li><li>SAF.SP_TASAS_ALERTAS_DEST_SEL (20 lineas)</li><li>SAF.SP_TASAS_ALERTAS_ENVIO (126 lineas)</li><li>SAF.SP_TASAS_ALERTAS_ENVIO_DEST (19 lineas)</li><li>SAF.SP_TASAS_ALERTAS_IMPORTA (179 lineas)</li><li>SAF.SP_TASAS_ALERTAS_VALIDA (68 lineas)</li><li>dbo.CursorCloseDeallocate (20 lineas)</li><li>dbo.FECHAS_POLIZA_TIPO (5 lineas)</li><li>dbo.FECHA_IMPAGO (38 lineas)</li><li>dbo.FN_CARTERA_CREDITO (54 lineas)</li><li>dbo.FN_CREDITO_PREVIO (33 lineas)</li><li>dbo.FN_CREDITO_PREVIO_ID (53 lineas)</li><li>dbo.FN_CUENTA_NO_VALIDA (48 lineas)</li><li>dbo.FN_CUENTA_OBTENER (41 lineas)</li><li>dbo.FN_ES_COVID (33 lineas)</li><li>dbo.FN_ES_LINEA_CANCELADA (28 lineas)</li><li>dbo.FN_FIRMA_MONTO (33 lineas)</li><li>dbo.FN_FORMA_MONEDA (21 lineas)</li><li>dbo.FN_FORMA_NOMBRE (39 lineas)</li><li>dbo.FN_ORIGEN_FONDOS (26 lineas)</li><li>dbo.FN_RUBRO_POL (36 lineas)</li><li>dbo.FN_SECUENCIA_ORIGEN (32 lineas)</li><li>dbo.FN_SOLO_NUMEROS (40 lineas)</li><li>dbo.FN_TIPO_CANAL (28 lineas)</li><li>dbo.FN_TIPO_CREDITO (34 lineas)</li><li>dbo.INFO_EXTRA_EXTRAER (32 lineas)</li><li>dbo.REPORTE (162 lineas)</li><li>dbo.REPORTEAFIRME (53 lineas)</li><li>dbo.REPORTE_COBRANZA_INTEGRACION (204 lineas)</li><li>dbo.REPORTE_NO_IDENTIFICADOS (31 lineas)</li><li>edc.SP_Genera_Ordenes_Dummy (98 lineas)</li><li>edc.spUpsertCClienteDaily (132 lineas)</li><li>edc.sp_UpsertClienteCredito (207 lineas)</li><li>edc.sp_inserEdcCredito (705 lineas)</li><li>edc.sp_inserEdcCuotasPospuestas (101 lineas)</li><li>edc.sp_inserEdcMovimientos (144 lineas)</li><li>edc.sp_inserEdcVencidos (98 lineas)</li></ul>
-    <p><b>Nota de codificacion:</b> los archivos se decodifican por BOM (UTF-16LE en la mayoria, UTF-8 BOM en 30 archivos de BD/).
-    Los &quot;caracteres espaciados&quot; son los bytes 0x00 de UTF-16 leidos como ASCII: <b>no deben limpiarse</b>, se resuelven decodificando correctamente.</p>
+  <details class="alc"><summary>Alcance y criterio de selección del lote</summary>
+    <p>Muestreo dirigido a las familias no cubiertas por los lotes 1-5: todos los objetos programables que no pertenecen a los esquemas PO y CIERRE, es decir 17 SPs de PAG (portal de pagos y conciliación), 7 de SAF (alertas de tasas), 7 de edc (estados de cuenta), 4 reportes de dbo, 1 de RPT, el utilitario dbo.CursorCloseDeallocate y las 18 funciones definidas por el usuario. Se agrega una revisión transversal de los 251 scripts de tabla (llaves, integridad, datos personales, índices) que cubre los esquemas juicios, demandas, ori, cierre_puente y edcc, que solo contienen tablas. Con esto la auditoría cubre el 100% de las familias funcionales del repositorio.</p><ul><li>PAG.NO_IDENTIFICADOS_ENVIO (35 líneas)</li><li>PAG.PR_RESUMEN_PAGOS_HISTORICO (30 líneas)</li><li>PAG.SP_CONSULTAR_DETALLE_PAGO (57 líneas)</li><li>PAG.SP_CONSULTAR_DETALLE_POR_BANCO (35 líneas)</li><li>PAG.SP_CONSULTAR_DETALLE_POR_BANCO_IDENTIFICADOS (39 líneas)</li><li>PAG.SP_CONSULTAR_DETALLE_POR_NO_IDEN_ID (45 líneas)</li><li>PAG.SP_CONSULTAR_DETALLE_POR_NO_IDEN_ID_RESUMEN (45 líneas)</li><li>PAG.SP_CONSULTAR_DETALLE_REPORTE_PAGOS (46 líneas)</li><li>PAG.SP_CONSULTAR_INFO_CREDITO (41 líneas)</li><li>PAG.SP_CONSULTAR_TOTALES_BANCOS (39 líneas)</li><li>PAG.SP_CONSULTAR_TOTALES_BANCOS_CONCILIACION (39 líneas)</li><li>PAG.SP_OBTENER_CUENTA_REFERENCIA (20 líneas)</li><li>PAG.SP_OBTENER_DETALLE_CONCILIACION (43 líneas)</li><li>PAG.SP_OBTENER_FECHA_SAF (17 líneas)</li><li>PAG.SP_OBTENER_ID_CUENTA (20 líneas)</li><li>PAG.SP_OBTENER_NUC_DINAMICO (21 líneas)</li><li>PAG.SP_PAGOS_CONSULTA_NOMBRE_CLIENTE (35 líneas)</li><li>RPT.CASTIGO_REEST_SALDOS (31 líneas)</li><li>SAF.SP_TASAS_ALERTAS_DESACTIVA (22 líneas)</li><li>SAF.SP_TASAS_ALERTAS_DEST (24 líneas)</li><li>SAF.SP_TASAS_ALERTAS_DEST_SEL (20 líneas)</li><li>SAF.SP_TASAS_ALERTAS_ENVIO (126 líneas)</li><li>SAF.SP_TASAS_ALERTAS_ENVIO_DEST (19 líneas)</li><li>SAF.SP_TASAS_ALERTAS_IMPORTA (179 líneas)</li><li>SAF.SP_TASAS_ALERTAS_VALIDA (68 líneas)</li><li>dbo.CursorCloseDeallocate (20 líneas)</li><li>dbo.FECHAS_POLIZA_TIPO (5 líneas)</li><li>dbo.FECHA_IMPAGO (38 líneas)</li><li>dbo.FN_CARTERA_CREDITO (54 líneas)</li><li>dbo.FN_CREDITO_PREVIO (33 líneas)</li><li>dbo.FN_CREDITO_PREVIO_ID (53 líneas)</li><li>dbo.FN_CUENTA_NO_VALIDA (48 líneas)</li><li>dbo.FN_CUENTA_OBTENER (41 líneas)</li><li>dbo.FN_ES_COVID (33 líneas)</li><li>dbo.FN_ES_LINEA_CANCELADA (28 líneas)</li><li>dbo.FN_FIRMA_MONTO (33 líneas)</li><li>dbo.FN_FORMA_MONEDA (21 líneas)</li><li>dbo.FN_FORMA_NOMBRE (39 líneas)</li><li>dbo.FN_ORIGEN_FONDOS (26 líneas)</li><li>dbo.FN_RUBRO_POL (36 líneas)</li><li>dbo.FN_SECUENCIA_ORIGEN (32 líneas)</li><li>dbo.FN_SOLO_NUMEROS (40 líneas)</li><li>dbo.FN_TIPO_CANAL (28 líneas)</li><li>dbo.FN_TIPO_CREDITO (34 líneas)</li><li>dbo.INFO_EXTRA_EXTRAER (32 líneas)</li><li>dbo.REPORTE (162 líneas)</li><li>dbo.REPORTEAFIRME (53 líneas)</li><li>dbo.REPORTE_COBRANZA_INTEGRACION (204 líneas)</li><li>dbo.REPORTE_NO_IDENTIFICADOS (31 líneas)</li><li>edc.SP_Genera_Ordenes_Dummy (98 líneas)</li><li>edc.spUpsertCClienteDaily (132 líneas)</li><li>edc.sp_UpsertClienteCredito (207 líneas)</li><li>edc.sp_inserEdcCredito (705 líneas)</li><li>edc.sp_inserEdcCuotasPospuestas (101 líneas)</li><li>edc.sp_inserEdcMovimientos (144 líneas)</li><li>edc.sp_inserEdcVencidos (98 líneas)</li></ul>
+    <p><b>Nota de codificación:</b> los archivos se decodifican por BOM (UTF-16LE en la mayoría, UTF-8 BOM en 30 archivos de BD/).
+    Los &quot;caracteres espaciados&quot; son los bytes 0x00 de UTF-16 leídos como ASCII: <b>no deben limpiarse</b>, se resuelven decodificando correctamente.</p>
   </details>
 
   <h2>Hallazgos</h2>
   <div class="bar">
-    <label>Severidad</label><select id="fs"><option value="">Todas</option><option>Critico</option><option>Alto</option><option>Medio</option><option>Bajo</option></select>
-    <label>Categoria</label><select id="fc"><option value="">Todas</option><option>Control de ambientes</option><option>Correccion funcional</option><option>Estandares SQL</option><option>Integridad contable</option><option>Integridad de datos</option><option>Mantenibilidad</option><option>Parametrizacion</option><option>Rendimiento</option><option>Seguridad</option></select>
+    <label>Severidad</label><select id="fs"><option value="">Todas</option><option>Crítico</option><option>Alto</option><option>Medio</option><option>Bajo</option></select>
+    <label>Categoría</label><select id="fc"><option value="">Todas</option><option>Control de ambientes</option><option>Corrección funcional</option><option>Estándares SQL</option><option>Integridad contable</option><option>Integridad de datos</option><option>Mantenibilidad</option><option>Parametrización</option><option>Rendimiento</option><option>Seguridad</option></select>
     <label>Entorno</label><select id="fe"><option value="">Ambos</option><option>BD</option><option>BD_prod</option></select>
     <label>Lote</label><select id="fl"><option value="">Todos</option><option>6</option></select>
     <input type="search" id="fq" placeholder="Buscar objeto, evidencia, texto...">
@@ -104,113 +104,113 @@ footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a35
     <span class="count" id="cnt"></span>
   </div>
   <div id="lista">
-    <article class="f" data-sev="Critico" data-cat="Integridad de datos" data-env="BD"
+    <article class="f" data-sev="Crítico" data-cat="Integridad de datos" data-env="BD"
              data-lote="6"
-             data-txt="l6-001 edc.sp_genera_ordenes_dummy inserta montos aleatorios en las tablas de facturacion (cfdi) contra creditos reales edc.sp_genera_ordenes_dummy insert into edc.edc_orden (... saldo_principal, total_global_factura ...)
+             data-txt="l6-001 edc.sp_genera_ordenes_dummy inserta montos aleatorios en las tablas de facturación (cfdi) contra créditos reales edc.sp_genera_ordenes_dummy insert into edc.edc_orden (... saldo_principal, total_global_factura ...)
 select e.id_edc, &#x27;9&#x27; as id_emisor, &#x27;100&#x27; as porcentaje_factura, &#x27;03&#x27; as forma_pago, &#x27;pue&#x27; as metodo_pago,
        abs(checksum(newid())) % 9000 + 1000 as saldo_principal,
        abs(checksum(newid())) % 9000 + 1000 as total_global_factura, ...
 from edc.edc as e where e.fecha_corte = @fechacorte;
 -- y por cada orden, tres conceptos:  abs(checksum(newid())) % 900 + 100  -- monto dummy 100-999">
       <header onclick="this.parentNode.classList.toggle('open')">
-        <span class="sev c">Critico</span>
+        <span class="sev c">Crítico</span>
         <span class="id">L6-001</span>
-        <span class="ti">edc.SP_Genera_Ordenes_Dummy inserta montos aleatorios en las tablas de facturacion (CFDI) contra creditos reales</span>
-        <span class="meta">Integridad de datos &middot; BD &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="ti">edc.SP_Genera_Ordenes_Dummy inserta montos aleatorios en las tablas de facturación (CFDI) contra créditos reales</span>
+        <span class="meta">Integridad de datos &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>edc.SP_Genera_Ordenes_Dummy</span></div>
-        <div class="kv"><b>Ubicacion</b><span>edc.SP_Genera_Ordenes_Dummy:62-63 y 91</span></div>
+        <div class="kv"><b>Ubicación</b><span>edc.SP_Genera_Ordenes_Dummy:62-63 y 91</span></div>
         <div class="kv"><b>Evidencia</b><pre>INSERT INTO edc.EDC_ORDEN (... SALDO_PRINCIPAL, TOTAL_GLOBAL_FACTURA ...)
 SELECT E.ID_EDC, &#x27;9&#x27; AS ID_EMISOR, &#x27;100&#x27; AS PORCENTAJE_FACTURA, &#x27;03&#x27; AS FORMA_PAGO, &#x27;PUE&#x27; AS METODO_PAGO,
        ABS(CHECKSUM(NEWID())) % 9000 + 1000 AS SALDO_PRINCIPAL,
        ABS(CHECKSUM(NEWID())) % 9000 + 1000 AS TOTAL_GLOBAL_FACTURA, ...
 FROM edc.EDC AS E WHERE E.FECHA_CORTE = @FechaCorte;
 -- y por cada orden, tres conceptos:  ABS(CHECKSUM(NEWID())) % 900 + 100  -- monto dummy 100-999</pre></div>
-        <div class="kv"><b>Impacto</b><span>El SP genera una orden de factura por cada estado de cuenta real del corte, con importes aleatorios y sin relacion con el saldo del credito, ademas de emisor, forma y metodo de pago fijos. No hay ninguna guarda de ambiente ni bandera que impida ejecutarlo: cualquiera con permiso de EXECUTE puede poblar la cola de facturacion con importes inventados sobre creditos de clientes. El bloque de TRUNCATE previo esta comentado, asi que ejecuciones repetidas acumulan ordenes duplicadas. Que el objeto no exista en BD_prod reduce el riesgo hoy, pero vive en el repositorio de despliegue y su nombre no impide que se promueva.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Sacar el objeto del repositorio de base de datos y mover la generacion de datos de prueba a un proyecto de pruebas con su propio esquema (p.ej. tst.). Si debe permanecer, exigir guarda explicita (IF DB_NAME() NOT LIKE &#x27;%_QA&#x27; RAISERROR ... RETURN), permisos restringidos y prefijo que declare que es dummy.</span></div>
+        <div class="kv"><b>Impacto</b><span>El SP genera una orden de factura por cada estado de cuenta real del corte, con importes aleatorios y sin relación con el saldo del crédito, además de emisor, forma y método de pago fijos. No hay ninguna guarda de ambiente ni bandera que impida ejecutarlo: cualquiera con permiso de EXECUTE puede poblar la cola de facturación con importes inventados sobre créditos de clientes. El bloque de TRUNCATE previo está comentado, así que ejecuciones repetidas acumulan ordenes duplicadas. Que el objeto no exista en BD_prod reduce el riesgo hoy, pero vive en el repositorio de despliegue y su nombre no impide que se promueva.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Sacar el objeto del repositorio de base de datos y mover la generación de datos de prueba a un proyecto de pruebas con su propio esquema (p.ej. tst.). Si debe permanecer, exigir guarda explícita (IF DB_NAME() NOT LIKE &#x27;%_QA&#x27; RAISERROR ... RETURN), permisos restringidos y prefijo que declare que es dummy.</span></div>
       </div>
     </article>
-    <article class="f" data-sev="Critico" data-cat="Correccion funcional" data-env="BD"
+    <article class="f" data-sev="Crítico" data-cat="Corrección funcional" data-env="BD"
              data-lote="6"
-             data-txt="l6-002 el identificador de pagos empareja el credito con un like invertido y se queda con el numero de credito mas bajo pag.sp_obtener_nuc_dinamico select top 1 id_externo, num_credito
+             data-txt="l6-002 el identificador de pagos empareja el crédito con un like invertido y se queda con el número de crédito más bajo pag.sp_obtener_nuc_dinamico select top 1 id_externo, num_credito
 from quiero_confianza.pr.pr_creditos
 where id_externo is not null and trim(id_externo) &lt;&gt; &#x27;&#x27;
   and @cadenabusqueda like &#x27;%&#x27; + id_externo + &#x27;%&#x27;
   and ind_linea = &#x27;n&#x27;
 order by num_credito asc;">
       <header onclick="this.parentNode.classList.toggle('open')">
-        <span class="sev c">Critico</span>
+        <span class="sev c">Crítico</span>
         <span class="id">L6-002</span>
-        <span class="ti">El identificador de pagos empareja el credito con un LIKE invertido y se queda con el numero de credito mas bajo</span>
-        <span class="meta">Correccion funcional &middot; BD &middot; esfuerzo M (1-3 dias)</span>
+        <span class="ti">El identificador de pagos empareja el crédito con un LIKE invertido y se queda con el número de crédito más bajo</span>
+        <span class="meta">Corrección funcional &middot; BD &middot; esfuerzo M (1-3 días)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>PAG.SP_OBTENER_NUC_DINAMICO</span></div>
-        <div class="kv"><b>Ubicacion</b><span>PAG.SP_OBTENER_NUC_DINAMICO:11-17</span></div>
+        <div class="kv"><b>Ubicación</b><span>PAG.SP_OBTENER_NUC_DINAMICO:11-17</span></div>
         <div class="kv"><b>Evidencia</b><pre>SELECT TOP 1 ID_EXTERNO, NUM_CREDITO
 FROM Quiero_Confianza.PR.PR_CREDITOS
 WHERE ID_EXTERNO IS NOT NULL AND TRIM(ID_EXTERNO) &lt;&gt; &#x27;&#x27;
   AND @CadenaBusqueda LIKE &#x27;%&#x27; + ID_EXTERNO + &#x27;%&#x27;
   AND IND_LINEA = &#x27;N&#x27;
 ORDER BY NUM_CREDITO ASC;</pre></div>
-        <div class="kv"><b>Impacto</b><span>El patron del LIKE es la columna, no el parametro: cualquier ID_EXTERNO que sea subcadena de la referencia bancaria hace match, y el desempate es el credito mas antiguo (NUM_CREDITO ASC), no el mas parecido. Con identificadores donde uno es prefijo o subcadena de otro, el pago se asigna a un credito equivocado; ademas, si el dato de ID_EXTERNO contiene % o _ actua como comodin. Al no ser sargable, cada identificacion recorre PR_CREDITOS completa.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Emparejar por igualdad contra la referencia normalizada (o por la parte fija de la referencia, definida por catalogo de layout bancario), validar que el match sea unico y devolver &#x27;ambiguo&#x27; en vez de elegir uno; escapar comodines si se conserva LIKE. Requiere ademas un reproceso de control para detectar pagos ya aplicados a credito incorrecto.</span></div>
+        <div class="kv"><b>Impacto</b><span>El patrón del LIKE es la columna, no el parámetro: cualquier ID_EXTERNO que sea subcadena de la referencia bancaria hace match, y el desempate es el crédito más antiguo (NUM_CREDITO ASC), no el más parecido. Con identificadores donde uno es prefijo o subcadena de otro, el pago se asigna a un crédito equivocado; además, si el dato de ID_EXTERNO contiene % o _ actúa como comodín. Al no ser sargable, cada identificación recorre PR_CREDITOS completa.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Emparejar por igualdad contra la referencia normalizada (o por la parte fija de la referencia, definida por catálogo de layout bancario), validar que el match sea único y devolver &#x27;ambiguo&#x27; en vez de elegir uno; escapar comodines si se conserva LIKE. Requiere además un reproceso de control para detectar pagos ya aplicados a crédito incorrecto.</span></div>
       </div>
     </article>
-    <article class="f" data-sev="Critico" data-cat="Parametrizacion" data-env="BD BD_prod"
+    <article class="f" data-sev="Crítico" data-cat="Parametrización" data-env="BD BD_prod"
              data-lote="6"
              data-txt="l6-003 el tratamiento covid de una cuota se decide con el umbral num_credito &lt; 6051, usado por 66 sps dbo.fn_es_covid (66 sps, 230 invocaciones) set @es_covid =
     case when (@ind_posposicion = &#x27;s&#x27; or @fecha_posposicion is not null)
               and @num_credito &lt; 6051 then &#x27;s&#x27; else &#x27;n&#x27; end">
       <header onclick="this.parentNode.classList.toggle('open')">
-        <span class="sev c">Critico</span>
+        <span class="sev c">Crítico</span>
         <span class="id">L6-003</span>
         <span class="ti">El tratamiento COVID de una cuota se decide con el umbral NUM_CREDITO &lt; 6051, usado por 66 SPs</span>
-        <span class="meta">Parametrizacion &middot; BD+BD_prod &middot; esfuerzo M (1-3 dias)</span>
+        <span class="meta">Parametrización &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>dbo.FN_ES_COVID (66 SPs, 230 invocaciones)</span></div>
-        <div class="kv"><b>Ubicacion</b><span>dbo.FN_ES_COVID:23</span></div>
+        <div class="kv"><b>Ubicación</b><span>dbo.FN_ES_COVID:23</span></div>
         <div class="kv"><b>Evidencia</b><pre>SET @ES_COVID =
     CASE WHEN (@Ind_Posposicion = &#x27;S&#x27; OR @Fecha_Posposicion IS NOT NULL)
               AND @NUM_CREDITO &lt; 6051 THEN &#x27;S&#x27; ELSE &#x27;N&#x27; END</pre></div>
-        <div class="kv"><b>Impacto</b><span>Un numero de credito se usa como frontera temporal del programa COVID: la regla asume que todo credito originado antes de cierto momento tiene numero menor a 6051. Es el hardcodeo de mayor alcance del sistema (66 SPs, 230 invocaciones) y determina clasificacion contable de cuotas pospuestas. Si el criterio real cambia, o si la numeracion se reinicia o se migra, la clasificacion se corrompe en masa y de forma silenciosa. La funcion tampoco declara longitud (RETURNS VARCHAR = VARCHAR(1)), asi que no admite un tercer valor.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Sustituir el umbral por la marca real del programa: bandera o vigencia en el catalogo de posposiciones (FEC_INICIO/FEC_FIN del programa) y, mientras se migre, dejarlo en PARAM.COVID_NUM_CREDITO_MAX con vigencia y una sola lectura. Conciliar el resultado nuevo contra el actual antes de reemplazar.</span></div>
+        <div class="kv"><b>Impacto</b><span>Un número de crédito se usa como frontera temporal del programa COVID: la regla asume que todo crédito originado antes de cierto momento tiene número menor a 6051. Es el hardcodeo de mayor alcance del sistema (66 SPs, 230 invocaciones) y determina clasificación contable de cuotas pospuestas. Si el criterio real cambia, o si la numeración se reinicia o se migra, la clasificación se corrompe en masa y de forma silenciosa. La función tampoco declara longitud (RETURNS VARCHAR = VARCHAR(1)), así que no admite un tercer valor.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Sustituir el umbral por la marca real del programa: bandera o vigencia en el catálogo de posposiciones (FEC_INICIO/FEC_FIN del programa) y, mientras se migre, dejarlo en PARAM.COVID_NUM_CREDITO_MAX con vigencia y una sola lectura. Conciliar el resultado nuevo contra el actual antes de reemplazar.</span></div>
       </div>
     </article>
-    <article class="f" data-sev="Critico" data-cat="Control de ambientes" data-env="BD vs BD_prod"
+    <article class="f" data-sev="Crítico" data-cat="Control de ambientes" data-env="BD vs BD_prod"
              data-lote="6"
-             data-txt="l6-004 los nombres de base externa son distintos en dev y prod dentro del mismo codigo: 7 objetos comunes divergen (shadow vs real) dbo.fecha_impago, dbo.fn_cartera_credito, dbo.fn_credito_previo, dbo.fn_credito_previo_id, dbo.fn_es_linea_cancelada, dbo.fn_origen_fondos, dbo.fn_secuencia_origen, saf.sp_tasas_alertas_importa/valida, rpt.castigo_reest_saldos, dbo.reporte_no_identificados -- bd (dev)
+             data-txt="l6-004 los nombres de base externa son distintos en dev y prod dentro del mismo código: 7 objetos comunes divergen (shadow vs real) dbo.fecha_impago, dbo.fn_cartera_credito, dbo.fn_credito_previo, dbo.fn_credito_previo_id, dbo.fn_es_linea_cancelada, dbo.fn_origen_fondos, dbo.fn_secuencia_origen, saf.sp_tasas_alertas_importa/valida, rpt.castigo_reest_saldos, dbo.reporte_no_identificados -- bd (dev)
 select @valor = des_origen from [quiero_confianza_shadow].pr.pr_origen_fondos ...
 -- bd_prod
 select @valor = des_origen from [quiero_confianza].pr.pr_origen_fondos ...
 -- variantes de escritura encontradas: quiero_confianza, quiero_confianza_shadow, quiero_confianza_shadow">
       <header onclick="this.parentNode.classList.toggle('open')">
-        <span class="sev c">Critico</span>
+        <span class="sev c">Crítico</span>
         <span class="id">L6-004</span>
-        <span class="ti">Los nombres de base externa son distintos en dev y prod dentro del mismo codigo: 7 objetos comunes divergen (shadow vs real)</span>
-        <span class="meta">Control de ambientes &middot; BD vs BD_prod &middot; esfuerzo M (1-3 dias)</span>
+        <span class="ti">Los nombres de base externa son distintos en dev y prod dentro del mismo código: 7 objetos comunes divergen (shadow vs real)</span>
+        <span class="meta">Control de ambientes &middot; BD vs BD_prod &middot; esfuerzo M (1-3 días)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>dbo.FECHA_IMPAGO, dbo.FN_CARTERA_CREDITO, dbo.FN_CREDITO_PREVIO, dbo.FN_CREDITO_PREVIO_ID, dbo.FN_ES_LINEA_CANCELADA, dbo.FN_ORIGEN_FONDOS, dbo.FN_SECUENCIA_ORIGEN, SAF.SP_TASAS_ALERTAS_IMPORTA/VALIDA, RPT.CASTIGO_REEST_SALDOS, dbo.REPORTE_NO_IDENTIFICADOS</span></div>
-        <div class="kv"><b>Ubicacion</b><span>BD/dbo.FN_ORIGEN_FONDOS:19 vs BD_prod/dbo.FN_ORIGEN_FONDOS (misma linea)</span></div>
+        <div class="kv"><b>Ubicación</b><span>BD/dbo.FN_ORIGEN_FONDOS:19 vs BD_prod/dbo.FN_ORIGEN_FONDOS (misma línea)</span></div>
         <div class="kv"><b>Evidencia</b><pre>-- BD (dev)
 SELECT @VALOR = DES_ORIGEN FROM [Quiero_Confianza_shadow].PR.PR_ORIGEN_FONDOS ...
 -- BD_prod
 SELECT @VALOR = DES_ORIGEN FROM [Quiero_Confianza].PR.PR_ORIGEN_FONDOS ...
 -- variantes de escritura encontradas: Quiero_Confianza, Quiero_Confianza_shadow, Quiero_Confianza_Shadow</pre></div>
-        <div class="kv"><b>Impacto</b><span>El destino del dato vive dentro del cuerpo del objeto, asi que promover de dev a prod exige editar el script a mano en cada release: es la causa estructural del drift dev-prod y hace imposible un despliegue reproducible o un rollback confiable. Una edicion olvidada deja produccion leyendo la replica shadow (datos desfasados) o dev escribiendo contra el core real. Se agrava con la inconsistencia de mayusculas (_shadow / _Shadow), que rompe en instancias con collation sensible.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Reemplazar los nombres de tres partes por sinonimos por base de datos (CREATE SYNONYM PR_CREDITOS FOR ...) de modo que el codigo sea identico en todos los ambientes y el ambiente se defina al crear los sinonimos. Complementar con una compuerta de despliegue que rechace cualquier objeto que contenga &#x27;Quiero_Confianza&#x27; literal.</span></div>
+        <div class="kv"><b>Impacto</b><span>El destino del dato vive dentro del cuerpo del objeto, así que promover de dev a prod exige editar el script a mano en cada release: es la causa estructural del drift dev-prod y hace imposible un despliegue reproducible o un rollback confiable. Una edición olvidada deja producción leyendo la replica shadow (datos desfasados) o dev escribiendo contra el core real. Se agrava con la inconsistencia de mayúsculas (_shadow / _Shadow), que rompe en instancias con collation sensible.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Reemplazar los nombres de tres partes por sinónimos por base de datos (CREATE SYNONYM PR_CREDITOS FOR ...) de modo que el código sea idéntico en todos los ambientes y el ambiente se defina al crear los sinónimos. Complementar con una compuerta de despliegue que rechace cualquier objeto que contenga &#x27;Quiero_Confianza&#x27; literal.</span></div>
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Rendimiento" data-env="BD BD_prod"
              data-lote="6"
-             data-txt="l6-005 cinco funciones escalares con acceso a datos se invocan desde 78, 69, 66, 44 y 43 sps: ejecucion fila por fila contra la base core dbo.fn_origen_fondos (78 sps/140 usos), dbo.fn_forma_nombre (69/133), dbo.fn_es_covid (66/230), dbo.fn_tipo_canal (44/78), dbo.fecha_impago (43/67), dbo.fn_cartera_credito (3/3) create function [dbo].[fn_cartera_credito](@cod_cliente varchar(15)) returns varchar(15)
+             data-txt="l6-005 cinco funciones escalares con acceso a datos se invocan desde 78, 69, 66, 44 y 43 sps: ejecución fila por fila contra la base core dbo.fn_origen_fondos (78 sps/140 usos), dbo.fn_forma_nombre (69/133), dbo.fn_es_covid (66/230), dbo.fn_tipo_canal (44/78), dbo.fecha_impago (43/67), dbo.fn_cartera_credito (3/3) create function [dbo].[fn_cartera_credito](@cod_cliente varchar(15)) returns varchar(15)
 as begin
   declare @individual table (num_credito int, ind_estado varchar(1))
   insert into @individual ... from [quiero_confianza_shadow].pr.pr_creditos where ... cod_cliente = @cod_cliente
@@ -219,26 +219,26 @@ end">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
         <span class="id">L6-005</span>
-        <span class="ti">Cinco funciones escalares con acceso a datos se invocan desde 78, 69, 66, 44 y 43 SPs: ejecucion fila por fila contra la base core</span>
-        <span class="meta">Rendimiento &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 dias)</span>
+        <span class="ti">Cinco funciones escalares con acceso a datos se invocan desde 78, 69, 66, 44 y 43 SPs: ejecución fila por fila contra la base core</span>
+        <span class="meta">Rendimiento &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 días)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>dbo.FN_ORIGEN_FONDOS (78 SPs/140 usos), dbo.FN_FORMA_NOMBRE (69/133), dbo.FN_ES_COVID (66/230), dbo.FN_TIPO_CANAL (44/78), dbo.FECHA_IMPAGO (43/67), dbo.FN_CARTERA_CREDITO (3/3)</span></div>
-        <div class="kv"><b>Ubicacion</b><span>dbo.FN_ORIGEN_FONDOS:19, dbo.FECHA_IMPAGO:20-28, dbo.FN_CARTERA_CREDITO:15-35</span></div>
+        <div class="kv"><b>Ubicación</b><span>dbo.FN_ORIGEN_FONDOS:19, dbo.FECHA_IMPAGO:20-28, dbo.FN_CARTERA_CREDITO:15-35</span></div>
         <div class="kv"><b>Evidencia</b><pre>CREATE FUNCTION [dbo].[FN_CARTERA_CREDITO](@COD_CLIENTE VARCHAR(15)) RETURNS VARCHAR(15)
 AS BEGIN
   DECLARE @INDIVIDUAL TABLE (NUM_CREDITO INT, IND_ESTADO VARCHAR(1))
   INSERT INTO @INDIVIDUAL ... FROM [Quiero_Confianza_shadow].PR.PR_CREDITOS WHERE ... COD_CLIENTE = @COD_CLIENTE
   ... -- idem @COMERCIAL
 END</pre></div>
-        <div class="kv"><b>Impacto</b><span>Son UDF escalares multi-sentencia (con variables y tablas variable) y por lo tanto no se pueden inlinear: SQL Server las ejecuta una vez por fila, y varias consultan una base remota. En procesos de cierre que recorren cientos de miles de filas, esto multiplica las lecturas al core y fuerza planes seriales; es la explicacion mas probable de las ventanas de cierre largas. Ninguna declara WITH SCHEMABINDING, asi que tampoco se protege del cambio de esquema aguas arriba.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Convertir a funciones inline de tabla (RETURNS TABLE con un solo SELECT) y consumirlas con CROSS/OUTER APPLY, o resolver el atributo por JOIN a un catalogo materializado. Priorizar FN_ORIGEN_FONDOS, FN_FORMA_NOMBRE y FN_ES_COVID por alcance. Medir antes y despues con el mismo periodo de cierre para cuantificar la ganancia (no verificado en instancia: la mejora esperada depende del plan real).</span></div>
+        <div class="kv"><b>Impacto</b><span>Son UDF escalares multi-sentencia (con variables y tablas variable) y por lo tanto no se pueden inlinear: SQL Server las ejecuta una vez por fila, y varias consultan una base remota. En procesos de cierre que recorren cientos de miles de filas, esto multiplica las lecturas al core y fuerza planes seriales; es la explicación más probable de las ventanas de cierre largas. Ninguna declara WITH SCHEMABINDING, así que tampoco se protege del cambio de esquema aguas arriba.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Convertir a funciones inline de tabla (RETURNS TABLE con un solo SELECT) y consumirlas con CROSS/OUTER APPLY, o resolver el atributo por JOIN a un catálogo materializado. Priorizar FN_ORIGEN_FONDOS, FN_FORMA_NOMBRE y FN_ES_COVID por alcance. Medir antes y después con el mismo periodo de cierre para cuantificar la ganancia (no verificado en instancia: la mejora esperada depende del plan real).</span></div>
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Integridad de datos" data-env="BD"
              data-lote="6"
-             data-txt="l6-006 los estados de cuenta se pueblan con tres listas distintas de tipo de credito, y una lleva un pendiente escrito en el codigo edc.sp_inseredccredito, edc.sp_inseredcmovimientos, edc.sp_inseredcvencidos -- sp_inseredccredito:79
+             data-txt="l6-006 los estados de cuenta se pueblan con tres listas distintas de tipo de crédito, y una lleva un pendiente escrito en el código edc.sp_inseredccredito, edc.sp_inseredcmovimientos, edc.sp_inseredcvencidos -- sp_inseredccredito:79
 and bb.num_desc_tipo_credito in (1,2,3,4,8,9,10,11,12,13,14,15,16,17,20,23,28)
    ----- se agregan tipo 20,23 01/02/2024 habria que quitar el numero 8 / se agrega el 28 (29/10/24)
 -- sp_inseredcmovimientos:119
@@ -248,13 +248,13 @@ and a.num_desc_tipo_credito in (1,2,3,4,9,10,11,12,13,14,15,16,17,28)   -- sin 8
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
         <span class="id">L6-006</span>
-        <span class="ti">Los estados de cuenta se pueblan con tres listas distintas de tipo de credito, y una lleva un pendiente escrito en el codigo</span>
-        <span class="meta">Integridad de datos &middot; BD &middot; esfuerzo M (1-3 dias)</span>
+        <span class="ti">Los estados de cuenta se pueblan con tres listas distintas de tipo de crédito, y una lleva un pendiente escrito en el código</span>
+        <span class="meta">Integridad de datos &middot; BD &middot; esfuerzo M (1-3 días)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>edc.sp_inserEdcCredito, edc.sp_inserEdcMovimientos, edc.sp_inserEdcVencidos</span></div>
-        <div class="kv"><b>Ubicacion</b><span>edc.sp_inserEdcCredito:79 y 599, edc.sp_inserEdcMovimientos:119, edc.sp_inserEdcVencidos:37</span></div>
+        <div class="kv"><b>Ubicación</b><span>edc.sp_inserEdcCredito:79 y 599, edc.sp_inserEdcMovimientos:119, edc.sp_inserEdcVencidos:37</span></div>
         <div class="kv"><b>Evidencia</b><pre>-- sp_inserEdcCredito:79
 AND BB.NUM_DESC_TIPO_CREDITO IN (1,2,3,4,8,9,10,11,12,13,14,15,16,17,20,23,28)
    ----- SE AGREGAN TIPO 20,23 01/02/2024 habria que quitar el numero 8 / Se agrega el 28 (29/10/24)
@@ -262,13 +262,13 @@ AND BB.NUM_DESC_TIPO_CREDITO IN (1,2,3,4,8,9,10,11,12,13,14,15,16,17,20,23,28)
 AND A.NUM_DESC_TIPO_CREDITO IN (1,2,3,4,9,10,11,12,13,14,15,16,17,20,23,28)   -- sin 8
 -- sp_inserEdcVencidos:37
 AND A.NUM_DESC_TIPO_CREDITO IN (1,2,3,4,9,10,11,12,13,14,15,16,17,28)   -- sin 8, 20, 23</pre></div>
-        <div class="kv"><b>Impacto</b><span>Los tres SPs alimentan el mismo estado de cuenta pero sobre poblaciones distintas: un credito tipo 8 recibe encabezado sin movimientos ni vencidos; los tipos 20 y 23 (cartera administrada) reciben encabezado y movimientos pero nunca la seccion de recibos vencidos. El resultado es un documento entregado al cliente que puede estar incompleto sin que ningun proceso lo detecte, y la duda sobre el tipo 8 quedo como comentario en lugar de decision.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Una sola definicion de la poblacion elegible (vista o tabla de catalogo EDC_TIPO_CREDITO_ELEGIBLE) consumida por los tres SPs, y un control post-proceso que valide que cada ID_EDC tenga sus tres secciones o quede marcado como incompleto. Resolver explicitamente el caso del tipo 8.</span></div>
+        <div class="kv"><b>Impacto</b><span>Los tres SPs alimentan el mismo estado de cuenta pero sobre poblaciones distintas: un crédito tipo 8 recibe encabezado sin movimientos ni vencidos; los tipos 20 y 23 (cartera administrada) reciben encabezado y movimientos pero nunca la sección de recibos vencidos. El resultado es un documento entregado al cliente que puede estar incompleto sin que ningún proceso lo detecte, y la duda sobre el tipo 8 quedo como comentario en lugar de decisión.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Una sola definición de la población elegible (vista o tabla de catálogo EDC_TIPO_CREDITO_ELEGIBLE) consumida por los tres SPs, y un control post-proceso que valide que cada ID_EDC tenga sus tres secciones o quede marcado como incompleto. Resolver explícitamente el caso del tipo 8.</span></div>
       </div>
     </article>
-    <article class="f" data-sev="Alto" data-cat="Correccion funcional" data-env="BD"
+    <article class="f" data-sev="Alto" data-cat="Corrección funcional" data-env="BD"
              data-lote="6"
-             data-txt="l6-007 el reporte a afirme deja siempre en cero la comision de administracion por un rubro mal escrito dbo.reporteafirme sum(case when rubro = &#x27;comision_admisistracion&#x27; then monto else 0 end) as comision_administracion,
+             data-txt="l6-007 el reporte a afirme deja siempre en cero la comisión de administración por un rubro mal escrito dbo.reporteafirme sum(case when rubro = &#x27;comision_admisistracion&#x27; then monto else 0 end) as comision_administracion,
 sum(case when rubro = &#x27;iva comision_administracion&#x27; then monto else 0 end) as iva_comision_administracion,
 sum(monto) as total
 -- ...
@@ -278,13 +278,13 @@ where id_poliza = 7">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
         <span class="id">L6-007</span>
-        <span class="ti">El reporte a Afirme deja siempre en cero la comision de administracion por un rubro mal escrito</span>
-        <span class="meta">Correccion funcional &middot; BD &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="ti">El reporte a Afirme deja siempre en cero la comisión de administración por un rubro mal escrito</span>
+        <span class="meta">Corrección funcional &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>dbo.REPORTEAFIRME</span></div>
-        <div class="kv"><b>Ubicacion</b><span>dbo.REPORTEAFIRME:28 (y 19, 36)</span></div>
+        <div class="kv"><b>Ubicación</b><span>dbo.REPORTEAFIRME:28 (y 19, 36)</span></div>
         <div class="kv"><b>Evidencia</b><pre>SUM(CASE WHEN rubro = &#x27;COMISION_ADMISISTRACION&#x27; THEN monto ELSE 0 END) AS COMISION_ADMINISTRACION,
 SUM(CASE WHEN rubro = &#x27;IVA COMISION_ADMINISTRACION&#x27; THEN monto ELSE 0 END) AS IVA_COMISION_ADMINISTRACION,
 SUM(MONTO) AS TOTAL
@@ -292,8 +292,8 @@ SUM(MONTO) AS TOTAL
 &#x27;PENDIENTE&#x27; BANCO,
 -- ...
 WHERE ID_POLIZA = 7</pre></div>
-        <div class="kv"><b>Impacto</b><span>&#x27;COMISION_ADMISISTRACION&#x27; no existe como rubro (esta duplicada la silaba &#x27;SIS&#x27;), asi que la columna sale en cero mientras el importe si esta incluido en SUM(MONTO) AS TOTAL: el reporte que se comparte con el socio no cuadra columna contra total, y la diferencia se ve como si fuera un descuadre contable. Ademas la poliza esta fija (ID_POLIZA = 7), el banco se emite como la leyenda &#x27;PENDIENTE&#x27; y el mapeo de rubro se replica en linea en lugar de usar dbo.FN_RUBRO_POL (mismo patron que L2-006).</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Corregir el literal y, en el mismo cambio, sustituir los CASE de rubro por dbo.FN_RUBRO_POL, parametrizar la poliza y resolver el campo BANCO. Agregar una validacion de cuadre en el propio reporte (suma de columnas = TOTAL) para que un rubro mal escrito no vuelva a pasar inadvertido.</span></div>
+        <div class="kv"><b>Impacto</b><span>&#x27;COMISION_ADMISISTRACION&#x27; no existe como rubro (está duplicada la sílaba &#x27;SIS&#x27;), así que la columna sale en cero mientras el importe si está incluido en SUM(MONTO) AS TOTAL: el reporte que se comparte con el socio no cuadra columna contra total, y la diferencia se ve como si fuera un descuadre contable. Además la póliza está fija (ID_POLIZA = 7), el banco se emite como la leyenda &#x27;PENDIENTE&#x27; y el mapeo de rubro se replica en línea en lugar de usar dbo.FN_RUBRO_POL (mismo patrón que L2-006).</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Corregir el literal y, en el mismo cambio, sustituir los CASE de rubro por dbo.FN_RUBRO_POL, parametrizar la póliza y resolver el campo BANCO. Agregar una validación de cuadre en el propio reporte (suma de columnas = TOTAL) para que un rubro mal escrito no vuelva a pasar inadvertido.</span></div>
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Integridad de datos" data-env="BD"
@@ -308,20 +308,20 @@ case when b.ind_forma_pago = 1 ... then &#x27;banco&#x27; when 2 then &#x27;movi
         <span class="sev a">Alto</span>
         <span class="id">L6-008</span>
         <span class="ti">El proceso de estado de cuenta escribe en el documento del cliente las leyendas &#x27;ERROR&#x27; y &#x27;0.00&#x27; cuando no reconoce el movimiento</span>
-        <span class="meta">Integridad de datos &middot; BD &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="meta">Integridad de datos &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>edc.sp_inserEdcMovimientos, edc.sp_inserEdcCredito</span></div>
-        <div class="kv"><b>Ubicacion</b><span>edc.sp_inserEdcMovimientos:69 y 75; edc.sp_inserEdcCredito:345 y 348</span></div>
+        <div class="kv"><b>Ubicación</b><span>edc.sp_inserEdcMovimientos:69 y 75; edc.sp_inserEdcCredito:345 y 348</span></div>
         <div class="kv"><b>Evidencia</b><pre>CASE WHEN B.TIP_TRANSACCION = 3 ... THEN &#x27;DESEMBOLSO ...&#x27;
      WHEN B.TIP_TRANSACCION = 4 ... THEN &#x27;DEPOSITO A ...&#x27;
      WHEN B.TIP_TRANSACCION = 113 ... THEN &#x27;DEPOSITO A SALDO FAVOR&#x27;
      ELSE &#x27;0.00&#x27; END AS CONCEPTO_MOV,
 CASE WHEN B.IND_FORMA_PAGO = 1 ... THEN &#x27;BANCO&#x27; WHEN 2 THEN &#x27;MOVIMIENTO&#x27; WHEN 5 THEN &#x27;APLICACION&#x27;
      ELSE &#x27;ERROR&#x27; END AS MEDIO_MOV</pre></div>
-        <div class="kv"><b>Impacto</b><span>Los tipos de transaccion y formas de pago no contemplados no se rechazan ni se registran: se insertan como texto &#x27;0.00&#x27; o &#x27;ERROR&#x27; en el estado de cuenta que se entrega al cliente. El caso ELSE es precisamente el que hay que vigilar (transaccion nueva, forma de pago nueva) y aqui queda invisible para operacion.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Sustituir los CASE por join a catalogo (edc.C_CONCEPTOFACT / catalogo de medios) y hacer que lo no mapeado corte el proceso o quede en una tabla de excepciones revisable, nunca impreso. Sumar un control que cuente movimientos no mapeados por corte.</span></div>
+        <div class="kv"><b>Impacto</b><span>Los tipos de transacción y formas de pago no contemplados no se rechazan ni se registran: se insertan como texto &#x27;0.00&#x27; o &#x27;ERROR&#x27; en el estado de cuenta que se entrega al cliente. El caso ELSE es precisamente el que hay que vigilar (transacción nueva, forma de pago nueva) y aquí queda invisible para operación.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Sustituir los CASE por join a catálogo (edc.C_CONCEPTOFACT / catálogo de medios) y hacer que lo no mapeado corte el proceso o quede en una tabla de excepciones revisable, nunca impreso. Sumar un control que cuente movimientos no mapeados por corte.</span></div>
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Seguridad" data-env="BD"
@@ -333,20 +333,20 @@ CASE WHEN B.IND_FORMA_PAGO = 1 ... THEN &#x27;BANCO&#x27; WHEN 2 THEN &#x27;MOVI
         <span class="sev a">Alto</span>
         <span class="id">L6-009</span>
         <span class="ti">Un correo de prueba queda como segundo destinatario de todos los clientes del estado de cuenta</span>
-        <span class="meta">Seguridad &middot; BD &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="meta">Seguridad &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>edc.spUpsertCClienteDaily</span></div>
-        <div class="kv"><b>Ubicacion</b><span>edc.spUpsertCClienteDaily:36</span></div>
+        <div class="kv"><b>Ubicación</b><span>edc.spUpsertCClienteDaily:36</span></div>
         <div class="kv"><b>Evidencia</b><pre>ISNULL(MAX(cl.[DES_CORREO]), &#x27;&#x27;)  AS email1,
 -- Correo secundario fijo
 &#x27;Prueba@ion.com&#x27;                  AS email2</pre></div>
-        <div class="kv"><b>Impacto</b><span>El MERGE escribe &#x27;Prueba@ion.com&#x27; en EMAIL2 para cada cliente sincronizado, y el UPDATE lo reafirma en cada corrida. Si el envio de estados de cuenta usa EMAIL2, informacion de credito de todos los clientes sale hacia una cuenta de pruebas: es un incidente de datos personales, no un detalle de configuracion. No se verifico el componente de envio, por lo que el alcance real depende de si EMAIL2 se usa.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Quitar el literal y dejar EMAIL2 nulo o alimentado del catalogo de contacto; si se requiere una copia de control, que sea un parametro de ambiente que en produccion este vacio. Revisar con el equipo de envio si EMAIL2 se utiliza y, en su caso, tratarlo como incidente.</span></div>
+        <div class="kv"><b>Impacto</b><span>El MERGE escribe &#x27;Prueba@ion.com&#x27; en EMAIL2 para cada cliente sincronizado, y el UPDATE lo reafirma en cada corrida. Si el envío de estados de cuenta usa EMAIL2, información de crédito de todos los clientes sale hacia una cuenta de pruebas: es un incidente de datos personales, no un detalle de configuración. No se verifico el componente de envío, por lo que el alcance real depende de si EMAIL2 se usa.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Quitar el literal y dejar EMAIL2 nulo o alimentado del catálogo de contacto; si se requiere una copia de control, que sea un parámetro de ambiente que en producción este vacío. Revisar con el equipo de envío si EMAIL2 se utiliza y, en su caso, tratarlo como incidente.</span></div>
       </div>
     </article>
-    <article class="f" data-sev="Alto" data-cat="Correccion funcional" data-env="BD"
+    <article class="f" data-sev="Alto" data-cat="Corrección funcional" data-env="BD"
              data-lote="6"
              data-txt="l6-010 el domicilio del cliente se arma con max() columna por columna: puede mezclar dos domicilios distintos edc.spupsertcclientedaily, edc.sp_upsertclientecredito isnull(max(dir.[det_direccion]), &#x27;&#x27;) as calle,
 isnull(max(dir.[num_exterior]), &#x27;&#x27;) as noext,
@@ -360,12 +360,12 @@ group by pr.[cod_cliente]">
         <span class="sev a">Alto</span>
         <span class="id">L6-010</span>
         <span class="ti">El domicilio del cliente se arma con MAX() columna por columna: puede mezclar dos domicilios distintos</span>
-        <span class="meta">Correccion funcional &middot; BD &middot; esfuerzo M (1-3 dias)</span>
+        <span class="meta">Corrección funcional &middot; BD &middot; esfuerzo M (1-3 días)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>edc.spUpsertCClienteDaily, edc.sp_UpsertClienteCredito</span></div>
-        <div class="kv"><b>Ubicacion</b><span>edc.spUpsertCClienteDaily:24-32 y 42</span></div>
+        <div class="kv"><b>Ubicación</b><span>edc.spUpsertCClienteDaily:24-32 y 42</span></div>
         <div class="kv"><b>Evidencia</b><pre>ISNULL(MAX(dir.[DET_DIRECCION]), &#x27;&#x27;) AS calle,
 ISNULL(MAX(dir.[NUM_EXTERIOR]), &#x27;&#x27;) AS noExt,
 ISNULL(MAX(dis.[DES_DISTRITO]), &#x27;&#x27;)  AS colonia,
@@ -374,13 +374,13 @@ ISNULL(MAX(pais.[NOM_PAIS]), &#x27;&#x27;)     AS estado,
 -- ...
 LEFT JOIN [CL].[CL_DIR_CLIENTES] dir ON ... AND dir.[APDO_POSTAL] = &#x27;DF&#x27;
 GROUP BY pr.[COD_CLIENTE]</pre></div>
-        <div class="kv"><b>Impacto</b><span>Con dos o mas direcciones por cliente, cada columna toma el maximo de forma independiente: calle de un domicilio, colonia de otro y CP de un tercero, sin que nada falle. Ademas el pais se guarda en la columna ESTADO y el filtro dir.APDO_POSTAL = &#x27;DF&#x27; descarta domicilios por un valor fijo. El destino es la direccion de envio del estado de cuenta impreso.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Elegir un domicilio por regla explicita (tipo de direccion y vigencia, con ROW_NUMBER y desempate definido) y traer todas las columnas de esa fila; corregir el mapeo de estado/pais y llevar el criterio &#x27;DF&#x27; a catalogo.</span></div>
+        <div class="kv"><b>Impacto</b><span>Con dos o más direcciones por cliente, cada columna toma el máximo de forma independiente: calle de un domicilio, colonia de otro y CP de un tercero, sin que nada falle. Además el país se guarda en la columna ESTADO y el filtro dir.APDO_POSTAL = &#x27;DF&#x27; descarta domicilios por un valor fijo. El destino es la dirección de envío del estado de cuenta impreso.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Elegir un domicilio por regla explícita (tipo de dirección y vigencia, con ROW_NUMBER y desempate definido) y traer todas las columnas de esa fila; corregir el mapeo de estado/país y llevar el criterio &#x27;DF&#x27; a catálogo.</span></div>
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Seguridad" data-env="BD"
              data-lote="6"
-             data-txt="l6-011 la validacion de cuenta bancaria acepta cualquier cadena de 19 posiciones numericas y omite el digito de control dbo.fn_cuenta_no_valida (2 sps, 16 usos) if @cuenta = &#x27;por asignar&#x27; begin return 0 end
+             data-txt="l6-011 la validación de cuenta bancaria acepta cualquier cadena de 19 posiciones numéricas y omite el dígito de control dbo.fn_cuenta_no_valida (2 sps, 16 usos) if @cuenta = &#x27;por asignar&#x27; begin return 0 end
 if @cuenta = &#x27;cuenta saf&#x27;  begin return 0 end
 if @cuenta = &#x27;no aplica&#x27;    begin return 0 end
 if len(@cuenta)&gt;19 begin return 1 end
@@ -391,13 +391,13 @@ return 0">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
         <span class="id">L6-011</span>
-        <span class="ti">La validacion de cuenta bancaria acepta cualquier cadena de 19 posiciones numericas y omite el digito de control</span>
-        <span class="meta">Seguridad &middot; BD &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="ti">La validación de cuenta bancaria acepta cualquier cadena de 19 posiciones numéricas y omite el dígito de control</span>
+        <span class="meta">Seguridad &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>dbo.FN_CUENTA_NO_VALIDA (2 SPs, 16 usos)</span></div>
-        <div class="kv"><b>Ubicacion</b><span>dbo.FN_CUENTA_NO_VALIDA:18-42</span></div>
+        <div class="kv"><b>Ubicación</b><span>dbo.FN_CUENTA_NO_VALIDA:18-42</span></div>
         <div class="kv"><b>Evidencia</b><pre>if @cuenta = &#x27;Por asignar&#x27; begin return 0 end
 if @cuenta = &#x27;Cuenta SAF&#x27;  begin return 0 end
 if @cuenta = &#x27;No aplica&#x27;    begin return 0 end
@@ -406,11 +406,11 @@ if len(@cuenta)&lt;19 begin return 1 end
 set @cuenta = replace(@cuenta,&#x27;-&#x27;,&#x27;&#x27;)
 if ISNUMERIC(@cuenta) = 0 begin return 1 end
 return 0</pre></div>
-        <div class="kv"><b>Impacto</b><span>La CLABE mexicana tiene 18 digitos y digito verificador propio; aqui se exige longitud exactamente 19 (contando el guion antes de quitarlo), no se valida el digito de control y se usa ISNUMERIC, que acepta &#x27;1e5&#x27;, &#x27;+1&#x27;, &#x27;1,0&#x27; y &#x27;$1&#x27; como numericos. Tres leyendas fijas ademas devuelven &#x27;valida&#x27;. El resultado es que cuentas sintacticamente invalidas pasan el filtro y llegan al proceso de dispersion.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Reescribir con validacion de CLABE real: 18 digitos, TRY_CONVERT en lugar de ISNUMERIC y verificacion del digito de control por ponderacion; las leyendas de excepcion deben ser estados del registro, no valores del campo cuenta.</span></div>
+        <div class="kv"><b>Impacto</b><span>La CLABE mexicana tiene 18 dígitos y dígito verificador propio; aquí se exige longitud exactamente 19 (contando el guion antes de quitarlo), no se valida el dígito de control y se usa ISNUMERIC, que acepta &#x27;1e5&#x27;, &#x27;+1&#x27;, &#x27;1,0&#x27; y &#x27;$1&#x27; como numéricos. Tres leyendas fijas además devuelven &#x27;valida&#x27;. El resultado es que cuentas sintácticamente invalidas pasan el filtro y llegan al proceso de dispersión.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Reescribir con validación de CLABE real: 18 dígitos, TRY_CONVERT en lugar de ISNUMERIC y verificación del dígito de control por ponderación; las leyendas de excepción deben ser estados del registro, no valores del campo cuenta.</span></div>
       </div>
     </article>
-    <article class="f" data-sev="Alto" data-cat="Correccion funcional" data-env="BD"
+    <article class="f" data-sev="Alto" data-cat="Corrección funcional" data-env="BD"
              data-lote="6"
              data-txt="l6-012 la alerta de tasas se marca como enviada antes de enviarse, y sobre una ventana distinta a la que se notifica saf.sp_tasas_alertas_envio set @fecha_hoy = getdate()
 
@@ -426,12 +426,12 @@ declare db_cursor_tasas_alertas_correo cursor for
         <span class="sev a">Alto</span>
         <span class="id">L6-012</span>
         <span class="ti">La alerta de tasas se marca como enviada antes de enviarse, y sobre una ventana distinta a la que se notifica</span>
-        <span class="meta">Correccion funcional &middot; BD &middot; esfuerzo M (1-3 dias)</span>
+        <span class="meta">Corrección funcional &middot; BD &middot; esfuerzo M (1-3 días)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>SAF.SP_TASAS_ALERTAS_ENVIO</span></div>
-        <div class="kv"><b>Ubicacion</b><span>SAF.SP_TASAS_ALERTAS_ENVIO:36-49</span></div>
+        <div class="kv"><b>Ubicación</b><span>SAF.SP_TASAS_ALERTAS_ENVIO:36-49</span></div>
         <div class="kv"><b>Evidencia</b><pre>set @FECHA_HOY = getdate()
 
 UPDATE SAF.TASAS_ALERTAS
@@ -442,8 +442,8 @@ exec CursorCloseDeallocate &#x27;db_cursor_tasas_alertas_correo&#x27;
 DECLARE db_cursor_tasas_alertas_correo CURSOR FOR
   SELECT ID, A.NUM_CREDITO, ... FROM SAF.TASAS_ALERTAS A
   WHERE ACTIVO = 1 AND dateadd(day, -5, FECHA) &lt;= @FECHA_HOY AND @FECHA_HOY &lt; FECHA</pre></div>
-        <div class="kv"><b>Impacto</b><span>El UPDATE cambia a estado &#x27;E&#x27; (enviada) las alertas ya vencidas antes de construir el correo, y el cursor recorre una ventana diferente (las que faltan 5 dias). No hay transaccion ni confirmacion de envio: si el correo falla, la alerta ya quedo marcada y nadie la reintenta; y las alertas que si se notifican no cambian de estado, por lo que pueden notificarse cada dia durante cinco dias. Ademas la fecha de referencia es getdate() y no la fecha de negocio que si usa el modulo de pagos (cf_calendarios), asi que el corte puede no coincidir con el dia contable.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Separar estados (P pendiente, N notificada, E ejecutada) y actualizar cada uno con la operacion que le corresponde, dentro de transaccion y solo tras confirmacion del envio; usar la fecha de negocio del calendario. Registrar el envio en bitacora con destinatarios.</span></div>
+        <div class="kv"><b>Impacto</b><span>El UPDATE cambia a estado &#x27;E&#x27; (enviada) las alertas ya vencidas antes de construir el correo, y el cursor recorre una ventana diferente (las que faltan 5 días). No hay transacción ni confirmación de envío: si el correo falla, la alerta ya quedo marcada y nadie la reintenta; y las alertas que si se notifican no cambian de estado, por lo que pueden notificarse cada día durante cinco días. Además la fecha de referencia es getdate() y no la fecha de negocio que si usa el modulo de pagos (cf_calendarios), así que el corte puede no coincidir con el día contable.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Separar estados (P pendiente, N notificada, E ejecutada) y actualizar cada uno con la operación que le corresponde, dentro de transacción y solo tras confirmación del envío; usar la fecha de negocio del calendario. Registrar el envío en bitácora con destinatarios.</span></div>
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Rendimiento" data-env="BD"
@@ -458,25 +458,25 @@ select isnull((select top 1 id_cuenta from quiero_confianza.ba.ba_cta_corriente
         <span class="sev a">Alto</span>
         <span class="id">L6-013</span>
         <span class="ti">El nocturno de pagos no identificados une cuentas con LIKE, con riesgo de duplicar importes</span>
-        <span class="meta">Rendimiento &middot; BD &middot; esfuerzo M (1-3 dias)</span>
+        <span class="meta">Rendimiento &middot; BD &middot; esfuerzo M (1-3 días)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>PAG.NO_IDENTIFICADOS_ENVIO, PAG.SP_OBTENER_ID_CUENTA</span></div>
-        <div class="kv"><b>Ubicacion</b><span>PAG.NO_IDENTIFICADOS_ENVIO:28; PAG.SP_OBTENER_ID_CUENTA:11-16</span></div>
+        <div class="kv"><b>Ubicación</b><span>PAG.NO_IDENTIFICADOS_ENVIO:28; PAG.SP_OBTENER_ID_CUENTA:11-16</span></div>
         <div class="kv"><b>Evidencia</b><pre>INNER JOIN Quiero_Confianza.BA.BA_CTA_CORRIENTE CB
         ON CB.num_cuenta LIKE B.cuenta + &#x27;%&#x27;
 -- y en SP_OBTENER_ID_CUENTA:
 DECLARE @CriterioBusqueda VARCHAR(105) = @NumCuentaArchivo + &#x27;%&#x27;;
 SELECT ISNULL((SELECT TOP 1 id_cuenta FROM Quiero_Confianza.BA.BA_CTA_CORRIENTE
                WHERE num_cuenta LIKE @CriterioBusqueda), 0) AS IdCuenta;</pre></div>
-        <div class="kv"><b>Impacto</b><span>Unir por prefijo no es una relacion uno a uno: si dos cuentas comparten prefijo, el pago aparece dos veces en el archivo nocturno (importe duplicado) y el SP de resolucion devuelve una cuenta arbitraria, porque el TOP 1 no tiene ORDER BY. Con parametro vacio o con &#x27;%&#x27; el LIKE hace match con cualquier cuenta. El join no es sargable, asi que recorre el catalogo de cuentas completo.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Normalizar el numero de cuenta al cargar el archivo y unir por igualdad contra una columna indexada; si el layout obliga a comparar por prefijo, validar unicidad y rechazar el caso ambiguo en vez de resolverlo con TOP 1. Devolver error explicito cuando no hay cuenta, en lugar de 0.</span></div>
+        <div class="kv"><b>Impacto</b><span>Unir por prefijo no es una relación uno a uno: si dos cuentas comparten prefijo, el pago aparece dos veces en el archivo nocturno (importe duplicado) y el SP de resolución devuelve una cuenta arbitraria, porque el TOP 1 no tiene ORDER BY. Con parámetro vacío o con &#x27;%&#x27; el LIKE hace match con cualquier cuenta. El join no es sargable, así que recorre el catálogo de cuentas completo.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Normalizar el número de cuenta al cargar el archivo y unir por igualdad contra una columna indexada; si el layout obliga a comparar por prefijo, validar unicidad y rechazar el caso ambiguo en vez de resolverlo con TOP 1. Devolver error explícito cuando no hay cuenta, en lugar de 0.</span></div>
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Integridad de datos" data-env="BD"
              data-lote="6"
-             data-txt="l6-014 los tres procesos de estado de cuenta no son idempotentes y su bitacora esta comentada edc.sp_inseredcmovimientos, edc.sp_inseredcvencidos, edc.sp_inseredccuotaspospuestas, edc.sp_inseredccredito insert into [kardia].[edc].[edc_movimientos] (...)
+             data-txt="l6-014 los tres procesos de estado de cuenta no son idempotentes y su bitácora está comentada edc.sp_inseredcmovimientos, edc.sp_inseredcvencidos, edc.sp_inseredccuotaspospuestas, edc.sp_inseredccredito insert into [kardia].[edc].[edc_movimientos] (...)
 select ... -- sin verificar si el corte ya fue generado
 
 /*
@@ -487,13 +487,13 @@ select ... -- sin verificar si el corte ya fue generado
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
         <span class="id">L6-014</span>
-        <span class="ti">Los tres procesos de estado de cuenta no son idempotentes y su bitacora esta comentada</span>
-        <span class="meta">Integridad de datos &middot; BD &middot; esfuerzo M (1-3 dias)</span>
+        <span class="ti">Los tres procesos de estado de cuenta no son idempotentes y su bitácora está comentada</span>
+        <span class="meta">Integridad de datos &middot; BD &middot; esfuerzo M (1-3 días)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>edc.sp_inserEdcMovimientos, edc.sp_inserEdcVencidos, edc.sp_inserEdcCuotasPospuestas, edc.sp_inserEdcCredito</span></div>
-        <div class="kv"><b>Ubicacion</b><span>edc.sp_inserEdcMovimientos:52 y 128-138; edc.sp_inserEdcVencidos:80 y 88-96</span></div>
+        <div class="kv"><b>Ubicación</b><span>edc.sp_inserEdcMovimientos:52 y 128-138; edc.sp_inserEdcVencidos:80 y 88-96</span></div>
         <div class="kv"><b>Evidencia</b><pre>INSERT INTO [KARDIA].[edc].[EDC_MOVIMIENTOS] (...)
 SELECT ... -- sin verificar si el corte ya fue generado
 
@@ -502,13 +502,13 @@ SELECT ... -- sin verificar si el corte ya fue generado
     INSERT INTO [KARDIA].[log].[EDC_BITACORA] (FECHA_CORTE, PROCESO, MOVIMIENTOS, CREATED)
     VALUES (@FECHA, &#x27;sp_inserEdcMovimientos - EDC_MOVIMIENTOS&#x27;, (SELECT COUNT(*) ...), GETDATE());
 */</pre></div>
-        <div class="kv"><b>Impacto</b><span>Ninguno de los SPs valida si el corte ya se genero ni borra lo previo, y ninguno abre transaccion: reejecutar un corte duplica movimientos y vencidos del estado de cuenta, y una falla a medias deja el documento parcial. El unico control que existia (bitacora con conteos por proceso) esta comentado en los cuatro, de modo que no hay forma de saber cuantos registros genero cada corrida. Tambien se usa nombre de tres partes [KARDIA] fijo, con el mismo problema de ambiente de L6-004.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Definir la unidad de trabajo por corte: borrar/rechazar la generacion existente, envolver en transaccion con XACT_ABORT y reactivar la bitacora como parte del mismo commit. Marcar cada corte con un identificador de ejecucion para poder reprocesar sin duplicar.</span></div>
+        <div class="kv"><b>Impacto</b><span>Ninguno de los SPs valida si el corte ya se genero ni borra lo previo, y ninguno abre transacción: reejecutar un corte duplica movimientos y vencidos del estado de cuenta, y una falla a medias deja el documento parcial. El único control que existía (bitácora con conteos por proceso) está comentado en los cuatro, de modo que no hay forma de saber cuantos registros genero cada corrida. También se usa nombre de tres partes [KARDIA] fijo, con el mismo problema de ambiente de L6-004.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Definir la unidad de trabajo por corte: borrar/rechazar la generación existente, envolver en transacción con XACT_ABORT y reactivar la bitácora como parte del mismo commit. Marcar cada corte con un identificador de ejecución para poder reprocesar sin duplicar.</span></div>
       </div>
     </article>
     <article class="f" data-sev="Alto" data-cat="Integridad contable" data-env="BD BD_prod"
              data-lote="6"
-             data-txt="l6-015 la clasificacion de cartera por tipo de credito esta replicada con 37 listas distintas en 104 archivos dbo.fn_cartera_credito, dbo.fn_tipo_credito, dbo.reporte_no_identificados, edc.*, po.* -- fn_cartera_credito (individual)
+             data-txt="l6-015 la clasificación de cartera por tipo de crédito está replicada con 37 listas distintas en 104 archivos dbo.fn_cartera_credito, dbo.fn_tipo_credito, dbo.reporte_no_identificados, edc.*, po.* -- fn_cartera_credito (individual)
 where num_desc_tipo_credito in (1, 3, 4, 9, 10, 11, 16, 17,    26,   4,20,23)
 -- reporte_no_identificados
 case when c.num_desc_tipo_credito in (1,3,4,9,10,11,16,17) then &#x27;individual&#x27;
@@ -518,13 +518,13 @@ case when c.num_desc_tipo_credito in (1,3,4,9,10,11,16,17) then &#x27;individual
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev a">Alto</span>
         <span class="id">L6-015</span>
-        <span class="ti">La clasificacion de cartera por tipo de credito esta replicada con 37 listas distintas en 104 archivos</span>
-        <span class="meta">Integridad contable &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 dias)</span>
+        <span class="ti">La clasificación de cartera por tipo de crédito está replicada con 37 listas distintas en 104 archivos</span>
+        <span class="meta">Integridad contable &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 días)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>dbo.FN_CARTERA_CREDITO, dbo.FN_TIPO_CREDITO, dbo.REPORTE_NO_IDENTIFICADOS, edc.*, PO.*</span></div>
-        <div class="kv"><b>Ubicacion</b><span>dbo.FN_CARTERA_CREDITO:17 y 27; dbo.FN_TIPO_CREDITO:17-25; dbo.REPORTE_NO_IDENTIFICADOS:16-20</span></div>
+        <div class="kv"><b>Ubicación</b><span>dbo.FN_CARTERA_CREDITO:17 y 27; dbo.FN_TIPO_CREDITO:17-25; dbo.REPORTE_NO_IDENTIFICADOS:16-20</span></div>
         <div class="kv"><b>Evidencia</b><pre>-- FN_CARTERA_CREDITO (individual)
 WHERE NUM_DESC_TIPO_CREDITO IN (1, 3, 4, 9, 10, 11, 16, 17,    26,   4,20,23)
 -- REPORTE_NO_IDENTIFICADOS
@@ -532,13 +532,13 @@ case when C.NUM_DESC_TIPO_CREDITO IN (1,3,4,9,10,11,16,17) then &#x27;INDIVIDUAL
      when C.NUM_DESC_TIPO_CREDITO IN (2,7,12,13,14,15,18,19) then &#x27;COMERCIAL&#x27;
      when C.NUM_DESC_TIPO_CREDITO IN (26) then &#x27;CASTIGO&#x27;
      when C.NUM_DESC_TIPO_CREDITO IN (20,23) then &#x27;ADMINISTRADA&#x27; else &#x27;&#x27; end</pre></div>
-        <div class="kv"><b>Impacto</b><span>El barrido automatico encuentra 37 listas literales distintas de tipo de credito en 230 apariciones sobre 104 archivos. El mismo concepto no coincide entre objetos: los tipos 20 y 23 son INDIVIDUAL en FN_CARTERA_CREDITO y ADMINISTRADA en REPORTE_NO_IDENTIFICADOS; el 26 es INDIVIDUAL en una y CASTIGO en la otra; en la lista individual el 4 aparece dos veces y hay tipos que no estan en ninguna lista y se pierden. FN_CARTERA_CREDITO ademas devuelve &#x27;COMERCIAL&#x27; cuando el cliente no tiene credito alguno, es decir clasifica por defecto. Cualquier reporte que cruce dos de estas fuentes no cuadra, y un tipo de credito nuevo se clasifica distinto segun el objeto.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Catalogo unico (PO.CAT_TIPO_CREDITO con columnas de segmento, cartera y vigencia) y sustitucion progresiva de las 230 listas por join al catalogo; prohibir la lista literal por compuerta de revision. Definir el comportamiento ante tipo desconocido: error explicito, nunca valor por defecto.</span></div>
+        <div class="kv"><b>Impacto</b><span>El barrido automático encuentra 37 listas literales distintas de tipo de crédito en 230 apariciones sobre 104 archivos. El mismo concepto no coincide entre objetos: los tipos 20 y 23 son INDIVIDUAL en FN_CARTERA_CREDITO y ADMINISTRADA en REPORTE_NO_IDENTIFICADOS; el 26 es INDIVIDUAL en una y CASTIGO en la otra; en la lista individual el 4 aparece dos veces y hay tipos que no están en ninguna lista y se pierden. FN_CARTERA_CREDITO además devuelve &#x27;COMERCIAL&#x27; cuando el cliente no tiene crédito alguno, es decir clasifica por defecto. Cualquier reporte que cruce dos de estas fuentes no cuadra, y un tipo de crédito nuevo se clasifica distinto según el objeto.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Catálogo único (PO.CAT_TIPO_CREDITO con columnas de segmento, cartera y vigencia) y sustitución progresiva de las 230 listas por join al catálogo; prohibir la lista literal por compuerta de revisión. Definir el comportamiento ante tipo desconocido: error explícito, nunca valor por defecto.</span></div>
       </div>
     </article>
     <article class="f" data-sev="Medio" data-cat="Seguridad" data-env="BD"
              data-lote="6"
-             data-txt="l6-016 la carga de alertas de tasas parsea el archivo completo en un ciclo, sin control de errores y descartando lineas en silencio saf.sp_tasas_alertas_importa @archivo varchar(max)
+             data-txt="l6-016 la carga de alertas de tasas parsea el archivo completo en un ciclo, sin control de errores y descartando líneas en silencio saf.sp_tasas_alertas_importa @archivo varchar(max)
 -- ...
 while @ini &lt; @fin begin
   set @renglon = replace(replace(substring(@archivo,@ini,@fin-@ini),char(10),&#x27;&#x27;),char(13),&#x27;&#x27;)
@@ -555,13 +555,13 @@ end">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
         <span class="id">L6-016</span>
-        <span class="ti">La carga de alertas de tasas parsea el archivo completo en un ciclo, sin control de errores y descartando lineas en silencio</span>
-        <span class="meta">Seguridad &middot; BD &middot; esfuerzo M (1-3 dias)</span>
+        <span class="ti">La carga de alertas de tasas parsea el archivo completo en un ciclo, sin control de errores y descartando líneas en silencio</span>
+        <span class="meta">Seguridad &middot; BD &middot; esfuerzo M (1-3 días)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>SAF.SP_TASAS_ALERTAS_IMPORTA</span></div>
-        <div class="kv"><b>Ubicacion</b><span>SAF.SP_TASAS_ALERTAS_IMPORTA:11-84</span></div>
+        <div class="kv"><b>Ubicación</b><span>SAF.SP_TASAS_ALERTAS_IMPORTA:11-84</span></div>
         <div class="kv"><b>Evidencia</b><pre>@archivo varchar(max)
 -- ...
 while @ini &lt; @fin begin
@@ -576,61 +576,61 @@ while @ini &lt; @fin begin
     end
   end
 end</pre></div>
-        <div class="kv"><b>Impacto</b><span>El portal envia el archivo completo como varchar(max) y el SP lo recorre caracter por caracter. Las lineas que no tienen los cuatro separadores se descartan sin mensaje (if @ind4 &gt; 0 sin rama else), asi que una alerta de tasa puede no cargarse y el usuario ve &#x27;proceso terminado correctamente&#x27;. Las conversiones son implicitas y sin TRY_CONVERT: un dato mal formado aborta el lote con un error crudo de SQL Server hacia el portal. Al ser varchar y no nvarchar se pierden acentos. Tampoco hay transaccion, ni identificador de carga, ni registro de quien cargo que archivo (solo @REGISTRADO_POR como texto libre).</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Recibir el contenido como tabla (parametro con tipo tabla o STRING_SPLIT con ordinal), validar con TRY_CONVERT y reportar cada linea rechazada con su numero; envolver en transaccion y registrar la carga con id, usuario, nombre de archivo y hash. Cambiar a nvarchar.</span></div>
+        <div class="kv"><b>Impacto</b><span>El portal envía el archivo completo como varchar(max) y el SP lo recorre carácter por carácter. Las líneas que no tienen los cuatro separadores se descartan sin mensaje (if @ind4 &gt; 0 sin rama else), así que una alerta de tasa puede no cargarse y el usuario ve &#x27;proceso terminado correctamente&#x27;. Las conversiones son implícitas y sin TRY_CONVERT: un dato mal formado aborta el lote con un error crudo de SQL Server hacia el portal. Al ser varchar y no nvarchar se pierden acentos. Tampoco hay transacción, ni identificador de carga, ni registro de quien cargo que archivo (solo @REGISTRADO_POR como texto libre).</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Recibir el contenido como tabla (parámetro con tipo tabla o STRING_SPLIT con ordinal), validar con TRY_CONVERT y reportar cada línea rechazada con su número; envolver en transacción y registrar la carga con id, usuario, nombre de archivo y hash. Cambiar a nvarchar.</span></div>
       </div>
     </article>
     <article class="f" data-sev="Medio" data-cat="Seguridad" data-env="BD BD_prod"
              data-lote="6"
-             data-txt="l6-017 251 tablas con datos personales y bancarios sin enmascaramiento ni cifrado, y solo 30 con rastro de auditoria esquemas juicios (43 tablas), cierre_puente (42), ori (35), edc (30), edcc (16), po (53), demandas (5+5) -- 52 de 251 tablas incluyen columnas de dato personal o bancario
+             data-txt="l6-017 251 tablas con datos personales y bancarios sin enmascaramiento ni cifrado, y solo 30 con rastro de auditoría esquemas juicios (43 tablas), cierre_puente (42), ori (35), edc (30), edcc (16), po (53), demandas (5+5) -- 52 de 251 tablas incluyen columnas de dato personal o bancario
 -- (rfc, curp, nom_cliente, razon_social, des_correo, telefono, num_cuenta, clabe, direccion, cp)
 -- 0 tablas con encrypted with / masked with
 -- 30 de 251 con columnas de auditoria (created / registrado_por / usuario / fec_alta)">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
         <span class="id">L6-017</span>
-        <span class="ti">251 tablas con datos personales y bancarios sin enmascaramiento ni cifrado, y solo 30 con rastro de auditoria</span>
-        <span class="meta">Seguridad &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 dias)</span>
+        <span class="ti">251 tablas con datos personales y bancarios sin enmascaramiento ni cifrado, y solo 30 con rastro de auditoría</span>
+        <span class="meta">Seguridad &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 días)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>Esquemas juicios (43 tablas), cierre_puente (42), ori (35), edc (30), edcc (16), PO (53), demandas (5+5)</span></div>
-        <div class="kv"><b>Ubicacion</b><span>Barrido sobre BD/*.Table.sql (251 archivos)</span></div>
+        <div class="kv"><b>Ubicación</b><span>Barrido sobre BD/*.Table.sql (251 archivos)</span></div>
         <div class="kv"><b>Evidencia</b><pre>-- 52 de 251 tablas incluyen columnas de dato personal o bancario
 -- (RFC, CURP, NOM_CLIENTE, RAZON_SOCIAL, DES_CORREO, TELEFONO, NUM_CUENTA, CLABE, DIRECCION, CP)
 -- 0 tablas con ENCRYPTED WITH / MASKED WITH
 -- 30 de 251 con columnas de auditoria (CREATED / REGISTRADO_POR / USUARIO / FEC_ALTA)</pre></div>
-        <div class="kv"><b>Impacto</b><span>El modelo guarda RFC, CURP, nombre, correo, domicilio y numero de cuenta en claro y sin mascara, incluidos los esquemas de juicios y demandas, que son los de mayor sensibilidad. Solo 12% de las tablas registran quien y cuando escribio. Para un ambiente bancario esto complica sostener trazabilidad de acceso a datos personales y reconstruir quien modifico un registro.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Definir la clasificacion de datos por tabla y aplicar Dynamic Data Masking en los campos de consulta y Always Encrypted donde el dato no se usa en predicados; estandarizar columnas de auditoria (usuario, fecha, origen) en toda tabla transaccional y habilitar auditoria de servidor sobre los esquemas sensibles. La revision de permisos efectivos requiere la instancia: el repositorio no incluye GRANT ni roles.</span></div>
+        <div class="kv"><b>Impacto</b><span>El modelo guarda RFC, CURP, nombre, correo, domicilio y número de cuenta en claro y sin mascara, incluidos los esquemas de juicios y demandas, que son los de mayor sensibilidad. Solo 12% de las tablas registran quien y cuando escribió. Para un ambiente bancario esto complica sostener trazabilidad de acceso a datos personales y reconstruir quien modifico un registro.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Definir la clasificación de datos por tabla y aplicar Dynamic Data Masking en los campos de consulta y Always Encrypted donde el dato no se usa en predicados; estandarizar columnas de auditoría (usuario, fecha, origen) en toda tabla transaccional y habilitar auditoría de servidor sobre los esquemas sensibles. La revisión de permisos efectivos requiere la instancia: el repositorio no incluye GRANT ni roles.</span></div>
       </div>
     </article>
-    <article class="f" data-sev="Medio" data-cat="Estandares SQL" data-env="BD BD_prod"
+    <article class="f" data-sev="Medio" data-cat="Estándares SQL" data-env="BD BD_prod"
              data-lote="6"
-             data-txt="l6-018 el export de base de datos no contiene ningun indice no agrupado, y 24 tablas no declaran llave primaria 251 tablas de bd -- 0 ocurrencias de create [unique|nonclustered] index en los 251 scripts de tabla
+             data-txt="l6-018 el export de base de datos no contiene ningún índice no agrupado, y 24 tablas no declaran llave primaria 251 tablas de bd -- 0 ocurrencias de create [unique|nonclustered] index en los 251 scripts de tabla
 -- 227 con primary key, 24 sin pk, entre ellas:
 --   po.saf_mov_traspaso, po.saf_his_saldos_adm, po.saf_sin_identificar, po.poliza_campos, po.conceptos_temp
 -- 129 con foreign key/references, 129 con check, 167 con default">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
         <span class="id">L6-018</span>
-        <span class="ti">El export de base de datos no contiene ningun indice no agrupado, y 24 tablas no declaran llave primaria</span>
-        <span class="meta">Estandares SQL &middot; BD+BD_prod &middot; esfuerzo M (1-3 dias)</span>
+        <span class="ti">El export de base de datos no contiene ningún índice no agrupado, y 24 tablas no declaran llave primaria</span>
+        <span class="meta">Estándares SQL &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>251 tablas de BD</span></div>
-        <div class="kv"><b>Ubicacion</b><span>BD/*.Table.sql</span></div>
+        <div class="kv"><b>Ubicación</b><span>BD/*.Table.sql</span></div>
         <div class="kv"><b>Evidencia</b><pre>-- 0 ocurrencias de CREATE [UNIQUE|NONCLUSTERED] INDEX en los 251 scripts de tabla
 -- 227 con PRIMARY KEY, 24 sin PK, entre ellas:
 --   PO.SAF_MOV_TRASPASO, PO.SAF_HIS_SALDOS_ADM, PO.SAF_SIN_IDENTIFICAR, PO.POLIZA_CAMPOS, PO.CONCEPTOS_TEMP
 -- 129 con FOREIGN KEY/REFERENCES, 129 con CHECK, 167 con DEFAULT</pre></div>
-        <div class="kv"><b>Impacto</b><span>Caben dos lecturas y ambas son hallazgo: si el export esta completo, todas las consultas del sistema (que ademas abusan de NOLOCK y de UDF escalares) trabajan solo con el indice de la llave primaria, lo que explicaria los tiempos de cierre; si el export esta incompleto, el artefacto de despliegue no describe la base y no es posible recrear el ambiente ni revisar la estrategia de indices en revision de codigo. Las tablas sin PK, varias de ellas de movimientos, no tienen forma de identificar la fila y admiten duplicados.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Confirmar contra la instancia si existen indices no scriptados y, en cualquier caso, incorporar los indices al repositorio para que el esquema completo este versionado. Asignar llave a las tablas de movimiento y revisar el plan de indices de los procesos de cierre con datos reales de espera.</span></div>
+        <div class="kv"><b>Impacto</b><span>Caben dos lecturas y ambas son hallazgo: si el export está completo, todas las consultas del sistema (que además abusan de NOLOCK y de UDF escalares) trabajan solo con el índice de la llave primaria, lo que explicaría los tiempos de cierre; si el export está incompleto, el artefacto de despliegue no describe la base y no es posible recrear el ambiente ni revisar la estrategia de índices en revisión de código. Las tablas sin PK, varias de ellas de movimientos, no tienen forma de identificar la fila y admiten duplicados.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Confirmar contra la instancia si existen índices no scriptados y, en cualquier caso, incorporar los índices al repositorio para que el esquema completo este versionado. Asignar llave a las tablas de movimiento y revisar el plan de índices de los procesos de cierre con datos reales de espera.</span></div>
       </div>
     </article>
-    <article class="f" data-sev="Medio" data-cat="Correccion funcional" data-env="BD"
+    <article class="f" data-sev="Medio" data-cat="Corrección funcional" data-env="BD"
              data-lote="6"
-             data-txt="l6-019 el corte de estado de cuenta depende de datefirst de la sesion y usa between sobre fechas con hora edc.sp_inseredccredito, edc.sp_inseredcmovimientos, edc.sp_inseredcvencidos /* ajusta si el dia de corte cae fin de semana (datefirst 7) */
+             data-txt="l6-019 el corte de estado de cuenta depende de datefirst de la sesión y usa between sobre fechas con hora edc.sp_inseredccredito, edc.sp_inseredcmovimientos, edc.sp_inseredcvencidos /* ajusta si el dia de corte cae fin de semana (datefirst 7) */
 if datepart(dw,@fecha_corte_actual) = 7 set @fecha_corte_actual = dateadd(day,2,@fecha_corte_actual);
 if datepart(dw,@fecha_corte_actual) = 1 set @fecha_corte_actual = dateadd(day,1,@fecha_corte_actual);
 -- ...
@@ -638,25 +638,25 @@ and b.fec_aplicacion between @fecha_corte_anterior and @fecha_corte_actual">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
         <span class="id">L6-019</span>
-        <span class="ti">El corte de estado de cuenta depende de DATEFIRST de la sesion y usa BETWEEN sobre fechas con hora</span>
-        <span class="meta">Correccion funcional &middot; BD &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="ti">El corte de estado de cuenta depende de DATEFIRST de la sesión y usa BETWEEN sobre fechas con hora</span>
+        <span class="meta">Corrección funcional &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>edc.sp_inserEdcCredito, edc.sp_inserEdcMovimientos, edc.sp_inserEdcVencidos</span></div>
-        <div class="kv"><b>Ubicacion</b><span>edc.sp_inserEdcMovimientos:35-36 y 122; edc.sp_inserEdcVencidos:22-23</span></div>
+        <div class="kv"><b>Ubicación</b><span>edc.sp_inserEdcMovimientos:35-36 y 122; edc.sp_inserEdcVencidos:22-23</span></div>
         <div class="kv"><b>Evidencia</b><pre>/* Ajusta si el dia de corte cae fin de semana (DATEFIRST 7) */
 IF DATEPART(dw,@FECHA_CORTE_ACTUAL) = 7 SET @FECHA_CORTE_ACTUAL = DATEADD(DAY,2,@FECHA_CORTE_ACTUAL);
 IF DATEPART(dw,@FECHA_CORTE_ACTUAL) = 1 SET @FECHA_CORTE_ACTUAL = DATEADD(DAY,1,@FECHA_CORTE_ACTUAL);
 -- ...
 AND B.FEC_APLICACION BETWEEN @FECHA_CORTE_ANTERIOR AND @FECHA_CORTE_ACTUAL</pre></div>
-        <div class="kv"><b>Impacto</b><span>DATEPART(dw) depende de SET DATEFIRST de la sesion, que a su vez depende del idioma del login: el mismo SP puede desplazar el corte dos dias o ninguno segun quien lo ejecute o desde que aplicacion. El propio comentario asume DATEFIRST 7 sin fijarlo. Ademas el filtro usa BETWEEN contra una columna con hora: los movimientos del ultimo dia posteriores a las 00:00 quedan fuera, mientras que el SP de vencidos si usa fin abierto (FEC_COBRO &lt; FEC_FIN), de modo que dos secciones del mismo estado de cuenta cubren periodos distintos.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Fijar SET DATEFIRST 7 (o mejor, resolver el dia habil con el calendario de cf_calendarios, como hace PAG) y usar siempre rango semiabierto [inicio, fin) en todos los filtros de fecha del modulo.</span></div>
+        <div class="kv"><b>Impacto</b><span>DATEPART(dw) depende de SET DATEFIRST de la sesión, que a su vez depende del idioma del login: el mismo SP puede desplazar el corte dos días o ninguno según quien lo ejecute o desde que aplicación. El propio comentario asume DATEFIRST 7 sin fijarlo. Además el filtro usa BETWEEN contra una columna con hora: los movimientos del ultimo día posteriores a las 00:00 quedan fuera, mientras que el SP de vencidos si usa fin abierto (FEC_COBRO &lt; FEC_FIN), de modo que dos secciones del mismo estado de cuenta cubren periodos distintos.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Fijar SET DATEFIRST 7 (o mejor, resolver el día hábil con el calendario de cf_calendarios, como hace PAG) y usar siempre rango semiabierto [inicio, fin) en todos los filtros de fecha del modulo.</span></div>
       </div>
     </article>
     <article class="f" data-sev="Medio" data-cat="Mantenibilidad" data-env="BD"
              data-lote="6"
-             data-txt="l6-020 la validacion de una alerta de tasa esta implementada dos veces con reglas distintas saf.sp_tasas_alertas_valida vs saf.sp_tasas_alertas_importa -- valida (alta unitaria desde el portal), contempla edicion:
+             data-txt="l6-020 la validación de una alerta de tasa está implementada dos veces con reglas distintas saf.sp_tasas_alertas_valida vs saf.sp_tasas_alertas_importa -- valida (alta unitaria desde el portal), contempla edicion:
 if @id is null begin
   if exists (select ... from saf.tasas_alertas where num_credito=@num_credito and num_cuota=@num_cuota) ...
 end else begin
@@ -666,13 +666,13 @@ end
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
         <span class="id">L6-020</span>
-        <span class="ti">La validacion de una alerta de tasa esta implementada dos veces con reglas distintas</span>
-        <span class="meta">Mantenibilidad &middot; BD &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="ti">La validación de una alerta de tasa está implementada dos veces con reglas distintas</span>
+        <span class="meta">Mantenibilidad &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>SAF.SP_TASAS_ALERTAS_VALIDA vs SAF.SP_TASAS_ALERTAS_IMPORTA</span></div>
-        <div class="kv"><b>Ubicacion</b><span>SAF.SP_TASAS_ALERTAS_VALIDA:18-60; SAF.SP_TASAS_ALERTAS_IMPORTA:86-160</span></div>
+        <div class="kv"><b>Ubicación</b><span>SAF.SP_TASAS_ALERTAS_VALIDA:18-60; SAF.SP_TASAS_ALERTAS_IMPORTA:86-160</span></div>
         <div class="kv"><b>Evidencia</b><pre>-- VALIDA (alta unitaria desde el portal), contempla edicion:
 if @ID is null begin
   if exists (select ... from SAF.TASAS_ALERTAS where NUM_CREDITO=@NUM_CREDITO and NUM_CUOTA=@NUM_CUOTA) ...
@@ -680,13 +680,13 @@ end else begin
   if exists (select ... and ID != @ID) ...
 end
 -- IMPORTA (carga masiva), sin el caso de edicion y con mensajes distintos por conjuntos</pre></div>
-        <div class="kv"><b>Impacto</b><span>Las cuatro validaciones (credito existe, credito activo, cuota existe, cuota activa, alerta duplicada) estan escritas dos veces: una fila por fila para el alta manual y otra por conjuntos para la carga. Ya divergen (la carga no contempla el caso de edicion por ID) y cualquier regla nueva tiene que recordarse en ambos lados. Los mensajes se devuelven como resultado y no como error, asi que el portal depende del texto exacto.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Extraer la validacion a un solo objeto por conjuntos (funcion de tabla o SP que reciba tipo tabla) que usen tanto el alta unitaria como la carga; devolver codigo de error mas mensaje, no solo texto.</span></div>
+        <div class="kv"><b>Impacto</b><span>Las cuatro validaciones (crédito existe, crédito activo, cuota existe, cuota activa, alerta duplicada) están escritas dos veces: una fila por fila para el alta manual y otra por conjuntos para la carga. Ya divergen (la carga no contempla el caso de edición por ID) y cualquier regla nueva tiene que recordarse en ambos lados. Los mensajes se devuelven como resultado y no como error, así que el portal depende del texto exacto.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Extraer la validación a un solo objeto por conjuntos (función de tabla o SP que reciba tipo tabla) que usen tanto el alta unitaria como la carga; devolver código de error más mensaje, no solo texto.</span></div>
       </div>
     </article>
-    <article class="f" data-sev="Medio" data-cat="Parametrizacion" data-env="BD"
+    <article class="f" data-sev="Medio" data-cat="Parametrización" data-env="BD"
              data-lote="6"
-             data-txt="l6-021 los bancos del tablero de conciliacion son columnas fijas del sp pag.sp_consultar_totales_bancos_conciliacion, pag.sp_consultar_totales_bancos, pag.sp_consultar_detalle_por_banco count(distinct case when b.banco = &#x27;hsbc&#x27;      then a.id_archivo end) as total_archivos_hsbc,
+             data-txt="l6-021 los bancos del tablero de conciliación son columnas fijas del sp pag.sp_consultar_totales_bancos_conciliacion, pag.sp_consultar_totales_bancos, pag.sp_consultar_detalle_por_banco count(distinct case when b.banco = &#x27;hsbc&#x27;      then a.id_archivo end) as total_archivos_hsbc,
 count(distinct case when b.banco = &#x27;bbva&#x27;      then a.id_archivo end) as total_archivos_bbva,
 count(distinct case when b.banco = &#x27;santander&#x27; then a.id_archivo end) as total_archivos_santander,
 -- ... 9 columnas fijas para 3 bancos
@@ -694,47 +694,47 @@ declare @fechainicio datetime = cast(@fechabusqueda as datetime);  -- @fechabusq
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
         <span class="id">L6-021</span>
-        <span class="ti">Los bancos del tablero de conciliacion son columnas fijas del SP</span>
-        <span class="meta">Parametrizacion &middot; BD &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="ti">Los bancos del tablero de conciliación son columnas fijas del SP</span>
+        <span class="meta">Parametrización &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>PAG.SP_CONSULTAR_TOTALES_BANCOS_CONCILIACION, PAG.SP_CONSULTAR_TOTALES_BANCOS, PAG.SP_CONSULTAR_DETALLE_POR_BANCO</span></div>
-        <div class="kv"><b>Ubicacion</b><span>PAG.SP_CONSULTAR_TOTALES_BANCOS_CONCILIACION:18-30</span></div>
+        <div class="kv"><b>Ubicación</b><span>PAG.SP_CONSULTAR_TOTALES_BANCOS_CONCILIACION:18-30</span></div>
         <div class="kv"><b>Evidencia</b><pre>COUNT(DISTINCT CASE WHEN B.banco = &#x27;HSBC&#x27;      THEN A.id_archivo END) AS TOTAL_ARCHIVOS_HSBC,
 COUNT(DISTINCT CASE WHEN B.banco = &#x27;BBVA&#x27;      THEN A.id_archivo END) AS TOTAL_ARCHIVOS_BBVA,
 COUNT(DISTINCT CASE WHEN B.banco = &#x27;Santander&#x27; THEN A.id_archivo END) AS TOTAL_ARCHIVOS_Santander,
 -- ... 9 columnas fijas para 3 bancos
 DECLARE @FechaInicio DATETIME = CAST(@FechaBusqueda AS DATETIME);  -- @FechaBusqueda VARCHAR(8)</pre></div>
-        <div class="kv"><b>Impacto</b><span>Agregar un banco obliga a modificar el SP, el contrato de salida y la pantalla; y los movimientos de cualquier banco distinto de esos tres no aparecen en la conciliacion, sin advertencia. El nombre del banco se compara como texto libre, asi que una variacion de escritura (&#x27;SANTANDER&#x27;) deja el movimiento fuera. Ademas la fecha llega como VARCHAR(8) y se convierte con CAST sin validar.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Devolver el resultado por filas agrupando por id de banco de catalogo (PAG.CAT_BANCO) y que el portal pivotee; sustituir el texto por clave, y recibir la fecha como DATE.</span></div>
+        <div class="kv"><b>Impacto</b><span>Agregar un banco obliga a modificar el SP, el contrato de salida y la pantalla; y los movimientos de cualquier banco distinto de esos tres no aparecen en la conciliación, sin advertencia. El nombre del banco se compara como texto libre, así que una variación de escritura (&#x27;SANTANDER&#x27;) deja el movimiento fuera. Además la fecha llega como VARCHAR(8) y se convierte con CAST sin validar.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Devolver el resultado por filas agrupando por id de banco de catálogo (PAG.CAT_BANCO) y que el portal pivotee; sustituir el texto por clave, y recibir la fecha como DATE.</span></div>
       </div>
     </article>
-    <article class="f" data-sev="Medio" data-cat="Correccion funcional" data-env="BD"
+    <article class="f" data-sev="Medio" data-cat="Corrección funcional" data-env="BD"
              data-lote="6"
-             data-txt="l6-022 el estado de cuenta reporta como numero de recibos vencidos el maximo numero de secuencia edc.sp_inseredcvencidos &#x27;ultimos 3 recibos vencidos&#x27; as leyenda_12,
+             data-txt="l6-022 el estado de cuenta reporta como número de recibos vencidos el máximo número de secuencia edc.sp_inseredcvencidos &#x27;ultimos 3 recibos vencidos&#x27; as leyenda_12,
 isnull(max(case when c.sal_rubro&lt;&gt;0 then c.num_secuencia end),0) as numero_recibos_vencidos,
 sum(case when c.cod_rubro=&#x27;principal&#x27; then c.sal_rubro end) as principal,">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev m">Medio</span>
         <span class="id">L6-022</span>
-        <span class="ti">El estado de cuenta reporta como numero de recibos vencidos el maximo numero de secuencia</span>
-        <span class="meta">Correccion funcional &middot; BD &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="ti">El estado de cuenta reporta como número de recibos vencidos el máximo número de secuencia</span>
+        <span class="meta">Corrección funcional &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>edc.sp_inserEdcVencidos</span></div>
-        <div class="kv"><b>Ubicacion</b><span>edc.sp_inserEdcVencidos:53-54</span></div>
+        <div class="kv"><b>Ubicación</b><span>edc.sp_inserEdcVencidos:53-54</span></div>
         <div class="kv"><b>Evidencia</b><pre>&#x27;ULTIMOS 3 RECIBOS VENCIDOS&#x27; AS LEYENDA_12,
 ISNULL(MAX(CASE WHEN C.SAL_RUBRO&lt;&gt;0 THEN C.NUM_SECUENCIA END),0) AS NUMERO_RECIBOS_VENCIDOS,
 SUM(CASE WHEN C.COD_RUBRO=&#x27;PRINCIPAL&#x27; THEN C.SAL_RUBRO END) AS PRINCIPAL,</pre></div>
-        <div class="kv"><b>Impacto</b><span>NUM_SECUENCIA es el numero de la cuota dentro del credito, no una cantidad: un credito con la cuota 24 vencida informa &#x27;24 recibos vencidos&#x27;. Ademas los SUM condicionales devuelven NULL cuando el rubro no aparece en el periodo (no 0), y esos NULL se insertan tal cual en la tabla que imprime el documento.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Usar COUNT(DISTINCT NUM_SECUENCIA) para la cantidad y conservar la secuencia en otra columna si se necesita; envolver los SUM condicionales en ISNULL(...,0) o declarar las columnas NOT NULL con DEFAULT 0.</span></div>
+        <div class="kv"><b>Impacto</b><span>NUM_SECUENCIA es el número de la cuota dentro del crédito, no una cantidad: un crédito con la cuota 24 vencida informa &#x27;24 recibos vencidos&#x27;. Además los SUM condicionales devuelven NULL cuando el rubro no aparece en el periodo (no 0), y esos NULL se insertan tal cual en la tabla que imprime el documento.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Usar COUNT(DISTINCT NUM_SECUENCIA) para la cantidad y conservar la secuencia en otra columna si se necesita; envolver los SUM condicionales en ISNULL(...,0) o declarar las columnas NOT NULL con DEFAULT 0.</span></div>
       </div>
     </article>
     <article class="f" data-sev="Bajo" data-cat="Seguridad" data-env="BD BD_prod"
              data-lote="6"
-             data-txt="l6-023 el utilitario de cierre de cursores concatena el nombre recibido en sql dinamico dbo.cursorclosedeallocate (invocado por 64 sps) if cursor_status(&#x27;global&#x27;, @cursorname) &gt;= -1 begin
+             data-txt="l6-023 el utilitario de cierre de cursores concatena el nombre recibido en sql dinámico dbo.cursorclosedeallocate (invocado por 64 sps) if cursor_status(&#x27;global&#x27;, @cursorname) &gt;= -1 begin
     declare @sql nvarchar(91)
     if cursor_status(&#x27;global&#x27;, @cursorname) &gt; -1 begin
         set @sql = n&#x27;close &#x27; + @cursorname
@@ -746,13 +746,13 @@ end">
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev b">Bajo</span>
         <span class="id">L6-023</span>
-        <span class="ti">El utilitario de cierre de cursores concatena el nombre recibido en SQL dinamico</span>
-        <span class="meta">Seguridad &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="ti">El utilitario de cierre de cursores concatena el nombre recibido en SQL dinámico</span>
+        <span class="meta">Seguridad &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 día)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>dbo.CursorCloseDeallocate (invocado por 64 SPs)</span></div>
-        <div class="kv"><b>Ubicacion</b><span>dbo.CursorCloseDeallocate:9-16</span></div>
+        <div class="kv"><b>Ubicación</b><span>dbo.CursorCloseDeallocate:9-16</span></div>
         <div class="kv"><b>Evidencia</b><pre>IF CURSOR_STATUS(&#x27;global&#x27;, @cursorName) &gt;= -1 BEGIN
     DECLARE @SQL NVARCHAR(91)
     IF CURSOR_STATUS(&#x27;global&#x27;, @cursorName) &gt; -1 BEGIN
@@ -762,8 +762,8 @@ end">
     SET @SQL = N&#x27;DEALLOCATE &#x27; + @cursorName
     EXEC sp_executeSQL @SQL
 END</pre></div>
-        <div class="kv"><b>Impacto</b><span>Hoy todos los llamados pasan literales, asi que no hay explotacion practica, pero el objeto ejecuta cualquier cadena que reciba en el prefijo de un comando y esta disponible para todo el que pueda ejecutarlo. Su existencia tambien confirma el uso de cursores globales reutilizados entre procesos, que es el problema de fondo (L2-010): un cursor global colisiona si dos procesos corren a la vez.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Validar el nombre con QUOTENAME y una lista blanca, o eliminar el objeto al convertir los cursores en locales (DECLARE ... CURSOR LOCAL), que es la correccion definitiva y ya esta propuesta en L2-010.</span></div>
+        <div class="kv"><b>Impacto</b><span>Hoy todos los llamados pasan literales, así que no hay explotación práctica, pero el objeto ejecuta cualquier cadena que reciba en el prefijo de un comando y está disponible para todo el que pueda ejecutarlo. Su existencia también confirma el uso de cursores globales reutilizados entre procesos, que es el problema de fondo (L2-010): un cursor global colisiona si dos procesos corren a la vez.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Validar el nombre con QUOTENAME y una lista blanca, o eliminar el objeto al convertir los cursores en locales (DECLARE ... CURSOR LOCAL), que es la corrección definitiva y ya está propuesta en L2-010.</span></div>
       </div>
     </article>
     <article class="f" data-sev="Bajo" data-cat="Mantenibilidad" data-env="BD"
@@ -781,12 +781,12 @@ edcc.edcc_bitacora_respaldo_20260722">
         <span class="sev b">Bajo</span>
         <span class="id">L6-024</span>
         <span class="ti">12 tablas de respaldo y trabajo conviven con el modelo, tres de ellas versionadas a mano</span>
-        <span class="meta">Mantenibilidad &middot; BD &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="meta">Mantenibilidad &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>cierre_puente (8), edcc (3), PO.CONCEPTOS_TEMP</span></div>
-        <div class="kv"><b>Ubicacion</b><span>BD/*.Table.sql</span></div>
+        <div class="kv"><b>Ubicación</b><span>BD/*.Table.sql</span></div>
         <div class="kv"><b>Evidencia</b><pre>cierre_puente.BAK_CHECKITEM_NA_20260731
 cierre_puente.BAK_CHECKITEM_NA_20260731_v2
 cierre_puente.BAK_CHECKITEM_NA_20260731_v3
@@ -796,13 +796,13 @@ cierre_puente.BAK_SONORA_RENAME_20260811
 edcc.EDCC_respaldo_20260722
 edcc.EDCC_AJUSTE_respaldo_20260722
 edcc.EDCC_BITACORA_respaldo_20260722</pre></div>
-        <div class="kv"><b>Impacto</b><span>Son respaldos manuales previos a cambios, con fecha en el nombre y hasta tres versiones del mismo respaldo, versionados en el repositorio de esquema. Ocupan espacio, se incluyen en respaldos y en el modelo entregado a revision, y evidencian que los cambios de datos se hacen a mano sin script de migracion reversible.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Depurar con fecha de caducidad acordada y llevar los cambios de datos a scripts de migracion versionados con su reverso; si se requiere respaldo previo, que sea fuera de la base de produccion o en un esquema hist con retencion definida.</span></div>
+        <div class="kv"><b>Impacto</b><span>Son respaldos manuales previos a cambios, con fecha en el nombre y hasta tres versiones del mismo respaldo, versionados en el repositorio de esquema. Ocupan espacio, se incluyen en respaldos y en el modelo entregado a revisión, y evidencian que los cambios de datos se hacen a mano sin script de migración reversible.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Depurar con fecha de caducidad acordada y llevar los cambios de datos a scripts de migración versionados con su reverso; si se requiere respaldo previo, que sea fuera de la base de producción o en un esquema hist con retención definida.</span></div>
       </div>
     </article>
-    <article class="f" data-sev="Bajo" data-cat="Estandares SQL" data-env="BD"
+    <article class="f" data-sev="Bajo" data-cat="Estándares SQL" data-env="BD"
              data-lote="6"
-             data-txt="l6-025 funciones de formato con truncamiento silencioso y conversiones sin proteccion dbo.fn_forma_nombre (69 sps), dbo.fn_forma_moneda, dbo.fn_solo_numeros, dbo.fn_es_covid, dbo.fn_tipo_credito -- fn_forma_nombre: entradas de 50+50+50+50+250+250 -&gt; returns varchar(200)
+             data-txt="l6-025 funciones de formato con truncamiento silencioso y conversiones sin protección dbo.fn_forma_nombre (69 sps), dbo.fn_forma_moneda, dbo.fn_solo_numeros, dbo.fn_es_covid, dbo.fn_tipo_credito -- fn_forma_nombre: entradas de 50+50+50+50+250+250 -&gt; returns varchar(200)
 -- fn_forma_moneda: return iif(@cadena_ori is null or @cadena_ori = &#x27;&#x27;, 0, cast(@cadena_ori as numeric(18,2)))
 -- fn_solo_numeros: return cast(@numero_fin as int)   -- &#x27;&#x27; -&gt; 0 ; mas de 10 digitos -&gt; desbordamiento
 -- fn_es_covid:  returns varchar   -- sin longitud: equivale a varchar(1)
@@ -810,20 +810,20 @@ edcc.EDCC_BITACORA_respaldo_20260722</pre></div>
       <header onclick="this.parentNode.classList.toggle('open')">
         <span class="sev b">Bajo</span>
         <span class="id">L6-025</span>
-        <span class="ti">Funciones de formato con truncamiento silencioso y conversiones sin proteccion</span>
-        <span class="meta">Estandares SQL &middot; BD &middot; esfuerzo S (&lt;1 dia)</span>
+        <span class="ti">Funciones de formato con truncamiento silencioso y conversiones sin protección</span>
+        <span class="meta">Estándares SQL &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
         <span class="chev">&#9662;</span>
       </header>
       <div class="body">
         <div class="kv"><b>Objeto</b><span>dbo.FN_FORMA_NOMBRE (69 SPs), dbo.FN_FORMA_MONEDA, dbo.FN_SOLO_NUMEROS, dbo.FN_ES_COVID, dbo.FN_TIPO_CREDITO</span></div>
-        <div class="kv"><b>Ubicacion</b><span>dbo.FN_FORMA_NOMBRE:19; dbo.FN_FORMA_MONEDA:15; dbo.FN_SOLO_NUMEROS:30; dbo.FN_ES_COVID:16; dbo.FN_TIPO_CREDITO:17-25</span></div>
+        <div class="kv"><b>Ubicación</b><span>dbo.FN_FORMA_NOMBRE:19; dbo.FN_FORMA_MONEDA:15; dbo.FN_SOLO_NUMEROS:30; dbo.FN_ES_COVID:16; dbo.FN_TIPO_CREDITO:17-25</span></div>
         <div class="kv"><b>Evidencia</b><pre>-- FN_FORMA_NOMBRE: entradas de 50+50+50+50+250+250 -&gt; RETURNS VARCHAR(200)
 -- FN_FORMA_MONEDA: RETURN IIF(@CADENA_ORI IS NULL OR @CADENA_ORI = &#x27;&#x27;, 0, CAST(@CADENA_ORI AS numeric(18,2)))
 -- FN_SOLO_NUMEROS: RETURN cast(@NUMERO_FIN AS int)   -- &#x27;&#x27; -&gt; 0 ; mas de 10 digitos -&gt; desbordamiento
 -- FN_ES_COVID:  RETURNS VARCHAR   -- sin longitud: equivale a VARCHAR(1)
 -- FN_TIPO_CREDITO: &#x27;CUENTA CORRIENTE &#x27;, &#x27;PQ &#x27;, &#x27;PUENTE &#x27;  -- con espacio final, ELSE &#x27;&#x27;</pre></div>
-        <div class="kv"><b>Impacto</b><span>Una razon social de 250 caracteres se corta a 200 sin aviso en la funcion que da nombre al cliente en 69 SPs; FN_FORMA_MONEDA usa CAST y no TRY_CAST, asi que un texto mal formado (viene de un campo de observaciones libre via FN_FIRMA_MONTO) aborta el proceso completo; FN_SOLO_NUMEROS devuelve 0 cuando no hay digitos, con lo que un dato invalido se vuelve un cero valido; los nombres de tipo de credito llevan espacio final y el ELSE devuelve cadena vacia, que despues se compara con literales.</span></div>
-        <div class="kv rem"><b>Remediacion</b><span>Alinear las longitudes de retorno con las de origen, usar TRY_CAST/TRY_CONVERT devolviendo NULL en lugar de 0, declarar siempre la longitud del tipo de retorno y quitar los espacios de los literales de catalogo (o moverlos a catalogo, ver L6-015).</span></div>
+        <div class="kv"><b>Impacto</b><span>Una razón social de 250 caracteres se corta a 200 sin aviso en la función que da nombre al cliente en 69 SPs; FN_FORMA_MONEDA usa CAST y no TRY_CAST, así que un texto mal formado (viene de un campo de observaciones libre vía FN_FIRMA_MONTO) aborta el proceso completo; FN_SOLO_NUMEROS devuelve 0 cuando no hay dígitos, con lo que un dato invalido se vuelve un cero valido; los nombres de tipo de crédito llevan espacio final y el ELSE devuelve cadena vacía, que después se compara con literales.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Alinear las longitudes de retorno con las de origen, usar TRY_CAST/TRY_CONVERT devolviendo NULL en lugar de 0, declarar siempre la longitud del tipo de retorno y quitar los espacios de los literales de catálogo (o moverlos a catálogo, ver L6-015).</span></div>
       </div>
     </article></div>
 
@@ -835,210 +835,210 @@ edcc.EDCC_BITACORA_respaldo_20260722</pre></div>
     <button class="rst" onclick="resetCob()">Limpiar</button>
     <span class="count" id="ccnt"></span>
   </div>
-  <table><thead><tr><th>Lote</th><th>Objeto</th><th>Lineas</th><th>En BD_prod</th><th>ID_POLIZA</th>
-    <th>NOLOCK</th><th>Cursores</th><th>Patron transaccional</th></tr></thead>
+  <table><thead><tr><th>Lote</th><th>Objeto</th><th>Líneas</th><th>En BD_prod</th><th>ID_POLIZA</th>
+    <th>NOLOCK</th><th>Cursores</th><th>Patrón transaccional</th></tr></thead>
   <tbody id="cbody">
       <tr data-lote="6" data-txt="pag.no_identificados_envio">
         <td class="num">6</td><td class="mono">PAG.NO_IDENTIFICADOS_ENVIO</td>
         <td class="num">35</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.pr_resumen_pagos_historico">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.pr_resumen_pagos_historico">
         <td class="num">6</td><td class="mono">PAG.PR_RESUMEN_PAGOS_HISTORICO</td>
         <td class="num">30</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_detalle_pago">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_detalle_pago">
         <td class="num">6</td><td class="mono">PAG.SP_CONSULTAR_DETALLE_PAGO</td>
         <td class="num">57</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">3</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_detalle_por_banco">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_detalle_por_banco">
         <td class="num">6</td><td class="mono">PAG.SP_CONSULTAR_DETALLE_POR_BANCO</td>
         <td class="num">35</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_detalle_por_banco_identificados">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_detalle_por_banco_identificados">
         <td class="num">6</td><td class="mono">PAG.SP_CONSULTAR_DETALLE_POR_BANCO_IDENTIFICADOS</td>
         <td class="num">39</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_detalle_por_no_iden_id">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_detalle_por_no_iden_id">
         <td class="num">6</td><td class="mono">PAG.SP_CONSULTAR_DETALLE_POR_NO_IDEN_ID</td>
         <td class="num">45</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_detalle_por_no_iden_id_resumen">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_detalle_por_no_iden_id_resumen">
         <td class="num">6</td><td class="mono">PAG.SP_CONSULTAR_DETALLE_POR_NO_IDEN_ID_RESUMEN</td>
         <td class="num">45</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_detalle_reporte_pagos">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_detalle_reporte_pagos">
         <td class="num">6</td><td class="mono">PAG.SP_CONSULTAR_DETALLE_REPORTE_PAGOS</td>
         <td class="num">46</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_info_credito">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_info_credito">
         <td class="num">6</td><td class="mono">PAG.SP_CONSULTAR_INFO_CREDITO</td>
         <td class="num">41</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">3</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_totales_bancos">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_totales_bancos">
         <td class="num">6</td><td class="mono">PAG.SP_CONSULTAR_TOTALES_BANCOS</td>
         <td class="num">39</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_totales_bancos_conciliacion">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_consultar_totales_bancos_conciliacion">
         <td class="num">6</td><td class="mono">PAG.SP_CONSULTAR_TOTALES_BANCOS_CONCILIACION</td>
         <td class="num">39</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_obtener_cuenta_referencia">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_obtener_cuenta_referencia">
         <td class="num">6</td><td class="mono">PAG.SP_OBTENER_CUENTA_REFERENCIA</td>
         <td class="num">20</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_obtener_detalle_conciliacion">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_obtener_detalle_conciliacion">
         <td class="num">6</td><td class="mono">PAG.SP_OBTENER_DETALLE_CONCILIACION</td>
         <td class="num">43</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_obtener_fecha_saf">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_obtener_fecha_saf">
         <td class="num">6</td><td class="mono">PAG.SP_OBTENER_FECHA_SAF</td>
         <td class="num">17</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_obtener_id_cuenta">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_obtener_id_cuenta">
         <td class="num">6</td><td class="mono">PAG.SP_OBTENER_ID_CUENTA</td>
         <td class="num">20</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_obtener_nuc_dinamico">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_obtener_nuc_dinamico">
         <td class="num">6</td><td class="mono">PAG.SP_OBTENER_NUC_DINAMICO</td>
         <td class="num">21</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="pag.sp_pagos_consulta_nombre_cliente">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="pag.sp_pagos_consulta_nombre_cliente">
         <td class="num">6</td><td class="mono">PAG.SP_PAGOS_CONSULTA_NOMBRE_CLIENTE</td>
         <td class="num">35</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">3</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="rpt.castigo_reest_saldos">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="rpt.castigo_reest_saldos">
         <td class="num">6</td><td class="mono">RPT.CASTIGO_REEST_SALDOS</td>
-        <td class="num">31</td><td>si</td>
+        <td class="num">31</td><td>sí</td>
         <td class="num">-</td><td class="num">1</td>
-        <td class="num">0</td><td>sin transaccion / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_desactiva">
+        <td class="num">0</td><td>sin transacción / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_desactiva">
         <td class="num">6</td><td class="mono">SAF.SP_TASAS_ALERTAS_DESACTIVA</td>
-        <td class="num">22</td><td>si</td>
+        <td class="num">22</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_dest">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_dest">
         <td class="num">6</td><td class="mono">SAF.SP_TASAS_ALERTAS_DEST</td>
-        <td class="num">24</td><td>si</td>
+        <td class="num">24</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_dest_sel">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_dest_sel">
         <td class="num">6</td><td class="mono">SAF.SP_TASAS_ALERTAS_DEST_SEL</td>
-        <td class="num">20</td><td>si</td>
+        <td class="num">20</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_envio">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_envio">
         <td class="num">6</td><td class="mono">SAF.SP_TASAS_ALERTAS_ENVIO</td>
-        <td class="num">126</td><td>si</td>
+        <td class="num">126</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">1</td><td>sin transaccion / lee shadow/QA / cursor</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_envio_dest">
+        <td class="num">1</td><td>sin transacción / lee shadow/QA / cursor</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_envio_dest">
         <td class="num">6</td><td class="mono">SAF.SP_TASAS_ALERTAS_ENVIO_DEST</td>
-        <td class="num">19</td><td>si</td>
+        <td class="num">19</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_importa">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_importa">
         <td class="num">6</td><td class="mono">SAF.SP_TASAS_ALERTAS_IMPORTA</td>
-        <td class="num">179</td><td>si</td>
+        <td class="num">179</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_valida">
+        <td class="num">0</td><td>sin transacción / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="saf.sp_tasas_alertas_valida">
         <td class="num">6</td><td class="mono">SAF.SP_TASAS_ALERTAS_VALIDA</td>
-        <td class="num">68</td><td>si</td>
+        <td class="num">68</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.cursorclosedeallocate">
+        <td class="num">0</td><td>sin transacción / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.cursorclosedeallocate">
         <td class="num">6</td><td class="mono">dbo.CursorCloseDeallocate</td>
-        <td class="num">20</td><td>si</td>
+        <td class="num">20</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion / SQL dinamico</td></tr>      <tr data-lote="6" data-txt="dbo.fechas_poliza_tipo">
+        <td class="num">0</td><td>sin transacción / SQL dinámico</td></tr>      <tr data-lote="6" data-txt="dbo.fechas_poliza_tipo">
         <td class="num">6</td><td class="mono">dbo.FECHAS_POLIZA_TIPO</td>
-        <td class="num">5</td><td>si</td>
+        <td class="num">5</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.fecha_impago [udf]">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.fecha_impago [udf]">
         <td class="num">6</td><td class="mono">dbo.FECHA_IMPAGO [UDF]</td>
-        <td class="num">38</td><td>si</td>
+        <td class="num">38</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_cartera_credito [udf]">
+        <td class="num">0</td><td>sin transacción / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_cartera_credito [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_CARTERA_CREDITO [UDF]</td>
-        <td class="num">54</td><td>si</td>
+        <td class="num">54</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_credito_previo [udf]">
+        <td class="num">0</td><td>sin transacción / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_credito_previo [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_CREDITO_PREVIO [UDF]</td>
-        <td class="num">33</td><td>si</td>
+        <td class="num">33</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_credito_previo_id [udf]">
+        <td class="num">0</td><td>sin transacción / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_credito_previo_id [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_CREDITO_PREVIO_ID [UDF]</td>
-        <td class="num">53</td><td>si</td>
+        <td class="num">53</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_cuenta_no_valida [udf]">
+        <td class="num">0</td><td>sin transacción / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_cuenta_no_valida [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_CUENTA_NO_VALIDA [UDF]</td>
-        <td class="num">48</td><td>si</td>
+        <td class="num">48</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.fn_cuenta_obtener [udf]">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.fn_cuenta_obtener [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_CUENTA_OBTENER [UDF]</td>
-        <td class="num">41</td><td>si</td>
+        <td class="num">41</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.fn_es_covid [udf]">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.fn_es_covid [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_ES_COVID [UDF]</td>
-        <td class="num">33</td><td>si</td>
+        <td class="num">33</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.fn_es_linea_cancelada [udf]">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.fn_es_linea_cancelada [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_ES_LINEA_CANCELADA [UDF]</td>
-        <td class="num">28</td><td>si</td>
+        <td class="num">28</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_firma_monto [udf]">
+        <td class="num">0</td><td>sin transacción / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_firma_monto [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_FIRMA_MONTO [UDF]</td>
-        <td class="num">33</td><td>si</td>
+        <td class="num">33</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.fn_forma_moneda [udf]">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.fn_forma_moneda [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_FORMA_MONEDA [UDF]</td>
-        <td class="num">21</td><td>si</td>
+        <td class="num">21</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.fn_forma_nombre [udf]">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.fn_forma_nombre [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_FORMA_NOMBRE [UDF]</td>
-        <td class="num">39</td><td>si</td>
+        <td class="num">39</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.fn_origen_fondos [udf]">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.fn_origen_fondos [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_ORIGEN_FONDOS [UDF]</td>
-        <td class="num">26</td><td>si</td>
+        <td class="num">26</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_rubro_pol [udf]">
+        <td class="num">0</td><td>sin transacción / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_rubro_pol [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_RUBRO_POL [UDF]</td>
-        <td class="num">36</td><td>si</td>
+        <td class="num">36</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.fn_secuencia_origen [udf]">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.fn_secuencia_origen [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_SECUENCIA_ORIGEN [UDF]</td>
-        <td class="num">32</td><td>si</td>
+        <td class="num">32</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_solo_numeros [udf]">
+        <td class="num">0</td><td>sin transacción / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.fn_solo_numeros [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_SOLO_NUMEROS [UDF]</td>
-        <td class="num">40</td><td>si</td>
+        <td class="num">40</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.fn_tipo_canal [udf]">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.fn_tipo_canal [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_TIPO_CANAL [UDF]</td>
-        <td class="num">28</td><td>si</td>
+        <td class="num">28</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.fn_tipo_credito [udf]">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.fn_tipo_credito [udf]">
         <td class="num">6</td><td class="mono">dbo.FN_TIPO_CREDITO [UDF]</td>
-        <td class="num">34</td><td>si</td>
+        <td class="num">34</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.info_extra_extraer [udf]">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.info_extra_extraer [udf]">
         <td class="num">6</td><td class="mono">dbo.INFO_EXTRA_EXTRAER [UDF]</td>
-        <td class="num">32</td><td>si</td>
+        <td class="num">32</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.reporte">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.reporte">
         <td class="num">6</td><td class="mono">dbo.REPORTE</td>
         <td class="num">162</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.reporteafirme">
+        <td class="num">0</td><td>sin transacción / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="dbo.reporteafirme">
         <td class="num">6</td><td class="mono">dbo.REPORTEAFIRME</td>
         <td class="num">53</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.reporte_cobranza_integracion">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.reporte_cobranza_integracion">
         <td class="num">6</td><td class="mono">dbo.REPORTE_COBRANZA_INTEGRACION</td>
-        <td class="num">204</td><td>si</td>
+        <td class="num">204</td><td>sí</td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="dbo.reporte_no_identificados">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="dbo.reporte_no_identificados">
         <td class="num">6</td><td class="mono">dbo.REPORTE_NO_IDENTIFICADOS</td>
-        <td class="num">31</td><td>si</td>
+        <td class="num">31</td><td>sí</td>
         <td class="num">-</td><td class="num">1</td>
-        <td class="num">0</td><td>sin transaccion / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="edc.sp_genera_ordenes_dummy">
+        <td class="num">0</td><td>sin transacción / lee shadow/QA</td></tr>      <tr data-lote="6" data-txt="edc.sp_genera_ordenes_dummy">
         <td class="num">6</td><td class="mono">edc.SP_Genera_Ordenes_Dummy</td>
         <td class="num">98</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="edc.spupsertcclientedaily">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="edc.spupsertcclientedaily">
         <td class="num">6</td><td class="mono">edc.spUpsertCClienteDaily</td>
         <td class="num">132</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">0</td>
@@ -1050,105 +1050,105 @@ edcc.EDCC_BITACORA_respaldo_20260722</pre></div>
         <td class="num">6</td><td class="mono">edc.sp_inserEdcCredito</td>
         <td class="num">705</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">63</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="edc.sp_inseredccuotaspospuestas">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="edc.sp_inseredccuotaspospuestas">
         <td class="num">6</td><td class="mono">edc.sp_inserEdcCuotasPospuestas</td>
         <td class="num">101</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">3</td>
-        <td class="num">0</td><td>sin transaccion / MERGE</td></tr>      <tr data-lote="6" data-txt="edc.sp_inseredcmovimientos">
+        <td class="num">0</td><td>sin transacción / MERGE</td></tr>      <tr data-lote="6" data-txt="edc.sp_inseredcmovimientos">
         <td class="num">6</td><td class="mono">edc.sp_inserEdcMovimientos</td>
         <td class="num">144</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">3</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>      <tr data-lote="6" data-txt="edc.sp_inseredcvencidos">
+        <td class="num">0</td><td>sin transacción</td></tr>      <tr data-lote="6" data-txt="edc.sp_inseredcvencidos">
         <td class="num">6</td><td class="mono">edc.sp_inserEdcVencidos</td>
         <td class="num">98</td><td><b>no</b></td>
         <td class="num">-</td><td class="num">3</td>
-        <td class="num">0</td><td>sin transaccion</td></tr>
+        <td class="num">0</td><td>sin transacción</td></tr>
   </tbody></table>
 
-  <h2>Catalogo de valores hardcodeados y clasificacion de parametrizacion</h2>
+  <h2>Catálogo de valores hardcodeados y clasificación de parametrización</h2>
   <div class="bar">
-    <label>Clasificacion</label><select id="hc"><option value="">Todas</option><option>Configuracion tecnica por ambiente</option><option>Configuracion tecnica por ambiente (no editable por negocio)</option><option>Defecto que debe eliminarse</option><option>Parametrizable como catalogo en BD</option><option>Parametrizable en portal</option><option>Parametrizable en portal (con cuatro ojos)</option><option>Regla fija/regulatoria (debe corregirse, no parametrizarse)</option></select>
+    <label>Clasificación</label><select id="hc"><option value="">Todas</option><option>Configuración técnica por ambiente</option><option>Configuración técnica por ambiente (no editable por negocio)</option><option>Defecto que debe eliminarse</option><option>Parametrizable como catálogo en BD</option><option>Parametrizable en portal</option><option>Parametrizable en portal (con cuatro ojos)</option><option>Regla fija/regulatoria (debe corregirse, no parametrizarse)</option></select>
     <input type="search" id="hq" placeholder="Buscar valor, tipo, destino...">
     <button class="rst" onclick="resetHc()">Limpiar</button>
     <span class="count" id="hcnt"></span>
   </div>
-  <table class="hard"><thead><tr><th>Valor</th><th>Tipo</th><th>Ocurrencias</th><th>Clasificacion</th><th>Destino propuesto</th><th>Nota</th></tr></thead>
+  <table class="hard"><thead><tr><th>Valor</th><th>Tipo</th><th>Ocurrencias</th><th>Clasificación</th><th>Destino propuesto</th><th>Nota</th></tr></thead>
   <tbody id="hbody">
       <tr data-clas="Parametrizable en portal (con cuatro ojos)"
-          data-txt="6051 (umbral de num_credito que define si una cuota es covid) umbral de regla contable param.covid_num_credito_max y, en el objetivo, vigencia del programa en catalogo es el hardcodeo de mayor alcance del sistema; su cambio afecta clasificacion contable de cuotas">
-        <td class="mono">6051 (umbral de NUM_CREDITO que define si una cuota es COVID)</td><td>Umbral de regla contable</td><td class="num">1 definicion en dbo.FN_ES_COVID, consumida por 66 SPs / 230 invocaciones</td>
+          data-txt="6051 (umbral de num_credito que define si una cuota es covid) umbral de regla contable param.covid_num_credito_max y, en el objetivo, vigencia del programa en catálogo es el hardcodeo de mayor alcance del sistema; su cambio afecta clasificación contable de cuotas">
+        <td class="mono">6051 (umbral de NUM_CREDITO que define si una cuota es COVID)</td><td>Umbral de regla contable</td><td class="num">1 definición en dbo.FN_ES_COVID, consumida por 66 SPs / 230 invocaciones</td>
         <td><span class="pill p2">Parametrizable en portal (con cuatro ojos)</span></td>
-        <td>PARAM.COVID_NUM_CREDITO_MAX y, en el objetivo, vigencia del programa en catalogo</td><td class="nota">Es el hardcodeo de mayor alcance del sistema; su cambio afecta clasificacion contable de cuotas</td></tr>      <tr data-clas="Configuracion tecnica por ambiente (no editable por negocio)"
-          data-txt="quiero_confianza / quiero_confianza_shadow / quiero_confianza_shadow / kardia (nombres de base en el codigo) configuracion tecnica por ambiente sinonimos por base de datos; el codigo no debe nombrar la base causa estructural del drift dev-prod y de los despliegues no reproducibles">
-        <td class="mono">Quiero_Confianza / Quiero_Confianza_shadow / Quiero_Confianza_Shadow / KARDIA (nombres de base en el codigo)</td><td>Configuracion tecnica por ambiente</td><td class="num">7 objetos comunes divergen entre BD y BD_prod; 13 objetos de esta fase referencian shadow o QA</td>
-        <td><span class="pill p2">Configuracion tecnica por ambiente (no editable por negocio)</span></td>
-        <td>Sinonimos por base de datos; el codigo no debe nombrar la base</td><td class="nota">Causa estructural del drift dev-prod y de los despliegues no reproducibles</td></tr>      <tr data-clas="Defecto que debe eliminarse"
-          data-txt="&#x27;prueba@ion.com&#x27; como email2 de todo cliente defecto: dato de prueba en produccion eliminar; si se requiere copia de control, parametro de ambiente vacio en produccion posible fuga de informacion de credito hacia una cuenta de pruebas">
-        <td class="mono">&#x27;Prueba@ion.com&#x27; como EMAIL2 de todo cliente</td><td>Defecto: dato de prueba en produccion</td><td class="num">edc.spUpsertCClienteDaily:36</td>
+        <td>PARAM.COVID_NUM_CREDITO_MAX y, en el objetivo, vigencia del programa en catálogo</td><td class="nota">Es el hardcodeo de mayor alcance del sistema; su cambio afecta clasificación contable de cuotas</td></tr>      <tr data-clas="Configuración técnica por ambiente (no editable por negocio)"
+          data-txt="quiero_confianza / quiero_confianza_shadow / quiero_confianza_shadow / kardia (nombres de base en el código) configuración técnica por ambiente sinónimos por base de datos; el código no debe nombrar la base causa estructural del drift dev-prod y de los despliegues no reproducibles">
+        <td class="mono">Quiero_Confianza / Quiero_Confianza_shadow / Quiero_Confianza_Shadow / KARDIA (nombres de base en el código)</td><td>Configuración técnica por ambiente</td><td class="num">7 objetos comunes divergen entre BD y BD_prod; 13 objetos de esta fase referencian shadow o QA</td>
+        <td><span class="pill p2">Configuración técnica por ambiente (no editable por negocio)</span></td>
+        <td>Sinónimos por base de datos; el código no debe nombrar la base</td><td class="nota">Causa estructural del drift dev-prod y de los despliegues no reproducibles</td></tr>      <tr data-clas="Defecto que debe eliminarse"
+          data-txt="&#x27;prueba@ion.com&#x27; como email2 de todo cliente defecto: dato de prueba en producción eliminar; si se requiere copia de control, parámetro de ambiente vacío en producción posible fuga de información de crédito hacia una cuenta de pruebas">
+        <td class="mono">&#x27;Prueba@ion.com&#x27; como EMAIL2 de todo cliente</td><td>Defecto: dato de prueba en producción</td><td class="num">edc.spUpsertCClienteDaily:36</td>
         <td><span class="pill p2">Defecto que debe eliminarse</span></td>
-        <td>Eliminar; si se requiere copia de control, parametro de ambiente vacio en produccion</td><td class="nota">Posible fuga de informacion de credito hacia una cuenta de pruebas</td></tr>      <tr data-clas="Parametrizable como catalogo en BD"
-          data-txt="listas literales de tipo de credito (num_desc_tipo_credito in (...)) catalogo de negocio po.cat_tipo_credito con segmento, cartera y vigencia hoy el mismo tipo se clasifica distinto segun el objeto (20/23, 26, 8)">
-        <td class="mono">Listas literales de tipo de credito (NUM_DESC_TIPO_CREDITO IN (...))</td><td>Catalogo de negocio</td><td class="num">37 listas distintas, 230 ocurrencias, 104 archivos</td>
-        <td><span class="pill p2">Parametrizable como catalogo en BD</span></td>
-        <td>PO.CAT_TIPO_CREDITO con segmento, cartera y vigencia</td><td class="nota">Hoy el mismo tipo se clasifica distinto segun el objeto (20/23, 26, 8)</td></tr>      <tr data-clas="Parametrizable como catalogo en BD"
-          data-txt="&#x27;hsbc&#x27;, &#x27;bbva&#x27;, &#x27;santander&#x27; como columnas de salida catalogo de negocio pag.cat_banco con clave; el resultado se devuelve por filas un banco nuevo hoy requiere cambio de codigo y de contrato de salida">
-        <td class="mono">&#x27;HSBC&#x27;, &#x27;BBVA&#x27;, &#x27;Santander&#x27; como columnas de salida</td><td>Catalogo de negocio</td><td class="num">3 SPs de PAG (9 columnas fijas en el de conciliacion)</td>
-        <td><span class="pill p2">Parametrizable como catalogo en BD</span></td>
-        <td>PAG.CAT_BANCO con clave; el resultado se devuelve por filas</td><td class="nota">Un banco nuevo hoy requiere cambio de codigo y de contrato de salida</td></tr>      <tr data-clas="Parametrizable en portal"
-          data-txt="id_poliza = 7 y &#x27;pendiente&#x27; como banco en el reporte afirme identificador de poliza / leyenda parametro del reporte; catalogo de polizas (ver l2-012) mismo patron de poliza fija detectado en los lotes 2-5">
-        <td class="mono">ID_POLIZA = 7 y &#x27;PENDIENTE&#x27; como banco en el reporte Afirme</td><td>Identificador de poliza / leyenda</td><td class="num">dbo.REPORTEAFIRME:36 y 19</td>
+        <td>Eliminar; si se requiere copia de control, parámetro de ambiente vacío en producción</td><td class="nota">Posible fuga de información de crédito hacia una cuenta de pruebas</td></tr>      <tr data-clas="Parametrizable como catálogo en BD"
+          data-txt="listas literales de tipo de crédito (num_desc_tipo_credito in (...)) catálogo de negocio po.cat_tipo_credito con segmento, cartera y vigencia hoy el mismo tipo se clasifica distinto según el objeto (20/23, 26, 8)">
+        <td class="mono">Listas literales de tipo de crédito (NUM_DESC_TIPO_CREDITO IN (...))</td><td>Catálogo de negocio</td><td class="num">37 listas distintas, 230 ocurrencias, 104 archivos</td>
+        <td><span class="pill p2">Parametrizable como catálogo en BD</span></td>
+        <td>PO.CAT_TIPO_CREDITO con segmento, cartera y vigencia</td><td class="nota">Hoy el mismo tipo se clasifica distinto según el objeto (20/23, 26, 8)</td></tr>      <tr data-clas="Parametrizable como catálogo en BD"
+          data-txt="&#x27;hsbc&#x27;, &#x27;bbva&#x27;, &#x27;santander&#x27; como columnas de salida catálogo de negocio pag.cat_banco con clave; el resultado se devuelve por filas un banco nuevo hoy requiere cambio de código y de contrato de salida">
+        <td class="mono">&#x27;HSBC&#x27;, &#x27;BBVA&#x27;, &#x27;Santander&#x27; como columnas de salida</td><td>Catálogo de negocio</td><td class="num">3 SPs de PAG (9 columnas fijas en el de conciliación)</td>
+        <td><span class="pill p2">Parametrizable como catálogo en BD</span></td>
+        <td>PAG.CAT_BANCO con clave; el resultado se devuelve por filas</td><td class="nota">Un banco nuevo hoy requiere cambio de código y de contrato de salida</td></tr>      <tr data-clas="Parametrizable en portal"
+          data-txt="id_poliza = 7 y &#x27;pendiente&#x27; como banco en el reporte afirme identificador de póliza / leyenda parámetro del reporte; catálogo de pólizas (ver l2-012) mismo patrón de póliza fija detectado en los lotes 2-5">
+        <td class="mono">ID_POLIZA = 7 y &#x27;PENDIENTE&#x27; como banco en el reporte Afirme</td><td>Identificador de póliza / leyenda</td><td class="num">dbo.REPORTEAFIRME:36 y 19</td>
         <td><span class="pill p1">Parametrizable en portal</span></td>
-        <td>Parametro del reporte; catalogo de polizas (ver L2-012)</td><td class="nota">Mismo patron de poliza fija detectado en los lotes 2-5</td></tr>      <tr data-clas="Configuracion tecnica por ambiente"
-          data-txt="cod_empresa=&#x27;001&#x27;, cod_agencia=&#x27;001&#x27;, cod_sistema=&#x27;pr&#x27;, cod_ente=1 configuracion institucional tabla de configuracion institucional leida una vez bloquea multiempresa o multiagencia">
-        <td class="mono">COD_EMPRESA=&#x27;001&#x27;, COD_AGENCIA=&#x27;001&#x27;, COD_SISTEMA=&#x27;PR&#x27;, COD_ENTE=1</td><td>Configuracion institucional</td><td class="num">6 SPs de PAG y varios de edc</td>
-        <td><span class="pill p2">Configuracion tecnica por ambiente</span></td>
-        <td>Tabla de configuracion institucional leida una vez</td><td class="nota">Bloquea multiempresa o multiagencia</td></tr>      <tr data-clas="Defecto que debe eliminarse"
-          data-txt="dir.apdo_postal = &#x27;df&#x27; y pais mapeado a la columna estado filtro de domicilio regla explicita de seleccion de domicilio por tipo y vigencia descarta domicilios y mezcla columnas del domicilio de envio">
-        <td class="mono">dir.APDO_POSTAL = &#x27;DF&#x27; y pais mapeado a la columna ESTADO</td><td>Filtro de domicilio</td><td class="num">edc.spUpsertCClienteDaily:42 y 32</td>
+        <td>Parámetro del reporte; catálogo de pólizas (ver L2-012)</td><td class="nota">Mismo patrón de póliza fija detectado en los lotes 2-5</td></tr>      <tr data-clas="Configuración técnica por ambiente"
+          data-txt="cod_empresa=&#x27;001&#x27;, cod_agencia=&#x27;001&#x27;, cod_sistema=&#x27;pr&#x27;, cod_ente=1 configuración institucional tabla de configuración institucional leída una vez bloquea multiempresa o multiagencia">
+        <td class="mono">COD_EMPRESA=&#x27;001&#x27;, COD_AGENCIA=&#x27;001&#x27;, COD_SISTEMA=&#x27;PR&#x27;, COD_ENTE=1</td><td>Configuración institucional</td><td class="num">6 SPs de PAG y varios de edc</td>
+        <td><span class="pill p2">Configuración técnica por ambiente</span></td>
+        <td>Tabla de configuración institucional leída una vez</td><td class="nota">Bloquea multiempresa o multiagencia</td></tr>      <tr data-clas="Defecto que debe eliminarse"
+          data-txt="dir.apdo_postal = &#x27;df&#x27; y país mapeado a la columna estado filtro de domicilio regla explícita de selección de domicilio por tipo y vigencia descarta domicilios y mezcla columnas del domicilio de envío">
+        <td class="mono">dir.APDO_POSTAL = &#x27;DF&#x27; y país mapeado a la columna ESTADO</td><td>Filtro de domicilio</td><td class="num">edc.spUpsertCClienteDaily:42 y 32</td>
         <td><span class="pill p2">Defecto que debe eliminarse</span></td>
-        <td>Regla explicita de seleccion de domicilio por tipo y vigencia</td><td class="nota">Descarta domicilios y mezcla columnas del domicilio de envio</td></tr>      <tr data-clas="Parametrizable como catalogo en BD"
-          data-txt="dia_pago in (28,29,30,31) y day(@fecha) in (1,3,5) como dias de corte calendario de corte catalogo de dias de corte por producto regla de corte repartida en cuatro sps con la misma expresion copiada">
-        <td class="mono">DIA_PAGO IN (28,29,30,31) y DAY(@FECHA) IN (1,3,5) como dias de corte</td><td>Calendario de corte</td><td class="num">4 SPs de edc</td>
-        <td><span class="pill p2">Parametrizable como catalogo en BD</span></td>
-        <td>Catalogo de dias de corte por producto</td><td class="nota">Regla de corte repartida en cuatro SPs con la misma expresion copiada</td></tr>      <tr data-clas="Regla fija/regulatoria (debe corregirse, no parametrizarse)"
-          data-txt="longitud 19 y leyendas &#x27;por asignar&#x27; / &#x27;cuenta saf&#x27; / &#x27;no aplica&#x27; en la validacion de cuenta regla de validacion bancaria validacion de clabe de 18 digitos con digito de control; las leyendas pasan a ser estado del registro hoy acepta cuentas invalidas y isnumeric admite &#x27;1e5&#x27; o &#x27;+1&#x27;">
-        <td class="mono">Longitud 19 y leyendas &#x27;Por asignar&#x27; / &#x27;Cuenta SAF&#x27; / &#x27;No aplica&#x27; en la validacion de cuenta</td><td>Regla de validacion bancaria</td><td class="num">dbo.FN_CUENTA_NO_VALIDA:18-33</td>
+        <td>Regla explícita de selección de domicilio por tipo y vigencia</td><td class="nota">Descarta domicilios y mezcla columnas del domicilio de envío</td></tr>      <tr data-clas="Parametrizable como catálogo en BD"
+          data-txt="dia_pago in (28,29,30,31) y day(@fecha) in (1,3,5) como días de corte calendario de corte catálogo de días de corte por producto regla de corte repartida en cuatro sps con la misma expresión copiada">
+        <td class="mono">DIA_PAGO IN (28,29,30,31) y DAY(@FECHA) IN (1,3,5) como días de corte</td><td>Calendario de corte</td><td class="num">4 SPs de edc</td>
+        <td><span class="pill p2">Parametrizable como catálogo en BD</span></td>
+        <td>Catálogo de días de corte por producto</td><td class="nota">Regla de corte repartida en cuatro SPs con la misma expresión copiada</td></tr>      <tr data-clas="Regla fija/regulatoria (debe corregirse, no parametrizarse)"
+          data-txt="longitud 19 y leyendas &#x27;por asignar&#x27; / &#x27;cuenta saf&#x27; / &#x27;no aplica&#x27; en la validación de cuenta regla de validación bancaria validación de clabe de 18 dígitos con dígito de control; las leyendas pasan a ser estado del registro hoy acepta cuentas invalidas y isnumeric admite &#x27;1e5&#x27; o &#x27;+1&#x27;">
+        <td class="mono">Longitud 19 y leyendas &#x27;Por asignar&#x27; / &#x27;Cuenta SAF&#x27; / &#x27;No aplica&#x27; en la validación de cuenta</td><td>Regla de validación bancaria</td><td class="num">dbo.FN_CUENTA_NO_VALIDA:18-33</td>
         <td><span class="pill p2">Regla fija/regulatoria (debe corregirse, no parametrizarse)</span></td>
-        <td>Validacion de CLABE de 18 digitos con digito de control; las leyendas pasan a ser estado del registro</td><td class="nota">Hoy acepta cuentas invalidas y ISNUMERIC admite &#x27;1e5&#x27; o &#x27;+1&#x27;</td></tr>      <tr data-clas="Parametrizable como catalogo en BD"
-          data-txt="&#x27;administracion individual&#x27; -&gt; &#x27;afirme&#x27; y mapeos de rubro en linea homologacion de catalogo dbo.fn_rubro_pol y catalogo de homologacion por destinatario incluye el rubro mal escrito comision_admisistracion (l6-007)">
-        <td class="mono">&#x27;ADMINISTRACION INDIVIDUAL&#x27; -&gt; &#x27;AFIRME&#x27; y mapeos de rubro en linea</td><td>Homologacion de catalogo</td><td class="num">dbo.REPORTEAFIRME:11 y 20-27</td>
-        <td><span class="pill p2">Parametrizable como catalogo en BD</span></td>
-        <td>dbo.FN_RUBRO_POL y catalogo de homologacion por destinatario</td><td class="nota">Incluye el rubro mal escrito COMISION_ADMISISTRACION (L6-007)</td></tr>      <tr data-clas="Defecto que debe eliminarse"
-          data-txt="&#x27;9&#x27; emisor, &#x27;100&#x27; porcentaje, &#x27;03&#x27; forma de pago, &#x27;pue&#x27; metodo, &#x27;02&#x27; objeto de impuesto datos fiscales fijos catalogo de emisor y claves sat; el objeto no debe existir en el repositorio de la base acompaña montos aleatorios (l6-001)">
-        <td class="mono">&#x27;9&#x27; emisor, &#x27;100&#x27; porcentaje, &#x27;03&#x27; forma de pago, &#x27;PUE&#x27; metodo, &#x27;02&#x27; objeto de impuesto</td><td>Datos fiscales fijos</td><td class="num">edc.SP_Genera_Ordenes_Dummy:58-61 y 92</td>
+        <td>Validación de CLABE de 18 dígitos con dígito de control; las leyendas pasan a ser estado del registro</td><td class="nota">Hoy acepta cuentas invalidas y ISNUMERIC admite &#x27;1e5&#x27; o &#x27;+1&#x27;</td></tr>      <tr data-clas="Parametrizable como catálogo en BD"
+          data-txt="&#x27;administracion individual&#x27; -&gt; &#x27;afirme&#x27; y mapeos de rubro en línea homologación de catálogo dbo.fn_rubro_pol y catálogo de homologación por destinatario incluye el rubro mal escrito comision_admisistracion (l6-007)">
+        <td class="mono">&#x27;ADMINISTRACION INDIVIDUAL&#x27; -&gt; &#x27;AFIRME&#x27; y mapeos de rubro en línea</td><td>Homologación de catálogo</td><td class="num">dbo.REPORTEAFIRME:11 y 20-27</td>
+        <td><span class="pill p2">Parametrizable como catálogo en BD</span></td>
+        <td>dbo.FN_RUBRO_POL y catálogo de homologación por destinatario</td><td class="nota">Incluye el rubro mal escrito COMISION_ADMISISTRACION (L6-007)</td></tr>      <tr data-clas="Defecto que debe eliminarse"
+          data-txt="&#x27;9&#x27; emisor, &#x27;100&#x27; porcentaje, &#x27;03&#x27; forma de pago, &#x27;pue&#x27; método, &#x27;02&#x27; objeto de impuesto datos fiscales fijos catálogo de emisor y claves sat; el objeto no debe existir en el repositorio de la base acompaña montos aleatorios (l6-001)">
+        <td class="mono">&#x27;9&#x27; emisor, &#x27;100&#x27; porcentaje, &#x27;03&#x27; forma de pago, &#x27;PUE&#x27; método, &#x27;02&#x27; objeto de impuesto</td><td>Datos fiscales fijos</td><td class="num">edc.SP_Genera_Ordenes_Dummy:58-61 y 92</td>
         <td><span class="pill p2">Defecto que debe eliminarse</span></td>
-        <td>Catalogo de emisor y claves SAT; el objeto no debe existir en el repositorio de la base</td><td class="nota">Acompaña montos aleatorios (L6-001)</td></tr>      <tr data-clas="Defecto que debe eliminarse"
-          data-txt="&#x27;error&#x27; y &#x27;0.00&#x27; como texto impreso ante caso no contemplado leyenda de fallback catalogo de conceptos y medios; lo no mapeado va a excepciones hoy se imprime en el estado de cuenta del cliente">
+        <td>Catálogo de emisor y claves SAT; el objeto no debe existir en el repositorio de la base</td><td class="nota">Acompaña montos aleatorios (L6-001)</td></tr>      <tr data-clas="Defecto que debe eliminarse"
+          data-txt="&#x27;error&#x27; y &#x27;0.00&#x27; como texto impreso ante caso no contemplado leyenda de fallback catálogo de conceptos y medios; lo no mapeado va a excepciones hoy se imprime en el estado de cuenta del cliente">
         <td class="mono">&#x27;ERROR&#x27; y &#x27;0.00&#x27; como texto impreso ante caso no contemplado</td><td>Leyenda de fallback</td><td class="num">edc.sp_inserEdcMovimientos:69 y 75; edc.sp_inserEdcCredito:345 y 348</td>
         <td><span class="pill p2">Defecto que debe eliminarse</span></td>
-        <td>Catalogo de conceptos y medios; lo no mapeado va a excepciones</td><td class="nota">Hoy se imprime en el estado de cuenta del cliente</td></tr>
+        <td>Catálogo de conceptos y medios; lo no mapeado va a excepciones</td><td class="nota">Hoy se imprime en el estado de cuenta del cliente</td></tr>
   </tbody></table>
 
-  <h2>Plan de despliegue de la parametrizacion</h2>
+  <h2>Plan de despliegue de la parametrización</h2>
       <div class="fase"><h3>Correcciones inmediatas de esta fase</h3>
-        <p class="obj">Cuatro defectos que no requieren rediseño</p><ul><li>L6-001: retirar edc.SP_Genera_Ordenes_Dummy del repositorio de base de datos (o blindarlo con guarda de ambiente) antes de cualquier promocion del esquema edc</li><li>L6-009: eliminar el literal &#x27;Prueba@ion.com&#x27; y confirmar con el equipo de envio si EMAIL2 se usa</li><li>L6-007: corregir &#x27;COMISION_ADMISISTRACION&#x27; y agregar validacion de cuadre al reporte Afirme</li><li>L6-002: revisar el emparejamiento de referencia bancaria y buscar pagos aplicados a credito incorrecto</li></ul>
-        <p class="riesgo"><b>Riesgo:</b> Bajo en codigo, alto valor: son cambios pequeños con impacto directo en cifras y en datos personales</p></div>      <div class="fase"><h3>Prerrequisito de despliegue reproducible</h3>
-        <p class="obj">Quitar el ambiente del codigo (L6-004)</p><ul><li>Crear sinonimos por base de datos para todo objeto externo (Quiero_Confianza, shadow, KARDIA)</li><li>Reemplazar los nombres de tres partes en los 7 objetos que hoy divergen y en los 13 que referencian shadow o QA</li><li>Agregar compuerta de despliegue que rechace scripts con el nombre de base literal</li><li>Con esto, el mismo script sirve en dev, QA y produccion y el drift deja de generarse</li></ul>
-        <p class="riesgo"><b>Riesgo:</b> Medio: requiere ventana y validacion de permisos sobre los sinonimos</p></div>      <div class="fase"><h3>Catalogos antes que portal</h3>
-        <p class="obj">Dar destino a los hardcodeos de mayor alcance</p><ul><li>PO.CAT_TIPO_CREDITO: sustituye las 37 listas literales (L6-015) y es prerrequisito de los catalogos de edc</li><li>PAG.CAT_BANCO y catalogo de layout bancario: habilitan L6-021 y L6-013</li><li>Catalogo de conceptos y medios de edc: elimina los fallback &#x27;ERROR&#x27;/&#x27;0.00&#x27; (L6-008)</li><li>PARAM.COVID_NUM_CREDITO_MAX con vigencia como paso intermedio de L6-003, con conciliacion previa</li></ul>
-        <p class="riesgo"><b>Riesgo:</b> Medio: cada sustitucion debe conciliarse contra el resultado actual antes de reemplazar</p></div>      <div class="fase"><h3>Modulo de estados de cuenta</h3>
-        <p class="obj">Que el documento al cliente sea reproducible y completo</p><ul><li>Unificar la poblacion elegible de los tres SPs y reactivar la bitacora (L6-006, L6-014)</li><li>Definir unidad de trabajo por corte con transaccion e identificador de ejecucion</li><li>Fijar DATEFIRST o usar el calendario de negocio y pasar todos los rangos a semiabiertos (L6-019)</li><li>Corregir la seleccion de domicilio y el conteo de recibos vencidos (L6-010, L6-022)</li></ul>
+        <p class="obj">Cuatro defectos que no requieren rediseño</p><ul><li>L6-001: retirar edc.SP_Genera_Ordenes_Dummy del repositorio de base de datos (o blindarlo con guarda de ambiente) antes de cualquier promoción del esquema edc</li><li>L6-009: eliminar el literal &#x27;Prueba@ion.com&#x27; y confirmar con el equipo de envío si EMAIL2 se usa</li><li>L6-007: corregir &#x27;COMISION_ADMISISTRACION&#x27; y agregar validación de cuadre al reporte Afirme</li><li>L6-002: revisar el emparejamiento de referencia bancaria y buscar pagos aplicados a crédito incorrecto</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Bajo en código, alto valor: son cambios pequeños con impacto directo en cifras y en datos personales</p></div>      <div class="fase"><h3>Prerrequisito de despliegue reproducible</h3>
+        <p class="obj">Quitar el ambiente del código (L6-004)</p><ul><li>Crear sinónimos por base de datos para todo objeto externo (Quiero_Confianza, shadow, KARDIA)</li><li>Reemplazar los nombres de tres partes en los 7 objetos que hoy divergen y en los 13 que referencian shadow o QA</li><li>Agregar compuerta de despliegue que rechace scripts con el nombre de base literal</li><li>Con esto, el mismo script sirve en dev, QA y producción y el drift deja de generarse</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Medio: requiere ventana y validación de permisos sobre los sinónimos</p></div>      <div class="fase"><h3>Catálogos antes que portal</h3>
+        <p class="obj">Dar destino a los hardcodeos de mayor alcance</p><ul><li>PO.CAT_TIPO_CREDITO: sustituye las 37 listas literales (L6-015) y es prerrequisito de los catálogos de edc</li><li>PAG.CAT_BANCO y catálogo de layout bancario: habilitan L6-021 y L6-013</li><li>Catálogo de conceptos y medios de edc: elimina los fallback &#x27;ERROR&#x27;/&#x27;0.00&#x27; (L6-008)</li><li>PARAM.COVID_NUM_CREDITO_MAX con vigencia como paso intermedio de L6-003, con conciliación previa</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Medio: cada sustitución debe conciliarse contra el resultado actual antes de reemplazar</p></div>      <div class="fase"><h3>Modulo de estados de cuenta</h3>
+        <p class="obj">Que el documento al cliente sea reproducible y completo</p><ul><li>Unificar la población elegible de los tres SPs y reactivar la bitácora (L6-006, L6-014)</li><li>Definir unidad de trabajo por corte con transacción e identificador de ejecución</li><li>Fijar DATEFIRST o usar el calendario de negocio y pasar todos los rangos a semiabiertos (L6-019)</li><li>Corregir la selección de domicilio y el conteo de recibos vencidos (L6-010, L6-022)</li></ul>
         <p class="riesgo"><b>Riesgo:</b> Medio: cambia el contenido de documentos ya emitidos, requiere periodo de control</p></div>      <div class="fase"><h3>Rendimiento estructural</h3>
-        <p class="obj">Atacar la causa mas probable de las ventanas de cierre</p><ul><li>Convertir a inline las cinco UDF escalares de mayor alcance (L6-005), empezando por FN_ORIGEN_FONDOS, FN_FORMA_NOMBRE y FN_ES_COVID</li><li>Confirmar contra la instancia si existen indices no scriptados e incorporarlos al repositorio (L6-018)</li><li>Medir con el mismo periodo de cierre antes y despues; sin instancia no es posible cuantificar la ganancia</li></ul>
-        <p class="riesgo"><b>Riesgo:</b> Alto en esfuerzo, sin cambio funcional esperado: exige pruebas de resultado identico</p></div>      <div class="fase"><h3>Decisiones que requieren negocio o infraestructura</h3>
-        <p class="obj">No son tecnicas</p><ul><li>Confirmar si PAG, edc, edcc, juicios, demandas, ori y cierre_puente existen en produccion: hoy 26 objetos programables y 7 esquemas completos no aparecen en el export de BD_prod</li><li>Definir clasificacion de datos personales y alcance de enmascaramiento/cifrado (L6-017)</li><li>Resolver el pendiente del tipo de credito 8 en estados de cuenta, escrito como comentario desde 2024</li><li>Confirmar si el canal minorista/comercial puede seguir derivandose de TIP_TASA=&#x27;F&#x27; para efectos de reporte regulatorio</li></ul>
+        <p class="obj">Atacar la causa más probable de las ventanas de cierre</p><ul><li>Convertir a inline las cinco UDF escalares de mayor alcance (L6-005), empezando por FN_ORIGEN_FONDOS, FN_FORMA_NOMBRE y FN_ES_COVID</li><li>Confirmar contra la instancia si existen índices no scriptados e incorporarlos al repositorio (L6-018)</li><li>Medir con el mismo periodo de cierre antes y después; sin instancia no es posible cuantificar la ganancia</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Alto en esfuerzo, sin cambio funcional esperado: exige pruebas de resultado idéntico</p></div>      <div class="fase"><h3>Decisiones que requieren negocio o infraestructura</h3>
+        <p class="obj">No son técnicas</p><ul><li>Confirmar si PAG, edc, edcc, juicios, demandas, ori y cierre_puente existen en producción: hoy 26 objetos programables y 7 esquemas completos no aparecen en el export de BD_prod</li><li>Definir clasificación de datos personales y alcance de enmascaramiento/cifrado (L6-017)</li><li>Resolver el pendiente del tipo de crédito 8 en estados de cuenta, escrito como comentario desde 2024</li><li>Confirmar si el canal minorista/comercial puede seguir derivándose de TIP_TASA=&#x27;F&#x27; para efectos de reporte regulatorio</li></ul>
         <p class="riesgo"><b>Riesgo:</b> n/a</p></div>
 
   <h2>Valor agregado propuesto</h2>
-  <ul class="va"><li>La fase confirma que el riesgo no esta solo en los SPs grandes de cierre: los objetos mas pequeños (funciones de 20 lineas, SPs de portal de 15 lineas) concentran los hardcodeos de mayor alcance, porque se invocan desde decenas de procesos. dbo.FN_ES_COVID tiene 30 lineas y gobierna 66 SPs.</li><li>Cinco funciones escalares son el punto de apalancamiento del rendimiento de todo el sistema: corregir esas cinco tiene mas efecto que optimizar consultas individuales en 100 SPs.</li><li>El drift dev-prod tiene una sola causa medible (el nombre de la base dentro del codigo) y una sola solucion (sinonimos). Resolverlo convierte los otros hallazgos en corregibles de una sola vez, en lugar de dos veces por ambiente.</li><li>Recomendacion de compuerta automatica en CI, con los conteos ya construidos: rechazar objeto nuevo que contenga el nombre literal de una base externa, lista literal de tipos de credito, UDF escalar con acceso a datos en SELECT, o INSERT a tablas de estado de cuenta sin control de reproceso.</li><li>Sugerencia de valor para la propuesta del portal: el modulo de alertas de tasas (SAF) ya es, de hecho, un portal de parametrizacion con carga de archivo, validacion y bitacora incompleta. Sirve como piloto y como referencia de lo que hay que hacer mejor: validacion por conjuntos, id de carga, cuatro ojos y estados de envio bien separados.</li></ul>
+  <ul class="va"><li>La fase confirma que el riesgo no está solo en los SPs grandes de cierre: los objetos más pequeños (funciones de 20 líneas, SPs de portal de 15 líneas) concentran los hardcodeos de mayor alcance, porque se invocan desde decenas de procesos. dbo.FN_ES_COVID tiene 30 líneas y gobierna 66 SPs.</li><li>Cinco funciones escalares son el punto de apalancamiento del rendimiento de todo el sistema: corregir esas cinco tiene más efecto que optimizar consultas individuales en 100 SPs.</li><li>El drift dev-prod tiene una sola causa medible (el nombre de la base dentro del código) y una sola solución (sinónimos). Resolverlo convierte los otros hallazgos en corregibles de una sola vez, en lugar de dos veces por ambiente.</li><li>Recomendación de compuerta automática en CI, con los conteos ya construidos: rechazar objeto nuevo que contenga el nombre literal de una base externa, lista literal de tipos de crédito, UDF escalar con acceso a datos en SELECT, o INSERT a tablas de estado de cuenta sin control de reproceso.</li><li>Sugerencia de valor para la propuesta del portal: el modulo de alertas de tasas (SAF) ya es, de hecho, un portal de parametrización con carga de archivo, validación y bitácora incompleta. Sirve como piloto y como referencia de lo que hay que hacer mejor: validación por conjuntos, id de carga, cuatro ojos y estados de envío bien separados.</li></ul>
 </div>
-<footer>Generado por la auditoria automatizada + revision manual del codigo. Los hallazgos se sustentan en el codigo fuente;
-los que dependen de datos o de plan de ejecucion se marcan como tales en el impacto. Siguiente paso: validar los hallazgos y continuar con el siguiente lote.</footer>
+<footer>Generado por la auditoría automatizada + revisión manual del código. Los hallazgos se sustentan en el código fuente;
+los que dependen de datos o de plan de ejecución se marcan como tales en el impacto. Siguiente paso: validar los hallazgos y continuar con el siguiente lote.</footer>
 <script>
 const $=s=>document.querySelector(s), fs=$('#fs'),fc=$('#fc'),fe=$('#fe'),fq=$('#fq'),fl=$('#fl');
 function apply(){
