@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Genera los documentos ejecutivos de la auditoría KARDIA/SAF:
-06_ejecutivo.html, 07_plan_remediacion.html y 08_portal_admin.html
+06_ejecutivo.html, 07_plan_remediacion.html, 08_portal_admin.html y
+10_contexto_migracion.html
 """
 import html
 from pathlib import Path
@@ -60,6 +61,7 @@ NAV = """<nav class="docs">
 <a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
 <a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
 <a href="09_demo_portal.html">Demo del portal</a>
+<a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
 <a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
 </nav>"""
 
@@ -105,7 +107,9 @@ riesgos = [
      "Sustituir los nombres de base embebidos por sinónimos por ambiente. Un solo cambio elimina la causa del "
      "drift y habilita el despliegue automatizado."),
     ("R3", "c", "El cierre no es repetible y un error puede pasar inadvertido",
-     "El cierre mensual individual duplica PRINCIPAL_FINAL si se reprocesa; el cierre comercial lee comisiones "
+     "El cierre diario acumula ajustes por diseño, pero no registra la corrida ni impide un segundo pase del "
+     "mismo periodo, y el agregado del cierre mensual individual se toma de todo el histórico sin filtro de "
+     "periodo; el cierre comercial lee comisiones "
      "de una fecha fija ('20260123') en lugar del periodo; 89 de 100 objetos revisados hacen rollback sin "
      "propagar el error; y la bitácora de errores de póliza la escriben 102 objetos, pero ninguno la vigila.",
      "Un cierre puede terminar en 'éxito' con cifras incompletas o duplicadas y llegar a contabilidad sin que "
@@ -120,8 +124,8 @@ riesgos = [
      "quede sin actualizar. Ya hay dos definiciones distintas de 'cuota COVID' y dos de 'cartera' conviviendo.",
      "Extraer los valores a catálogos con vigencia y administrarlos desde el portal propuesto, con aprobación "
      "de cuatro ojos y bitácora de cambios."),
-    ("R5", "a", "El proceso lee sin control de concurrencia y procesa fila por fila",
-     "Uso extendido de WITH (NOLOCK) en cálculos financieros y reportes (287 usos solo en la familia de "
+    ("R5", "a", "La cifra publicada no es reproducible y el proceso avanza fila por fila",
+     "Uso extendido de WITH (NOLOCK) sobre la réplica de lectura en cálculos financieros y reportes (287 usos solo en la familia de "
      "cierre), cursores en los procedimientos de saldos, y funciones escalares con acceso a datos invocadas "
      "desde decenas de procedimientos.",
      "Riesgo de leer filas no confirmadas o duplicadas durante el propio cierre (cifras no reproducibles), "
@@ -201,14 +205,31 @@ contable, y qué decisiones se necesitan para empezar a remediar.</p>
 <p>El sistema funciona y produce la contabilidad todos los días, pero lo hace <b>sin las tres garantías que se
 esperan de un proceso bancario</b>: no se puede demostrar que el código que corre en producción es el
 autorizado (49% de diferencia entre ambientes, y objetos productivos leyendo la base de QA); el cierre no es
-repetible ni avisa cuando falla (reprocesar duplica cifras, y los errores se registran en una bitácora que
-nadie vigila); y las reglas de negocio viven dentro del código (63 grupos de valores fijos, con dos
+repetible ni avisa cuando falla (no hay marca de corrida que impida un segundo pase, y los errores se
+registran en una bitácora que nadie vigila); y las reglas de negocio viven dentro del código (63 grupos de valores fijos, con dos
 definiciones distintas de la misma regla conviviendo).</p>
 <p>Ninguno de los tres se resuelve comprando software: se resuelven con una secuencia de trabajo acotada, que
 empieza por reconciliar ambientes y termina con las reglas administradas desde un portal con aprobación de
 cuatro ojos. La buena noticia es que <b>el riesgo está concentrado</b>: ocho objetos son invocados por casi todo
 el portafolio y 18 procedimientos alimentan toda la entrega de información, así que proteger menos del 5% del
 código cubre la mayor parte del riesgo.</p>
+</div>
+
+<h2>Contexto operativo del proceso</h2>
+<div class="card verde">
+<p>Confirmado con el equipo de desarrollo: el proceso <b>lee diariamente de <code>Quiero_Confianza</code>, una
+réplica de solo lectura del transaccional SAF/Sisde</b>, y <b>escribe el histórico contable en
+<code>KARDIA</code></b>, dentro del sistema CAS. Minutos después de que SAF cierra operaciones se dispara el
+cierre de la póliza del día; el histórico queda bloqueado y los ajustes de días anteriores se registran como
+<b>adiciones acumuladas</b> en lugar de modificar el pasado, y los valores fijos se concentran en la
+clasificación de las <b>cuatro pólizas principales</b>: devengados de intereses, devengados de moratorios,
+seguros y otras comisiones.</p>
+<p>Este contexto no cambia el alcance ni los hallazgos, pero sí precisa tres lecturas, y así están redactados
+los reportes: el uso de <code>NOLOCK</code> no pone en riesgo al core (la fuente es una réplica) y queda como
+riesgo de <b>reproducibilidad de la cifra</b>; la acumulación del cierre es intencional, de modo que el defecto
+es la <b>ausencia de marca de corrida y de acotamiento por periodo</b>, no la suma en sí; y la parametrización
+debe atacar primero las cuatro pólizas. El detalle, junto con la estrategia para el futuro reemplazo del core,
+está en <a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>.</p>
 </div>
 
 <h2>Los seis riesgos que importan</h2>
@@ -255,6 +276,8 @@ consultaron datos productivos.</p>
 <li><a href="07_plan_remediacion.html">Plan de remediación por olas</a> &middot;
     <a href="08_portal_admin.html">Propuesta del portal de administración</a> &middot;
     <a href="09_demo_portal.html">Demo navegable del portal</a> (prototipo sin backend)</li>
+<li><a href="10_contexto_migracion.html">Contexto operativo y estrategia ante el cambio de core</a> &mdash;
+    ajustes de interpretación, matriz de las cuatro pólizas y salida de SAF/Sisde</li>
 </ul>
 """
 
@@ -290,12 +313,13 @@ olas = [
      "Ola 0.", "azul"),
     ("Ola 2", "Correcciones críticas de cifra", "4-6 sesiones",
      "Cerrar los defectos que hoy pueden alterar una cifra contable.",
-     ["Idempotencia del cierre mensual individual: reprocesar un periodo debe dejar el mismo resultado (borrado por periodo con llave, o UPSERT por llave natural).",
+     ["Control de corrida del cierre: registrar periodo, identificador de ejecución y estado, rechazar el segundo pase del mismo periodo salvo reproceso autorizado, y acotar al periodo el agregado que hoy se toma de todo el histórico. El modelo acumulativo con bloqueo del histórico se conserva; lo que se agrega es la garantía de que un reintento no vuelve a acumular.",
       "Sustituir la fecha fija '20260123' del cierre comercial por el periodo recibido como parámetro.",
       "Corregir el DELETE de PRINCIPAL sin filtro de póliza en PO.SYS_SP_MOV_CARGO.",
       "Retirar edc.SP_Genera_Ordenes_Dummy de producción o protegerlo con guarda de ambiente, y limpiar el correo de prueba del padrón de clientes.",
       "Resolver, ya con respuesta de contabilidad, los cuatro hallazgos contables pendientes de validación."],
-     ["Ejecutar dos veces el cierre de un periodo cerrado produce cifras idénticas (prueba automatizada).",
+     ["Ejecutar dos veces el cierre de un periodo cerrado produce cifras idénticas y la segunda ejecución queda registrada como rechazada o como reproceso autorizado (prueba automatizada).",
+      "Un ajuste de un día anterior se refleja como adición acumulada y el saldo del día original no cambia.",
       "El cierre de un periodo histórico reproduce la cifra publicada en su momento.",
       "Ningún objeto productivo genera datos aleatorios ni de prueba.",
       "Cada corrección contable tiene aprobación escrita del área responsable."],
@@ -316,23 +340,26 @@ olas = [
     ("Ola 4", "Catálogos y parametrización", "6-8 sesiones",
      "Sacar las reglas de negocio del código y ponerlas bajo administración con vigencia.",
      ["Modelo de catálogos con vigencia (parámetro, valor, vigencia desde y hasta, ambiente, autor, aprobador).",
-      "Cargar los 63 grupos de hardcodeo según su clasificación: parametrizables en portal, catálogos en base y defectos.",
+      "Empezar por la matriz de las cuatro pólizas principales (devengados de intereses, devengados de moratorios, seguros y otras comisiones): concepto de origen, rubro, tipo de crédito, cuenta contable, naturaleza y vigencia. Es donde se concentra el hardcodeo y donde el alta de un concepto nuevo hoy obliga a liberar código.",
+      "Cargar el resto de los 63 grupos de hardcodeo según su clasificación: parametrizables en portal, catálogos en base y defectos.",
       "Unificar las reglas duplicadas: dos definiciones de cuota COVID, dos de cartera, dos de cuentas excluidas.",
       "Reemplazar en el código los valores fijos por lectura del catálogo con la vigencia del periodo procesado.",
       "Primer modulo del portal: consulta, edición con cuatro ojos y bitácora."],
-     ["Recalcular un periodo histórico usa los valores vigentes en ese periodo y reproduce la cifra publicada.",
+     ["Dar de alta un concepto o rubro nuevo de las cuatro pólizas y verlo clasificado en la póliza del día siguiente, sin liberar código ni reiniciar nada.",
+      "Recalcular un periodo histórico usa los valores vigentes en ese periodo y reproduce la cifra publicada.",
+      "Todo concepto de origen que llegue sin mapeo se rechaza a una bandeja visible en el portal, en lugar de quedar sin clasificar en silencio.",
       "Ningún valor de la lista de parametrizables aparece como literal en el código (verificado por la compuerta de integración continua).",
       "Todo cambio de parámetro tiene autor, aprobador distinto y fecha en la bitácora."],
      "Medio-alto: el cálculo pasa a depender de datos. Obliga a versionar el catálogo con vigencia, nunca a sobrescribirlo.",
      "Ola 1 y la definición de fuentes oficiales por parte de negocio.", "ambar"),
     ("Ola 5", "Rendimiento y concurrencia", "5-7 sesiones",
      "Cifras reproducibles y una ventana de cierre que no crezca con la cartera.",
-     ["Sustituir WITH (NOLOCK) por nivel de aislamiento snapshot en los cálculos financieros, empezando por la familia de cierre.",
+     ["Sustituir WITH (NOLOCK) por nivel de aislamiento snapshot sobre la réplica de lectura en los cálculos financieros, empezando por la familia de cierre, y registrar por corrida la marca de sincronía de la réplica para que la cifra sea reproducible.",
       "Convertir las funciones escalares con acceso a datos en funciones en línea o columnas materializadas (seis funciones con 31 a 78 invocadores).",
       "Eliminar cursores en los procedimientos de saldos y reescribirlos en operaciones de conjunto.",
       "Revisar tipos MONEY y las agregaciones con granularidad inconsistente.",
       "Medir duración y lecturas antes y después de cada cambio."],
-     ["El cierre produce la misma cifra en ejecuciones concurrentes con carga.",
+     ["El cierre produce la misma cifra al repetirse sobre el mismo punto de lectura de la réplica.",
       "Duración del cierre igual o menor que la línea base, documentada objeto por objeto.",
       "Ninguna lectura sucia en los cálculos que alimentan la póliza."],
      "Medio: sin cambio funcional esperado, pero exige medición antes y después y ventana de pruebas con volumen.",
@@ -605,4 +632,194 @@ condición para la Ola 4 del plan de remediación, por lo que conviene arrancarl
     '8 módulos &middot; parámetros con vigencia y cuatro ojos &middot; ASP.NET Core 8 + React con TypeScript sobre SQL Server',
     body3), encoding='utf-8')
 
-print('ok', [p.name for p in sorted(OUT.glob('0*.html'))])
+# ------------------------------------------- contexto operativo y migracion
+arq = [
+    ("Origen (lectura)", "Quiero_Confianza",
+     "Réplica de solo lectura del transaccional SAF/Sisde. El proceso no escribe en ella.",
+     "Que sea réplica elimina el riesgo de afectar al core, pero no garantiza que la fotografía sea estable "
+     "mientras el cierre la recorre: sin punto de lectura fijo, dos corridas pueden diferir."),
+    ("Destino (escritura)", "KARDIA",
+     "Base central donde vive el histórico contable, envuelta por el sistema CAS.",
+     "Es el activo a proteger: aquí aplican la idempotencia por corrida, el bloqueo del histórico y la "
+     "bitácora de errores que hoy nadie vigila."),
+    ("Disparo", "Minutos después del cierre de SAF",
+     "El cierre de la póliza del día se ejecuta de forma automática al cerrar operaciones el core.",
+     "La ventana es corta y no hay intervención humana: si un paso falla en silencio, la póliza sale "
+     "incompleta. Por eso la propagación de errores (Ola 3) vale más que cualquier optimización."),
+    ("Ajustes", "Adiciones acumuladas, sin modificar el pasado",
+     "Los ajustes de días anteriores se registran como movimientos nuevos; el histórico queda bloqueado.",
+     "Es un diseño contable correcto. El control que falta no es evitar la suma, es evitar la suma repetida: "
+     "marca de corrida por periodo y rechazo del segundo pase."),
+    ("Hardcodeo", "Cuatro pólizas principales",
+     "Devengados de intereses, devengados de moratorios, seguros y otras comisiones.",
+     "Confirma la prioridad de la parametrización: la matriz de esas cuatro pólizas es la Ola 4 y el primer "
+     "módulo del portal con valor visible."),
+]
+
+reencuadres = [
+    ("WITH (NOLOCK) sobre el origen", "L1-014, L10-016",
+     "Lectura sucia que puede introducir transacciones revertidas en la póliza.",
+     "El origen es una réplica de solo lectura: no hay riesgo para el core ni transacciones en vuelo del "
+     "aplicativo. El riesgo que permanece es de reproducibilidad: la réplica cambia mientras el cierre la "
+     "lee, y filas pueden duplicarse u omitirse por movimiento de páginas.",
+     "Se mantiene la severidad Alto, con la remediación redirigida a snapshot sobre la réplica más una marca "
+     "de sincronía por corrida."),
+    ("Idempotencia del cierre", "L1-006",
+     "Reprocesar duplica PRINCIPAL_FINAL: defecto de cálculo.",
+     "La acumulación es intencional en el diseño del cierre diario. El defecto real es doble: el agregado se "
+     "toma de todo el histórico sin filtro de periodo, y no existe marca de corrida que impida un segundo "
+     "pase por reintento del job o ejecución manual.",
+     "Se conserva como crítico, reescrito y marcado como pendiente de validación del comportamiento esperado "
+     "ante reintento."),
+    ("Lectura desde bases de QA y shadow", "L1-007, L1-016",
+     "Objetos productivos leen datos que no son productivos.",
+     "Sin cambio, y ahora con más sustento: el origen autorizado es Quiero_Confianza; _CreditoPuente_QA y "
+     "_shadow no son la réplica productiva.",
+     "Se mantiene crítico. La remediación por sinónimos por ambiente sigue siendo la correcta."),
+    ("Drift entre ambientes", "L1-016 y matriz de paridad",
+     "49% de objetos distintos entre desarrollo y producción.",
+     "Se confirma que 119 de 126 diferencias son solo el nombre de la base por ambiente, lo que refuerza que "
+     "no es divergencia funcional sino falta de sinónimos.",
+     "Sin cambio de severidad; el mensaje al cliente se precisa: el drift es artificial y barato de eliminar."),
+    ("Normalización del modelo", "Lote 6 (tablas)",
+     "Tablas sin llave natural, sin restricciones y con tipos MONEY.",
+     "El equipo declara normalización hasta tercera forma normal, y a la vez reconoce en la arquitectura "
+     "general tablas duplicadas, identificadores de cliente no unificados entre aplicativos y tablas vacías.",
+     "Sin cambio: la declaración de normalización no sustituye la verificación de llaves y restricciones, que "
+     "requiere metadatos de la instancia."),
+]
+
+matriz = [
+    ("Devengado de intereses", "Rubros de interés ordinario por tipo de crédito y programa",
+     "Rubro, tipo de crédito, origen, cuenta contable, naturaleza, vigencia"),
+    ("Devengado de moratorios", "Rubros moratorios y su exclusión por estado de cartera",
+     "Rubro, estado de cartera, cuenta contable, naturaleza, vigencia, criterio de exclusión"),
+    ("Seguros", "Conceptos de seguro y su prorrateo",
+     "Concepto, aseguradora o esquema, cuenta contable, base de cálculo, IVA aplicable, vigencia"),
+    ("Otras comisiones", "Comisiones de prepago, visitas, avalúos y administración",
+     "Concepto, rubro, cuenta contable, tasa de IVA, participación por convenio, vigencia"),
+]
+
+mig = [
+    ("M1", "Congelar el contrato de datos que el proceso necesita del core", "Ahora, junto con la Ola 1",
+     "Documentar, por cada uno de los objetos que leen del origen, qué entidades y campos consume y con qué "
+     "semántica: crédito, cliente, pago, movimiento, saldo, concepto de cobro, reversa. El resultado es un "
+     "diccionario canónico independiente de SAF, no un diagrama de SAF.",
+     "Es el único entregable que sobrevive intacto al cambio de core y hoy se puede construir con el análisis "
+     "de dependencias ya entregado."),
+    ("M2", "Interponer una capa de fachada entre el core y el cálculo", "Ola 1 y Ola 5",
+     "Sustituir las lecturas directas de tres partes por vistas o procedimientos de extracción en un esquema "
+     "dedicado (por ejemplo EXT o STG) que expongan el modelo canónico. El cálculo contable deja de conocer "
+     "el nombre, el esquema y la forma de las tablas de SAF.",
+     "Convierte la migración de origen en reescribir una capa delgada, en lugar de tocar 245 objetos. Es la "
+     "misma remediación que ya se propuso para eliminar el drift, así que no cuesta trabajo adicional."),
+    ("M3", "Inventariar las excepciones del core", "En paralelo con la auditoría",
+     "El equipo domina reglas particulares de SAF que no están escritas: reversas de movimientos mal "
+     "aplicados que se buscan en tablas específicas, casos de cancelación, programas especiales. Cada una "
+     "debe quedar como regla nombrada, con su condición, su tabla de origen y su tratamiento contable.",
+     "Es el conocimiento que se pierde si el desarrollador no está disponible, y el que hará imposible "
+     "estimar la migración si no se documenta antes."),
+    ("M4", "Materializar el staging del día", "Ola 5",
+     "Extraer una sola vez por corrida los datos del origen a un área de staging con la marca de sincronía, y "
+     "calcular sobre el staging en lugar de volver a leer la réplica en cada procedimiento.",
+     "Resuelve al mismo tiempo la reproducibilidad de la cifra, el rendimiento de la ventana de cierre y la "
+     "sustitución del origen: cambiar de core es cambiar quién llena el staging."),
+    ("M5", "Preparar la prueba de paridad entre core actual y nuevo", "Cuando exista el nuevo core",
+     "Con el staging y el contrato canónico, la validación de la migración es mecánica: llenar el staging "
+     "desde el core nuevo para un periodo ya cerrado y comparar la póliza resultante contra la publicada, "
+     "partida por partida.",
+     "Convierte una migración de fe en una migración con evidencia, y permite coexistencia temporal: doble "
+     "extracción, una sola contabilidad."),
+]
+
+body4 = f"""
+<p class="lead">Contexto operativo confirmado con el equipo de desarrollo el 31 de agosto de 2026, cómo ajusta
+la lectura de los hallazgos ya entregados, y la estrategia recomendada para el día en que SAF/Sisde salga del
+ecosistema. No cambia el alcance ni el número de hallazgos de la auditoría: cambia la redacción de cinco de
+ellos y el orden de prioridad de la parametrización.</p>
+
+<div class="card verde">
+<h3>Conclusión primero</h3>
+<p>La información recibida <b>confirma el propósito de la auditoría</b> (eliminar los valores fijos y
+estructurar las reglas contables como una matriz configurable, administrable desde una interfaz) y no invalida
+ningún hallazgo. Lo que aporta es precisión: el origen es una réplica de solo lectura, el cierre es diario con
+histórico bloqueado y ajustes acumulados, y el hardcodeo se concentra en cuatro pólizas. Con eso, dos hallazgos
+se reencuadran, uno se refuerza y la Ola 4 gana un foco concreto.</p>
+</div>
+
+<h2>Arquitectura del proceso y qué implica para la auditoría</h2>
+<table><thead><tr><th>Elemento</th><th>Qué es</th><th>Como opera</th><th>Implicación de auditoría</th></tr></thead><tbody>
+{''.join(f'<tr><td><b>{e(a)}</b></td><td class="mono">{e(b)}</td><td>{e(c)}</td><td>{e(d)}</td></tr>' for a, b, c, d in arq)}
+</tbody></table>
+
+<h2>Los cinco hallazgos que se reencuadran</h2>
+{''.join(f'''
+<div class="card ambar">
+  <h3>{e(t)} <span class="tag">{e(ids)}</span></h3>
+  <p class="q">Lectura original</p><p>{e(antes)}</p>
+  <p class="q">Lectura con el contexto</p><p>{e(ahora)}</p>
+  <p class="q">Efecto en el reporte</p><p>{e(efe)}</p>
+</div>''' for t, ids, antes, ahora, efe in reencuadres)}
+
+<h2>La matriz de las cuatro pólizas: el corazón de la parametrización</h2>
+<p>El equipo ubica los valores fijos en la clasificación de cuatro pólizas, y hoy el alta de un concepto nuevo
+obliga a editar el procedimiento, liberarlo y desplegarlo. Esa es exactamente la forma que debe tomar el
+catálogo de la Ola 4 y el primer módulo del portal.</p>
+<table><thead><tr><th>Póliza</th><th>Que se clasifica hoy en código</th><th>Dimensiones de la matriz</th></tr></thead><tbody>
+{''.join(f'<tr><td><b>{e(p)}</b></td><td>{e(q)}</td><td class="mono">{e(r)}</td></tr>' for p, q, r in matriz)}
+</tbody></table>
+<div class="card azul">
+<h3>Criterio de aceptación del módulo</h3>
+<p>Un usuario de negocio da de alta un concepto de cobro nuevo, lo mapea a rubro y cuenta contable con fecha de
+vigencia, un segundo usuario lo aprueba, y la póliza del día siguiente lo clasifica correctamente <b>sin que
+nadie toque el repositorio</b>. Además, todo concepto que llegue del origen sin mapeo debe caer en una bandeja
+visible, en lugar de quedar silenciosamente fuera de la póliza: hoy ese caso no tiene detección.</p>
+</div>
+
+<h2>Cuando SAF/Sisde salga: como reducir el esfuerzo desde hoy</h2>
+<p>El desarrollador tiene razón en que remapear el core es una carga mayor, y en que el conocimiento crítico
+está en las excepciones. La recomendación no es adelantar la migración, es <b>cambiar dónde vive el
+acoplamiento</b>: hoy el nombre y la forma de las tablas de SAF están escritos en 245 objetos; después de la
+remediación deberían estar en una sola capa. Los cinco movimientos siguientes se solapan con trabajo que ya
+está en el plan, así que casi no agregan costo.</p>
+{''.join(f'''
+<div class="ola">
+  <h3>{e(k)} &mdash; {e(t)} <span class="tag">{e(w)}</span></h3>
+  <p>{e(d)}</p>
+  <p style="margin:6px 0 0;font-size:12.5px;color:#93a1bb"><b>Por que vale la pena ahora:</b> {e(v)}</p>
+</div>''' for k, t, w, d, v in mig)}
+
+<div class="card rojo">
+<h3>Lo que no conviene hacer</h3>
+<ul>
+<li><b>Esperar al nuevo core para remediar.</b> La parametrización y la trazabilidad del cierre son
+independientes del origen: se pierden solo si se escriben otra vez contra tablas de SAF.</li>
+<li><b>Diseñar el modelo canónico a partir del esquema de SAF.</b> Debe describir el negocio (crédito, pago,
+devengo, concepto de cobro), no el sistema del que hoy se leen los datos.</li>
+<li><b>Dejar las excepciones sin documentar.</b> Es el único activo que no se puede reconstruir leyendo
+código, y es el que determinará el costo real de la migración.</li>
+</ul>
+</div>
+
+<h2>Lo que se necesita del cliente para cerrar los pendientes</h2>
+<div class="card">
+<ul>
+<li><b>Consulta a KARDIA en QA (CUA) y metadatos de la instancia.</b> Cierra la Ola 0, los 110 objetos sin
+invocador visible, las 187 tablas sin referencia y la verificación de llaves y restricciones.</li>
+<li><b>Los jobs del SQL Server Agent y la definición del orquestador CAS.</b> Es lo que hoy impide afirmar qué
+dispara cada procedimiento de cierre y con qué frecuencia.</li>
+<li><b>Confirmación de contabilidad</b> sobre los cuatro hallazgos contables pendientes y sobre el
+comportamiento esperado del cierre ante un reintento.</li>
+<li><b>Definición del identificador maestro de cliente</b> (SAF o RFC) entre aplicativos, para el módulo de
+catálogos.</li>
+</ul>
+</div>
+"""
+
+(OUT / '10_contexto_migracion.html').write_text(page(
+    'Contexto operativo y estrategia ante el cambio de core',
+    'Réplica de lectura &middot; cierre diario con histórico bloqueado &middot; matriz de las cuatro pólizas '
+    '&middot; salida de SAF/Sisde',
+    body4), encoding='utf-8')
+
+print('ok', [p.name for p in sorted(OUT.glob('[01]*.html'))])

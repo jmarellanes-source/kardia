@@ -55,6 +55,7 @@ blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px so
 <a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
 <a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
 <a href="09_demo_portal.html">Demo del portal</a>
+<a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
 <a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
 </nav>
 <div class="wrap">
@@ -80,14 +81,31 @@ contable, y qué decisiones se necesitan para empezar a remediar.</p>
 <p>El sistema funciona y produce la contabilidad todos los días, pero lo hace <b>sin las tres garantías que se
 esperan de un proceso bancario</b>: no se puede demostrar que el código que corre en producción es el
 autorizado (49% de diferencia entre ambientes, y objetos productivos leyendo la base de QA); el cierre no es
-repetible ni avisa cuando falla (reprocesar duplica cifras, y los errores se registran en una bitácora que
-nadie vigila); y las reglas de negocio viven dentro del código (63 grupos de valores fijos, con dos
+repetible ni avisa cuando falla (no hay marca de corrida que impida un segundo pase, y los errores se
+registran en una bitácora que nadie vigila); y las reglas de negocio viven dentro del código (63 grupos de valores fijos, con dos
 definiciones distintas de la misma regla conviviendo).</p>
 <p>Ninguno de los tres se resuelve comprando software: se resuelven con una secuencia de trabajo acotada, que
 empieza por reconciliar ambientes y termina con las reglas administradas desde un portal con aprobación de
 cuatro ojos. La buena noticia es que <b>el riesgo está concentrado</b>: ocho objetos son invocados por casi todo
 el portafolio y 18 procedimientos alimentan toda la entrega de información, así que proteger menos del 5% del
 código cubre la mayor parte del riesgo.</p>
+</div>
+
+<h2>Contexto operativo del proceso</h2>
+<div class="card verde">
+<p>Confirmado con el equipo de desarrollo: el proceso <b>lee diariamente de <code>Quiero_Confianza</code>, una
+réplica de solo lectura del transaccional SAF/Sisde</b>, y <b>escribe el histórico contable en
+<code>KARDIA</code></b>, dentro del sistema CAS. Minutos después de que SAF cierra operaciones se dispara el
+cierre de la póliza del día; el histórico queda bloqueado y los ajustes de días anteriores se registran como
+<b>adiciones acumuladas</b> en lugar de modificar el pasado, y los valores fijos se concentran en la
+clasificación de las <b>cuatro pólizas principales</b>: devengados de intereses, devengados de moratorios,
+seguros y otras comisiones.</p>
+<p>Este contexto no cambia el alcance ni los hallazgos, pero sí precisa tres lecturas, y así están redactados
+los reportes: el uso de <code>NOLOCK</code> no pone en riesgo al core (la fuente es una réplica) y queda como
+riesgo de <b>reproducibilidad de la cifra</b>; la acumulación del cierre es intencional, de modo que el defecto
+es la <b>ausencia de marca de corrida y de acotamiento por periodo</b>, no la suma en sí; y la parametrización
+debe atacar primero las cuatro pólizas. El detalle, junto con la estrategia para el futuro reemplazo del core,
+está en <a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>.</p>
 </div>
 
 <h2>Los seis riesgos que importan</h2>
@@ -106,7 +124,7 @@ código cubre la mayor parte del riesgo.</p>
 </div>
 <div class="card rojo">
   <h3><span class="pill c">Crítico</span> &nbsp;R3. El cierre no es repetible y un error puede pasar inadvertido</h3>
-  <p class="q">Evidencia</p><p>El cierre mensual individual duplica PRINCIPAL_FINAL si se reprocesa; el cierre comercial lee comisiones de una fecha fija (&#x27;20260123&#x27;) en lugar del periodo; 89 de 100 objetos revisados hacen rollback sin propagar el error; y la bitácora de errores de póliza la escriben 102 objetos, pero ninguno la vigila.</p>
+  <p class="q">Evidencia</p><p>El cierre diario acumula ajustes por diseño, pero no registra la corrida ni impide un segundo pase del mismo periodo, y el agregado del cierre mensual individual se toma de todo el histórico sin filtro de periodo; el cierre comercial lee comisiones de una fecha fija (&#x27;20260123&#x27;) en lugar del periodo; 89 de 100 objetos revisados hacen rollback sin propagar el error; y la bitácora de errores de póliza la escriben 102 objetos, pero ninguno la vigila.</p>
   <p class="q">Qué significa para el negocio</p><p>Un cierre puede terminar en &#x27;éxito&#x27; con cifras incompletas o duplicadas y llegar a contabilidad sin que ningún control automático lo detecte. La detección depende hoy de que alguien note el descuadre.</p>
   <p class="q">Qué hay que hacer</p><p>Idempotencia por periodo, propagación de errores (THROW) y un monitor sobre la bitácora que alerte antes de que la póliza llegue a contabilidad.</p>
 </div>
@@ -117,8 +135,8 @@ código cubre la mayor parte del riesgo.</p>
   <p class="q">Qué hay que hacer</p><p>Extraer los valores a catálogos con vigencia y administrarlos desde el portal propuesto, con aprobación de cuatro ojos y bitácora de cambios.</p>
 </div>
 <div class="card ambar">
-  <h3><span class="pill a">Alto</span> &nbsp;R5. El proceso lee sin control de concurrencia y procesa fila por fila</h3>
-  <p class="q">Evidencia</p><p>Uso extendido de WITH (NOLOCK) en cálculos financieros y reportes (287 usos solo en la familia de cierre), cursores en los procedimientos de saldos, y funciones escalares con acceso a datos invocadas desde decenas de procedimientos.</p>
+  <h3><span class="pill a">Alto</span> &nbsp;R5. La cifra publicada no es reproducible y el proceso avanza fila por fila</h3>
+  <p class="q">Evidencia</p><p>Uso extendido de WITH (NOLOCK) sobre la réplica de lectura en cálculos financieros y reportes (287 usos solo en la familia de cierre), cursores en los procedimientos de saldos, y funciones escalares con acceso a datos invocadas desde decenas de procedimientos.</p>
   <p class="q">Qué significa para el negocio</p><p>Riesgo de leer filas no confirmadas o duplicadas durante el propio cierre (cifras no reproducibles), y una ventana de cierre que crece con el volumen de cartera.</p>
   <p class="q">Qué hay que hacer</p><p>Nivel de aislamiento snapshot para lectura, conversión de funciones escalares a funciones en línea y eliminación de cursores en los procedimientos críticos, midiendo duración antes y después.</p>
 </div>
@@ -164,6 +182,8 @@ consultaron datos productivos.</p>
 <li><a href="07_plan_remediacion.html">Plan de remediación por olas</a> &middot;
     <a href="08_portal_admin.html">Propuesta del portal de administración</a> &middot;
     <a href="09_demo_portal.html">Demo navegable del portal</a> (prototipo sin backend)</li>
+<li><a href="10_contexto_migracion.html">Contexto operativo y estrategia ante el cambio de core</a> &mdash;
+    ajustes de interpretación, matriz de las cuatro pólizas y salida de SAF/Sisde</li>
 </ul>
 
 </div>

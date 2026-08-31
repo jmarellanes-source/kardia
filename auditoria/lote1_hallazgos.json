@@ -98,12 +98,12 @@
    "sev": "Critico",
    "cat": "Integridad de datos",
    "env": "BD",
-   "titulo": "El cierre mensual no es idempotente: reejecutar suma de nuevo los montos",
+   "titulo": "El cierre no acota el periodo ni registra que ya lo proceso: un segundo pase vuelve a acumular",
    "obj": "CIERRE.SP_IND_GEN_MES_MOD",
    "loc": "líneas 14-60",
    "evidencia": "UPDATE C SET C.PRINCIPAL_FINAL = C.PRINCIPAL_FINAL + B.MONTO ... FROM KARDIA.PO.PR_BALLON_DET WHERE COD_CONCEPTO='PRINCIPAL' AND ID_SECUENCIA IS NULL (sin filtro de fecha)",
-   "impacto": "El acumulado se calcula sobre todo el histórico de PR_BALLON_DET y se suma al valor previo. Una segunda ejecución del mismo periodo (reproceso, reintento del job) duplica PRINCIPAL_FINAL y PRINCIPAL_COVID19. En un cierre contable esto es un error de reporte regulatorio.",
-   "remediacion": "Hacer el cálculo determinista (SET = valor_base + agregado del periodo, o borrar-e-insertar el periodo) y filtrar PR_BALLON_DET por el periodo. Agregar control de reproceso (marca de periodo procesado).",
+   "impacto": "El acumulado se calcula sobre todo el histórico de PR_BALLON_DET y se suma al valor previo. Una segunda ejecución del mismo periodo (reproceso, reintento del job) duplica PRINCIPAL_FINAL y PRINCIPAL_COVID19. En un cierre contable esto es un error de reporte regulatorio. NOTA DE CONTEXTO (sesion con el equipo de desarrollo, 2026-08-31): el diseno declarado trata los ajustes de dias anteriores como adiciones acumuladas con bloqueo del historico, de modo que sumar sobre el valor previo es intencional en el cierre diario. El defecto no es la acumulacion, sino que el agregado se toma de todo el historico de PR_BALLON_DET sin filtro de periodo y que no existe marca de periodo procesado ni guarda que impida un segundo pase del mismo dia (reintento del job o ejecucion manual). Pendiente de validar con el equipo cual es el comportamiento esperado ante reintento.",
+   "remediacion": "Registrar la corrida (periodo, id de ejecucion, estado) y rechazar el segundo pase del mismo periodo salvo reproceso autorizado; acotar el agregado de PR_BALLON_DET al periodo procesado. Si el reproceso debe permitirse, hacerlo determinista (borrar-e-insertar el periodo o SET = base + agregado del periodo) en lugar de sumar sobre el valor acumulado.",
    "esfuerzo": "M"
   },
   {
@@ -115,7 +115,7 @@
    "obj": "PO.SYS_SP_MOV_ABONO, PO.SYS_SP_MOV_CARGO, PO.SYS_SP_MOV_INTERES, PO.SYS_SP_AVALUO_AND_UPDATE (idénticos en BD y BD_prod)",
    "loc": "43 referencias en BD_prod (4 objetos)",
    "evidencia": "FROM Quiero_Confianza_CreditoPuente_QA.PR.PR_ENCABEZADO_PAGO A WITH (NOLOCK) ... JOIN Quiero_Confianza_CreditoPuente_QA.CG.CG_CATALOGO_X_EMPRESA",
-   "impacto": "Los extractores de movimientos de abono/cargo/interés de producción leen pagos, clientes y catálogo contable desde la base de QA. El resto de los SPs de BD_prod usan Quiero_Confianza (producción). Riesgo doble: cifras contables construidas con datos no productivos y exposición de datos de clientes entre ambientes.",
+   "impacto": "Los extractores de movimientos de abono/cargo/interés de producción leen pagos, clientes y catálogo contable desde la base de QA. El resto de los SPs de BD_prod usan Quiero_Confianza (producción). Riesgo doble: cifras contables construidas con datos no productivos y exposición de datos de clientes entre ambientes. NOTA DE CONTEXTO (sesion con el equipo de desarrollo, 2026-08-31): el origen legitimo del proceso es Quiero_Confianza, replica de solo lectura del transaccional SAF/Sisde. Eso confirma la gravedad de este hallazgo: las variantes _CreditoPuente_QA y _shadow no son la replica productiva, por lo que estos objetos no leen del origen autorizado.",
    "remediacion": "Reemplazar por sinónimos (CREATE SYNONYM) resueltos por ambiente y desplegar la versión productiva apuntando a Quiero_Confianza. Verificar de inmediato si las pólizas generadas en producción usaron datos de QA.",
    "esfuerzo": "M"
   },
@@ -206,8 +206,8 @@
    "obj": "14 de 20 SPs del lote (347 ocurrencias); CIERRE.SP_CMR_GEN_MES 72, edc.sp_inserEdcCredito 63, CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS 37",
    "loc": "clausulas WITH (NOLOCK) en joins a Quiero_Confianza*.PR.*",
    "evidencia": "FROM Quiero_Confianza_shadow.PR.PR_CREDITOS C WITH (NOLOCK) INNER JOIN PO.PR_CAPITAL_DET A WITH (NOLOCK) ...",
-   "impacto": "READ UNCOMMITTED admite lecturas sucias, filas duplicadas y filas omitidas por movimiento de paginas. Aplicado al cálculo de saldos, devengos y pólizas contables significa que dos ejecuciones pueden dar cifras distintas y que un cierre puede incluir transacciones que luego se revirtieron. No es aceptable en un proceso contable auditable.",
-   "remediacion": "Eliminar NOLOCK de todo lo que alimente cifras contables y aislar la lectura con SNAPSHOT / READ COMMITTED SNAPSHOT sobre la base origen. Donde el NOLOCK exista solo por bloqueos de la base transaccional, replicar a un área de staging y leer de ahí.",
+   "impacto": "READ UNCOMMITTED admite lecturas sucias, filas duplicadas y filas omitidas por movimiento de paginas. Aplicado al cálculo de saldos, devengos y pólizas contables significa que dos ejecuciones pueden dar cifras distintas y que un cierre puede incluir transacciones que luego se revirtieron. No es aceptable en un proceso contable auditable. NOTA DE CONTEXTO (sesion con el equipo de desarrollo, 2026-08-31): el origen es una replica de solo lectura, no la base transaccional viva, por lo que el NOLOCK no puede bloquear ni degradar el core productivo y el riesgo de lectura sucia de una transaccion en vuelo es menor. El riesgo que permanece es real: leer la replica mientras se le aplican cambios admite filas duplicadas u omitidas por movimiento de paginas y lecturas no repetibles, de modo que dos corridas del mismo periodo pueden arrojar cifras distintas sin que nada lo advierta.",
+   "remediacion": "Sobre la replica, leer con SNAPSHOT (o READ COMMITTED SNAPSHOT) y fijar el punto de lectura del cierre: una marca de sincronia de la replica por corrida, registrada junto al id de ejecucion, para que el resultado sea reproducible y auditable. Eliminar NOLOCK de todo lo que alimente cifras contables; conservarlo, si acaso, solo en consultas exploratorias.",
    "esfuerzo": "L"
   },
   {
@@ -232,7 +232,7 @@
    "obj": "todo el lote; global: 3.613 referencias en BD, 2.867 en BD_prod",
    "loc": "3-part names Quiero_Confianza[_shadow|_CreditoPuente_QA].PR/CG/BA/CL.*",
    "evidencia": "BD usa Quiero_Confianza_shadow (3.201) y Quiero_Confianza_Shadow con otra capitalizacion (250), mas 119 a Quiero_Confianza; BD_prod usa Quiero_Confianza (2.824); 4 SPs usan Quiero_Confianza_CreditoPuente_QA en ambos (43 y 43). CIERRE.SP_CMR_GEN_MES mezcla ambas en el mismo SP (90 shadow + 1 productiva)",
-   "impacto": "119 de los 126 objetos que difieren entre ambientes lo hacen UNICAMENTE por este nombre o por formato (solo 7 tienen drift funcional real): el 'drift' entre ambientes es artificial y obliga a mantener dos copias del código, con el riesgo de promover la versión equivocada. La mezcla de capitalización falla si la instancia usa collation sensible a mayúsculas.",
+   "impacto": "119 de los 126 objetos que difieren entre ambientes lo hacen UNICAMENTE por este nombre o por formato (solo 7 tienen drift funcional real): el 'drift' entre ambientes es artificial y obliga a mantener dos copias del código, con el riesgo de promover la versión equivocada. La mezcla de capitalización falla si la instancia usa collation sensible a mayúsculas. NOTA DE CONTEXTO (sesion con el equipo de desarrollo, 2026-08-31): el nombre correcto del origen productivo es Quiero_Confianza (replica del core); shadow y _QA son variantes por ambiente. Confirma que la remediacion correcta es el sinonimo por ambiente y no editar el nombre en cada copia.",
    "remediacion": "Sustituir los 3-part names por SYNONYMs por ambiente (o vistas de fachada en un esquema EXT). Con eso el código queda idéntico en BD y BD_prod y el despliegue se reduce a crear los sinónimos.",
    "esfuerzo": "M"
   },
