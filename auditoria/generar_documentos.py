@@ -62,6 +62,7 @@ NAV = """<nav class="docs">
 <a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
 <a href="09_demo_portal.html">Demo del portal</a>
 <a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
 <a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
 </nav>"""
 
@@ -101,11 +102,13 @@ riesgos = [
      "lo demás."),
     ("R2", "c", "Cuatro procedimientos de producción leen datos de la base de QA",
      "Objetos productivos consultan Quiero_Confianza_CreditoPuente_QA y Quiero_Confianza_shadow; el nombre de "
-     "la base externa está escrito dentro del código y difiere entre ambientes en 7 objetos.",
+     "la base externa está escrito 6.485 veces en los 153 archivos que leen del origen, y difiere entre "
+     "ambientes.",
      "Cifras de cierre calculadas con datos de prueba, y la imposibilidad de promover una corrección sin "
-     "editarla a mano en cada ambiente: es la causa raíz del 49% de drift.",
-     "Sustituir los nombres de base embebidos por sinónimos por ambiente. Un solo cambio elimina la causa del "
-     "drift y habilita el despliegue automatizado."),
+     "editarla a mano en cada ambiente: de las 125 diferencias entre objetos comunes, 90 son solo el nombre de "
+     "la base.",
+     "Sustituir los nombres de base embebidos por 38 sinónimos por ambiente. Un solo despliegue elimina el 72% "
+     "del drift y habilita el despliegue automatizado; los scripts ya están entregados."),
     ("R3", "c", "El cierre no es repetible y un error puede pasar inadvertido",
      "El cierre diario acumula ajustes por diseño, pero no registra la corrida ni impide un segundo pase del "
      "mismo periodo, y el agregado del cierre mensual individual se toma de todo el histórico sin filtro de "
@@ -290,7 +293,8 @@ consultaron datos productivos.</p>
 olas = [
     ("Ola 0", "Reconciliación de ambientes y línea base", "3-4 sesiones",
      "Saber que corre en producción antes de tocar una línea de código.",
-     ["Comparar los 256 objetos comunes contra sys.sql_modules de producción (nombre, fecha de modificación y hash) y resolver los 19 objetos de cierre ausentes en el export.",
+     ["Comparar los 256 objetos comunes contra sys.sql_modules de producción (nombre, fecha de modificación y hash) y resolver los 19 objetos de cierre ausentes en el export. Los tres scripts ya están entregados en auditoria/fase0 y son de solo lectura; el detalle paso por paso está en el documento de Fase 0 y Fase 1.",
+      "Correr el comparador de paridad con la salida de cada ambiente. Ejecutado hoy sobre el repositorio da 71 objetos iguales, 90 cuya única diferencia es el nombre de la base de origen, 35 con diferencias reales y 50 ausentes del export de producción: el análisis humano se concentra en esos 35.",
       "Aclarar SP_SAF_SALDOS: 573 líneas en desarrollo contra 223 en producción.",
       "Exportar al repositorio los jobs del SQL Server Agent y las tareas del orquestador, un script por job.",
       "Definir la rama por ambiente y congelar cambios manuales en producción.",
@@ -302,9 +306,10 @@ olas = [
      "Ninguna. Es el punto de partida.", "azul"),
     ("Ola 1", "Eliminar la causa del drift: nombres de base y ambiente en el código", "2-3 sesiones",
      "Que el mismo script se despliegue sin editar en los tres ambientes.",
-     ["Crear sinónimos por ambiente para las bases externas (Quiero_Confianza, Quiero_Confianza_shadow, Quiero_Confianza_CreditoPuente_QA) y sustituir los nombres embebidos en los 7 objetos afectados.",
-      "Eliminar toda referencia a bases de QA desde objetos productivos (4 procedimientos).",
-      "Reemplazar los nombres de base de tres partes por sinónimos en el resto del portafolio.",
+     ["Desplegar los 38 sinónimos del esquema EXT que cubren las 6.485 referencias literales al origen de los 153 archivos que lo leen. El script está generado y es idempotente; la base de origen se pasa como variable de sqlcmd, así que es el único artefacto que difiere entre ambientes.",
+      "Sustituir en el código las referencias de tres partes por EXT.<objeto>: 3.617 sustituciones en BD, hechas por un script revisable que escribe en un directorio aparte y no modifica los archivos originales.",
+      "Eliminar con ello toda referencia a bases de QA o shadow desde objetos productivos (4 procedimientos apuntan hoy a _CreditoPuente_QA).",
+      "Verificar en la instancia con las cuatro consultas de control: cero objetos con el nombre de la base en sys.sql_modules, 38 sinónimos resolviendo y una sola base de origen distinta.",
       "Compuerta de integración continua que rechace cualquier script con un nombre de base literal."],
      ["Ningún objeto productivo referencia una base de QA o shadow.",
       "El mismo archivo .sql se aplica sin modificación en desarrollo, QA y producción.",
@@ -821,5 +826,273 @@ catálogos.</li>
     'Réplica de lectura &middot; cierre diario con histórico bloqueado &middot; matriz de las cuatro pólizas '
     '&middot; salida de SAF/Sisde',
     body4), encoding='utf-8')
+
+# ------------------------------------------- 11 fase 0 y fase 1 con ejemplos
+entregables = [
+    ("fase0/01_inventario_instancia.sql", "Solo lectura",
+     "Extrae de cada instancia el nombre, tipo, fecha de modificación y hash SHA-256 del texto normalizado de "
+     "los objetos programables, más columnas, llaves, restricciones, índices, columnas MONEY y filas de cada "
+     "tabla. Es la fotografía de lo que realmente corre."),
+    ("fase0/02_disparadores_cierre.sql", "Solo lectura",
+     "Jobs del SQL Server Agent con su comando exacto, su calendario y las últimas 30 corridas con duración y "
+     "resultado, más las últimas filas de la bitácora PO.SAF_POLIZA_ERRORES."),
+    ("fase0/03_comparar_paridad.py", "No toca la base",
+     "Cruza el CSV de cada ambiente contra el repositorio y clasifica cada objeto en IGUAL, SOLO_ORIGEN, "
+     "DIFERENTE, SOLO_INSTANCIA, SOLO_REPO o AUSENTE_EXPORT. Sin argumentos compara BD contra BD_prod, que es "
+     "lo que ya se puede correr hoy."),
+    ("fase1/generar_sinonimos.py", "No toca la base",
+     "Recorre BD y BD_prod y genera el script de sinónimos a partir de las referencias reales al origen. "
+     "Reproducible: si aparece una tabla nueva del core, se vuelve a correr."),
+    ("fase1/01_crear_sinonimos_EXT.sql", "Crea 38 sinónimos",
+     "Script generado, idempotente y parametrizado por ambiente con sqlcmd. Es el único artefacto que difiere "
+     "entre producción y QA."),
+    ("fase1/02_sustituir_referencias.py", "No modifica los originales",
+     "Reescribe las referencias de tres partes a EXT.&lt;objeto&gt; en un directorio de salida separado, "
+     "preservando el encoding de cada archivo, y reporta cuántas sustituciones hizo por archivo."),
+    ("fase1/03_verificar_sin_referencias.sql", "Solo lectura",
+     "Cuatro consultas de verificación posterior al despliegue, cada una con su resultado esperado."),
+    ("fase1/04_gate_ci.py", "Compuerta de CI",
+     "Falla la construcción si vuelve a entrar una referencia literal al origen; el resto de patrones "
+     "(fecha fija, IVA, participación, IP) empieza en modo aviso y pasa a bloqueante conforme cierra cada ola."),
+]
+
+f0 = [
+    ("Paso 1", "Fotografiar el código que corre",
+     "Hoy la única fuente es un export de fecha desconocida: 19 de los 27 objetos de cierre no están en "
+     "BD_prod y SP_SAF_SALDOS aparece con 223 de sus 573 líneas.",
+     "Ejecutar 01_inventario_instancia.sql en producción y en QA (CUA) y guardar la salida como CSV. Es solo "
+     "lectura sobre catálogos del sistema, no toca datos ni objetos.",
+     "Un CSV por ambiente con hash por objeto. Cierra cuando existen los dos CSV y su fecha es conocida."),
+    ("Paso 2", "Cruzar contra el repositorio",
+     "El drift se mide comparando archivos, así que un cambio de formato cuenta igual que un cambio de lógica "
+     "y no se sabe qué diferencias importan.",
+     "Correr 03_comparar_paridad.py con los CSV. Normaliza CRLF, tabuladores y espacios, y quita el "
+     "envoltorio que agrega el export de SSMS, de modo que solo reporta diferencias de código real.",
+     "Matriz de paridad en CSV con un estado por objeto. Cierra cuando SOLO_INSTANCIA queda en cero, es "
+     "decir cuando nada corre sin estar versionado."),
+    ("Paso 3", "Saber quién dispara el cierre",
+     "El repositorio no dice qué objeto es punto de entrada, a qué hora arranca ni con qué parámetros; solo "
+     "que ocurre minutos después de que SAF cierra.",
+     "Ejecutar 02_disparadores_cierre.sql en msdb y revisar las últimas 30 corridas junto con la bitácora de "
+     "errores, que hoy nadie consulta.",
+     "Lista de jobs, horario y duración real de la ventana. Cierra cuando cada procedimiento de cierre tiene "
+     "identificado su disparador."),
+    ("Paso 4", "Congelar la línea base y decidir objeto por objeto",
+     "Mientras no exista una versión declarada como autorizada, cualquier corrección puede aplicarse sobre "
+     "código equivocado y no hay contra qué comparar.",
+     "Crear en el repositorio una rama de línea base con el código extraído de producción, y resolver cada "
+     "objeto marcado DIFERENTE con una decisión explícita: gana producción, gana desarrollo o requiere "
+     "análisis. Las decisiones se registran en la matriz, no en un correo.",
+     "Rama de línea base y matriz con decisión firmada por objeto. Cierra cuando no queda ningún objeto en "
+     "estado DIFERENTE sin decisión."),
+]
+
+paridad = [
+    ("IGUAL", "71", "Mismo código en desarrollo y producción una vez normalizado el formato."),
+    ("SOLO_ORIGEN", "90", "La única diferencia es el nombre de la base de origen. Desaparecen solas al "
+     "aplicar los sinónimos de la Fase 1: es el 72% del drift entre objetos comunes."),
+    ("DIFERENTE", "35", "Diferencias reales de código que exigen decisión objeto por objeto, encabezadas por "
+     "CIERRE.SP_SAF_SALDOS y la familia PO.SP_COM_*."),
+    ("AUSENTE_EXPORT", "50", "Programables que existen en BD y no en el export de producción. No se puede "
+     "concluir que no existan allá: es exactamente lo que responde el Paso 1."),
+]
+
+f1 = [
+    ("Paso 1", "Generar el catálogo de sinónimos",
+     "38 objetos del origen concentran las 6.485 referencias literales de los 153 archivos que leen del core. "
+     "Ese es el tamaño real del acoplamiento: no son 245 objetos que haya que rediseñar, son 38 nombres.",
+     "python3 auditoria/fase1/generar_sinonimos.py"),
+    ("Paso 2", "Desplegar los sinónimos en cada ambiente",
+     "El mismo script, con el nombre de la base como variable. A partir de aquí la diferencia entre ambientes "
+     "vive en una sola línea de despliegue, no en el código.",
+     'sqlcmd -S PROD -d KARDIA -i 01_crear_sinonimos_EXT.sql -v ORIGEN="Quiero_Confianza"\n'
+     'sqlcmd -S CUA  -d KARDIA -i 01_crear_sinonimos_EXT.sql -v ORIGEN="Quiero_Confianza_shadow"'),
+    ("Paso 3", "Sustituir las referencias en el código",
+     "Sustitución textual, revisable línea a línea y reversible. Escribe en un directorio aparte: los "
+     "archivos de BD y BD_prod no se modifican.",
+     "python3 auditoria/fase1/02_sustituir_referencias.py --carpeta BD --salida BD_ext\n"
+     "-> 153 archivos, 3.617 sustituciones, 38 objetos distintos del origen"),
+    ("Paso 4", "Verificar en la instancia",
+     "Las cuatro consultas tienen resultado esperado explícito; si alguna falla, el despliegue no se promueve.",
+     "sqlcmd -S PROD -d KARDIA -i 03_verificar_sin_referencias.sql\n"
+     "-- 1) 0 filas con 'Quiero_Confianza' en sys.sql_modules\n"
+     "-- 2) 38 sinonimos, todos resolviendo\n"
+     "-- 3) 1 sola base de origen distinta\n"
+     "-- 4) 0 sinonimos rotos con la cuenta que ejecuta el cierre"),
+    ("Paso 5", "Cerrar la puerta para que el drift no regrese",
+     "Sin compuerta, la primera liberación urgente vuelve a escribir el nombre de la base y el trabajo se "
+     "pierde. La regla del origen entra en modo bloqueante desde el primer día.",
+     "python3 auditoria/fase1/04_gate_ci.py BD BD_prod   # exit 1 si hay violaciones"),
+]
+
+body5 = f"""
+<p class="lead">Este documento responde dos preguntas concretas: <b>cómo se reconcilian los ambientes</b> (Fase 0)
+y <b>cómo se elimina el drift</b> (Fase 1), con los scripts ya escritos y ejecutados donde era posible sin
+acceso a las instancias. Nada de lo que se entrega aquí modifica los archivos SQL originales ni escribe en
+ninguna base de datos: los scripts de servidor son de solo lectura, salvo la creación de los sinónimos, que es
+la única acción de despliegue de la Fase 1.</p>
+
+<div class="kpis">
+<div class="kpi"><b>38</b><span>objetos del origen</span></div>
+<div class="kpi"><b>6.485</b><span>referencias literales</span></div>
+<div class="kpi"><b>90</b><span>diferencias que son solo el nombre de la base</span></div>
+<div class="kpi c"><b>35</b><span>diferencias reales por decidir</span></div>
+</div>
+
+<h2>Lo que se entrega, y qué hace cada pieza</h2>
+<table><thead><tr><th>Artefacto</th><th>Efecto</th><th>Para qué sirve</th></tr></thead><tbody>
+{''.join(f'<tr><td class="mono">{e(a)}</td><td><span class="pill info">{e(b)}</span></td><td>{c}</td></tr>'
+         for a, b, c in entregables)}
+</tbody></table>
+
+<h2>Fase 0 &mdash; Reconciliación de ambientes, paso por paso</h2>
+<p>El objetivo no es "comparar carpetas", es poder afirmar, con evidencia, qué código produce la póliza que se
+publica. La Fase 0 es enteramente de lectura y no requiere ventana de mantenimiento.</p>
+{''.join(f'''
+<div class="ola">
+  <h3>{e(k)} &mdash; {e(t)}</h3>
+  <p class="q">Situación hoy</p><p>{e(hoy)}</p>
+  <p class="q">Qué se hace</p><p>{e(acc)}</p>
+  <p class="q">Evidencia y criterio de cierre</p><p>{e(fin)}</p>
+</div>''' for k, t, hoy, acc, fin in f0)}
+
+<h3>Ejemplo real: el hash que hace comparable el código</h3>
+<p>La comparación no puede ser byte a byte, porque el export de SSMS agrega su propio envoltorio y el formato
+cambia entre ambientes. Ambos lados calculan el mismo hash sobre el texto normalizado: en el servidor con
+T-SQL y en el repositorio con Python.</p>
+<div class="grid2">
+<div class="card"><h3>En la instancia (T-SQL)</h3><pre>plano = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+         texto, CHAR(13), N' '), CHAR(10), N' '), CHAR(9), N' '),
+         N'  ', N' '), N'  ', N' ')
+...
+hash_sha2 = CONVERT(char(64),
+   HASHBYTES('SHA2_256', LTRIM(RTRIM(plano))), 2)</pre></div>
+<div class="card"><h3>En el repositorio (Python)</h3><pre>def firma(texto, neutralizar_origen=False):
+    plano = cuerpo(texto)            # quita SET ANSI_NULLS / GO
+    if neutralizar_origen:
+        plano = ORIGEN.sub('@ORIGEN@', plano)
+    plano = ESPACIOS.sub(' ', plano).strip()
+    return hashlib.sha256(plano.encode('utf-8')).hexdigest().upper()</pre></div>
+</div>
+
+<h3>Resultado de correrlo hoy: BD contra BD_prod</h3>
+<p>El comparador ya se ejecutó sobre el repositorio, sin acceso a las instancias. La cifra de drift del
+inventario (126 objetos, 49%) era byte a byte; al descontar formato y envoltorio el cuadro queda así, y es un
+cuadro mucho más manejable.</p>
+<pre>$ python3 auditoria/fase0/03_comparar_paridad.py
+paridad_repo.csv -&gt; AUSENTE_EXPORT=50, DIFERENTE=35, IGUAL=71, SOLO_ORIGEN=90</pre>
+<table><thead><tr><th>Estado</th><th>Objetos</th><th>Lectura</th></tr></thead><tbody>
+{''.join(f'<tr><td><span class="pill {"c" if k == "DIFERENTE" else "ok" if k == "IGUAL" else "a" if k == "AUSENTE_EXPORT" else "info"}">{e(k)}</span></td><td class="num">{e(n)}</td><td>{e(d)}</td></tr>'
+         for k, n, d in paridad)}
+</tbody></table>
+<div class="card verde">
+<p><b>El mensaje para el cliente:</b> de las 125 diferencias entre objetos comunes, <b>90 son solo el nombre de
+la base de origen</b> y se van completas con la Fase 1, que es un despliegue de 38 sinónimos. El trabajo de
+análisis humano se concentra en <b>35 objetos</b>, no en 126.</p>
+</div>
+
+<h2>Fase 1 &mdash; Eliminar el drift con una fachada de sinónimos</h2>
+<p>El drift no se corrige objeto por objeto: se corrige quitando del código el dato que cambia entre ambientes.
+Hoy el nombre de la base está escrito 6.485 veces; después de la Fase 1 está escrito una vez, en la línea de
+despliegue.</p>
+
+<h3>El cambio, con código real de PO.SP_IND_CONDONACION</h3>
+<div class="grid2">
+<div class="card rojo"><h3>Antes (BD, desarrollo)</h3><pre>FROM Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO A WITH (NOLOCK)
+INNER JOIN Quiero_Confianza_shadow.PR.PR_DETALLE_PAGO B WITH (NOLOCK)
+        ON A.ID_SECUENCIA = B.ID_SECUENCIA
+INNER JOIN Quiero_Confianza_shadow.PR.PR_CREDITOS C WITH (NOLOCK)
+        ON A.COD_EMPRESA = C.COD_EMPRESA
+JOIN [Quiero_Confianza_shadow].PR.PR_CREDITOS D
+        ON A.NUM_CREDITO = D.NUM_CREDITO</pre>
+<p style="margin:8px 0 0;font-size:12.5px;color:#93a1bb">En producción el mismo bloque dice
+<code>Quiero_Confianza</code>, y en cuatro objetos dice
+<code>Quiero_Confianza_CreditoPuente_QA</code>. Esa es toda la diferencia en 90 de los 125 objetos.</p></div>
+<div class="card verde"><h3>Después (idéntico en los dos ambientes)</h3><pre>FROM EXT.PR_ENCABEZADO_PAGO A WITH (NOLOCK)
+INNER JOIN EXT.PR_DETALLE_PAGO B WITH (NOLOCK)
+        ON A.ID_SECUENCIA = B.ID_SECUENCIA
+INNER JOIN EXT.PR_CREDITOS C WITH (NOLOCK)
+        ON A.COD_EMPRESA = C.COD_EMPRESA
+JOIN EXT.PR_CREDITOS D
+        ON A.NUM_CREDITO = D.NUM_CREDITO</pre>
+<p style="margin:8px 0 0;font-size:12.5px;color:#93a1bb">El objeto queda byte a byte igual en los dos
+ambientes, así que puede desplegarse desde una sola fuente y compararse por hash.</p></div>
+</div>
+
+<h3>Y el artefacto que absorbe la diferencia</h3>
+<pre>-- fase1/01_crear_sinonimos_EXT.sql  (generado, 38 sinonimos, idempotente)
+IF SCHEMA_ID(N'EXT') IS NULL EXEC(N'CREATE SCHEMA EXT');
+GO
+-- 1329 referencias en el corpus auditado
+IF OBJECT_ID(N'EXT.PR_RUBRO_COBRO_X_CREDITO', N'SN') IS NOT NULL DROP SYNONYM EXT.PR_RUBRO_COBRO_X_CREDITO;
+CREATE SYNONYM EXT.PR_RUBRO_COBRO_X_CREDITO FOR [$(ORIGEN)].[PR].[PR_RUBRO_COBRO_X_CREDITO];
+-- 1039 referencias en el corpus auditado
+IF OBJECT_ID(N'EXT.PR_ENCABEZADO_PAGO', N'SN') IS NOT NULL DROP SYNONYM EXT.PR_ENCABEZADO_PAGO;
+CREATE SYNONYM EXT.PR_ENCABEZADO_PAGO FOR [$(ORIGEN)].[PR].[PR_ENCABEZADO_PAGO];
+-- ... 36 mas</pre>
+
+{''.join(f'''
+<div class="ola">
+  <h3>{e(k)} &mdash; {e(t)}</h3>
+  <p>{e(d)}</p>
+  <pre>{e(c)}</pre>
+</div>''' for k, t, d, c in f1)}
+
+<h2>Orden de despliegue y vuelta atrás</h2>
+<table><thead><tr><th>#</th><th>Acción</th><th>Ventana</th><th>Vuelta atrás</th></tr></thead><tbody>
+<tr><td class="num">1</td><td>Crear el esquema EXT y los 38 sinónimos en QA (CUA)</td><td>Ninguna: no afecta
+código existente, los sinónimos conviven con las referencias de tres partes</td><td><code>DROP SYNONYM</code>
+de los 38</td></tr>
+<tr><td class="num">2</td><td>Desplegar el código sustituido en QA y recalcular un periodo ya cerrado</td>
+<td>Fuera de la ventana de cierre</td><td>Volver a desplegar la versión de la línea base</td></tr>
+<tr><td class="num">3</td><td>Comparar la póliza recalculada contra la publicada: debe ser idéntica peso por
+peso</td><td>Ninguna</td><td>No aplica, es verificación</td></tr>
+<tr><td class="num">4</td><td>Crear los sinónimos en producción apuntando a <code>Quiero_Confianza</code></td>
+<td>Ninguna</td><td><code>DROP SYNONYM</code></td></tr>
+<tr><td class="num">5</td><td>Desplegar el código en producción después del cierre del día, nunca antes</td>
+<td>Ventana posterior al cierre, con el cierre siguiente como primera prueba real</td><td>Reaplicar la línea
+base; los sinónimos pueden quedarse sin efecto sobre el código anterior</td></tr>
+<tr><td class="num">6</td><td>Activar la compuerta de CI en modo bloqueante</td><td>Ninguna</td><td>No
+aplica</td></tr>
+</tbody></table>
+<div class="card ambar">
+<h3>Dos condiciones que hay que verificar antes del paso 4</h3>
+<ul>
+<li><b>Permisos de la cuenta de servicio</b> sobre el origen: el sinónimo no otorga acceso, solo resuelve el
+nombre. La consulta 4 de la verificación debe ejecutarse con la cuenta que corre el cierre, no con una
+administrativa.</li>
+<li><b>Los 30 reportes .rdl siguen con servidor y catálogo embebidos</b> y no se benefician de los sinónimos:
+esos requieren pasar a un <code>DataSourceReference</code> compartido, que es trabajo de la misma ola pero de
+otro artefacto.</li>
+</ul>
+</div>
+
+<h2>Por qué esta fase también paga la salida de SAF/Sisde</h2>
+<p>La Fase 1 no es solo higiene de ambientes: es el primer tramo de la capa de fachada del movimiento M2 del
+<a href="10_contexto_migracion.html">contexto operativo</a>. Cuando el core cambie, el inventario de lo que hay
+que remapear ya no serán 245 objetos programables repartidos en 153 archivos, serán <b>38 sinónimos</b> y, en
+el paso siguiente, las vistas canónicas que los sustituyan. La misma tabla que se generó para desplegar los
+sinónimos sirve como lista de trabajo de la migración, con el número de referencias como medida de impacto.</p>
+
+<h2>Lo que se necesita para arrancar</h2>
+<div class="card">
+<ul>
+<li><b>Acceso de consulta a KARDIA en producción y en QA (CUA)</b> con permiso de lectura sobre
+<code>sys.sql_modules</code>, <code>sys.objects</code> y <code>msdb</code>. Solo lectura; es todo lo que
+requiere la Fase 0 completa.</li>
+<li><b>Un periodo ya cerrado acordado con contabilidad</b> para la prueba de equivalencia del paso 3, con su
+póliza publicada como referencia.</li>
+<li><b>Autorización para crear el esquema EXT y los sinónimos</b> en QA primero, y la ventana posterior al
+cierre para producción.</li>
+<li><b>Definición de quién decide</b> en los 35 objetos con diferencias reales: sin un responsable por objeto
+la matriz de la Fase 0 no se cierra.</li>
+</ul>
+</div>
+"""
+
+(OUT / '11_fase0_fase1.html').write_text(page(
+    'Fase 0 y Fase 1 &mdash; ejemplos concretos de reconciliación y eliminación del drift',
+    'Scripts entregados y ejecutados &middot; 38 sinónimos &middot; 90 de 125 diferencias se van solas',
+    body5), encoding='utf-8')
 
 print('ok', [p.name for p in sorted(OUT.glob('[01]*.html'))])

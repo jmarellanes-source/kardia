@@ -56,6 +56,7 @@ blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px so
 <a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
 <a href="09_demo_portal.html">Demo del portal</a>
 <a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
 <a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
 </nav>
 <div class="wrap">
@@ -118,9 +119,9 @@ está en <a href="10_contexto_migracion.html">Contexto operativo y cambio de cor
 </div>
 <div class="card rojo">
   <h3><span class="pill c">Crítico</span> &nbsp;R2. Cuatro procedimientos de producción leen datos de la base de QA</h3>
-  <p class="q">Evidencia</p><p>Objetos productivos consultan Quiero_Confianza_CreditoPuente_QA y Quiero_Confianza_shadow; el nombre de la base externa está escrito dentro del código y difiere entre ambientes en 7 objetos.</p>
-  <p class="q">Qué significa para el negocio</p><p>Cifras de cierre calculadas con datos de prueba, y la imposibilidad de promover una corrección sin editarla a mano en cada ambiente: es la causa raíz del 49% de drift.</p>
-  <p class="q">Qué hay que hacer</p><p>Sustituir los nombres de base embebidos por sinónimos por ambiente. Un solo cambio elimina la causa del drift y habilita el despliegue automatizado.</p>
+  <p class="q">Evidencia</p><p>Objetos productivos consultan Quiero_Confianza_CreditoPuente_QA y Quiero_Confianza_shadow; el nombre de la base externa está escrito 6.485 veces en los 153 archivos que leen del origen, y difiere entre ambientes.</p>
+  <p class="q">Qué significa para el negocio</p><p>Cifras de cierre calculadas con datos de prueba, y la imposibilidad de promover una corrección sin editarla a mano en cada ambiente: de las 125 diferencias entre objetos comunes, 90 son solo el nombre de la base.</p>
+  <p class="q">Qué hay que hacer</p><p>Sustituir los nombres de base embebidos por 38 sinónimos por ambiente. Un solo despliegue elimina el 72% del drift y habilita el despliegue automatizado; los scripts ya están entregados.</p>
 </div>
 <div class="card rojo">
   <h3><span class="pill c">Crítico</span> &nbsp;R3. El cierre no es repetible y un error puede pasar inadvertido</h3>
