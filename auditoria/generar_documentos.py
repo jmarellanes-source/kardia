@@ -3,6 +3,7 @@
 06_ejecutivo.html, 07_plan_remediacion.html, 08_portal_admin.html y
 10_contexto_migracion.html
 """
+import csv
 import html
 from pathlib import Path
 
@@ -63,6 +64,7 @@ NAV = """<nav class="docs">
 <a href="09_demo_portal.html">Demo del portal</a>
 <a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
 <a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
+<a href="12_preguntas_negocio.html">Confirmaciones con negocio</a>
 <a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
 </nav>"""
 
@@ -1094,5 +1096,397 @@ la matriz de la Fase 0 no se cierra.</li>
     'Fase 0 y Fase 1 &mdash; ejemplos concretos de reconciliación y eliminación del drift',
     'Scripts entregados y ejecutados &middot; 38 sinónimos &middot; 90 de 125 diferencias se van solas',
     body5), encoding='utf-8')
+
+# ------------------------------------- 12 preguntas de confirmacion con negocio
+# (area, id, pregunta, hallazgos, por que bloquea, opciones de respuesta, prioridad)
+preguntas = [
+    ("Contabilidad", "Q01",
+     "¿Cuál es la columna correcta del segundo bloque de ajustes ballon: PRINCIPAL_FINAL o MONTOEXIGIBLECOM?",
+     "L10-001",
+     "El bloque está comentado como MONTOEXIGIBLECOM pero suma intereses, comisiones y moratorios al capital. "
+     "Si la columna correcta es la otra, el capital reportado está inflado en todos los cierres con ajustes ballon.",
+     ["Es correcto como está: los accesorios ballon capitalizan.",
+      "Debe ir a MONTOEXIGIBLECOM; se requiere recálculo de los periodos afectados.",
+      "Requiere revisión conjunta con el desarrollador sobre datos de un periodo cerrado."],
+     "Bloquea la Ola 2"),
+    ("Contabilidad", "Q02",
+     "¿Cuál es el criterio único de crédito cancelado para el universo del cierre?",
+     "L10-005",
+     "El universo de créditos activos y los dos universos de saldos en cuentas de orden usan criterios "
+     "distintos de FEC_CANCELACION, así que un mismo crédito puede entrar en un bloque y no en otro.",
+     ["FEC_CANCELACION nula o mayor a la fecha de corte.",
+      "FEC_CANCELACION nula únicamente.",
+      "Depende del tipo de saldo; contabilidad define la regla por bloque."],
+     "Bloquea la Ola 2"),
+    ("Contabilidad", "Q03",
+     "¿Cuál es el catálogo oficial de rubros del cierre, y para cada rubro: se materializa, en qué reporte "
+     "participa y causa IVA?",
+     "L10-007, L2-017, L1-024",
+     "Hoy el generador materializa rubros por lista negra y los reportes los consumen por lista blanca: un "
+     "rubro nuevo entra a la tabla y no aparece en ningún reporte, sin que nadie se enteré. Es el catálogo "
+     "central del portal.",
+     ["Contabilidad entrega el catálogo con los tres atributos por rubro.",
+      "Se construye desde el código actual y contabilidad lo valida rubro por rubro.",
+      "Se requiere sesión de trabajo con contabilidad y el área de producto."],
+     "Bloquea la Ola 4 y el portal"),
+    ("Contabilidad", "Q04",
+     "¿Cuál es la definición oficial de cartera sin restricción por COD_ORIGEN, y cuáles son las etiquetas de "
+     "salida correctas?",
+     "L10-008",
+     "Dos reportes de cierre usan dos listas distintas de COD_ORIGEN para la misma definición, así que las dos "
+     "cifras no cuadran entre sí y ambas se publican.",
+     ["Prevalece la lista del reporte diario.",
+      "Prevalece la lista del reporte general.",
+      "Ninguna es correcta; contabilidad entrega la lista vigente con su vigencia."],
+     "Bloquea la Ola 2"),
+    ("Contabilidad", "Q05",
+     "¿Cuál es la política de redondeo y la tolerancia de cuadre cargo-abono aceptable en la póliza?",
+     "L2-013",
+     "Los importes viajan en MONEY con redondeos intermedios a dos decimales en varios pasos. Sin una regla "
+     "única, dos cálculos válidos dan cifras distintas por centavos y no hay criterio para decir cuál falla.",
+     ["Redondeo únicamente al final del cálculo, tolerancia cero en el cuadre.",
+      "Redondeo por movimiento, con tolerancia definida por póliza.",
+      "Contabilidad define la regla y la tolerancia por tipo de póliza."],
+     "Bloquea la Ola 2"),
+    ("Contabilidad", "Q06",
+     "El cierre comercial lee 'otras comisiones' de la fecha fija '20260123': ¿las pólizas ya publicadas de "
+     "otros periodos deben recalcularse y reexpresarse?",
+     "L1-001",
+     "Corregir el código es trivial; la decisión de negocio es qué hacer con las cifras ya emitidas con el "
+     "universo equivocado.",
+     ["Se corrige a futuro sin reexpresar.",
+      "Se recalculan y reexpresan los periodos afectados.",
+      "Contabilidad evalúa la materialidad antes de decidir."],
+     "Bloquea la Ola 2"),
+    ("Contabilidad", "Q07",
+     "¿El reproceso de un periodo ya cerrado está permitido? ¿Quién lo autoriza y qué se espera del resultado: "
+     "acumular o recalcular?",
+     "L1-006, L6-014",
+     "El diseño acumula ajustes por diseño, pero nada impide un segundo pase del mismo periodo y no existe "
+     "marca de corrida. La respuesta define si el control es 'rechazar el segundo pase' o 'reproceso "
+     "determinista'.",
+     ["Nunca se reprocesa: el segundo pase se rechaza siempre.",
+      "Se reprocesa con autorización, y debe recalcular (no sumar sobre lo acumulado).",
+      "Se reprocesa libremente y la acumulación es el comportamiento esperado."],
+     "Bloquea la Ola 2 y la Ola 3"),
+    ("Contabilidad", "Q08",
+     "¿Cuáles son los valores vigentes, con su fecha de vigencia, de la tasa de IVA, la base de días del "
+     "devengo, el umbral de avalúo de vivienda y las fechas del programa COVID?",
+     "L1-020, L10-025, L2-017",
+     "Son los primeros parámetros que se migran al catálogo del portal. Sin el valor oficial y su vigencia, la "
+     "migración copiaría el literal actual sin saber si es el correcto.",
+     ["Negocio y contabilidad entregan la tabla de valores con vigencias.",
+      "Se toman los valores del código como línea base y se validan uno por uno.",
+      "Se requiere confirmar con el área normativa."],
+     "Bloquea la Ola 4"),
+    ("Negocio", "Q09",
+     "¿Cuál es el porcentaje de participación del convenio vigente, desde cuándo, y debe conservarse el monto "
+     "bruto además del participado?",
+     "L2-001",
+     "La participación está escrita como dos literales complementarios (0.10 y 0.90) en 28 archivos, y algunos "
+     "procedimientos sobrescriben el monto bruto, con lo que el dato original se pierde.",
+     ["El valor vigente es el que está en el código y no ha cambiado.",
+      "Hay más de un convenio y cada uno tiene su porcentaje.",
+      "El porcentaje cambia en el tiempo y requiere vigencia."],
+     "Bloquea la Ola 4"),
+    ("Negocio", "Q10",
+     "¿La cartera sindicada debe aplicar el tratamiento COVID y la separación balance/cuentas de orden de la "
+     "etapa 3?",
+     "L2-007",
+     "La familia sindicada no lo aplica y sus hermanas sí. Hoy la diferencia solo existe en el código, sin "
+     "documento que diga si es deliberada.",
+     ["Es deliberada por la naturaleza del producto: se documenta y se cierra.",
+      "Es una deuda de la versión sindicada: hay que portar el tratamiento.",
+      "Aplica solo para una parte de los créditos sindicados."],
+     "Ya en tu lista &middot; bloquea la Ola 2"),
+    ("Negocio", "Q11",
+     "¿Dos procesos distintos pueden compartir el mismo número de póliza?",
+     "L2-012",
+     "Hay 74 números de póliza escritos uno por procedimiento y al menos uno reutilizado en dos procesos. Si no "
+     "se permite, hoy existe un defecto; si se permite, el catálogo del portal necesita otra llave lógica.",
+     ["No: el número es único por proceso y el caso actual es un defecto.",
+      "Sí: la póliza agrupa varios procesos por diseño.",
+      "Depende del tipo de póliza."],
+     "Ya en tu lista &middot; bloquea la Ola 4"),
+    ("Negocio", "Q12",
+     "¿Cuáles de las divergencias entre los procedimientos hermanos comercial e individual son intencionales?",
+     "L2-008, L10-010",
+     "La misma operación está implementada dos veces con filtros, rubros y redondeos distintos. Antes de "
+     "unificar hay que saber qué diferencia es una regla de producto y qué diferencia es un descuido.",
+     ["Negocio revisa la matriz de divergencias y marca cada fila.",
+      "Todas las diferencias deben desaparecer: la regla es la misma.",
+      "Se resuelve caso por caso durante la remediación."],
+     "Bloquea la Ola 2"),
+    ("Negocio", "Q13",
+     "¿Cuál es el catálogo oficial de tipos de crédito, con la marca de en qué procesos participa cada uno, y "
+     "qué debe pasar cuando aparece un tipo desconocido?",
+     "L2-018, L6-015",
+     "La clasificación está repetida en 37 listas distintas dentro de 104 archivos. El comportamiento ante un "
+     "tipo nuevo hoy es silencioso: el crédito simplemente no entra al cálculo.",
+     ["El tipo desconocido debe detener el cierre con error explícito.",
+      "Debe registrarse como excepción y continuar.",
+      "Debe tomar un tratamiento por omisión definido por negocio."],
+     "Bloquea la Ola 4"),
+    ("Negocio", "Q14",
+     "¿Quién es el dueño de cada catálogo y quién autoriza el alta de un rubro o concepto nuevo, con qué "
+     "tiempo de respuesta?",
+     "L1-024, L2-017, portal M1-M3",
+     "Es la pregunta que define el portal: hoy un concepto nuevo es un cambio de código. El flujo de cuatro "
+     "ojos necesita nombres de roles, no de personas.",
+     ["Un solo dueño por catálogo, con aprobador distinto del capturista.",
+      "Dueño por familia de póliza.",
+      "Se requiere definir la matriz de responsabilidades."],
+     "Bloquea el portal"),
+    ("Negocio", "Q15",
+     "El reporte a Afirme deja la comisión de administración en cero por un literal de rubro mal escrito: "
+     "¿el área receptora lo ha detectado y hay que reemitir los reportes ya enviados?",
+     "L6-007",
+     "El defecto es de una línea, pero la información salió de la institución con un concepto en cero.",
+     ["Se corrige a futuro sin reemitir.",
+      "Hay que reemitir los periodos afectados.",
+      "Se escala al área que administra el convenio."],
+     "Bloquea la Ola 2"),
+    ("Negocio", "Q16",
+     "¿Cuál es la salida autoritativa cuando dos artefactos publican la misma cifra: reporte diario o general, "
+     "y qué variante del reporte de póliza contable es la oficial?",
+     "L10-010, L12-005, L12-008",
+     "Existen pares de reportes que ejecutan el mismo procedimiento con filtros fijos distintos. Ambas cifras "
+     "circulan y no hay definición de cuál manda.",
+     ["Negocio designa la oficial y la otra se retira.",
+      "Ambas son válidas para audiencias distintas: se renombran y documentan.",
+      "Se requiere comparar cifras antes de decidir."],
+     "Bloquea la Ola 6"),
+    ("Riesgos", "Q17",
+     "¿El canal minorista o comercial puede seguir derivándose de TIP_TASA='F' para efectos de reporte "
+     "regulatorio?",
+     "lote 6, pendientes no técnicos",
+     "Es una inferencia: se usa el tipo de tasa como proxy del canal. Si el regulador exige el canal real, la "
+     "cifra reportada se sostiene en una equivalencia no documentada.",
+     ["Sí, la equivalencia es válida y se documenta.",
+      "No: se requiere el atributo de canal real en la fuente.",
+      "Riesgos debe validarlo con el área normativa."],
+     "Ya en tu lista &middot; bloquea la Ola 2"),
+    ("Riesgos", "Q18",
+     "¿Cuál es el criterio correcto de asignación de etapa de riesgo, y hubo periodos mal clasificados por el "
+     "filtro de periodo anulado?",
+     "L1-002",
+     "Una precedencia de OR/AND deja el filtro de periodo sin efecto en el UPDATE de etapa, así que el "
+     "resultado depende de datos de otros periodos.",
+     ["El criterio es el declarado y hay que corregir el código y revisar el histórico.",
+      "Se corrige a futuro sin revisar el histórico.",
+      "Riesgos revisa el impacto sobre las etapas ya reportadas."],
+     "Bloquea la Ola 2"),
+    ("Riesgos", "Q19",
+     "¿La granularidad del reporte de riesgos es folio o folio más sección?",
+     "L10-018",
+     "El procedimiento agrupa por folio pero publica una llave que incluye la sección y colapsa atributos "
+     "descriptivos con MIN y MAX, con lo que la llave publicada no es única.",
+     ["Folio: la sección se retira de la llave.",
+      "Folio más sección: se corrige el agrupamiento.",
+      "Riesgos define la granularidad esperada del entregable."],
+     "Bloquea la Ola 2"),
+    ("Riesgos", "Q20",
+     "¿El universo del programa COVID se define por el umbral NUM_CREDITO menor a 6051, o por un atributo del "
+     "crédito?",
+     "L6-003, L1-015, L10-025",
+     "Una función escalar consumida por 66 procedimientos decide el tratamiento COVID con un número de crédito "
+     "como frontera, y el umbral difiere entre desarrollo y producción. Si entra un crédito nuevo con número "
+     "menor, recibe tratamiento COVID.",
+     ["El umbral es correcto y es histórico cerrado.",
+      "Debe sustituirse por una marca del crédito o por vigencia.",
+      "Riesgos y negocio definen el universo formalmente."],
+     "Bloquea la Ola 4"),
+    ("Operación", "Q21",
+     "¿Los esquemas PAG, edc, edcc, juicios, demandas, ori y cierre_puente existen en producción, y qué "
+     "versión del cierre corre realmente?",
+     "L2-019, L6-004, L10-006, L12-002",
+     "26 objetos programables del repositorio no aparecen en el export de producción y SP_SAF_SALDOS está "
+     "desplegado con 223 de sus 573 líneas. Es lo que resuelve la Fase 0 con acceso de solo lectura.",
+     ["Existen y el export está incompleto: se entrega acceso para reconciliar.",
+      "No existen: son módulos solo de desarrollo.",
+      "Existen parcialmente y hay que revisar objeto por objeto."],
+     "Ya en tu lista &middot; bloquea toda la remediación"),
+    ("Operación", "Q22",
+     "¿Quién debe recibir la alerta cuando el cierre termina con errores, en qué tiempo, y qué se hace "
+     "mientras se resuelve?",
+     "L12-004, L10-002",
+     "102 objetos escriben en la bitácora de errores de póliza y ninguno la vigila. Un cierre puede terminar en "
+     "éxito con la póliza incompleta y la detección depende de que alguien note el descuadre.",
+     ["Se define un responsable de guardia y un canal de alerta.",
+      "La alerta va al área de sistemas y contabilidad en paralelo.",
+      "Se requiere definir el procedimiento de escalamiento."],
+     "Bloquea la Ola 3"),
+    ("Operación", "Q23",
+     "¿Cuál es el calendario oficial de días hábiles y la fecha de negocio que debe usar el proceso?",
+     "L6-012, L10-019",
+     "Varios procedimientos usan la fecha del servidor y ventanas de días naturales. En un cierre diario que "
+     "corre minutos después de SAF, la diferencia entre fecha de sistema y fecha de negocio cambia el "
+     "universo.",
+     ["Existe un calendario institucional y se debe consumir.",
+      "Se usa la fecha de sistema y es correcto.",
+      "Hay que construir el calendario como catálogo del portal."],
+     "Bloquea la Ola 2"),
+    ("Operación", "Q24",
+     "¿Se ha ejecutado alguna vez en producción el generador de órdenes de facturación con importes "
+     "aleatorios, y puede retirarse el objeto?",
+     "L6-001",
+     "El procedimiento inserta importes aleatorios en la cola de facturación por cada estado de cuenta real del "
+     "corte, sin guarda de ambiente. Si se ejecutó en producción, hay un incidente de datos, no un hallazgo de "
+     "código.",
+     ["Nunca se ejecutó en producción y el objeto puede retirarse.",
+      "Se usa para pruebas y debe quedar bloqueado por guarda de ambiente.",
+      "Se requiere revisar la bitácora de ejecuciones."],
+     "Bloquea la Ola 2"),
+    ("Operación", "Q25",
+     "¿Se requiere una revisión retroactiva de los pagos emparejados por coincidencia parcial de referencia?",
+     "L6-002, L6-013",
+     "El identificador de pagos empareja el crédito con una coincidencia invertida y se queda con el número de "
+     "crédito más bajo cuando hay varios candidatos: pudo aplicar pagos al crédito equivocado.",
+     ["Sí, con alcance y periodo definidos por operación.",
+      "No: el layout garantiza unicidad y no hay casos ambiguos.",
+      "Se ejecuta primero un diagnóstico de cuántos casos ambiguos existen."],
+     "Bloquea la Ola 2"),
+    ("Seguridad y legal", "Q26",
+     "¿Cuál es el alcance del enmascaramiento de datos personales y bancarios, y quién puede verlos sin "
+     "máscara?",
+     "L6-017",
+     "251 tablas contienen datos personales y bancarios sin enmascaramiento ni cifrado, y solo 30 tienen rastro "
+     "de auditoría. El alcance lo define cumplimiento, no el equipo técnico.",
+     ["Cumplimiento entrega la clasificación de datos por tabla.",
+      "Se enmascara todo dato personal salvo excepción autorizada.",
+      "Se limita al ambiente de QA y desarrollo."],
+     "Ya en tu lista &middot; bloquea la Ola 7"),
+    ("Seguridad y legal", "Q27",
+     "Cuatro procedimientos de producción leyeron datos de la base de QA: ¿se requiere revisión de las pólizas "
+     "generadas y nota a auditoría interna?",
+     "L1-007, L12-007",
+     "Es el hallazgo con mayor exposición ante un revisor externo: cifras contables calculadas con una fuente "
+     "que no es la réplica autorizada.",
+     ["Sí: se revisan los periodos afectados y se documenta.",
+      "No: esos procedimientos no se ejecutan en producción.",
+      "Se requiere primero determinar desde cuándo apuntan a QA."],
+     "Bloquea la Ola 1"),
+    ("Seguridad y legal", "Q28",
+     "El correo de prueba en el campo de contacto de los clientes: ¿se usa para envíos y hay que notificar el "
+     "incidente?",
+     "L6-009",
+     "Un proceso deja un correo de prueba como segundo contacto de todos los clientes. Si el envío usa ese "
+     "campo, es un incidente de datos personales.",
+     ["El campo no se usa para envíos: solo se corrige el dato.",
+      "Sí se usa: hay que evaluar notificación conforme a la política.",
+      "Se requiere revisar el proceso de envío."],
+     "Bloquea la Ola 2"),
+    ("Negocio", "Q29",
+     "¿Cómo debe tratarse el tipo de crédito 8 en los estados de cuenta? El pendiente está escrito como "
+     "comentario en el código desde 2024.",
+     "lote 6, pendientes no técnicos",
+     "El código declara explícitamente que falta definir el tratamiento y sigue sin resolverse, así que hoy los "
+     "créditos de ese tipo reciben el tratamiento por omisión sin que nadie lo haya autorizado.",
+     ["Recibe el mismo tratamiento que el tipo equivalente vigente.",
+      "Requiere reglas propias que negocio debe definir.",
+      "El tipo ya no se opera y puede retirarse del catálogo."],
+     "Bloquea la Ola 4"),
+    ("Gobierno del portal", "Q30",
+     "¿Se permiten cambios de parámetro con vigencia retroactiva, y quién los autoriza?",
+     "portal M1-M3",
+     "Determina el diseño del catálogo: un cambio retroactivo obliga a recalcular pólizas ya publicadas, así "
+     "que puede ser una función del portal o algo explícitamente prohibido.",
+     ["Prohibido: la vigencia siempre es a futuro.",
+      "Permitido con doble autorización y recálculo controlado.",
+      "Permitido solo antes del cierre del día."],
+     "Bloquea el portal"),
+    ("Gobierno del portal", "Q31",
+     "¿Quién es el propietario de cada uno de los 63 grupos de valores hoy hardcodeados?",
+     "catálogo de hardcodeo completo",
+     "Sin propietario, el parámetro migra al portal pero nadie puede autorizar su cambio, y el proceso vuelve a "
+     "depender del desarrollador.",
+     ["Se asigna propietario por grupo en una sesión de trabajo.",
+      "Todo queda bajo contabilidad.",
+      "Se define por familia de póliza."],
+     "Bloquea el portal"),
+]
+
+areas = []
+for a, *_ in preguntas:
+    if a not in areas:
+        areas.append(a)
+
+preguntas = [(a, 'Q{:02d}'.format(i), *resto)
+             for i, (a, _, *resto) in enumerate(
+                 sorted(preguntas, key=lambda p: areas.index(p[0])), start=1)]
+
+filas = "".join(f"""
+<div class="ola">
+  <h3>{e(qid)} &mdash; {e(preg)}</h3>
+  <p style="margin:2px 0 8px"><span class="tag">{e(area)}</span><span class="tag">{e(orig)}</span>
+  <span class="pill info">{blo}</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">{e(por)}</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul>{''.join(f'<li>{e(o)}</li>' for o in ops)}</ul>
+</div>""" for area, qid, preg, orig, por, ops, blo in preguntas)
+
+conteo = "".join(
+    f'<tr><td>{e(a)}</td><td class="num">{sum(1 for p in preguntas if p[0] == a)}</td></tr>'
+    for a in areas)
+
+body6 = f"""
+<p class="lead">Las {len(preguntas)} confirmaciones que hoy bloquean la remediación, ordenadas por área
+responsable. No son dudas de implementación: cada una es una decisión que el equipo técnico no puede tomar
+porque la respuesta define cuál es la cifra correcta, y cinco de ellas ya estaban identificadas por el equipo
+del proyecto. Para cada pregunta se indica el hallazgo que la origina, por qué no se puede avanzar sin ella y
+un conjunto de respuestas posibles, de modo que la sesión con el área sea de decisión y no de exploración.</p>
+
+<div class="kpis">
+<div class="kpi c"><b>{sum(1 for p in preguntas if 'Ola 1' in p[6] or 'toda la remediación' in p[6])}</b>
+<span>bloquean el arranque</span></div>
+<div class="kpi a"><b>{sum(1 for p in preguntas if 'Ola 2' in p[6])}</b><span>bloquean correcciones de cifra</span></div>
+<div class="kpi m"><b>{sum(1 for p in preguntas if 'portal' in p[6] or 'Ola 4' in p[6])}</b>
+<span>bloquean el portal</span></div>
+<div class="kpi b"><b>{len(areas)}</b><span>áreas involucradas</span></div>
+</div>
+
+<table><thead><tr><th>Área</th><th>Preguntas</th></tr></thead><tbody>{conteo}</tbody></table>
+
+<div class="card ambar">
+<h3>Cómo usarlo</h3>
+<ul>
+<li><b>Una sesión por área</b>, no una reunión general: las preguntas de contabilidad no se resuelven con
+riesgos presente y viceversa.</li>
+<li><b>Toda respuesta queda por escrito con fecha y responsable.</b> Varias de estas decisiones cambian cifras
+ya publicadas; el registro es parte de la evidencia de la remediación.</li>
+<li><b>Las respuestas alimentan directamente el catálogo del portal</b>: las de contabilidad y negocio son, en
+su mayoría, el contenido inicial de los parámetros con vigencia.</li>
+<li>Hay una hoja de seguimiento en <code>auditoria/12_preguntas_negocio.csv</code> para llenar respuesta,
+responsable y fecha.</li>
+</ul>
+</div>
+
+<h2>Preguntas por área</h2>
+{filas}
+
+<h2>Lo que no es una pregunta de negocio</h2>
+<p>Para no mezclar agendas: los hallazgos transaccionales (78 de 80 procedimientos revierten y reportan éxito),
+los de rendimiento, los de estándares y la eliminación del drift <b>no requieren decisión de negocio</b>. Son
+correcciones técnicas con criterio de aceptación objetivo y avanzan en paralelo a estas confirmaciones. Del
+lado técnico solo hacen falta tres cosas, ya listadas en
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1</a>: acceso de consulta a KARDIA en producción y QA, un periodo
+cerrado de referencia y la autorización para crear el esquema EXT.</p>
+"""
+
+(OUT / '12_preguntas_negocio.html').write_text(page(
+    'Confirmaciones pendientes con negocio, contabilidad, riesgos y operación',
+    f'{len(preguntas)} decisiones que bloquean la remediación &middot; con el hallazgo que las origina',
+    body6), encoding='utf-8')
+
+with (OUT / '12_preguntas_negocio.csv').open('w', encoding='utf-8-sig', newline='') as fh:
+    w = csv.writer(fh, delimiter=';')
+    w.writerow(['Id', 'Area', 'Pregunta', 'Hallazgos', 'Por que bloquea', 'Que bloquea',
+                'Respuestas posibles', 'Respuesta', 'Responsable', 'Fecha'])
+    for area, qid, preg, orig, por, ops, blo in preguntas:
+        w.writerow([qid, area, preg, orig, por, blo.replace('&middot;', '/'),
+                    ' | '.join(ops), '', '', ''])
 
 print('ok', [p.name for p in sorted(OUT.glob('[01]*.html'))])

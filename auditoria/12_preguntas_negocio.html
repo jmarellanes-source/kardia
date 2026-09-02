@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Confirmaciones pendientes con negocio, contabilidad, riesgos y operación &mdash; KARDIA / SAF</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+nav.docs{padding:10px 32px;background:#131b29;border-bottom:1px solid #2a3549;font-size:13px}
+nav.docs a{margin-right:16px;text-decoration:none}
+.wrap{padding:22px 32px 60px;max-width:1180px}
+h2{margin:34px 0 12px;font-size:18px;border-left:3px solid #4c8dff;padding-left:10px}
+h3{margin:22px 0 6px;font-size:15px}
+p.lead{color:#c9d6ee;font-size:15px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:140px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b}.kpi.a b{color:#ffa94d}.kpi.m b{color:#ffd43b}.kpi.b b{color:#74c0fc}
+.card{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:16px 20px;margin:12px 0}
+.card.rojo{border-left:3px solid #ff6b6b}
+.card.ambar{border-left:3px solid #ffa94d}
+.card.azul{border-left:3px solid #4c8dff}
+.card.verde{border-left:3px solid #51cf66}
+.card h3{margin-top:0}
+.card .q{color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.num{white-space:nowrap;color:#93a1bb}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#c9d6ee}
+pre{margin:8px 0 0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:12px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
+.pill.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.pill.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.pill.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.pill.ok{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.info{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+ul{margin:6px 0;padding-left:20px}li{margin:4px 0}
+.ola{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 20px;margin:12px 0}
+.ola h3{margin:0 0 2px}
+.ola .obj{color:#93a1bb;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.tag{font-size:11px;color:#93a1bb;border:1px solid #35415a;border-radius:5px;padding:2px 7px;margin-right:6px}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px solid #35415a;color:#c9d6ee}
+</style></head><body>
+<header class="top"><h1>Confirmaciones pendientes con negocio, contabilidad, riesgos y operación</h1><p>31 decisiones que bloquean la remediación &middot; con el hallazgo que las origina</p></header>
+<nav class="docs">
+<a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
+<a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
+<a href="09_demo_portal.html">Demo del portal</a>
+<a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
+<a href="12_preguntas_negocio.html">Confirmaciones con negocio</a>
+<a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
+</nav>
+<div class="wrap">
+
+<p class="lead">Las 31 confirmaciones que hoy bloquean la remediación, ordenadas por área
+responsable. No son dudas de implementación: cada una es una decisión que el equipo técnico no puede tomar
+porque la respuesta define cuál es la cifra correcta, y cinco de ellas ya estaban identificadas por el equipo
+del proyecto. Para cada pregunta se indica el hallazgo que la origina, por qué no se puede avanzar sin ella y
+un conjunto de respuestas posibles, de modo que la sesión con el área sea de decisión y no de exploración.</p>
+
+<div class="kpis">
+<div class="kpi c"><b>2</b>
+<span>bloquean el arranque</span></div>
+<div class="kpi a"><b>16</b><span>bloquean correcciones de cifra</span></div>
+<div class="kpi m"><b>10</b>
+<span>bloquean el portal</span></div>
+<div class="kpi b"><b>6</b><span>áreas involucradas</span></div>
+</div>
+
+<table><thead><tr><th>Área</th><th>Preguntas</th></tr></thead><tbody><tr><td>Contabilidad</td><td class="num">8</td></tr><tr><td>Negocio</td><td class="num">9</td></tr><tr><td>Riesgos</td><td class="num">4</td></tr><tr><td>Operación</td><td class="num">5</td></tr><tr><td>Seguridad y legal</td><td class="num">3</td></tr><tr><td>Gobierno del portal</td><td class="num">2</td></tr></tbody></table>
+
+<div class="card ambar">
+<h3>Cómo usarlo</h3>
+<ul>
+<li><b>Una sesión por área</b>, no una reunión general: las preguntas de contabilidad no se resuelven con
+riesgos presente y viceversa.</li>
+<li><b>Toda respuesta queda por escrito con fecha y responsable.</b> Varias de estas decisiones cambian cifras
+ya publicadas; el registro es parte de la evidencia de la remediación.</li>
+<li><b>Las respuestas alimentan directamente el catálogo del portal</b>: las de contabilidad y negocio son, en
+su mayoría, el contenido inicial de los parámetros con vigencia.</li>
+<li>Hay una hoja de seguimiento en <code>auditoria/12_preguntas_negocio.csv</code> para llenar respuesta,
+responsable y fecha.</li>
+</ul>
+</div>
+
+<h2>Preguntas por área</h2>
+
+<div class="ola">
+  <h3>Q01 &mdash; ¿Cuál es la columna correcta del segundo bloque de ajustes ballon: PRINCIPAL_FINAL o MONTOEXIGIBLECOM?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Contabilidad</span><span class="tag">L10-001</span>
+  <span class="pill info">Bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">El bloque está comentado como MONTOEXIGIBLECOM pero suma intereses, comisiones y moratorios al capital. Si la columna correcta es la otra, el capital reportado está inflado en todos los cierres con ajustes ballon.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Es correcto como está: los accesorios ballon capitalizan.</li><li>Debe ir a MONTOEXIGIBLECOM; se requiere recálculo de los periodos afectados.</li><li>Requiere revisión conjunta con el desarrollador sobre datos de un periodo cerrado.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q02 &mdash; ¿Cuál es el criterio único de crédito cancelado para el universo del cierre?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Contabilidad</span><span class="tag">L10-005</span>
+  <span class="pill info">Bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">El universo de créditos activos y los dos universos de saldos en cuentas de orden usan criterios distintos de FEC_CANCELACION, así que un mismo crédito puede entrar en un bloque y no en otro.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>FEC_CANCELACION nula o mayor a la fecha de corte.</li><li>FEC_CANCELACION nula únicamente.</li><li>Depende del tipo de saldo; contabilidad define la regla por bloque.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q03 &mdash; ¿Cuál es el catálogo oficial de rubros del cierre, y para cada rubro: se materializa, en qué reporte participa y causa IVA?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Contabilidad</span><span class="tag">L10-007, L2-017, L1-024</span>
+  <span class="pill info">Bloquea la Ola 4 y el portal</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Hoy el generador materializa rubros por lista negra y los reportes los consumen por lista blanca: un rubro nuevo entra a la tabla y no aparece en ningún reporte, sin que nadie se enteré. Es el catálogo central del portal.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Contabilidad entrega el catálogo con los tres atributos por rubro.</li><li>Se construye desde el código actual y contabilidad lo valida rubro por rubro.</li><li>Se requiere sesión de trabajo con contabilidad y el área de producto.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q04 &mdash; ¿Cuál es la definición oficial de cartera sin restricción por COD_ORIGEN, y cuáles son las etiquetas de salida correctas?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Contabilidad</span><span class="tag">L10-008</span>
+  <span class="pill info">Bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Dos reportes de cierre usan dos listas distintas de COD_ORIGEN para la misma definición, así que las dos cifras no cuadran entre sí y ambas se publican.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Prevalece la lista del reporte diario.</li><li>Prevalece la lista del reporte general.</li><li>Ninguna es correcta; contabilidad entrega la lista vigente con su vigencia.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q05 &mdash; ¿Cuál es la política de redondeo y la tolerancia de cuadre cargo-abono aceptable en la póliza?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Contabilidad</span><span class="tag">L2-013</span>
+  <span class="pill info">Bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Los importes viajan en MONEY con redondeos intermedios a dos decimales en varios pasos. Sin una regla única, dos cálculos válidos dan cifras distintas por centavos y no hay criterio para decir cuál falla.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Redondeo únicamente al final del cálculo, tolerancia cero en el cuadre.</li><li>Redondeo por movimiento, con tolerancia definida por póliza.</li><li>Contabilidad define la regla y la tolerancia por tipo de póliza.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q06 &mdash; El cierre comercial lee &#x27;otras comisiones&#x27; de la fecha fija &#x27;20260123&#x27;: ¿las pólizas ya publicadas de otros periodos deben recalcularse y reexpresarse?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Contabilidad</span><span class="tag">L1-001</span>
+  <span class="pill info">Bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Corregir el código es trivial; la decisión de negocio es qué hacer con las cifras ya emitidas con el universo equivocado.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Se corrige a futuro sin reexpresar.</li><li>Se recalculan y reexpresan los periodos afectados.</li><li>Contabilidad evalúa la materialidad antes de decidir.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q07 &mdash; ¿El reproceso de un periodo ya cerrado está permitido? ¿Quién lo autoriza y qué se espera del resultado: acumular o recalcular?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Contabilidad</span><span class="tag">L1-006, L6-014</span>
+  <span class="pill info">Bloquea la Ola 2 y la Ola 3</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">El diseño acumula ajustes por diseño, pero nada impide un segundo pase del mismo periodo y no existe marca de corrida. La respuesta define si el control es &#x27;rechazar el segundo pase&#x27; o &#x27;reproceso determinista&#x27;.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Nunca se reprocesa: el segundo pase se rechaza siempre.</li><li>Se reprocesa con autorización, y debe recalcular (no sumar sobre lo acumulado).</li><li>Se reprocesa libremente y la acumulación es el comportamiento esperado.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q08 &mdash; ¿Cuáles son los valores vigentes, con su fecha de vigencia, de la tasa de IVA, la base de días del devengo, el umbral de avalúo de vivienda y las fechas del programa COVID?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Contabilidad</span><span class="tag">L1-020, L10-025, L2-017</span>
+  <span class="pill info">Bloquea la Ola 4</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Son los primeros parámetros que se migran al catálogo del portal. Sin el valor oficial y su vigencia, la migración copiaría el literal actual sin saber si es el correcto.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Negocio y contabilidad entregan la tabla de valores con vigencias.</li><li>Se toman los valores del código como línea base y se validan uno por uno.</li><li>Se requiere confirmar con el área normativa.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q09 &mdash; ¿Cuál es el porcentaje de participación del convenio vigente, desde cuándo, y debe conservarse el monto bruto además del participado?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Negocio</span><span class="tag">L2-001</span>
+  <span class="pill info">Bloquea la Ola 4</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">La participación está escrita como dos literales complementarios (0.10 y 0.90) en 28 archivos, y algunos procedimientos sobrescriben el monto bruto, con lo que el dato original se pierde.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>El valor vigente es el que está en el código y no ha cambiado.</li><li>Hay más de un convenio y cada uno tiene su porcentaje.</li><li>El porcentaje cambia en el tiempo y requiere vigencia.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q10 &mdash; ¿La cartera sindicada debe aplicar el tratamiento COVID y la separación balance/cuentas de orden de la etapa 3?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Negocio</span><span class="tag">L2-007</span>
+  <span class="pill info">Ya en tu lista &middot; bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">La familia sindicada no lo aplica y sus hermanas sí. Hoy la diferencia solo existe en el código, sin documento que diga si es deliberada.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Es deliberada por la naturaleza del producto: se documenta y se cierra.</li><li>Es una deuda de la versión sindicada: hay que portar el tratamiento.</li><li>Aplica solo para una parte de los créditos sindicados.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q11 &mdash; ¿Dos procesos distintos pueden compartir el mismo número de póliza?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Negocio</span><span class="tag">L2-012</span>
+  <span class="pill info">Ya en tu lista &middot; bloquea la Ola 4</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Hay 74 números de póliza escritos uno por procedimiento y al menos uno reutilizado en dos procesos. Si no se permite, hoy existe un defecto; si se permite, el catálogo del portal necesita otra llave lógica.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>No: el número es único por proceso y el caso actual es un defecto.</li><li>Sí: la póliza agrupa varios procesos por diseño.</li><li>Depende del tipo de póliza.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q12 &mdash; ¿Cuáles de las divergencias entre los procedimientos hermanos comercial e individual son intencionales?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Negocio</span><span class="tag">L2-008, L10-010</span>
+  <span class="pill info">Bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">La misma operación está implementada dos veces con filtros, rubros y redondeos distintos. Antes de unificar hay que saber qué diferencia es una regla de producto y qué diferencia es un descuido.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Negocio revisa la matriz de divergencias y marca cada fila.</li><li>Todas las diferencias deben desaparecer: la regla es la misma.</li><li>Se resuelve caso por caso durante la remediación.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q13 &mdash; ¿Cuál es el catálogo oficial de tipos de crédito, con la marca de en qué procesos participa cada uno, y qué debe pasar cuando aparece un tipo desconocido?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Negocio</span><span class="tag">L2-018, L6-015</span>
+  <span class="pill info">Bloquea la Ola 4</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">La clasificación está repetida en 37 listas distintas dentro de 104 archivos. El comportamiento ante un tipo nuevo hoy es silencioso: el crédito simplemente no entra al cálculo.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>El tipo desconocido debe detener el cierre con error explícito.</li><li>Debe registrarse como excepción y continuar.</li><li>Debe tomar un tratamiento por omisión definido por negocio.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q14 &mdash; ¿Quién es el dueño de cada catálogo y quién autoriza el alta de un rubro o concepto nuevo, con qué tiempo de respuesta?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Negocio</span><span class="tag">L1-024, L2-017, portal M1-M3</span>
+  <span class="pill info">Bloquea el portal</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Es la pregunta que define el portal: hoy un concepto nuevo es un cambio de código. El flujo de cuatro ojos necesita nombres de roles, no de personas.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Un solo dueño por catálogo, con aprobador distinto del capturista.</li><li>Dueño por familia de póliza.</li><li>Se requiere definir la matriz de responsabilidades.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q15 &mdash; El reporte a Afirme deja la comisión de administración en cero por un literal de rubro mal escrito: ¿el área receptora lo ha detectado y hay que reemitir los reportes ya enviados?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Negocio</span><span class="tag">L6-007</span>
+  <span class="pill info">Bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">El defecto es de una línea, pero la información salió de la institución con un concepto en cero.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Se corrige a futuro sin reemitir.</li><li>Hay que reemitir los periodos afectados.</li><li>Se escala al área que administra el convenio.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q16 &mdash; ¿Cuál es la salida autoritativa cuando dos artefactos publican la misma cifra: reporte diario o general, y qué variante del reporte de póliza contable es la oficial?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Negocio</span><span class="tag">L10-010, L12-005, L12-008</span>
+  <span class="pill info">Bloquea la Ola 6</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Existen pares de reportes que ejecutan el mismo procedimiento con filtros fijos distintos. Ambas cifras circulan y no hay definición de cuál manda.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Negocio designa la oficial y la otra se retira.</li><li>Ambas son válidas para audiencias distintas: se renombran y documentan.</li><li>Se requiere comparar cifras antes de decidir.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q17 &mdash; ¿Cómo debe tratarse el tipo de crédito 8 en los estados de cuenta? El pendiente está escrito como comentario en el código desde 2024.</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Negocio</span><span class="tag">lote 6, pendientes no técnicos</span>
+  <span class="pill info">Bloquea la Ola 4</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">El código declara explícitamente que falta definir el tratamiento y sigue sin resolverse, así que hoy los créditos de ese tipo reciben el tratamiento por omisión sin que nadie lo haya autorizado.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Recibe el mismo tratamiento que el tipo equivalente vigente.</li><li>Requiere reglas propias que negocio debe definir.</li><li>El tipo ya no se opera y puede retirarse del catálogo.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q18 &mdash; ¿El canal minorista o comercial puede seguir derivándose de TIP_TASA=&#x27;F&#x27; para efectos de reporte regulatorio?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Riesgos</span><span class="tag">lote 6, pendientes no técnicos</span>
+  <span class="pill info">Ya en tu lista &middot; bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Es una inferencia: se usa el tipo de tasa como proxy del canal. Si el regulador exige el canal real, la cifra reportada se sostiene en una equivalencia no documentada.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Sí, la equivalencia es válida y se documenta.</li><li>No: se requiere el atributo de canal real en la fuente.</li><li>Riesgos debe validarlo con el área normativa.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q19 &mdash; ¿Cuál es el criterio correcto de asignación de etapa de riesgo, y hubo periodos mal clasificados por el filtro de periodo anulado?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Riesgos</span><span class="tag">L1-002</span>
+  <span class="pill info">Bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Una precedencia de OR/AND deja el filtro de periodo sin efecto en el UPDATE de etapa, así que el resultado depende de datos de otros periodos.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>El criterio es el declarado y hay que corregir el código y revisar el histórico.</li><li>Se corrige a futuro sin revisar el histórico.</li><li>Riesgos revisa el impacto sobre las etapas ya reportadas.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q20 &mdash; ¿La granularidad del reporte de riesgos es folio o folio más sección?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Riesgos</span><span class="tag">L10-018</span>
+  <span class="pill info">Bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">El procedimiento agrupa por folio pero publica una llave que incluye la sección y colapsa atributos descriptivos con MIN y MAX, con lo que la llave publicada no es única.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Folio: la sección se retira de la llave.</li><li>Folio más sección: se corrige el agrupamiento.</li><li>Riesgos define la granularidad esperada del entregable.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q21 &mdash; ¿El universo del programa COVID se define por el umbral NUM_CREDITO menor a 6051, o por un atributo del crédito?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Riesgos</span><span class="tag">L6-003, L1-015, L10-025</span>
+  <span class="pill info">Bloquea la Ola 4</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Una función escalar consumida por 66 procedimientos decide el tratamiento COVID con un número de crédito como frontera, y el umbral difiere entre desarrollo y producción. Si entra un crédito nuevo con número menor, recibe tratamiento COVID.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>El umbral es correcto y es histórico cerrado.</li><li>Debe sustituirse por una marca del crédito o por vigencia.</li><li>Riesgos y negocio definen el universo formalmente.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q22 &mdash; ¿Los esquemas PAG, edc, edcc, juicios, demandas, ori y cierre_puente existen en producción, y qué versión del cierre corre realmente?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Operación</span><span class="tag">L2-019, L6-004, L10-006, L12-002</span>
+  <span class="pill info">Ya en tu lista &middot; bloquea toda la remediación</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">26 objetos programables del repositorio no aparecen en el export de producción y SP_SAF_SALDOS está desplegado con 223 de sus 573 líneas. Es lo que resuelve la Fase 0 con acceso de solo lectura.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Existen y el export está incompleto: se entrega acceso para reconciliar.</li><li>No existen: son módulos solo de desarrollo.</li><li>Existen parcialmente y hay que revisar objeto por objeto.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q23 &mdash; ¿Quién debe recibir la alerta cuando el cierre termina con errores, en qué tiempo, y qué se hace mientras se resuelve?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Operación</span><span class="tag">L12-004, L10-002</span>
+  <span class="pill info">Bloquea la Ola 3</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">102 objetos escriben en la bitácora de errores de póliza y ninguno la vigila. Un cierre puede terminar en éxito con la póliza incompleta y la detección depende de que alguien note el descuadre.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Se define un responsable de guardia y un canal de alerta.</li><li>La alerta va al área de sistemas y contabilidad en paralelo.</li><li>Se requiere definir el procedimiento de escalamiento.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q24 &mdash; ¿Cuál es el calendario oficial de días hábiles y la fecha de negocio que debe usar el proceso?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Operación</span><span class="tag">L6-012, L10-019</span>
+  <span class="pill info">Bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Varios procedimientos usan la fecha del servidor y ventanas de días naturales. En un cierre diario que corre minutos después de SAF, la diferencia entre fecha de sistema y fecha de negocio cambia el universo.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Existe un calendario institucional y se debe consumir.</li><li>Se usa la fecha de sistema y es correcto.</li><li>Hay que construir el calendario como catálogo del portal.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q25 &mdash; ¿Se ha ejecutado alguna vez en producción el generador de órdenes de facturación con importes aleatorios, y puede retirarse el objeto?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Operación</span><span class="tag">L6-001</span>
+  <span class="pill info">Bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">El procedimiento inserta importes aleatorios en la cola de facturación por cada estado de cuenta real del corte, sin guarda de ambiente. Si se ejecutó en producción, hay un incidente de datos, no un hallazgo de código.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Nunca se ejecutó en producción y el objeto puede retirarse.</li><li>Se usa para pruebas y debe quedar bloqueado por guarda de ambiente.</li><li>Se requiere revisar la bitácora de ejecuciones.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q26 &mdash; ¿Se requiere una revisión retroactiva de los pagos emparejados por coincidencia parcial de referencia?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Operación</span><span class="tag">L6-002, L6-013</span>
+  <span class="pill info">Bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">El identificador de pagos empareja el crédito con una coincidencia invertida y se queda con el número de crédito más bajo cuando hay varios candidatos: pudo aplicar pagos al crédito equivocado.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Sí, con alcance y periodo definidos por operación.</li><li>No: el layout garantiza unicidad y no hay casos ambiguos.</li><li>Se ejecuta primero un diagnóstico de cuántos casos ambiguos existen.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q27 &mdash; ¿Cuál es el alcance del enmascaramiento de datos personales y bancarios, y quién puede verlos sin máscara?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Seguridad y legal</span><span class="tag">L6-017</span>
+  <span class="pill info">Ya en tu lista &middot; bloquea la Ola 7</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">251 tablas contienen datos personales y bancarios sin enmascaramiento ni cifrado, y solo 30 tienen rastro de auditoría. El alcance lo define cumplimiento, no el equipo técnico.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Cumplimiento entrega la clasificación de datos por tabla.</li><li>Se enmascara todo dato personal salvo excepción autorizada.</li><li>Se limita al ambiente de QA y desarrollo.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q28 &mdash; Cuatro procedimientos de producción leyeron datos de la base de QA: ¿se requiere revisión de las pólizas generadas y nota a auditoría interna?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Seguridad y legal</span><span class="tag">L1-007, L12-007</span>
+  <span class="pill info">Bloquea la Ola 1</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Es el hallazgo con mayor exposición ante un revisor externo: cifras contables calculadas con una fuente que no es la réplica autorizada.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Sí: se revisan los periodos afectados y se documenta.</li><li>No: esos procedimientos no se ejecutan en producción.</li><li>Se requiere primero determinar desde cuándo apuntan a QA.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q29 &mdash; El correo de prueba en el campo de contacto de los clientes: ¿se usa para envíos y hay que notificar el incidente?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Seguridad y legal</span><span class="tag">L6-009</span>
+  <span class="pill info">Bloquea la Ola 2</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Un proceso deja un correo de prueba como segundo contacto de todos los clientes. Si el envío usa ese campo, es un incidente de datos personales.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>El campo no se usa para envíos: solo se corrige el dato.</li><li>Sí se usa: hay que evaluar notificación conforme a la política.</li><li>Se requiere revisar el proceso de envío.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q30 &mdash; ¿Se permiten cambios de parámetro con vigencia retroactiva, y quién los autoriza?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Gobierno del portal</span><span class="tag">portal M1-M3</span>
+  <span class="pill info">Bloquea el portal</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Determina el diseño del catálogo: un cambio retroactivo obliga a recalcular pólizas ya publicadas, así que puede ser una función del portal o algo explícitamente prohibido.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Prohibido: la vigencia siempre es a futuro.</li><li>Permitido con doble autorización y recálculo controlado.</li><li>Permitido solo antes del cierre del día.</li></ul>
+</div>
+<div class="ola">
+  <h3>Q31 &mdash; ¿Quién es el propietario de cada uno de los 63 grupos de valores hoy hardcodeados?</h3>
+  <p style="margin:2px 0 8px"><span class="tag">Gobierno del portal</span><span class="tag">catálogo de hardcodeo completo</span>
+  <span class="pill info">Bloquea el portal</span></p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 2px">
+  Por qué hay que preguntarlo</p>
+  <p style="margin:0">Sin propietario, el parámetro migra al portal pero nadie puede autorizar su cambio, y el proceso vuelve a depender del desarrollador.</p>
+  <p class="q" style="color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px">
+  Respuestas posibles (para acotar la conversación)</p>
+  <ul><li>Se asigna propietario por grupo en una sesión de trabajo.</li><li>Todo queda bajo contabilidad.</li><li>Se define por familia de póliza.</li></ul>
+</div>
+
+<h2>Lo que no es una pregunta de negocio</h2>
+<p>Para no mezclar agendas: los hallazgos transaccionales (78 de 80 procedimientos revierten y reportan éxito),
+los de rendimiento, los de estándares y la eliminación del drift <b>no requieren decisión de negocio</b>. Son
+correcciones técnicas con criterio de aceptación objetivo y avanzan en paralelo a estas confirmaciones. Del
+lado técnico solo hacen falta tres cosas, ya listadas en
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1</a>: acceso de consulta a KARDIA en producción y QA, un periodo
+cerrado de referencia y la autorización para crear el esquema EXT.</p>
+
+</div>
+<footer>Auditoría de código SQL KARDIA / SAF &middot; análisis estático del repositorio (BD, BD_prod y reportes).
+No se ejecutó ningún objeto contra una instancia de SQL Server ni se leyeron datos productivos:
+los hallazgos que dependen de datos, de plan de ejecución o de reglas contables se marcan como pendientes de validación.</footer>
+</body></html>
