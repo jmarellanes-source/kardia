@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auditoría SQL KARDIA / SAF &mdash; consolidado lotes 1-6</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.55 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:28px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:24px} header.top p{margin:7px 0 0;color:#93a1bb}
+.wrap{padding:22px 32px 60px;max-width:1400px}
+h2{margin:34px 0 12px;font-size:17px;border-left:3px solid #4c8dff;padding-left:10px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 8px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:130px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b} .kpi.a b{color:#ffa94d} .kpi.m b{color:#ffd43b} .kpi.b b{color:#74c0fc}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:10px;overflow:hidden}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid #222d40;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#b9c6dd;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mono{font-family:Consolas,monospace;font-size:12px;color:#cfe0ff}
+.bad{color:#ff6b6b;font-weight:600} .warn{color:#ffa94d} .ok{color:#69db7c}
+.cards{display:flex;gap:16px;flex-wrap:wrap}
+.card{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:16px 20px;flex:1 1 300px}
+.card h3{margin:0 0 6px;font-size:15px} .card p{margin:0;color:#93a1bb;font-size:13px}
+.card .go{display:inline-block;margin-top:10px;background:#1f3763;border:1px solid #35507f;color:#cfe0ff;
+ padding:6px 12px;border-radius:7px;text-decoration:none;font-size:12px}
+ul li{margin:5px 0} .lead{color:#b9c6dd;max-width:1000px}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+</style></head><body>
+<header class="top">
+  <h1>Auditoría de código SQL &mdash; KARDIA / SAF</h1>
+  <p>Consolidado de los lotes 1 a 6, 10-11 y la fase de dependencias &middot; 177 objetos programables + 251 tablas + 30 reportes .rdl &middot; 59.218 líneas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (producción)</p>
+</header>
+<div class="wrap">
+
+  <div class="kpis">
+    <div class="kpi c"><b>22</b><span>Críticos</span></div>
+    <div class="kpi a"><b>51</b><span>Altos</span></div>
+    <div class="kpi m"><b>35</b><span>Medios</span></div>
+    <div class="kpi b"><b>9</b><span>Bajos</span></div>
+    <div class="kpi"><b>63</b><span>Grupos de hardcodeo</span></div>
+    <div class="kpi"><b>177</b><span>Objetos revisados</span></div>
+    <div class="kpi"><b>100%</b><span>De las familias funcionales</span></div>
+  </div>
+
+  <h2>Para presentar al cliente</h2>
+  <div class="cards">
+    <div class="card"><h3>Resumen ejecutivo</h3>
+      <p>Los seis riesgos que importan, con evidencia, impacto de negocio y acción; los cuatro niveles de certeza de los hallazgos; y las decisiones que se necesitan de contabilidad, negocio, tecnología y riesgos.</p>
+      <a class="go" href="06_ejecutivo.html">Abrir</a></div>
+    <div class="card"><h3>Plan de remediación</h3>
+      <p>Ocho olas ordenadas por dependencia, con criterios de aceptación verificables, riesgo por ola y las tres esperas externas que determinan el calendario.</p>
+      <a class="go" href="07_plan_remediacion.html">Abrir</a></div>
+    <div class="card"><h3>Portal de administración</h3>
+      <p>Ocho módulos, modelo de parámetros con vigencia, cuatro ojos, roles y stack recomendado: ASP.NET Core 8 + React con TypeScript sobre SQL Server.</p>
+      <a class="go" href="08_portal_admin.html">Abrir</a></div>
+    <div class="card"><h3>Demo navegable del portal</h3>
+      <p>Prototipo de interfaz en un solo archivo HTML, con datos hardcodeados de los hallazgos reales: filtros, vigencias, bandeja de cuatro ojos y paridad entre ambientes. Sin backend, no guarda nada.</p>
+      <a class="go" href="09_demo_portal.html">Abrir</a></div>
+    <div class="card"><h3>Contexto operativo y cambio de core</h3>
+      <p>El flujo diario confirmado con el equipo (réplica de lectura, escritura en KARDIA, histórico bloqueado y ajustes acumulados), los cinco hallazgos que se reencuadran, la matriz de las cuatro pólizas y la estrategia para el día en que salga SAF/Sisde.</p>
+      <a class="go" href="10_contexto_migracion.html">Abrir</a></div>
+    <div class="card"><h3>Fase 0 y Fase 1 con ejemplos concretos</h3>
+      <p>Cómo se reconcilian los ambientes y cómo se elimina el drift, con los scripts ya escritos: hash de paridad contra la instancia, 38 sinónimos que absorben las 6.485 referencias al origen, antes y después de código real, orden de despliegue y vuelta atrás.</p>
+      <a class="go" href="11_fase0_fase1.html">Abrir</a></div>
+    <div class="card"><h3>Confirmaciones pendientes con las áreas</h3>
+      <p>Las 31 decisiones que hoy bloquean la remediación, agrupadas por área responsable: cada una con el hallazgo que la origina, por qué no se puede avanzar sin ella y las respuestas posibles. Incluye hoja de seguimiento en CSV.</p>
+      <a class="go" href="12_preguntas_negocio.html">Abrir</a></div>
+    <div class="card"><h3>Dummy de catálogos y banderas</h3>
+      <p>Cómo se sustituyen las listas literales de NUM_DESC_TIPO_CREDITO y los rubros de cobranza por 12 banderas y tres catálogos pequeños, sin un registro por póliza: antes y después de código productivo de CIERRE, SAF, PO y dbo.REPORTE_COBRANZA_INTEGRACION, prueba de equivalencia y qué no debe parametrizarse.</p>
+      <a class="go" href="13_dummy_catalogos.html">Abrir</a></div>
+  </div>
+
+  <h2>Reportes técnicos por lote</h2>
+  <div class="cards">
+    <div class="card"><h3>Fase 0 &mdash; Inventario</h3>
+      <p>Estructura confirmada de BD, BD_prod y reportes; codificación, esquemas, drift dev-prod y cadenas de conexión de los .rdl.</p>
+      <a class="go" href="00_inventario.html">Abrir</a></div>
+    <div class="card"><h3>Lote 1 &mdash; 20 objetos, 35 hallazgos</h3>
+      <p>Cierre diario y mensual, extractores SYS_SP_MOV_* y pólizas comerciales. Incluye los defectos de fecha fija, idempotencia y lectura de QA en producción.</p>
+      <a class="go" href="01_lote1.html">Abrir</a></div>
+    <div class="card"><h3>Lotes 2-5 &mdash; 80 objetos, 22 hallazgos</h3>
+      <p>Familias clonadas de castigos, condonación, dación, reestructura, devengos y venta de cartera. Enfocado en divergencias entre SPs hermanos.</p>
+      <a class="go" href="02_lotes2-5.html">Abrir</a></div>
+    <div class="card"><h3>Lote 6 &mdash; 56 objetos, 25 hallazgos</h3>
+      <p>Muestreo dirigido a las familias no vistas: portal de pagos (PAG), estados de cuenta (edc), alertas de tasas (SAF), reportes de dbo/RPT, las 18 funciones y los 251 scripts de tabla.</p>
+      <a class="go" href="03_lote6.html">Abrir</a></div>
+    <div class="card"><h3>Lotes 10-11 &mdash; 27 objetos, 25 hallazgos</h3>
+      <p>Familia completa de cierre: los 26 procedimientos de CIERRE, el de RPT y las cuatro tablas del esquema. Concentra los hallazgos de integridad contable, paridad dev-prod y observabilidad del cierre.</p>
+      <a class="go" href="04_lotes10-11.html">Abrir</a></div>
+    <div class="card"><h3>Dependencias y reportes &mdash; 10 hallazgos</h3>
+      <p>Grafo completo de dependencias (245 objetos programables, 251 tablas) y auditoría de los 30 archivos .rdl: quién llama a cada objeto, qué se rompe si se cambia y por dónde sale la información al usuario.</p>
+      <a class="go" href="05_dependencias.html">Abrir</a></div>
+  </div>
+  <p class="lead" style="margin-top:14px">Los lotes 2 a 5 se entregan en un solo reporte con filtro por lote: al ser 62 variantes reales
+  dentro de 80 archivos, los hallazgos son de familia (un patrón con su lista de objetos y ocurrencias) y separarlos por lote habría
+  duplicado el mismo hallazgo cuatro veces. La tabla de cobertura del reporte lista los 80 objetos con sus métricas individuales.
+  El lote 6 cambia de estrategia: en vez de continuar por ranking de riesgo dentro de PO y CIERRE, cubre todas las familias
+  funcionales que ningún lote había tocado, con lo que la auditoría ya no deja módulos sin revisar.</p>
+
+  <h2>Lo que cambió con el lote 6</h2>
+  <p class="lead">Los lotes 1 a 5 midieron el riesgo de los procesos grandes de cierre y póliza. El lote 6 muestra que el
+  riesgo de mayor <b>alcance</b> esta en los objetos chicos: cinco funciones escalares de 20 a 40 líneas gobiernan entre 43 y
+  78 SPs cada una, y una de ellas decide el tratamiento COVID con el umbral <span class="mono">NUM_CREDITO &lt; 6051</span>.
+  También aparece la causa única del drift dev-prod (el nombre de la base escrito dentro del código) y tres defectos con
+  impacto directo en el cliente o en datos personales.</p>
+  <table><thead><tr><th>Hecho medido en el lote 6</th><th>Escala</th><th>Por que importa</th></tr></thead><tbody>
+    <tr><td>UDF escalares con acceso a datos, invocadas fila por fila</td><td class="num bad">5 funciones / 78, 69, 66, 44 y 43 SPs</td>
+        <td>Punto de apalancamiento del rendimiento: corregir 5 objetos pesa más que optimizar 100 SPs.</td></tr>
+    <tr><td>Nombre de base externa dentro del código (shadow vs real)</td><td class="num bad">7 objetos comunes divergen</td>
+        <td>Causa única del drift dev-prod; se resuelve con sinónimos y deja de generarse.</td></tr>
+    <tr><td>Listas literales de tipo de crédito</td><td class="num bad">37 listas / 230 usos / 104 archivos</td>
+        <td>El mismo tipo se clasifica distinto según el objeto (20/23, 26, 8): los reportes no cuadran entre sí.</td></tr>
+    <tr><td>Objetos programables del repositorio que no existen en BD_prod</td><td class="num warn">26 de 56 (PAG, edc, dbo.REPORTE*)</td>
+        <td>Siete esquemas completos no aparecen en el export de producción: falta promover o falta exportar.</td></tr>
+    <tr><td>Tablas con dato personal o bancario sin mascara ni cifrado</td><td class="num warn">52 con PII / 0 protegidas</td>
+        <td>Solo 30 de 251 tablas registran quien escribió: complica trazabilidad de acceso.</td></tr>
+    <tr><td>Índices no agrupados en el export de esquema</td><td class="num warn">0 en 251 tablas</td>
+        <td>O no existen (explica los tiempos de cierre) o el artefacto de despliegue no describe la base.</td></tr>
+  </tbody></table>
+
+  <h2>Lo que cambió con los lotes 10-11 (familia de cierre completa)</h2>
+  <p class="lead">Los lotes 1 a 6 recorrieron el cierre por sus procesos más grandes; esta fase cubre los 27 objetos de la
+  familia como conjunto y compara objetos hermanos entre sí. Ahí aparecen los defectos que no se ven leyendo un solo
+  procedimiento: reglas contradictorias dentro del mismo SP, dos definiciones del mismo concepto de negocio y dos clones
+  que publican cifras del mismo día que nunca conciliaran.</p>
+  <table><thead><tr><th>Hecho medido en los lotes 10-11</th><th>Escala</th><th>Por que importa</th></tr></thead><tbody>
+    <tr><td>Objetos de la familia de cierre ausentes en el export de BD_prod</td><td class="num bad">19 de 27</td>
+        <td>Incluye el cierre individual mensual completo; y <span class="mono">SP_SAF_SALDOS</span> esta en producción con 223 de sus 573 líneas.</td></tr>
+    <tr><td>Referencias literales a la base externa dentro del cierre</td><td class="num bad">753 en 17 objetos</td>
+        <td><span class="mono">SP_CMR_GEN_MES</span> mezcla 90 lecturas del espejo con 1 de la base real en el mismo cálculo.</td></tr>
+    <tr><td>Etiquetas de bitácora que no corresponden a ningún objeto</td><td class="num bad">5 de 5 procesos</td>
+        <td>Tres cierres distintos escriben la misma etiqueta y ninguno propaga el error: el job termina en éxito.</td></tr>
+    <tr><td>Definiciones distintas del mismo concepto de negocio</td><td class="num bad">2 de cartera sin restricción / 6 de cuentas excluidas</td>
+        <td>Los reportes del mismo periodo no cuadran por construcción, no por datos.</td></tr>
+    <tr><td>Lecturas con <span class="mono">NOLOCK</span> en la familia de cierre</td><td class="num bad">287 en 15 objetos</td>
+        <td>Cifras contables no reproducibles entre dos corridas de la misma fecha.</td></tr>
+    <tr><td>Procedimientos de reporte que validan sus parámetros de fecha</td><td class="num warn">0 de 20</td>
+        <td>Un rango abierto recorre el histórico de la base núcleo durante la ventana de cierre.</td></tr>
+    <tr><td>Tablas de cierre con llave natural única</td><td class="num warn">3 de 4</td>
+        <td><span class="mono">CIERRE.IND_REP</span> no la tiene: nada impide duplicar el periodo si el borrado previo falla.</td></tr>
+  </tbody></table>
+
+  <h2>Patrones sistémicos medidos sobre los 100 objetos de los lotes 1-5</h2>
+  <table><thead><tr><th>Patrón</th><th>Objetos</th><th>Ocurrencias</th><th>Lectura</th></tr></thead><tbody>
+    <tr><td>Transacciones sin <span class="mono">SET XACT_ABORT ON</span></td><td class="num bad">100 / 100</td><td class="num">&mdash;</td>
+        <td>Ningún objeto aborta el lote ante error de ejecución.</td></tr>
+    <tr><td>CATCH que hace ROLLBACK y no propaga el error</td><td class="num bad">89 / 100</td><td class="num">&mdash;</td>
+        <td>El SP termina con éxito aparente; el orquestador no distingue un cierre completo de uno parcial.</td></tr>
+    <tr><td>Uso de <span class="mono">XACT_STATE()</span> antes del ROLLBACK</td><td class="num bad">0 / 100</td><td class="num">&mdash;</td>
+        <td>ROLLBACK sobre transacción ya deshecha genera error 3903 que enmascara la causa raíz.</td></tr>
+    <tr><td>Lecturas con <span class="mono">WITH (NOLOCK)</span> en cálculo contable</td><td class="num bad">71 / 100</td><td class="num">1.108</td>
+        <td>Cifras no reproducibles: dos corridas del mismo día pueden dar resultados distintos.</td></tr>
+    <tr><td>Cursores globales (con workaround <span class="mono">CursorCloseDeallocate</span>)</td><td class="num warn">61 / 100</td><td class="num">&mdash;</td>
+        <td>Nombres de cursor repetidos entre SPs hermanos; obliga a ejecución estrictamente secuencial.</td></tr>
+    <tr><td>Importes en tipo <span class="mono">MONEY</span> con redondeos intermedios</td><td class="num warn">83 / 100</td><td class="num">&mdash;</td>
+        <td>Origen típico de descuadres de centavos entre póliza y auxiliar.</td></tr>
+    <tr><td>IVA como literal <span class="mono">0.16</span></td><td class="num warn">52 / 100</td><td class="num">&mdash;</td>
+        <td>En cartera individual sustituye a la tasa registrada por crédito.</td></tr>
+    <tr><td>SQL dinámico con concatenación (<span class="mono">EXEC()</span>)</td><td class="num warn">5 / 100</td><td class="num">&mdash;</td>
+        <td>Concentrado en los extractores SYS_SP_*; riesgo de inyección y de saturación de cache de planes.</td></tr>
+    <tr><td>Objetos sin par en el otro ambiente</td><td class="num warn">6 / 100</td><td class="num">&mdash;</td>
+        <td>Control de cambios: no se puede saber desde el código si falta promover o falta exportar.</td></tr>
+  </tbody></table>
+
+  <h2>Los 20 críticos, en una línea cada uno</h2>
+  <table><thead><tr><th>ID</th><th>Hallazgo</th><th>Efecto</th></tr></thead><tbody>
+    <tr><td class="mono">L1-001</td><td>El cierre mensual comercial lee comisiones de la fecha fija <span class="mono">'20260123'</span></td><td>Cifras de CMR_REP mal en todo periodo distinto de esa fecha</td></tr>
+    <tr><td class="mono">L1-002</td><td>El cierre mensual individual no es idempotente</td><td>Reprocesar duplica PRINCIPAL_FINAL</td></tr>
+    <tr><td class="mono">L1-003</td><td>Precedencia OR/AND sin paréntesis en el universo de créditos</td><td>Incluye créditos que no corresponden al periodo</td></tr>
+    <tr><td class="mono">L1-004</td><td>Transacciones sin XACT_ABORT ni propagación de error</td><td>Cierre parcial reportado como exitoso</td></tr>
+    <tr><td class="mono">L1-005</td><td>ROLLBACK sin validar XACT_STATE()</td><td>Error 3903 oculta la causa raíz</td></tr>
+    <tr><td class="mono">L1-006</td><td>Asignación <span class="mono">@ID_SECUENCIA = @ID_SECUENCIA</span> (variable en lugar de columna)</td><td>La secuencia nunca avanza con el valor leído</td></tr>
+    <tr><td class="mono">L1-007</td><td>Extractores de producción leen la base de QA</td><td>Póliza construida con datos de otro ambiente</td></tr>
+    <tr><td class="mono">L2-001</td><td>Participación Afirme partida en 0.10 y 0.90 repartidas en 28 SPs</td><td>Si dejan de sumar 1, la póliza descuadra</td></tr>
+    <tr><td class="mono">L2-002</td><td>El filtro de esa regla omite <span class="mono">CONCEPTO NOT LIKE 'TRS %'</span> en dos SPs</td><td>Escala también los traspasos</td></tr>
+    <tr><td class="mono">L2-003</td><td><span class="mono">PO.SYS_SP_MOV_CARGO</span> borra PRINCIPAL de todas las pólizas del rango</td><td>Perdida silenciosa de cargos de otros procesos</td></tr>
+    <tr><td class="mono">L2-004</td><td>El patrón de error defectuoso es el estándar de la plataforma (89 de 100)</td><td>Confirma que la corrección debe ser masiva, no puntual</td></tr>
+    <tr><td class="mono">L6-001</td><td><span class="mono">edc.SP_Genera_Ordenes_Dummy</span> inserta montos aleatorios en las tablas de facturación (CFDI)</td><td>Ordenes de factura con importes inventados sobre créditos reales</td></tr>
+    <tr><td class="mono">L6-002</td><td>El identificador de pagos empareja con un LIKE invertido y elige el crédito más antiguo</td><td>Pago aplicado a un crédito equivocado</td></tr>
+    <tr><td class="mono">L6-003</td><td>El tratamiento COVID se decide con el umbral <span class="mono">NUM_CREDITO &lt; 6051</span></td><td>Un solo literal gobierna la clasificación en 66 SPs</td></tr>
+    <tr><td class="mono">L6-004</td><td>El nombre de la base externa vive en el código y difiere entre dev y prod</td><td>Despliegue no reproducible; producción puede quedar leyendo la replica</td></tr>
+    <tr><td class="mono">L10-001</td><td>El UPDATE etiquetado MONTOEXIGIBLECOM suma intereses, comisiones y moratorios a <span class="mono">PRINCIPAL_FINAL</span></td><td>Capital del cierre individual inflado con accesorios</td></tr>
+    <tr><td class="mono">L10-002</td><td><span class="mono">SP_IND_GEN_MES_MOD</span> confirma 12 UPDATE sin TRY/CATCH ni XACT_ABORT</td><td>Ajuste parcial confirmado y sin registro de error</td></tr>
+    <tr><td class="mono">L10-003</td><td>Los cinco procesos de cierre registran errores con nombres de SP inexistentes</td><td>No se sabe que cierre fallo; el orquestador ve éxito</td></tr>
+    <tr><td class="mono">L10-004</td><td><span class="mono">SP_CMR_GEN_MES</span> lee 90 tablas del espejo y 1 de la base real</td><td>El cierre consolida dos fotografías distintas del mismo crédito</td></tr>
+    <tr><td class="mono">L10-005</td><td>Criterio de cancelación invertido entre los universos de <span class="mono">SP_SAF_SALDOS</span></td><td>Saldos normales y en cuentas de orden sobre poblaciones complementarias</td></tr>
+  </tbody></table>
+
+  <h2>Hardcodeo acumulado: los grupos con mayor retorno para el portal</h2>
+  <table><thead><tr><th>Grupo</th><th>Escala observada</th><th>Clasificación</th><th>Destino propuesto</th></tr></thead><tbody>
+    <tr><td>Participación de convenio (0.10 / 0.90)</td><td class="num">28 archivos</td><td>Portal (con cuatro ojos)</td><td>Un parámetro con vigencia; el complemento se calcula</td></tr>
+    <tr><td>Tasa de IVA (0.16)</td><td class="num">52 de 100 objetos</td><td>Portal</td><td>Tasa por vigencia y zona; la del crédito manda</td></tr>
+    <tr><td>Números de póliza (<span class="mono">@ID_POLIZA</span>)</td><td class="num">74 valores distintos</td><td>Portal (catálogo)</td><td>Catálogo con clave lógica única por proceso</td></tr>
+    <tr><td>Cuentas y mascaras contables</td><td class="num">&gt;230 ocurrencias</td><td>Portal (catálogo contable)</td><td>PO.SAF_CAT_CONTABLE, sin cuentas en código</td></tr>
+    <tr><td>Conceptos y leyendas de póliza</td><td class="num">144 distintos / 935 usos</td><td>Portal (plantillas)</td><td>PO.SAF_CATALOGO_CONCEPTOS con plantillas</td></tr>
+    <tr><td>Listas de tipo de crédito</td><td class="num">35 variantes / 438 usos</td><td>Portal (catálogo)</td><td>Catálogo con banderas por proceso</td></tr>
+    <tr><td>Filtros de universo (IND_ESTADO, IND_LINEA, IND_COVID)</td><td class="num">36 variantes / 568 usos</td><td>Portal (definición de universo)</td><td>Vista o función única de universo elegible</td></tr>
+    <tr><td>Rubros contables</td><td class="num">23 distintos / 1.305 usos</td><td>Catálogo en BD</td><td>Catálogo + homologación FN_RUBRO_POL en todos los segmentos</td></tr>
+    <tr><td>Servidores, bases y cuenta bancaria STP</td><td class="num">&mdash;</td><td>Configuración técnica</td><td>Sinónimos por ambiente; datos bancarios fuera del código</td></tr>
+    <tr><td>Fecha fija de cierre y centinela <span class="mono">'00010101'</span></td><td class="num">15 archivos</td><td>No parametrizable: defecto</td><td>Corregir, no configurar</td></tr>
+    <tr><td>Umbral COVID <span class="mono">NUM_CREDITO &lt; 6051</span></td><td class="num">66 SPs / 230 usos</td><td>Portal (con cuatro ojos)</td><td>Vigencia del programa en catálogo; parámetro como paso intermedio</td></tr>
+    <tr><td>Códigos institucionales <span class="mono">'001'</span> / <span class="mono">'PR'</span> / <span class="mono">COD_ENTE=1</span></td><td class="num">6 SPs de PAG + edc</td><td>Configuración técnica</td><td>Tabla de configuración institucional</td></tr>
+    <tr><td>Bancos como columnas fijas (HSBC, BBVA, Santander)</td><td class="num">3 SPs de PAG</td><td>Catálogo en BD</td><td>PAG.CAT_BANCO; el portal pivotea</td></tr>
+    <tr><td>Dato de prueba <span class="mono">'Prueba@ion.com'</span> y leyendas <span class="mono">'ERROR'</span> / <span class="mono">'0.00'</span></td><td class="num">5 ocurrencias</td><td>No parametrizable: defecto</td><td>Eliminar; lo no mapeado va a excepciones</td></tr>
+  </tbody></table>
+
+  <h2>Conclusión de la auditoría y orden de remediación propuesto</h2>
+  <p class="lead">Los lotes 10-11 añaden un prerrequisito al orden de abajo: antes de corregir código hay que reconciliar
+  ambientes, porque 19 de los 27 objetos de cierre no aparecen en el export de producción y el proceso que genera los
+  saldos está desplegado con menos de la mitad de su lógica. Sin esa matriz de paridad, cualquier remediación se aplica
+  sobre una versión que quizás no es la que corre.</p>
+  <p class="lead">La fase de diagnostico se puede cerrar. Con los lotes 1 a 5 se agotaron las <b>categorías</b> de
+  hallazgo dentro de los procesos de cierre y póliza (los lotes 2 a 5 encontraron la escala, no categorías nuevas: 62
+  variantes reales en 80 archivos), y el lote 6 cubrió las familias restantes sin dejar módulos sin revisar. Seguir
+  auditando SP por SP hasta agotar los 227 objetos agregaría ocurrencias, no conocimiento.</p>
+  <ol class="lead">
+    <li><b>Correcciones pequeñas con efecto inmediato:</b> L6-001 (generador de facturas dummy), L6-009 (correo de
+      prueba), L6-007 (rubro mal escrito en el reporte Afirme), L2-003 (DELETE sin filtro de póliza), L1-001 (fecha fija
+      de cierre). Son cambios de pocas líneas con impacto en cifras y en datos personales.</li>
+    <li><b>Quitar el ambiente del código (L6-004):</b> sinónimos por base de datos. Es prerrequisito de todo lo demás,
+      porque hoy cada corrección hay que aplicarla dos veces y verificarla a mano en cada release.</li>
+    <li><b>Catálogos antes que portal:</b> tipo de crédito (L6-015), conceptos y rubros (L2-006, L2-017), pólizas
+      (L2-012), bancos (L6-021). Sin catálogo, el portal solo mueve el hardcodeo de lugar.</li>
+    <li><b>Patrón transaccional y cursores locales:</b> mecánico y por script sobre familias clonadas, no SP por SP.
+      Va después del refactor a SP núcleo parametrizado, que reduce 80 copias a unas pocas.</li>
+    <li><b>Rendimiento estructural:</b> las cinco UDF escalares (L6-005) y la estrategia de índices (L6-018), con
+      medición antes y después sobre el mismo periodo de cierre.</li>
+    <li><b>Compuerta de CI:</b> convertir los conteos de este consolidado en un control automático, para que ningún
+      objeto nuevo entre sin patrón transaccional, con NOLOCK en cálculo contable, con nombre de base literal o con
+      listas de tipo de crédito escritas a mano.</li>
+  </ol>
+  <p class="lead">Pendientes de decisión de negocio o infraestructura antes de remediar: si la cartera sindicada debe
+  aplicar COVID y separación balance/orden de etapa 3 (L2-007); si dos procesos pueden compartir número de póliza
+  (L2-012); si los esquemas PAG, edc, edcc, juicios, demandas, ori y cierre_puente existen en producción, porque 26
+  objetos programables del repositorio no aparecen en el export de BD_prod (L2-019, L6-004); el alcance del
+  enmascaramiento de datos personales (L6-017); y si el canal minorista/comercial puede seguir derivándose de
+  <span class="mono">TIP_TASA='F'</span> para efectos de reporte regulatorio.</p>
+
+  <h2>Cierre del diagnostico: la forma del grafo define el orden del trabajo</h2>
+  <p class="lead">La fase de dependencias reemplaza el orden de arriba por el <a href="07_plan_remediacion.html">plan de
+  ocho olas</a>, y agrega el dato que faltaba para planear: el riesgo está concentrado. Ocho objetos son invocados por
+  casi todo el portafolio (<span class="mono">PO.SP_SAF_POLIZA_FINALIZA</span> con 92 llamadores y seis funciones
+  escalares con 31 a 78 cada una) y solo 18 procedimientos alimentan los 30 reportes, así que proteger menos del 5% del
+  código con pruebas cubre la mayor parte del riesgo.</p>
+  <table><thead><tr><th>Hecho medido en la fase de dependencias</th><th>Escala</th><th>Por que importa</th></tr></thead><tbody>
+    <tr><td>Objetos programables sin invocador visible en el repositorio ni en los reportes</td><td class="num warn">110 de 245</td>
+        <td>Se disparan desde jobs u aplicaciones que no están versionados: no se puede estimar impacto ni distinguir código muerto.</td></tr>
+    <tr><td>Tablas sin ningún objeto del repositorio que las use</td><td class="num warn">187 de 251</td>
+        <td>Cuatro esquemas completos (juicios, cierre_puente, ori, edcc) sin código asociado: el repositorio no es la fuente única de verdad.</td></tr>
+    <tr><td>Objetos que escriben la bitácora de errores de póliza contra los que la leen</td><td class="num bad">102 escriben / 6 leen</td>
+        <td>Es la única evidencia de fallo del proceso contable y nadie la vigila; con los CATCH sin THROW, el job termina en éxito.</td></tr>
+    <tr><td>Archivos .rdl con la dirección del servidor embebida y sin origen de datos compartido</td><td class="num bad">30 de 30</td>
+        <td>18 reportes lógicos duplicados por ambiente; dos copias del mismo reporte de póliza filtran productos y etapas distintos.</td></tr>
+  </tbody></table>
+  <p class="lead">Documentos para llevar al cliente: el <a href="06_ejecutivo.html">resumen ejecutivo</a> (riesgos,
+  impacto y decisiones requeridas), el <a href="07_plan_remediacion.html">plan de remediación</a> con criterios de
+  aceptación, la <a href="08_portal_admin.html">propuesta del portal</a> con el stack recomendado y el
+  <a href="10_contexto_migracion.html">contexto operativo con la estrategia ante el cambio de core</a>. Para la
+  conversación técnica del arranque, <a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos concretos</a>
+  trae los scripts entregados y el orden de despliegue, y
+  <a href="12_preguntas_negocio.html">Confirmaciones pendientes con las áreas</a> es la agenda de las sesiones
+  con negocio, contabilidad, riesgos y operación. Para explicar la parametrización en concreto,
+  <a href="13_dummy_catalogos.html">el dummy de catálogos y banderas</a> lleva el antes y después del código
+  productivo.</p>
+
+</div>
+<footer>Los hallazgos se sustentan en la lectura del código fuente de los archivos del repositorio. No se ejecuto
+ningún objeto contra una instancia de SQL Server: los efectos descritos son consecuencias del código, y los que
+dependen de datos o del plan de ejecución se señalan como tales en cada hallazgo.</footer>
+</body></html>

@@ -1,0 +1,117 @@
+{
+  "reporte_cobranza": {
+    "factor_hardcodeado": 14,
+    "lineas": 203,
+    "literal_admon_individual": 45,
+    "ocurrencias_literales_rubro": 124,
+    "predicados_id_poliza": 26,
+    "predicados_rubro": 39,
+    "rubros_distintos": 42
+  },
+  "tipo_credito": {
+    "BD": {
+      "archivos": 113,
+      "listas_distintas": 36,
+      "ocurrencias": 825,
+      "por_bandera": {
+        "ES_ADMINISTRADA_COM": {
+          "archivos": 9,
+          "predicados": 12
+        },
+        "ES_ADMINISTRADA_IND": {
+          "archivos": 7,
+          "predicados": 14
+        },
+        "ES_CASTIGO_COMERCIAL": {
+          "archivos": 13,
+          "predicados": 19
+        },
+        "ES_CASTIGO_INDIVIDUAL": {
+          "archivos": 18,
+          "predicados": 42
+        },
+        "ES_EMPLEADO": {
+          "archivos": 45,
+          "predicados": 83
+        },
+        "ES_MEZZANINE": {
+          "archivos": 19,
+          "predicados": 28
+        },
+        "ES_MINORISTA": {
+          "archivos": 39,
+          "predicados": 60
+        },
+        "ES_PUENTE": {
+          "archivos": 34,
+          "predicados": 54
+        },
+        "SEGMENTO_COMERCIAL": {
+          "archivos": 34,
+          "predicados": 54
+        },
+        "SEGMENTO_INDIVIDUAL": {
+          "archivos": 32,
+          "predicados": 45
+        },
+        "SEGMENTO_SINDICADA": {
+          "archivos": 21,
+          "predicados": 28
+        }
+      },
+      "predicados": 341
+    },
+    "BD_prod": {
+      "archivos": 96,
+      "listas_distintas": 29,
+      "ocurrencias": 625,
+      "por_bandera": {
+        "ES_ADMINISTRADA_COM": {
+          "archivos": 5,
+          "predicados": 7
+        },
+        "ES_ADMINISTRADA_IND": {
+          "archivos": 3,
+          "predicados": 4
+        },
+        "ES_CASTIGO_COMERCIAL": {
+          "archivos": 11,
+          "predicados": 16
+        },
+        "ES_CASTIGO_INDIVIDUAL": {
+          "archivos": 14,
+          "predicados": 16
+        },
+        "ES_EMPLEADO": {
+          "archivos": 38,
+          "predicados": 66
+        },
+        "ES_MEZZANINE": {
+          "archivos": 15,
+          "predicados": 24
+        },
+        "ES_MINORISTA": {
+          "archivos": 31,
+          "predicados": 51
+        },
+        "ES_PUENTE": {
+          "archivos": 30,
+          "predicados": 50
+        },
+        "SEGMENTO_COMERCIAL": {
+          "archivos": 30,
+          "predicados": 50
+        },
+        "SEGMENTO_INDIVIDUAL": {
+          "archivos": 26,
+          "predicados": 33
+        },
+        "SEGMENTO_SINDICADA": {
+          "archivos": 17,
+          "predicados": 24
+        }
+      },
+      "predicados": 239
+    }
+  }
+}

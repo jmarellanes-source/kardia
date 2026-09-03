@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resumen ejecutivo de la auditoría SQL &mdash; KARDIA / SAF</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+nav.docs{padding:10px 32px;background:#131b29;border-bottom:1px solid #2a3549;font-size:13px}
+nav.docs a{margin-right:16px;text-decoration:none}
+.wrap{padding:22px 32px 60px;max-width:1180px}
+h2{margin:34px 0 12px;font-size:18px;border-left:3px solid #4c8dff;padding-left:10px}
+h3{margin:22px 0 6px;font-size:15px}
+p.lead{color:#c9d6ee;font-size:15px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:140px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b}.kpi.a b{color:#ffa94d}.kpi.m b{color:#ffd43b}.kpi.b b{color:#74c0fc}
+.card{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:16px 20px;margin:12px 0}
+.card.rojo{border-left:3px solid #ff6b6b}
+.card.ambar{border-left:3px solid #ffa94d}
+.card.azul{border-left:3px solid #4c8dff}
+.card.verde{border-left:3px solid #51cf66}
+.card h3{margin-top:0}
+.card .q{color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.num{white-space:nowrap;color:#93a1bb}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#c9d6ee}
+pre{margin:8px 0 0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:12px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
+.pill.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.pill.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.pill.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.pill.ok{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.info{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+ul{margin:6px 0;padding-left:20px}li{margin:4px 0}
+.ola{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 20px;margin:12px 0}
+.ola h3{margin:0 0 2px}
+.ola .obj{color:#93a1bb;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.tag{font-size:11px;color:#93a1bb;border:1px solid #35415a;border-radius:5px;padding:2px 7px;margin-right:6px}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px solid #35415a;color:#c9d6ee}
+</style></head><body>
+<header class="top"><h1>Resumen ejecutivo de la auditoría SQL</h1><p>789 archivos auditados &middot; 117 hallazgos &middot; 5 fases de análisis &middot; 2026-08-19</p></header>
+<nav class="docs">
+<a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
+<a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
+<a href="09_demo_portal.html">Demo del portal</a>
+<a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
+<a href="12_preguntas_negocio.html">Confirmaciones con negocio</a>
+<a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a>
+<a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
+</nav>
+<div class="wrap">
+
+<p class="lead">Auditoría de los 503 archivos SQL de desarrollo, los 256 de producción y los 30 artefactos de
+reportes del sistema KARDIA / SAF, ejecutada en cinco fases por lotes de riesgo. Este documento resume, para
+dirección y para las áreas de negocio, qué se encontró, qué significa en términos de riesgo operativo y
+contable, y qué decisiones se necesitan para empezar a remediar.</p>
+
+<div class="kpis">
+  <div class="kpi"><b>789</b><span>Archivos auditados</span></div>
+  <div class="kpi"><b>117</b><span>Hallazgos</span></div>
+  <div class="kpi c"><b>22</b><span>Críticos</span></div>
+  <div class="kpi a"><b>51</b><span>Altos</span></div>
+  <div class="kpi m"><b>35</b><span>Medios</span></div>
+  <div class="kpi b"><b>9</b><span>Bajos</span></div>
+  <div class="kpi"><b>63</b><span>Grupos de hardcodeo</span></div>
+  <div class="kpi"><b>49%</b><span>Drift dev vs prod</span></div>
+</div>
+
+<h2>Lo que hay que saber en un minuto</h2>
+<div class="card azul">
+<p>El sistema funciona y produce la contabilidad todos los días, pero lo hace <b>sin las tres garantías que se
+esperan de un proceso bancario</b>: no se puede demostrar que el código que corre en producción es el
+autorizado (49% de diferencia entre ambientes, y objetos productivos leyendo la base de QA); el cierre no es
+repetible ni avisa cuando falla (no hay marca de corrida que impida un segundo pase, y los errores se
+registran en una bitácora que nadie vigila); y las reglas de negocio viven dentro del código (63 grupos de valores fijos, con dos
+definiciones distintas de la misma regla conviviendo).</p>
+<p>Ninguno de los tres se resuelve comprando software: se resuelven con una secuencia de trabajo acotada, que
+empieza por reconciliar ambientes y termina con las reglas administradas desde un portal con aprobación de
+cuatro ojos. La buena noticia es que <b>el riesgo está concentrado</b>: ocho objetos son invocados por casi todo
+el portafolio y 18 procedimientos alimentan toda la entrega de información, así que proteger menos del 5% del
+código cubre la mayor parte del riesgo.</p>
+</div>
+
+<h2>Contexto operativo del proceso</h2>
+<div class="card verde">
+<p>Confirmado con el equipo de desarrollo: el proceso <b>lee diariamente de <code>Quiero_Confianza</code>, una
+réplica de solo lectura del transaccional SAF/Sisde</b>, y <b>escribe el histórico contable en
+<code>KARDIA</code></b>, dentro del sistema CAS. Minutos después de que SAF cierra operaciones se dispara el
+cierre de la póliza del día; el histórico queda bloqueado y los ajustes de días anteriores se registran como
+<b>adiciones acumuladas</b> en lugar de modificar el pasado, y los valores fijos se concentran en la
+clasificación de las <b>cuatro pólizas principales</b>: devengados de intereses, devengados de moratorios,
+seguros y otras comisiones.</p>
+<p>Este contexto no cambia el alcance ni los hallazgos, pero sí precisa tres lecturas, y así están redactados
+los reportes: el uso de <code>NOLOCK</code> no pone en riesgo al core (la fuente es una réplica) y queda como
+riesgo de <b>reproducibilidad de la cifra</b>; la acumulación del cierre es intencional, de modo que el defecto
+es la <b>ausencia de marca de corrida y de acotamiento por periodo</b>, no la suma en sí; y la parametrización
+debe atacar primero las cuatro pólizas. El detalle, junto con la estrategia para el futuro reemplazo del core,
+está en <a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>.</p>
+</div>
+
+<h2>Los seis riesgos que importan</h2>
+
+<div class="card rojo">
+  <h3><span class="pill c">Crítico</span> &nbsp;R1. No sabemos con certeza qué código está corriendo en producción</h3>
+  <p class="q">Evidencia</p><p>126 de los 256 objetos comunes difieren entre el ambiente de desarrollo y el de producción (49%), 19 de los 27 objetos de la familia de cierre no aparecen en el export de producción, y el procedimiento de saldos SP_SAF_SALDOS tiene 573 líneas en desarrollo y 223 en producción, sin los bloques de saldos en cuentas de orden ni post-castigo.</p>
+  <p class="q">Qué significa para el negocio</p><p>Cualquier corrección puede aplicarse sobre una versión equivocada, y hoy no hay forma de demostrar ante un revisor externo que la cifra publicada proviene del código autorizado.</p>
+  <p class="q">Qué hay que hacer</p><p>Reconciliar ambientes contra los metadatos de producción. Es solo lectura y es el prerrequisito de todo lo demás.</p>
+</div>
+<div class="card rojo">
+  <h3><span class="pill c">Crítico</span> &nbsp;R2. Cuatro procedimientos de producción leen datos de la base de QA</h3>
+  <p class="q">Evidencia</p><p>Objetos productivos consultan Quiero_Confianza_CreditoPuente_QA y Quiero_Confianza_shadow; el nombre de la base externa está escrito 6.485 veces en los 153 archivos que leen del origen, y difiere entre ambientes.</p>
+  <p class="q">Qué significa para el negocio</p><p>Cifras de cierre calculadas con datos de prueba, y la imposibilidad de promover una corrección sin editarla a mano en cada ambiente: de las 125 diferencias entre objetos comunes, 90 son solo el nombre de la base.</p>
+  <p class="q">Qué hay que hacer</p><p>Sustituir los nombres de base embebidos por 38 sinónimos por ambiente. Un solo despliegue elimina el 72% del drift y habilita el despliegue automatizado; los scripts ya están entregados.</p>
+</div>
+<div class="card rojo">
+  <h3><span class="pill c">Crítico</span> &nbsp;R3. El cierre no es repetible y un error puede pasar inadvertido</h3>
+  <p class="q">Evidencia</p><p>El cierre diario acumula ajustes por diseño, pero no registra la corrida ni impide un segundo pase del mismo periodo, y el agregado del cierre mensual individual se toma de todo el histórico sin filtro de periodo; el cierre comercial lee comisiones de una fecha fija (&#x27;20260123&#x27;) en lugar del periodo; 89 de 100 objetos revisados hacen rollback sin propagar el error; y la bitácora de errores de póliza la escriben 102 objetos, pero ninguno la vigila.</p>
+  <p class="q">Qué significa para el negocio</p><p>Un cierre puede terminar en &#x27;éxito&#x27; con cifras incompletas o duplicadas y llegar a contabilidad sin que ningún control automático lo detecte. La detección depende hoy de que alguien note el descuadre.</p>
+  <p class="q">Qué hay que hacer</p><p>Idempotencia por periodo, propagación de errores (THROW) y un monitor sobre la bitácora que alerte antes de que la póliza llegue a contabilidad.</p>
+</div>
+<div class="card ambar">
+  <h3><span class="pill a">Alto</span> &nbsp;R4. Las reglas de negocio están escritas dentro del código, no en un catálogo</h3>
+  <p class="q">Evidencia</p><p>63 grupos de valores hardcodeados: IVA fijo al 16%, participación ION/Afirme partida en 0.10/0.90 repetida en 28 archivos, catálogos de rubros contables, tipos de crédito, orígenes y cuentas excluidas embebidos, fechas de vigencia del programa COVID en 45 lugares de un solo procedimiento.</p>
+  <p class="q">Qué significa para el negocio</p><p>Cada cambio normativo o comercial se convierte en un proyecto de desarrollo con riesgo de que una copia quede sin actualizar. Ya hay dos definiciones distintas de &#x27;cuota COVID&#x27; y dos de &#x27;cartera&#x27; conviviendo.</p>
+  <p class="q">Qué hay que hacer</p><p>Extraer los valores a catálogos con vigencia y administrarlos desde el portal propuesto, con aprobación de cuatro ojos y bitácora de cambios.</p>
+</div>
+<div class="card ambar">
+  <h3><span class="pill a">Alto</span> &nbsp;R5. La cifra publicada no es reproducible y el proceso avanza fila por fila</h3>
+  <p class="q">Evidencia</p><p>Uso extendido de WITH (NOLOCK) sobre la réplica de lectura en cálculos financieros y reportes (287 usos solo en la familia de cierre), cursores en los procedimientos de saldos, y funciones escalares con acceso a datos invocadas desde decenas de procedimientos.</p>
+  <p class="q">Qué significa para el negocio</p><p>Riesgo de leer filas no confirmadas o duplicadas durante el propio cierre (cifras no reproducibles), y una ventana de cierre que crece con el volumen de cartera.</p>
+  <p class="q">Qué hay que hacer</p><p>Nivel de aislamiento snapshot para lectura, conversión de funciones escalares a funciones en línea y eliminación de cursores en los procedimientos críticos, midiendo duración antes y después.</p>
+</div>
+<div class="card ambar">
+  <h3><span class="pill a">Alto</span> &nbsp;R6. La entrega de información repite los mismos problemas del código</h3>
+  <p class="q">Evidencia</p><p>Los 30 archivos de reportes son 18 reportes lógicos duplicados por ambiente, con la dirección del servidor escrita dentro del archivo (tres servidores distintos) y ninguno usando origen de datos compartido. Dos copias del mismo reporte de póliza contable filtran productos y etapas distintos.</p>
+  <p class="q">Qué significa para el negocio</p><p>El mismo reporte puede entregar cifras distintas según el archivo que se abra, y basta publicar el artefacto equivocado para que un usuario consulte otro ambiente sin notarlo.</p>
+  <p class="q">Qué hay que hacer</p><p>Un artefacto por reporte lógico, origen de datos por ambiente y publicación por script desde el repositorio.</p>
+</div>
+
+<h2>Como leer los hallazgos: cuatro niveles de certeza</h2>
+<p>Es la parte que suele generar discusión con el área de desarrollo, y por eso se declara de entrada. La
+auditoría es <b>estática</b>: se leyó el código del repositorio, no se ejecutó nada contra SQL Server ni se
+consultaron datos productivos.</p>
+<table><thead><tr><th>Nivel</th><th>Ejemplos</th><th>Como se trata</th></tr></thead><tbody>
+<tr><td><span class="pill ok">Defecto verificable leyendo el código</span></td><td>Duplicación al reprocesar, fecha fija en el cierre comercial, lectura de la base de QA, DELETE sin filtro de póliza, importes aleatorios en facturación, correo de prueba en el padrón de clientes, filtros divergentes entre copias del mismo reporte.</td><td>Se puede corregir con la evidencia entregada; solo requiere validar el resultado esperado.</td></tr><tr><td><span class="pill info">Riesgo técnico dependiente del entorno</span></td><td>NOLOCK, cursores, funciones escalares, MONEY, ausencia de XACT_ABORT, tablas sin llave natural.</td><td>El defecto existe; la magnitud depende de volumen, concurrencia y plan de ejecución, que no se pueden medir sin acceso a la instancia.</td></tr><tr><td><span class="pill m">Pendiente de validación funcional o contable</span></td><td>Columna destino del UPDATE de MONTOEXIGIBLECOM, criterio de FEC_CANCELACION, filtro comentado de moratorios, catálogo de rubros, granularidad de reportes.</td><td>Se documenta como riesgo con su evidencia. No se corrige sin confirmación del área responsable.</td></tr><tr><td><span class="pill a">Hipótesis que requiere información externa</span></td><td>Los 110 objetos sin invocador visible, las 187 tablas sin código asociado, el esquema AP en el catálogo INFORMES, y si el export de producción está incompleto o hay objetos sin promover.</td><td>Se resuelve con los jobs del Agent y los metadatos de producción; sin eso no es posible afirmar que algo sea código muerto.</td></tr>
+</tbody></table>
+
+<h2>Decisiones que necesitamos del cliente</h2>
+<table><thead><tr><th>Área</th><th>Decisión</th></tr></thead><tbody>
+<tr><td><b>Contabilidad / Control interno</b></td><td>Confirmar el destino correcto del UPDATE etiquetado MONTOEXIGIBLECOM en el cierre individual, el criterio de FEC_CANCELACION, el filtro de moratorios que está comentado y el catálogo oficial de rubros contables. Son cuatro hallazgos con evidencia en el código cuyo impacto en la cifra solo contabilidad puede confirmar.</td></tr><tr><td><b>Negocio / Producto</b></td><td>Definir la fuente oficial de IVA, participación ION/Afirme, tipos de crédito, orígenes de fondos, cuentas excluidas y vigencias de programa; y que valores debe poder cambiar un usuario sin pasar por desarrollo.</td></tr><tr><td><b>Tecnología / Infraestructura</b></td><td>Autorizar la lectura de metadatos y estadísticas de uso en producción (sys.sql_modules, sys.dm_exec_procedure_stats), entregar los jobs del Agent y definir los ambientes formales (desarrollo, QA, producción) con su mecanismo de promoción.</td></tr><tr><td><b>Riesgos / Auditoría</b></td><td>Validar el modelo de control propuesto: cuatro ojos para cambios de parámetro, bitácora inmutable, segregación de funciones y evidencia de conciliación por cierre.</td></tr><tr><td><b>Dirección del proyecto</b></td><td>Aprobar el orden de las olas y la construcción del portal de administración, o pedir explícitamente que la remediación se haga solo en código, sin portal.</td></tr>
+</tbody></table>
+
+<h2>Que no cubre esta auditoría</h2>
+<div class="card">
+<ul>
+<li>Seguridad de la instancia: usuarios, roles, permisos efectivos, cifrado y auditoría de SQL Server. Requiere acceso al servidor.</li>
+<li>Rendimiento real: planes de ejecución, índices, esperas y volumetría. Los hallazgos de rendimiento se basan en el patrón de código, no en mediciones.</li>
+<li>Conciliación contable con datos: no se compararon cifras entre el sistema y la contabilidad; los hallazgos contables se plantean como riesgo con su evidencia.</li>
+<li>Código que no está en el repositorio: la aplicación, los ETL, los jobs del Agent y el esquema AP del catálogo INFORMES quedan fuera del alcance porque no fueron entregados.</li>
+</ul>
+</div>
+
+<h2>Documentos de soporte</h2>
+<p>Todos los detalles técnicos, con evidencia línea por línea y filtros por severidad, categoría y ambiente:</p>
+<ul>
+<li><a href="index.html">Consolidado de la auditoría</a> &mdash; entrada única a todos los lotes</li>
+<li><a href="01_lote1.html">Lote 1</a>: 20 objetos de mayor riesgo &middot;
+    <a href="02_lotes2-5.html">Lotes 2-5</a>: 80 objetos y familias clonadas &middot;
+    <a href="03_lote6.html">Lote 6</a>: PAG, edc, SAF, dbo, RPT y funciones</li>
+<li><a href="04_lotes10-11.html">Lotes 10-11</a>: familia completa de cierre &middot;
+    <a href="05_dependencias.html">Dependencias y capa de reportes</a></li>
+<li><a href="07_plan_remediacion.html">Plan de remediación por olas</a> &middot;
+    <a href="08_portal_admin.html">Propuesta del portal de administración</a> &middot;
+    <a href="09_demo_portal.html">Demo navegable del portal</a> (prototipo sin backend)</li>
+<li><a href="10_contexto_migracion.html">Contexto operativo y estrategia ante el cambio de core</a> &mdash;
+    ajustes de interpretación, matriz de las cuatro pólizas y salida de SAF/Sisde</li>
+</ul>
+
+</div>
+<footer>Auditoría de código SQL KARDIA / SAF &middot; análisis estático del repositorio (BD, BD_prod y reportes).
+No se ejecutó ningún objeto contra una instancia de SQL Server ni se leyeron datos productivos:
+los hallazgos que dependen de datos, de plan de ejecución o de reglas contables se marcan como pendientes de validación.</footer>
+</body></html>

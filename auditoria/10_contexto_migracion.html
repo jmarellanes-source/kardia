@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contexto operativo y estrategia ante el cambio de core &mdash; KARDIA / SAF</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+nav.docs{padding:10px 32px;background:#131b29;border-bottom:1px solid #2a3549;font-size:13px}
+nav.docs a{margin-right:16px;text-decoration:none}
+.wrap{padding:22px 32px 60px;max-width:1180px}
+h2{margin:34px 0 12px;font-size:18px;border-left:3px solid #4c8dff;padding-left:10px}
+h3{margin:22px 0 6px;font-size:15px}
+p.lead{color:#c9d6ee;font-size:15px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:140px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b}.kpi.a b{color:#ffa94d}.kpi.m b{color:#ffd43b}.kpi.b b{color:#74c0fc}
+.card{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:16px 20px;margin:12px 0}
+.card.rojo{border-left:3px solid #ff6b6b}
+.card.ambar{border-left:3px solid #ffa94d}
+.card.azul{border-left:3px solid #4c8dff}
+.card.verde{border-left:3px solid #51cf66}
+.card h3{margin-top:0}
+.card .q{color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.num{white-space:nowrap;color:#93a1bb}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#c9d6ee}
+pre{margin:8px 0 0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:12px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
+.pill.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.pill.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.pill.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.pill.ok{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.info{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+ul{margin:6px 0;padding-left:20px}li{margin:4px 0}
+.ola{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 20px;margin:12px 0}
+.ola h3{margin:0 0 2px}
+.ola .obj{color:#93a1bb;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.tag{font-size:11px;color:#93a1bb;border:1px solid #35415a;border-radius:5px;padding:2px 7px;margin-right:6px}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px solid #35415a;color:#c9d6ee}
+</style></head><body>
+<header class="top"><h1>Contexto operativo y estrategia ante el cambio de core</h1><p>Réplica de lectura &middot; cierre diario con histórico bloqueado &middot; matriz de las cuatro pólizas &middot; salida de SAF/Sisde</p></header>
+<nav class="docs">
+<a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
+<a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
+<a href="09_demo_portal.html">Demo del portal</a>
+<a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
+<a href="12_preguntas_negocio.html">Confirmaciones con negocio</a>
+<a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a>
+<a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
+</nav>
+<div class="wrap">
+
+<p class="lead">Contexto operativo confirmado con el equipo de desarrollo el 31 de agosto de 2026, cómo ajusta
+la lectura de los hallazgos ya entregados, y la estrategia recomendada para el día en que SAF/Sisde salga del
+ecosistema. No cambia el alcance ni el número de hallazgos de la auditoría: cambia la redacción de cinco de
+ellos y el orden de prioridad de la parametrización.</p>
+
+<div class="card verde">
+<h3>Conclusión primero</h3>
+<p>La información recibida <b>confirma el propósito de la auditoría</b> (eliminar los valores fijos y
+estructurar las reglas contables como una matriz configurable, administrable desde una interfaz) y no invalida
+ningún hallazgo. Lo que aporta es precisión: el origen es una réplica de solo lectura, el cierre es diario con
+histórico bloqueado y ajustes acumulados, y el hardcodeo se concentra en cuatro pólizas. Con eso, dos hallazgos
+se reencuadran, uno se refuerza y la Ola 4 gana un foco concreto.</p>
+</div>
+
+<h2>Arquitectura del proceso y qué implica para la auditoría</h2>
+<table><thead><tr><th>Elemento</th><th>Qué es</th><th>Como opera</th><th>Implicación de auditoría</th></tr></thead><tbody>
+<tr><td><b>Origen (lectura)</b></td><td class="mono">Quiero_Confianza</td><td>Réplica de solo lectura del transaccional SAF/Sisde. El proceso no escribe en ella.</td><td>Que sea réplica elimina el riesgo de afectar al core, pero no garantiza que la fotografía sea estable mientras el cierre la recorre: sin punto de lectura fijo, dos corridas pueden diferir.</td></tr><tr><td><b>Destino (escritura)</b></td><td class="mono">KARDIA</td><td>Base central donde vive el histórico contable, envuelta por el sistema CAS.</td><td>Es el activo a proteger: aquí aplican la idempotencia por corrida, el bloqueo del histórico y la bitácora de errores que hoy nadie vigila.</td></tr><tr><td><b>Disparo</b></td><td class="mono">Minutos después del cierre de SAF</td><td>El cierre de la póliza del día se ejecuta de forma automática al cerrar operaciones el core.</td><td>La ventana es corta y no hay intervención humana: si un paso falla en silencio, la póliza sale incompleta. Por eso la propagación de errores (Ola 3) vale más que cualquier optimización.</td></tr><tr><td><b>Ajustes</b></td><td class="mono">Adiciones acumuladas, sin modificar el pasado</td><td>Los ajustes de días anteriores se registran como movimientos nuevos; el histórico queda bloqueado.</td><td>Es un diseño contable correcto. El control que falta no es evitar la suma, es evitar la suma repetida: marca de corrida por periodo y rechazo del segundo pase.</td></tr><tr><td><b>Hardcodeo</b></td><td class="mono">Cuatro pólizas principales</td><td>Devengados de intereses, devengados de moratorios, seguros y otras comisiones.</td><td>Confirma la prioridad de la parametrización: la matriz de esas cuatro pólizas es la Ola 4 y el primer módulo del portal con valor visible.</td></tr>
+</tbody></table>
+
+<h2>Los cinco hallazgos que se reencuadran</h2>
+
+<div class="card ambar">
+  <h3>WITH (NOLOCK) sobre el origen <span class="tag">L1-014, L10-016</span></h3>
+  <p class="q">Lectura original</p><p>Lectura sucia que puede introducir transacciones revertidas en la póliza.</p>
+  <p class="q">Lectura con el contexto</p><p>El origen es una réplica de solo lectura: no hay riesgo para el core ni transacciones en vuelo del aplicativo. El riesgo que permanece es de reproducibilidad: la réplica cambia mientras el cierre la lee, y filas pueden duplicarse u omitirse por movimiento de páginas.</p>
+  <p class="q">Efecto en el reporte</p><p>Se mantiene la severidad Alto, con la remediación redirigida a snapshot sobre la réplica más una marca de sincronía por corrida.</p>
+</div>
+<div class="card ambar">
+  <h3>Idempotencia del cierre <span class="tag">L1-006</span></h3>
+  <p class="q">Lectura original</p><p>Reprocesar duplica PRINCIPAL_FINAL: defecto de cálculo.</p>
+  <p class="q">Lectura con el contexto</p><p>La acumulación es intencional en el diseño del cierre diario. El defecto real es doble: el agregado se toma de todo el histórico sin filtro de periodo, y no existe marca de corrida que impida un segundo pase por reintento del job o ejecución manual.</p>
+  <p class="q">Efecto en el reporte</p><p>Se conserva como crítico, reescrito y marcado como pendiente de validación del comportamiento esperado ante reintento.</p>
+</div>
+<div class="card ambar">
+  <h3>Lectura desde bases de QA y shadow <span class="tag">L1-007, L1-016</span></h3>
+  <p class="q">Lectura original</p><p>Objetos productivos leen datos que no son productivos.</p>
+  <p class="q">Lectura con el contexto</p><p>Sin cambio, y ahora con más sustento: el origen autorizado es Quiero_Confianza; _CreditoPuente_QA y _shadow no son la réplica productiva.</p>
+  <p class="q">Efecto en el reporte</p><p>Se mantiene crítico. La remediación por sinónimos por ambiente sigue siendo la correcta.</p>
+</div>
+<div class="card ambar">
+  <h3>Drift entre ambientes <span class="tag">L1-016 y matriz de paridad</span></h3>
+  <p class="q">Lectura original</p><p>49% de objetos distintos entre desarrollo y producción.</p>
+  <p class="q">Lectura con el contexto</p><p>Se confirma que 119 de 126 diferencias son solo el nombre de la base por ambiente, lo que refuerza que no es divergencia funcional sino falta de sinónimos.</p>
+  <p class="q">Efecto en el reporte</p><p>Sin cambio de severidad; el mensaje al cliente se precisa: el drift es artificial y barato de eliminar.</p>
+</div>
+<div class="card ambar">
+  <h3>Normalización del modelo <span class="tag">Lote 6 (tablas)</span></h3>
+  <p class="q">Lectura original</p><p>Tablas sin llave natural, sin restricciones y con tipos MONEY.</p>
+  <p class="q">Lectura con el contexto</p><p>El equipo declara normalización hasta tercera forma normal, y a la vez reconoce en la arquitectura general tablas duplicadas, identificadores de cliente no unificados entre aplicativos y tablas vacías.</p>
+  <p class="q">Efecto en el reporte</p><p>Sin cambio: la declaración de normalización no sustituye la verificación de llaves y restricciones, que requiere metadatos de la instancia.</p>
+</div>
+
+<h2>La matriz de las cuatro pólizas: el corazón de la parametrización</h2>
+<p>El equipo ubica los valores fijos en la clasificación de cuatro pólizas, y hoy el alta de un concepto nuevo
+obliga a editar el procedimiento, liberarlo y desplegarlo. Esa es exactamente la forma que debe tomar el
+catálogo de la Ola 4 y el primer módulo del portal.</p>
+<table><thead><tr><th>Póliza</th><th>Que se clasifica hoy en código</th><th>Dimensiones de la matriz</th></tr></thead><tbody>
+<tr><td><b>Devengado de intereses</b></td><td>Rubros de interés ordinario por tipo de crédito y programa</td><td class="mono">Rubro, tipo de crédito, origen, cuenta contable, naturaleza, vigencia</td></tr><tr><td><b>Devengado de moratorios</b></td><td>Rubros moratorios y su exclusión por estado de cartera</td><td class="mono">Rubro, estado de cartera, cuenta contable, naturaleza, vigencia, criterio de exclusión</td></tr><tr><td><b>Seguros</b></td><td>Conceptos de seguro y su prorrateo</td><td class="mono">Concepto, aseguradora o esquema, cuenta contable, base de cálculo, IVA aplicable, vigencia</td></tr><tr><td><b>Otras comisiones</b></td><td>Comisiones de prepago, visitas, avalúos y administración</td><td class="mono">Concepto, rubro, cuenta contable, tasa de IVA, participación por convenio, vigencia</td></tr>
+</tbody></table>
+<div class="card azul">
+<h3>Criterio de aceptación del módulo</h3>
+<p>Un usuario de negocio da de alta un concepto de cobro nuevo, lo mapea a rubro y cuenta contable con fecha de
+vigencia, un segundo usuario lo aprueba, y la póliza del día siguiente lo clasifica correctamente <b>sin que
+nadie toque el repositorio</b>. Además, todo concepto que llegue del origen sin mapeo debe caer en una bandeja
+visible, en lugar de quedar silenciosamente fuera de la póliza: hoy ese caso no tiene detección.</p>
+</div>
+
+<h2>Cuando SAF/Sisde salga: como reducir el esfuerzo desde hoy</h2>
+<p>El desarrollador tiene razón en que remapear el core es una carga mayor, y en que el conocimiento crítico
+está en las excepciones. La recomendación no es adelantar la migración, es <b>cambiar dónde vive el
+acoplamiento</b>: hoy el nombre y la forma de las tablas de SAF están escritos en 245 objetos; después de la
+remediación deberían estar en una sola capa. Los cinco movimientos siguientes se solapan con trabajo que ya
+está en el plan, así que casi no agregan costo.</p>
+
+<div class="ola">
+  <h3>M1 &mdash; Congelar el contrato de datos que el proceso necesita del core <span class="tag">Ahora, junto con la Ola 1</span></h3>
+  <p>Documentar, por cada uno de los objetos que leen del origen, qué entidades y campos consume y con qué semántica: crédito, cliente, pago, movimiento, saldo, concepto de cobro, reversa. El resultado es un diccionario canónico independiente de SAF, no un diagrama de SAF.</p>
+  <p style="margin:6px 0 0;font-size:12.5px;color:#93a1bb"><b>Por que vale la pena ahora:</b> Es el único entregable que sobrevive intacto al cambio de core y hoy se puede construir con el análisis de dependencias ya entregado.</p>
+</div>
+<div class="ola">
+  <h3>M2 &mdash; Interponer una capa de fachada entre el core y el cálculo <span class="tag">Ola 1 y Ola 5</span></h3>
+  <p>Sustituir las lecturas directas de tres partes por vistas o procedimientos de extracción en un esquema dedicado (por ejemplo EXT o STG) que expongan el modelo canónico. El cálculo contable deja de conocer el nombre, el esquema y la forma de las tablas de SAF.</p>
+  <p style="margin:6px 0 0;font-size:12.5px;color:#93a1bb"><b>Por que vale la pena ahora:</b> Convierte la migración de origen en reescribir una capa delgada, en lugar de tocar 245 objetos. Es la misma remediación que ya se propuso para eliminar el drift, así que no cuesta trabajo adicional.</p>
+</div>
+<div class="ola">
+  <h3>M3 &mdash; Inventariar las excepciones del core <span class="tag">En paralelo con la auditoría</span></h3>
+  <p>El equipo domina reglas particulares de SAF que no están escritas: reversas de movimientos mal aplicados que se buscan en tablas específicas, casos de cancelación, programas especiales. Cada una debe quedar como regla nombrada, con su condición, su tabla de origen y su tratamiento contable.</p>
+  <p style="margin:6px 0 0;font-size:12.5px;color:#93a1bb"><b>Por que vale la pena ahora:</b> Es el conocimiento que se pierde si el desarrollador no está disponible, y el que hará imposible estimar la migración si no se documenta antes.</p>
+</div>
+<div class="ola">
+  <h3>M4 &mdash; Materializar el staging del día <span class="tag">Ola 5</span></h3>
+  <p>Extraer una sola vez por corrida los datos del origen a un área de staging con la marca de sincronía, y calcular sobre el staging en lugar de volver a leer la réplica en cada procedimiento.</p>
+  <p style="margin:6px 0 0;font-size:12.5px;color:#93a1bb"><b>Por que vale la pena ahora:</b> Resuelve al mismo tiempo la reproducibilidad de la cifra, el rendimiento de la ventana de cierre y la sustitución del origen: cambiar de core es cambiar quién llena el staging.</p>
+</div>
+<div class="ola">
+  <h3>M5 &mdash; Preparar la prueba de paridad entre core actual y nuevo <span class="tag">Cuando exista el nuevo core</span></h3>
+  <p>Con el staging y el contrato canónico, la validación de la migración es mecánica: llenar el staging desde el core nuevo para un periodo ya cerrado y comparar la póliza resultante contra la publicada, partida por partida.</p>
+  <p style="margin:6px 0 0;font-size:12.5px;color:#93a1bb"><b>Por que vale la pena ahora:</b> Convierte una migración de fe en una migración con evidencia, y permite coexistencia temporal: doble extracción, una sola contabilidad.</p>
+</div>
+
+<div class="card rojo">
+<h3>Lo que no conviene hacer</h3>
+<ul>
+<li><b>Esperar al nuevo core para remediar.</b> La parametrización y la trazabilidad del cierre son
+independientes del origen: se pierden solo si se escriben otra vez contra tablas de SAF.</li>
+<li><b>Diseñar el modelo canónico a partir del esquema de SAF.</b> Debe describir el negocio (crédito, pago,
+devengo, concepto de cobro), no el sistema del que hoy se leen los datos.</li>
+<li><b>Dejar las excepciones sin documentar.</b> Es el único activo que no se puede reconstruir leyendo
+código, y es el que determinará el costo real de la migración.</li>
+</ul>
+</div>
+
+<h2>Lo que se necesita del cliente para cerrar los pendientes</h2>
+<div class="card">
+<ul>
+<li><b>Consulta a KARDIA en QA (CUA) y metadatos de la instancia.</b> Cierra la Ola 0, los 110 objetos sin
+invocador visible, las 187 tablas sin referencia y la verificación de llaves y restricciones.</li>
+<li><b>Los jobs del SQL Server Agent y la definición del orquestador CAS.</b> Es lo que hoy impide afirmar qué
+dispara cada procedimiento de cierre y con qué frecuencia.</li>
+<li><b>Confirmación de contabilidad</b> sobre los cuatro hallazgos contables pendientes y sobre el
+comportamiento esperado del cierre ante un reintento.</li>
+<li><b>Definición del identificador maestro de cliente</b> (SAF o RFC) entre aplicativos, para el módulo de
+catálogos.</li>
+</ul>
+</div>
+
+</div>
+<footer>Auditoría de código SQL KARDIA / SAF &middot; análisis estático del repositorio (BD, BD_prod y reportes).
+No se ejecutó ningún objeto contra una instancia de SQL Server ni se leyeron datos productivos:
+los hallazgos que dependen de datos, de plan de ejecución o de reglas contables se marcan como pendientes de validación.</footer>
+</body></html>
