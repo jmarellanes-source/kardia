@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dummy de la estrategia: catálogo de tipos de crédito con banderas y catálogos de cobranza &mdash; KARDIA / SAF</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+nav.docs{padding:10px 32px;background:#131b29;border-bottom:1px solid #2a3549;font-size:13px}
+nav.docs a{margin-right:16px;text-decoration:none}
+.wrap{padding:22px 32px 60px;max-width:1180px}
+h2{margin:34px 0 12px;font-size:18px;border-left:3px solid #4c8dff;padding-left:10px}
+h3{margin:22px 0 6px;font-size:15px}
+p.lead{color:#c9d6ee;font-size:15px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:140px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b}.kpi.a b{color:#ffa94d}.kpi.m b{color:#ffd43b}.kpi.b b{color:#74c0fc}
+.card{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:16px 20px;margin:12px 0}
+.card.rojo{border-left:3px solid #ff6b6b}
+.card.ambar{border-left:3px solid #ffa94d}
+.card.azul{border-left:3px solid #4c8dff}
+.card.verde{border-left:3px solid #51cf66}
+.card h3{margin-top:0}
+.card .q{color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.num{white-space:nowrap;color:#93a1bb}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#c9d6ee}
+pre{margin:8px 0 0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:12px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
+.pill.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.pill.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.pill.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.pill.ok{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.info{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+ul{margin:6px 0;padding-left:20px}li{margin:4px 0}
+.ola{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 20px;margin:12px 0}
+.ola h3{margin:0 0 2px}
+.ola .obj{color:#93a1bb;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.tag{font-size:11px;color:#93a1bb;border:1px solid #35415a;border-radius:5px;padding:2px 7px;margin-right:6px}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px solid #35415a;color:#c9d6ee}
+</style></head><body>
+<header class="top"><h1>Dummy de la estrategia: catálogo de tipos de crédito con banderas y catálogos de cobranza</h1><p>CIERRE, SAF, PO y dbo.REPORTE_COBRANZA_INTEGRACION &middot; antes y después del código real</p></header>
+<nav class="docs">
+<a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
+<a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
+<a href="09_demo_portal.html">Demo del portal</a>
+<a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
+<a href="12_preguntas_negocio.html">Confirmaciones con negocio</a>
+<a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a>
+<a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
+</nav>
+<div class="wrap">
+
+<p class="lead">Cómo se elimina el hardcodeo de <code>NUM_DESC_TIPO_CREDITO</code> y de los rubros de cobranza
+sin construir un catálogo gigante. La propuesta son <b>tres catálogos pequeños y una matriz de banderas</b>:
+12 banderas para los 28 tipos de crédito que aparecen en el código, 42 rubros
+y 5 pólizas. No hay un registro por póliza ni
+por combinación: las combinaciones se derivan por consulta. Todo el código de ejemplo está en
+<code>auditoria/dummy/</code>, se crea en un esquema <code>DUMMY</code> aparte y no modifica ningún objeto
+existente.</p>
+
+<div class="kpis">
+<div class="kpi c"><b>239</b><span>filtros por tipo de crédito en producción</span></div>
+<div class="kpi a"><b>96</b><span>archivos que hay que tocar hoy</span></div>
+<div class="kpi m"><b>29</b><span>listas distintas mantenidas a mano</span></div>
+<div class="kpi b"><b>12</b><span>banderas que las sustituyen</span></div>
+</div>
+
+<h2>1. El problema, medido</h2>
+<p>En el export de producción, <code>NUM_DESC_TIPO_CREDITO</code> aparece 625 veces en
+96 archivos, de las cuales 239 son decisiones (un <code>IN (...)</code> o una
+igualdad) y forman 29 conjuntos distintos escritos a mano. En desarrollo la cuenta es
+mayor todavía: 341 decisiones en 113 archivos. Ninguna de esas listas tiene
+nombre, fecha ni dueño; el único rastro de intención son comentarios como
+<code>-- minoristas</code> o <code>--,7 -- sindicada</code>. Las cifras se reproducen con
+<code>python3 auditoria/dummy/06_medir_esfuerzo.py</code>.</p>
+
+<div class="card azul">
+<h3>El punto de partida ya existe</h3>
+<p style="margin:0">No hace falta inventar un catálogo: <code>PO.SAF_CAT_DESC_TIPO</code> ya guarda los tipos
+con su descripción, cartera y administrador &mdash; lo que no tiene es una sola bandera por proceso &mdash;, y <code>CIERRE.SP_CMR_GEN_MES</code> ya centraliza el conjunto en
+la temporal <code>#TIPO_CREDITOS</code> y lo reutiliza en sus filtros. Lo que falta es una sola cosa: que la
+<b>pertenencia a cada proceso</b> viva en datos y no en la lista literal que llena esa temporal. Por eso el
+cambio es acotado y no un rediseño.</p>
+</div>
+
+<h2>2. El diseño: una matriz de banderas, no un catálogo por póliza</h2>
+<p>Tres objetos, en <code>auditoria/dummy/01_catalogo_tipo_credito.sql</code>:</p>
+<ul>
+<li><b>Catálogo de tipos</b> (28 filas en la semilla, las que aparecen en algún filtro del código): el que ya
+existe, sin cambios de estructura.</li>
+<li><b>Catálogo de banderas</b> (12 filas): una fila por concepto de negocio, con su área dueña.
+Se consulta, no se edita en la operación diaria.</li>
+<li><b>Matriz tipo &times; bandera con vigencia</b> (41 filas hoy): solo se guardan las casillas marcadas.
+Es lo que el usuario ve en el portal como una pantalla de casillas de verificación.</li>
+</ul>
+<p>Y una función en línea, <code>DUMMY.FN_TIPOS_CREDITO(bandera, fecha)</code>, que devuelve el conjunto
+vigente a una fecha. Es una función de tabla en línea, no escalar: el optimizador la expande dentro de la
+consulta, así que no reintroduce el problema de rendimiento de las funciones fila por fila del hallazgo L6-005.</p>
+
+<h3>Las 12 banderas se derivan del código actual, no se inventan</h3>
+<table><thead><tr><th>Bandera</th><th>Área dueña</th><th>Tipos de crédito hoy</th><th>Filtros que sustituye</th>
+<th>Archivos</th><th>De dónde sale</th></tr>
+</thead><tbody><tr><td><code>SEGMENTO_INDIVIDUAL</code></td><td class="num">Contabilidad</td><td class="num">1, 3, 4, 9, 10, 11, 16, 17</td><td class="num">33</td><td class="num">26</td><td>Pólizas individuales (SP_IND_*)</td></tr><tr><td><code>SEGMENTO_COMERCIAL</code></td><td class="num">Contabilidad</td><td class="num">2, 12, 13, 14, 15, 18, 27, 28</td><td class="num">50</td><td class="num">30</td><td>Pólizas comerciales (SP_COM_*); el 5 se agrega vía ES_MEZZANINE</td></tr><tr><td><code>SEGMENTO_SINDICADA</code></td><td class="num">Negocio</td><td class="num">7</td><td class="num">24</td><td class="num">17</td><td>Pólizas de cartera sindicada (SP_SND_*)</td></tr><tr><td><code>ES_MINORISTA</code></td><td class="num">Negocio</td><td class="num">12, 13, 14, 15, 28</td><td class="num">51</td><td class="num">31</td><td>Etiquetado «minoristas» en el cierre comercial</td></tr><tr><td><code>ES_PUENTE</code></td><td class="num">Negocio</td><td class="num">2, 18, 27</td><td class="num">50</td><td class="num">30</td><td>Etiquetado «puente» en el cierre comercial</td></tr><tr><td><code>ES_MEZZANINE</code></td><td class="num">Negocio</td><td class="num">5</td><td class="num">24</td><td class="num">15</td><td>Presente en 24 de los 50 filtros comerciales</td></tr><tr><td><code>ES_EMPLEADO</code></td><td class="num">Negocio</td><td class="num">9, 10, 11</td><td class="num">66</td><td class="num">38</td><td>Fuerza ID_PRODUCTO 51 y NOMBRE_PRODUCTO EMPLEADO</td></tr><tr><td><code>ES_ADMINISTRADA_IND</code></td><td class="num">Negocio</td><td class="num">4, 20, 23</td><td class="num">4</td><td class="num">3</td><td>Cartera administrada individual</td></tr><tr><td><code>ES_ADMINISTRADA_COM</code></td><td class="num">Negocio</td><td class="num">6, 19, 21, 22, 24</td><td class="num">7</td><td class="num">5</td><td>Etiquetado «administrada»</td></tr><tr><td><code>ES_CASTIGO_COMERCIAL</code></td><td class="num">Contabilidad</td><td class="num">25, 29</td><td class="num">16</td><td class="num">11</td><td>Castigo comercial</td></tr><tr><td><code>ES_CASTIGO_INDIVIDUAL</code></td><td class="num">Contabilidad</td><td class="num">26</td><td class="num">16</td><td class="num">14</td><td>Castigo individual</td></tr><tr><td><code>ES_ADMON_AFIRME</code></td><td class="num">Negocio</td><td class="num">4</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td>Sujeta a factor de participación</td></tr></tbody></table>
+<p style="color:#93a1bb;margin-top:8px">Los tipos de cada fila son exactamente los números que aparecen hoy en
+las listas del código. «Filtros que sustituye» cuenta, en el export de producción, los filtros cuyo conjunto
+contiene por completo el grupo de la bandera: son los que esa bandera resuelve sola o combinada con otra, y por
+eso la suma de la columna es mayor que los 239 filtros totales. Si el catálogo no reproduce las mismas listas, la prueba del punto 6 lo detecta.</p>
+
+<div class="card ambar">
+<h3>Regla de diseño que evita el catálogo gigante</h3>
+<p style="margin:0">No se crea una bandera por cada lista que aparezca en el código: eso convertiría las
+29 listas de hoy en 29 banderas y no resolvería nada. Las banderas
+son <b>conceptos de negocio</b> (segmento, castigo, empleado, administrada); las combinaciones se expresan en la
+consulta pidiendo dos banderas a la vez. Por eso 12 banderas cubren 239 filtros.</p>
+</div>
+
+<h2>3. Antes y después, con las líneas reales</h2>
+<p>Los cuatro casos completos están en <code>auditoria/dummy/02_antes_despues_tipo_credito.sql</code>. Estos son
+los dos que resumen el patrón.</p>
+
+<h3>Caso A &mdash; el más frecuente: lista literal en un filtro</h3>
+<p><code>BD_prod/dbo.FN_CARTERA_CREDITO.UserDefinedFunction.sql</code></p>
+<pre>-- ANTES
+WHERE NUM_CREDITO = @NUM_CREDITO
+  AND NUM_DESC_TIPO_CREDITO IN (1, 3, 4, 9, 10, 11, 16, 17, 26, 4, 20, 23)
+
+-- DESPUÉS
+WHERE C.NUM_CREDITO = @NUM_CREDITO
+  AND EXISTS (SELECT 1 FROM DUMMY.FN_TIPOS_CREDITO('SEGMENTO_INDIVIDUAL', @FECHA_PROCESO) T
+              WHERE T.NUM_DESC_TIPO_CREDITO = C.NUM_DESC_TIPO_CREDITO)</pre>
+<p>Se usa <code>EXISTS</code> y no <code>JOIN</code> como regla del proyecto: en un filtro,
+<code>EXISTS</code> no puede multiplicar filas aunque el catálogo devolviera un duplicado. Solo se usa
+<code>JOIN</code> cuando además se necesita una columna del catálogo. De paso, esa lista muestra tres cosas que
+el catálogo corrige por construcción: el 4 está repetido, el 26 (castigo individual) viene mezclado dentro de la
+lista de segmento, y un tipo nuevo que nadie agregue a ninguna lista termina
+clasificado como comercial en silencio.</p>
+
+<h3>Caso B &mdash; el más favorable: la temporal que ya está centralizada</h3>
+<p><code>BD_prod/CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql</code></p>
+<pre>-- ANTES
+SELECT NUM_DESC_TIPO_CREDITO INTO #TIPO_CREDITOS
+FROM Quiero_Confianza.PR.PR_DESC_TIPOS_CREDITO
+WHERE COD_EMPRESA = '001' AND NUM_DESC_TIPO_CREDITO IN (
+         12,13,14,15,28 -- minoristas
+        ,2,18,27        -- puente
+        --,7              -- sindicada
+        ,25             -- castigo
+        ,5              -- mezzanine
+        ,6,19,21,22,24) -- administrada
+
+-- DESPUÉS
+SELECT T.NUM_DESC_TIPO_CREDITO INTO #TIPO_CREDITOS
+FROM DUMMY.FN_TIPOS_CREDITO('SEGMENTO_COMERCIAL', @FECHA_PROCESO) T;
+
+-- los ~14 filtros posteriores del procedimiento NO se tocan:
+AND C.NUM_DESC_TIPO_CREDITO IN (SELECT NUM_DESC_TIPO_CREDITO FROM #TIPO_CREDITOS)</pre>
+<p>Este patrón es el que conviene generalizar en toda la familia de cierre: sembrar una vez el conjunto vigente
+al inicio del procedimiento y filtrar contra la temporal, para no consultar el catálogo decenas de veces. Y el
+<code>--,7</code> comentado es exactamente el problema de gobierno: sacar la cartera sindicada del cierre
+comercial fue un cambio de código sin fecha, sin autor y sin motivo. En el catálogo es un cierre de vigencia.</p>
+
+<h2>4. El reporte de cobranza: tres catálogos, no uno</h2>
+<p><code>dbo.REPORTE_COBRANZA_INTEGRACION</code> concentra en 203 líneas tres hardcodeos de
+naturaleza distinta, y por eso <b>una sola tabla de tipos de crédito no lo resuelve</b>:</p>
+<table><thead><tr><th>Hoy</th><th>Cuánto hay</th><th>Catálogo que lo sustituye</th></tr></thead><tbody>
+<tr><td>Listas de rubro dentro de cada columna del reporte</td>
+<td class="num">39 filtros, 42 rubros,
+124 literales</td>
+<td><code>CAT_RUBRO</code> (rubro &rarr; grupo, marca de IVA)</td></tr>
+<tr><td>Identificadores de póliza y sus etiquetas de cartera</td>
+<td class="num">26 predicados sobre ID_POLIZA</td>
+<td><code>CAT_POLIZA_COBRANZA</code> (5 filas)</td></tr>
+<tr><td><code>monto * 9</code> / <code>monto * 1</code> y los dos bloques del UNION ALL</td>
+<td class="num">14 apariciones,
+45 veces la cadena ADMINISTRACION INDIVIDUAL</td>
+<td><code>CAT_PARTICIPACION</code> (2 vistas con factor y vigencia)</td></tr>
+</tbody></table>
+
+<p>Con eso, cada columna de importe deja de ser un bloque con dos listas y pasa a una línea:</p>
+<pre>-- ANTES (y otras 13 columnas iguales, duplicadas en el segundo bloque del UNION ALL)
+SUM(CASE WHEN rubro IN ('MORATORIOS','INTERES_MORATORIO','MORA_EMPRESARIAL')
+              AND tipo_credito =  'ADMINISTRACION INDIVIDUAL' THEN monto * 9
+         WHEN rubro IN ('MORATORIOS','INTERES_MORATORIO','MORA_EMPRESARIAL')
+              AND tipo_credito &lt;&gt; 'ADMINISTRACION INDIVIDUAL' THEN monto * 1
+         ELSE 0 END) AS MORATORIOS,
+
+-- DESPUÉS
+SUM(CASE WHEN A.GRUPO='MORATORIOS' AND A.ES_IVA=0 THEN A.MONTO*A.FACTOR ELSE 0 END) AS MORATORIOS,</pre>
+<p>El segundo bloque del <code>UNION ALL</code> desaparece como código duplicado: hoy son dos consultas casi
+idénticas (la del total administrado con factor 9 y la de la parte propia con factor 1); en la versión
+parametrizada son <b>dos filas del catálogo de participación</b>, y el movimiento se anota una vez por vista
+aplicable. Las columnas de salida, su nombre y su orden no cambian: son el contrato con quien consume el
+reporte. Versión completa en <code>auditoria/dummy/04_reporte_cobranza_v2.sql</code>.</p>
+
+<div class="card rojo">
+<h3>Cuatro defectos que aparecieron al normalizar las listas</h3>
+<ul>
+<li>En la columna <code>OTRO</code> del primer bloque, la rama de cartera propia pide
+<code>'IVA COMISION_ANTICIPADA'</code> donde debía pedir <code>'COMISION_ANTICIPADA'</code>: la comisión
+anticipada de cartera propia no entra en <code>OTRO</code> y su IVA entra ahí en lugar de
+<code>IVA_OTRO</code>.</li>
+<li>La columna <code>IVA_OTRO</code> del primer bloque omite <code>'IVA COMISION_ANTICIPADA'</code>, que el
+segundo bloque sí incluye: los dos bloques no son consistentes entre sí.</li>
+<li>La póliza 35 se etiqueta <code>'INDIVIDUAL '</code> en el primer bloque y
+<code>'INDIVIDUAL EMPLEADO '</code> en el segundo.</li>
+<li>La cartera administrada se etiqueta <code>'AFIRME'</code> en el primer bloque y <code>'ION'</code> en el
+segundo. Es intencional (total contra parte propia), pero no está documentado en ninguna parte del código.</li>
+</ul>
+<p style="margin:6px 0 0">Los cuatro son consecuencia del mismo mecanismo: mantener 39
+listas a mano en dos bloques casi idénticos. Con grupo y marca de IVA en catálogo, los dos primeros son
+imposibles de escribir. Falta cuantificar su impacto con datos reales, y es una diferencia que debe firmar
+contabilidad antes de sustituir el procedimiento.</p>
+</div>
+
+<h2>5. Qué se gana: el mismo cambio, hoy y con catálogo</h2>
+<table><thead><tr><th>Situación</th><th>Hoy</th><th>Con catálogo y banderas</th></tr></thead>
+<tbody><tr><td>Nace un tipo de crédito nuevo (por ejemplo un producto verde)</td><td>Buscar las 239 listas del código, decidir en cuáles entra, editar los archivos afectados, probar, liberar y repetir el mismo ejercicio en el ambiente de desarrollo (341 predicados).</td><td>Un alta en el catálogo y marcar las banderas que le aplican, con fecha de inicio. Cero cambios de código, cero liberaciones.</td></tr><tr><td>Un tipo sale de un proceso (el caso real de la cartera sindicada en el cierre comercial)</td><td>Comentar el valor en la lista, como está hoy con «--,7»: sin fecha, sin autor y sin motivo registrado.</td><td>Cerrar la vigencia de la bandera. Queda usuario, fecha y motivo, y el cierre del periodo anterior sigue dando la misma cifra.</td></tr><tr><td>Nace un rubro de cobro nuevo</td><td>Agregarlo a las 39 listas de rubro del reporte de cobranza, en sus dos bloques, y a los demás procedimientos que lo consideren. Es el escenario que el equipo describió como «escribir coma nuevo y volver a liberar».</td><td>Dos filas en el catálogo de rubros: el rubro y su IVA, con el grupo al que suman.</td></tr><tr><td>Llega un rubro que nadie dio de alta</td><td>Nadie se entera: el rubro no suma en ninguna columna y solo se nota al cuadrar el total.</td><td>El proceso lo reporta como excepción de configuración el mismo día y el portal lo muestra como pendiente de clasificar.</td></tr><tr><td>Cambia el factor de participación de la cartera administrada</td><td>Editar las 14 apariciones de «monto * 9» del reporte y revisar si concuerda con el 0.10 / 0.90 de los cierres comerciales.</td><td>Una fila nueva con vigencia en el catálogo de participación, previa aprobación de contabilidad. El histórico no se altera.</td></tr></tbody></table>
+<p>El ahorro no está en escribir menos SQL una vez, está en que <b>el cambio deja de ser un despliegue</b>: hoy
+cada alta recorre el ciclo de editar, probar, liberar y verificar en dos ambientes, y depende de la
+disponibilidad del desarrollador que conoce las 29 listas. Con el catálogo es un cambio de
+datos autorizado por el área dueña, con vigencia y bitácora. Cuánto tiempo de calendario representa cada ciclo
+hoy es el dato que falta y que conviene medir con el equipo con los últimos cambios reales, para poner la cifra
+en la presentación.</p>
+
+<h2>6. Cómo se demuestra que no cambia ninguna cifra</h2>
+<p><code>auditoria/dummy/05_prueba_equivalencia.sql</code>. Regla del proyecto: ningún objeto parametrizado
+entra a producción sin este resultado firmado.</p>
+<ul>
+<li><b>Equivalencia del catálogo contra el código:</b> por cada bandera migrada, comparar el conjunto que
+devuelve la función contra la lista literal que hoy está en el código, en los dos sentidos. Resultado exigido:
+cero filas de diferencia.</li>
+<li><b>Equivalencia del reporte:</b> ejecutar el procedimiento actual y el parametrizado sobre un día ya cerrado
+y conciliado y comparar con <code>EXCEPT</code> en ambos sentidos, más un resumen del delta por columna. Se
+espera delta cero en todo excepto <code>OTRO</code> y <code>IVA_OTRO</code>, por la corrección del defecto
+anterior; ese monto se documenta y lo firma contabilidad.</li>
+<li><b>Integridad de la configuración</b>, que se ejecuta después de cada cambio hecho en el portal y antes de
+aplicarlo: tipos activos sin segmento, tipos en dos segmentos a la vez, vigencias traslapadas, rubros sin su
+contraparte de IVA y rubros presentes en los movimientos del día que no estén catalogados.</li>
+</ul>
+<p>Ese último punto agrega algo que hoy no existe: los huecos de configuración se vuelven visibles el mismo día
+en lugar de aparecer como un descuadre.</p>
+
+<h2>7. Qué se parametriza y qué no</h2>
+<p>La distinción importa porque de ella depende quién autoriza cada cambio. No todo hardcodeo debe volverse
+configurable.</p>
+
+<div class="card verde">
+<h3>Pertenencia a un grupo</h3><p style="margin:0"><b>Qué es:</b> Qué tipos de crédito participan en qué proceso; qué rubro suma a qué columna; qué pólizas entran en el reporte.</p>
+<p style="margin:6px 0 0"><b>Cómo se trata:</b> Autoservicio en el portal, con vigencia, bitácora y aprobación de cuatro ojos del área dueña. Es el 100% de lo que este dummy resuelve.</p></div>
+<div class="card azul">
+<h3>Etiquetas y atributos de salida</h3><p style="margin:0"><b>Qué es:</b> Textos como «INDIVIDUAL CASTIGO», el ID_PRODUCTO 51 o el nombre «EMPLEADO».</p>
+<p style="margin:6px 0 0"><b>Cómo se trata:</b> Catálogo, pero con aprobación de contabilidad: cambian la presentación de la cifra y su trazabilidad con el reporte publicado.</p></div>
+<div class="card ambar">
+<h3>Fórmulas y multiplicadores</h3><p style="margin:0"><b>Qué es:</b> El factor 9 de la cartera administrada, la partición 0.10 / 0.90, el IVA al 16%.</p>
+<p style="margin:6px 0 0"><b>Cómo se trata:</b> Catálogo solo después de validar la base de cálculo. Migrarlos tal cual como configuración editable trasladaría al portal una inconsistencia que hoy ya existe entre procesos.</p></div>
+<div class="card rojo">
+<h3>Reglas y precedencias contables</h3><p style="margin:0"><b>Qué es:</b> Que comercial gane sobre individual cuando un crédito cae en los dos grupos; el criterio de etapa; el tratamiento de reversas.</p>
+<p style="margin:6px 0 0"><b>Cómo se trata:</b> Se quedan en código, bajo control de cambios. No son parámetros: son la contabilidad.</p></div>
+
+<h2>8. Vigencia, ambiente y gobierno</h2>
+<ul>
+<li><b>Vigencia obligatoria en las tres tablas.</b> El proceso resuelve las reglas con la fecha del movimiento,
+no con la fecha de hoy: reejecutar un día anterior devuelve la misma cifra aunque el catálogo haya cambiado
+después. Es lo que hace compatible el catálogo con el bloqueo del histórico contable y con los ajustes como
+adiciones acumuladas.</li>
+<li><b>Un cambio nunca es retroactivo por omisión.</b> La vigencia arranca en la fecha que autorice el área
+dueña; si se necesita efecto retroactivo, es una excepción con aprobación explícita y con reproceso declarado.</li>
+<li><b>Separación por ambiente.</b> El catálogo se edita en QA (CUA), se valida con la prueba de equivalencia y
+se promueve a producción; el portal no permite editar producción directamente.</li>
+<li><b>Cuatro ojos y bitácora</b> sobre las tablas de catálogo, con usuario y fecha en cada fila, tal como está
+maquetado en <a href="09_demo_portal.html">la demo del portal</a>.</li>
+<li><b>Dueño por bandera.</b> La columna de área dueña de la tabla de banderas es donde aterrizan las
+respuestas de Q14 y Q31 de las <a href="12_preguntas_negocio.html">confirmaciones pendientes</a>.</li>
+</ul>
+
+<h2>9. Orden de adopción sugerido</h2>
+<div class="ola"><h3>Paso 1 &mdash; Catálogo y matriz en QA, sin tocar un solo procedimiento</h3>
+<p class="obj">Crear las tablas, sembrarlas con las listas actuales y correr la prueba de equivalencia por
+bandera. Criterio de aceptación: las 12 banderas reproducen exactamente las listas del código.</p></div>
+<div class="ola"><h3>Paso 2 &mdash; Un solo objeto piloto: CIERRE.SP_CMR_GEN_MES</h3>
+<p class="obj">Es el caso de menor riesgo porque solo cambia cómo se llena <code>#TIPO_CREDITOS</code> y no
+toca los filtros. Criterio: el cierre comercial de un periodo cerrado da cifra idéntica.</p></div>
+<div class="ola"><h3>Paso 3 &mdash; Reporte de cobranza con los tres catálogos</h3>
+<p class="obj">Es el que más código elimina y el que ya tiene defectos detectados. Criterio: delta cero salvo
+las columnas <code>OTRO</code> e <code>IVA_OTRO</code>, con el monto documentado y firmado.</p></div>
+<div class="ola"><h3>Paso 4 &mdash; Resto de la familia por olas, empezando por castigo y devengo</h3>
+<p class="obj">Una bandera a la vez y todos sus usos juntos, nunca un procedimiento aislado: migrar la mitad de
+los usos de una bandera dejaría dos fuentes de verdad. Criterio: cero listas literales de
+<code>NUM_DESC_TIPO_CREDITO</code> en los objetos migrados, verificable con el mismo control automático que ya
+usa la Fase 1.</p></div>
+<div class="ola"><h3>Paso 5 &mdash; El portal administra lo ya migrado</h3>
+<p class="obj">El portal se conecta cuando el catálogo ya es la fuente de verdad y las validaciones de
+integridad están en su lugar; no antes.</p></div>
+
+<h2>10. Límites de esta propuesta</h2>
+<ul>
+<li>Es un <b>dummy</b>: todo se crea en un esquema <code>DUMMY</code> y nada se ejecutó contra una instancia de
+SQL Server. Las descripciones de los tipos viven en la base, no en el repositorio, así que la semilla trae los
+números y no los nombres.</li>
+<li><code>TIPO_CREDITO</code> (el texto que viaja en el movimiento) y <code>NUM_DESC_TIPO_CREDITO</code> (el
+número del crédito) son <b>dimensiones distintas</b>. Este dummy no las une: hacerlo requiere una relación
+explícita validada con negocio.</li>
+<li>El factor 9 se conserva tal como está. No se propone volverlo editable hasta entender su relación con la
+partición 0.10 / 0.90 de los cierres comerciales: son bases de cálculo que no coinciden.</li>
+<li><b>Ninguna pregunta pendiente bloquea este diseño.</b> Lo que bloquean es su operación: sin dueño por
+bandera (Q14, Q31) el catálogo existe pero nadie puede autorizar un cambio, y el proceso volvería a depender del
+desarrollador.</li>
+</ul>
+
+</div>
+<footer>Auditoría de código SQL KARDIA / SAF &middot; análisis estático del repositorio (BD, BD_prod y reportes).
+No se ejecutó ningún objeto contra una instancia de SQL Server ni se leyeron datos productivos:
+los hallazgos que dependen de datos, de plan de ejecución o de reglas contables se marcan como pendientes de validación.</footer>
+</body></html>
