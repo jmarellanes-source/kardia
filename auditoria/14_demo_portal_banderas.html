@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KARDIA · Configuración contable — catálogo de banderas (prototipo)</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --azul:#0176d3; --azul2:#014486; --azul3:#e8f4fe; --brand:#032d60;
+  --bg:#f3f3f3; --card:#fff; --line:#e5e5e5; --line2:#c9c9c9;
+  --tx:#181818; --tx2:#5c5c5c; --tx3:#8a8a8a;
+  --ok:#2e844a; --okbg:#eafaea; --warn:#a86403; --warnbg:#fef5e6;
+  --bad:#ba0517; --badbg:#feded8; --neu:#f3f3f3;
+  --sombra:0 2px 3px rgba(0,0,0,.08);
+}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);
+  font:13px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+button,input,select,textarea{font-family:inherit;font-size:13px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
+
+/* ------------------------------------------------ banner de prototipo */
+#proto{background:#fef5e6;border-bottom:1px solid #f2c94c;color:#6b4700;
+  padding:6px 16px;font-size:12.5px;display:flex;gap:14px;align-items:center}
+#proto .txt{flex:1}
+#proto b{color:#7a4f00}
+#proto .x{margin-left:auto;cursor:pointer;color:#a86403;font-weight:700}
+
+/* ------------------------------------------------ barra global */
+header{background:var(--brand);color:#fff;display:flex;align-items:center;gap:14px;padding:8px 16px}
+header .grid{width:26px;height:26px;border-radius:4px;background:rgba(255,255,255,.15);display:grid;
+  place-items:center;cursor:pointer;letter-spacing:1px;font-size:13px}
+header .app{font-weight:700;font-size:15px}
+header .search{flex:1;max-width:520px}
+header .search input{width:100%;border:0;border-radius:16px;padding:6px 12px}
+header .right{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:12.5px}
+header select{border:0;border-radius:4px;padding:4px 6px;background:rgba(255,255,255,.15);color:#fff}
+header select option{color:#181818}
+.avatar{width:28px;height:28px;border-radius:50%;background:#5eb4ff;color:#032d60;display:grid;
+  place-items:center;font-weight:700;font-size:11.5px}
+
+/* ------------------------------------------------ pestañas de objeto */
+.tabs{background:#fff;border-bottom:1px solid var(--line);display:flex;gap:2px;padding:0 12px;
+  position:sticky;top:0;z-index:20}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:11px 14px;
+  color:var(--tx2);cursor:pointer;font-weight:600}
+.tabs button:hover{color:var(--azul);background:#fafafa}
+.tabs button.on{color:var(--azul);border-bottom-color:var(--azul)}
+.tabs .cnt{margin-left:6px;background:var(--neu);border-radius:9px;padding:0 6px;font-size:11px;color:var(--tx2)}
+
+main{padding:14px 16px 60px;max-width:1400px;margin:0 auto}
+
+/* ------------------------------------------------ tarjetas */
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;box-shadow:var(--sombra);
+  margin-bottom:14px}
+.card>h3{margin:0;padding:11px 16px;border-bottom:1px solid var(--line);font-size:13.5px;
+  display:flex;align-items:center;gap:8px}
+.card>h3 .der{margin-left:auto;display:flex;gap:8px;align-items:center;font-weight:400;color:var(--tx2);font-size:12px}
+.card .cuerpo{padding:14px 16px}
+
+/* ------------------------------------------------ encabezado de registro */
+.high{background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:var(--sombra);
+  padding:12px 16px;margin-bottom:14px}
+.high .fila1{display:flex;align-items:center;gap:12px}
+.high .icono{width:38px;height:38px;border-radius:6px;background:#0176d3;color:#fff;display:grid;
+  place-items:center;font-size:17px}
+.high .tit{font-size:17px;font-weight:700;line-height:1.2}
+.high .obj{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--tx2)}
+.high .acc{margin-left:auto;display:flex;gap:8px}
+.high .campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 22px;
+  margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.high .campos div span{display:block;font-size:11px;color:var(--tx2)}
+.high .campos div b{font-weight:600}
+
+/* ------------------------------------------------ path de aprobación */
+.path{display:flex;margin:14px 0 0;overflow:hidden}
+.path div{flex:1;position:relative;background:var(--neu);color:var(--tx2);padding:7px 10px 7px 24px;
+  font-size:12px;font-weight:600;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 50%,calc(100% - 12px) 100%,0 100%,12px 50%);
+  margin-right:2px}
+.path div:first-child{padding-left:14px}
+.path div.hecho{background:#c9e7d0;color:#0b5228}
+.path div.act{background:var(--azul);color:#fff}
+
+/* ------------------------------------------------ botones */
+.btn{border:1px solid var(--line2);background:#fff;color:var(--azul);border-radius:4px;padding:5px 12px;
+  cursor:pointer;font-weight:600}
+.btn:hover{background:#f4f6fe}
+.btn.pri{background:var(--azul);border-color:var(--azul);color:#fff}
+.btn.pri:hover{background:var(--azul2)}
+.btn.dan{color:var(--bad);border-color:#e8b0ac}
+.btn.dan:hover{background:var(--badbg)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.mini{padding:2px 8px;font-size:12px}
+
+/* ------------------------------------------------ tablas */
+table{width:100%;border-collapse:collapse;background:#fff}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--tx2);
+  background:#fafaf9;cursor:pointer;white-space:nowrap;user-select:none}
+th.nosort{cursor:default}
+tbody tr:hover{background:#f7fbff}
+td.num{white-space:nowrap;color:var(--tx2)}
+a.lnk{color:var(--azul);text-decoration:none;font-weight:600;cursor:pointer}
+a.lnk:hover{text-decoration:underline}
+
+/* ------------------------------------------------ etiquetas */
+.pill{display:inline-block;border-radius:12px;padding:1px 9px;font-size:11px;font-weight:600;
+  border:1px solid transparent;white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok);border-color:#b6e0c1}
+.pill.warn{background:var(--warnbg);color:var(--warn);border-color:#f2d69b}
+.pill.bad{background:var(--badbg);color:var(--bad);border-color:#f2b8b0}
+.pill.info{background:var(--azul3);color:var(--azul2);border-color:#b3dcfa}
+.pill.neu{background:var(--neu);color:var(--tx2);border-color:var(--line)}
+
+/* ------------------------------------------------ filtros */
+.filtros{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 16px;
+  border-bottom:1px solid var(--line);background:#fafaf9}
+.filtros input[type=text],.filtros select,.filtros input[type=date]{
+  border:1px solid var(--line2);border-radius:4px;padding:5px 8px;background:#fff}
+.filtros label{font-size:12px;color:var(--tx2)}
+
+/* ------------------------------------------------ matriz de casillas */
+.matriz{overflow:auto;max-height:520px}
+.matriz table{min-width:900px}
+.matriz thead th{position:sticky;top:0;z-index:2;background:#fafaf9}
+.matriz th.rot{writing-mode:vertical-rl;transform:rotate(180deg);height:175px;padding:6px 3px;
+  font-size:11px;text-align:left;vertical-align:bottom}
+.matriz td.chk{text-align:center;padding:4px}
+.matriz td.chk input{width:15px;height:15px;cursor:pointer}
+.matriz tbody th{position:sticky;left:0;background:#fff;text-transform:none;letter-spacing:0;
+  font-size:12.5px;color:var(--tx);border-right:1px solid var(--line);z-index:1;cursor:default}
+.matriz td.dif{background:#fff8e1}
+
+/* ------------------------------------------------ kpis */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-left:4px solid var(--azul);border-radius:8px;
+  padding:12px 14px;box-shadow:var(--sombra)}
+.kpi b{display:block;font-size:23px;line-height:1.1}
+.kpi span{font-size:11.5px;color:var(--tx2)}
+.kpi.w{border-left-color:var(--warn)} .kpi.w b{color:var(--warn)}
+.kpi.d{border-left-color:var(--bad)}  .kpi.d b{color:var(--bad)}
+.kpi.g{border-left-color:var(--ok)}   .kpi.g b{color:var(--ok)}
+
+/* ------------------------------------------------ panel lateral / modal */
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;z-index:40}
+#ov.on{display:block}
+.modal{position:fixed;z-index:50;top:50%;left:50%;transform:translate(-50%,-50%);width:min(760px,94vw);
+  max-height:88vh;overflow:auto;background:#fff;border-radius:8px;display:none;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.modal.on{display:block}
+.modal h3{margin:0;padding:14px 18px;background:var(--brand);color:#fff;font-size:15px;border-radius:8px 8px 0 0}
+.modal .cuerpo{padding:16px 18px}
+.modal .pie{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;
+  background:#fafaf9;border-radius:0 0 8px 8px}
+.campo{margin-bottom:12px}
+.campo label{display:block;font-size:12px;color:var(--tx2);margin-bottom:3px}
+.campo input,.campo select,.campo textarea{width:100%;border:1px solid var(--line2);border-radius:4px;padding:6px 8px}
+.campo textarea{min-height:64px;resize:vertical}
+
+/* ------------------------------------------------ avisos */
+.aviso{border-radius:6px;padding:9px 13px;margin-bottom:12px;font-size:12.5px;display:flex;gap:9px}
+.aviso.info{background:var(--azul3);border:1px solid #b3dcfa;color:#04487f}
+.aviso.warn{background:var(--warnbg);border:1px solid #f2d69b;color:#6b4700}
+.aviso.bad{background:var(--badbg);border:1px solid #f2b8b0;color:#8f1006}
+
+/* ------------------------------------------------ toast */
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:26px;z-index:60;display:none}
+#toast.on{display:block}
+#toast .t{background:#2e844a;color:#fff;border-radius:6px;padding:10px 18px;box-shadow:0 4px 12px rgba(0,0,0,.3);
+  font-weight:600}
+#toast .t.err{background:#ba0517}
+
+.hide{display:none!important}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.dl{display:grid;grid-template-columns:190px 1fr;gap:7px 14px;font-size:13px}
+.dl dt{color:var(--tx2)}
+.dl dd{margin:0}
+footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
+.ayuda{color:var(--tx2);font-size:12px;margin:6px 0 0}
+</style>
+</head>
+<body>
+
+<div id="proto">
+  <div class="txt"><b>Prototipo navegable.</b> Maqueta de la administración de <span class="mono">CAT_BANDERA</span>,
+  <span class="mono">CAT_TIPO_CREDITO_BANDERA</span> y <span class="mono">CAT_PRODUCTO_POR_BANDERA</span>.
+  No hay backend: los cambios viven en memoria y se pierden al recargar. Datos reales de
+  <span class="mono">PO.SAF_CAT_DESC_TIPO</span> y de los filtros del código de producción.</div>
+  <span class="x" onclick="this.parentNode.remove()">Cerrar</span>
+</div>
+
+<header>
+  <div class="grid" title="Menú de aplicaciones">⋮⋮⋮</div>
+  <div class="app">KARDIA · Configuración contable</div>
+  <div class="search"><input type="text" placeholder="Buscar banderas, tipos de crédito o solicitudes..." id="q"></div>
+  <div class="right">
+    <label>Ambiente
+      <select id="env" onchange="setEnv()">
+        <option value="QA">QA (CUA)</option>
+        <option value="PROD">Producción</option>
+      </select>
+    </label>
+    <label>Rol
+      <select id="rol" onchange="setRol()">
+        <option value="Editor">Editor de negocio</option>
+        <option value="Aprobador">Aprobador de contabilidad</option>
+        <option value="Lectura">Solo lectura</option>
+      </select>
+    </label>
+    <div class="avatar" id="ini">EN</div>
+  </div>
+</header>
+
+<div class="tabs" id="tabs"></div>
+
+<main>
+  <div id="avisoEnv"></div>
+
+  <!-- ============================================================ INICIO -->
+  <section id="v-inicio">
+    <div class="kpis" id="kpisIni"></div>
+    <div class="card">
+      <h3>Salud de la configuración
+        <span class="der">Se recalcula en cada cambio y bloquea la promoción a producción</span></h3>
+      <div id="salud"></div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Mis pendientes</h3>
+        <div id="pendIni"></div>
+      </div>
+      <div class="card">
+        <h3>Actividad reciente</h3>
+        <div id="actIni"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== BANDERAS -->
+  <section id="v-banderas" class="hide">
+    <div class="card">
+      <h3>CAT_BANDERA
+        <span class="der">
+          <button class="btn mini" onclick="nuevaBandera()">Nueva bandera</button>
+        </span></h3>
+      <div class="filtros">
+        <input type="text" id="fB" placeholder="Buscar bandera..." oninput="renderBanderas()">
+        <select id="fBarea" onchange="renderBanderas()"><option value="">Todas las áreas</option></select>
+        <select id="fBest" onchange="renderBanderas()">
+          <option value="">Todos los estados</option>
+          <option>Vigente</option><option>En aprobación</option><option>Borrador</option>
+        </select>
+        <label><input type="checkbox" id="fBuso" onchange="renderBanderas()"> Solo con filtros en el código</label>
+      </div>
+      <div id="tblB"></div>
+    </div>
+  </section>
+
+  <!-- ====================================================== DETALLE BAND -->
+  <section id="v-bandera" class="hide">
+    <a class="lnk" onclick="ir('banderas')">&larr; Volver a banderas</a>
+    <div id="detB"></div>
+  </section>
+
+  <!-- ============================================================ TIPOS -->
+  <section id="v-tipos" class="hide">
+    <div class="card">
+      <h3>CAT_TIPO_CREDITO
+        <span class="der">Origen: <span class="mono">PO.SAF_CAT_DESC_TIPO</span> · el portal no da de alta tipos,
+        los sincroniza del core</span></h3>
+      <div class="filtros">
+        <input type="text" id="fT" placeholder="Buscar tipo o descripción..." oninput="renderTipos()">
+        <select id="fTcart" onchange="renderTipos()"><option value="">Todas las carteras</option></select>
+        <select id="fTadm" onchange="renderTipos()"><option value="">Todos los administradores</option></select>
+        <select id="fTest" onchange="renderTipos()">
+          <option value="">Todos</option>
+          <option value="sin">Sin ninguna bandera</option>
+          <option value="huerf">Usado en código, ausente del catálogo</option>
+          <option value="nouso">En catálogo, sin uso en el código</option>
+        </select>
+      </div>
+      <div id="tblT"></div>
+    </div>
+  </section>
+
+  <!-- =========================================================== MATRIZ -->
+  <section id="v-matriz" class="hide">
+    <div class="card">
+      <h3>CAT_TIPO_CREDITO_BANDERA
+        <span class="der" id="matEstado"></span></h3>
+      <div class="filtros">
+        <label>Vigente al <input type="date" id="fecMat" value="2026-09-30" onchange="renderMatriz()"></label>
+        <select id="fMarea" onchange="renderMatriz()"><option value="">Todas las áreas</option></select>
+        <label><input type="checkbox" id="fMcambio" onchange="renderMatriz()"> Solo filas con cambios</label>
+        <span style="margin-left:auto"></span>
+        <button class="btn" onclick="descartar()" id="btnDesc" disabled>Descartar cambios</button>
+        <button class="btn pri" onclick="abrirEnvio()" id="btnEnv" disabled>Enviar a aprobación</button>
+      </div>
+      <div class="matriz" id="tblM"></div>
+      <div class="cuerpo">
+        <p class="ayuda">Cada casilla es una fila de <span class="mono">CAT_TIPO_CREDITO_BANDERA</span> con su
+        vigencia. Marcar una casilla no escribe en la tabla: genera una solicitud que otro usuario debe aprobar.
+        Las celdas ámbar son los cambios de esta sesión. En el portal real, la fecha «vigente al» reconstruye
+        la matriz de cualquier día pasado, que es lo que permite explicar por qué una póliza de ayer salió
+        como salió; en esta maqueta es solo ilustrativa.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================= PRODUCTOS -->
+  <section id="v-productos" class="hide">
+    <div class="card">
+      <h3>CAT_PRODUCTO_POR_BANDERA
+        <span class="der">Atributos de salida &mdash; requieren aprobación de contabilidad, nunca autoservicio</span></h3>
+      <div class="cuerpo">
+        <div class="aviso info">
+          <div>Esta tabla no define <b>quién pertenece</b> a un grupo, sino <b>qué se escribe</b> cuando pertenece.
+          Hoy son literales dentro del <span class="mono">UPDATE</span>
+          (<span class="mono">ID_PRODUCTO = 51</span>, <span class="mono">NOMBRE_PRODUCTO = 'EMPLEADO'</span>);
+          cambiarlos altera la presentación de la cifra y su trazabilidad con lo ya publicado.</div>
+        </div>
+      </div>
+      <div id="tblP"></div>
+      <div class="cuerpo">
+        <button class="btn" onclick="nuevoProducto()">Nuevo atributo de salida</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== APROBACIONES -->
+  <section id="v-aprob" class="hide">
+    <div class="card">
+      <h3>Bandeja de aprobación
+        <span class="der" id="quienAprueba"></span></h3>
+      <div class="filtros">
+        <select id="fAest" onchange="renderAprob()">
+          <option value="">Todos los estados</option>
+          <option>Pendiente</option><option>Aprobada</option><option>Rechazada</option>
+        </select>
+      </div>
+      <div id="tblA"></div>
+    </div>
+  </section>
+
+  <!-- ========================================================= AUDITORÍA -->
+  <section id="v-audit" class="hide">
+    <div class="card">
+      <h3>Bitácora
+        <span class="der">Inmutable · una fila por cambio aplicado, con usuario, fecha, motivo y ambiente</span></h3>
+      <div id="tblL"></div>
+    </div>
+  </section>
+</main>
+
+<div id="ov" onclick="cerrarModal()"></div>
+<div class="modal" id="modal">
+  <h3 id="mTit"></h3>
+  <div class="cuerpo" id="mCue"></div>
+  <div class="pie" id="mPie"></div>
+</div>
+<div id="toast"><div class="t" id="toastT"></div></div>
+
+<footer>Prototipo de la propuesta descrita en
+<a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a> ·
+<a href="index.html">Consolidado de la auditoría</a></footer>
+
+<script>
+/* ==========================================================================
+   DATOS
+   ========================================================================== */
+
+/* PO.SAF_CAT_DESC_TIPO tal como lo entregó el equipo. */
+const TIPOS = [
+ [0,'POR ASIGNAR','N/D','N/A'],
+ [1,'CONSUMO','CONSUMO','ION'],
+ [2,'COMERCIAL','COMERCIAL','ION'],
+ [3,'VIVIENDA','INDIVIDUAL','ION'],
+ [4,'ADMINISTRACION INDIVIDUAL','INDIVIDUAL','ION/AFIRME'],
+ [5,'OPCION MEZZANINE','COMERCIAL','MEZZANINE'],
+ [6,'ADMINISTRACIÓN INBURSA','COMERCIAL','INBURSA'],
+ [7,'SINDICADO ASOCIADO','COMERCIAL','ION/SHF'],
+ [8,'SHF','SHF','DAMNIFICADOS'],
+ [9,'EMPLEADO','EMPLEADOS','EMPLEADO'],
+ [10,'EX-EMPLEADO','EMPLEADOS','EMPLEADO'],
+ [11,'EMPLEADOS - COVID19','EMPLEADOS','EMPLEADO'],
+ [12,'PYME-LIQ-COMERCIAL','COMERCIAL','ION'],
+ [13,'PYME-ADQ-COMERCIAL','COMERCIAL','ION'],
+ [14,'PMP-LIQ-COMERCIAL','COMERCIAL','ION'],
+ [15,'PMP-ADQ-COMERCIAL','COMERCIAL','ION'],
+ [16,'PMP-LIQ- INDIVIDUAL','INDIVIDUAL','ION'],
+ [17,'PMP-ADQ- INDIVIDUAL','INDIVIDUAL','ION'],
+ [18,'REV-COMERCIAL','COMERCIAL','ION'],
+ [19,'ADMINISTRACION BANCOPPEL','COMERCIAL','BANCOPPEL'],
+ [20,'ADMO INDIVIDUAL QUIERO BILLETE','INDIVIDUAL','QUIERO BILLETE'],
+ [21,'ADMO COMERCIAL QUIERO BILLETE','COMERCIAL','QUIERO BILLETE'],
+ [22,'ADMINISTRACION BALI','COMERCIAL','BALI'],
+ [26,'CARTERA_CASTIGADA','INDIVIDUAL','ION']
+].map(t => ({num:t[0], desc:t[1], cartera:t[2], admin:t[3], enCatalogo:true}));
+
+/* Valores que aparecen en filtros de BD_prod y no están en el catálogo entregado. */
+const HUERFANOS = [23,24,25,27,28,29];
+HUERFANOS.forEach(n => TIPOS.push(
+  {num:n, desc:'(sin descripción en el catálogo)', cartera:'—', admin:'—', enCatalogo:false}));
+TIPOS.sort((a,b) => a.num - b.num);
+
+/* Tipos que aparecen en algún filtro del código de producción. */
+const EN_CODIGO = new Set([1,2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]);
+
+/* CAT_BANDERA. «filtros» y «archivos» salen de auditoria/dummy/06_medir_esfuerzo.py sobre BD_prod. */
+const BANDERAS = [
+ {b:'SEGMENTO_INDIVIDUAL', area:'Contabilidad', seg:true, filtros:33, archivos:26,
+  desc:'Participa en las pólizas individuales (familia SP_IND_*).',
+  origen:"IN (1,3,4,9,10,11,16,17) en dbo.FN_CARTERA_CREDITO y en los cierres individuales"},
+ {b:'SEGMENTO_COMERCIAL', area:'Contabilidad', seg:true, filtros:50, archivos:30,
+  desc:'Participa en las pólizas comerciales (familia SP_COM_*).',
+  origen:"IN (12,13,14,15,28, 2,18,27, 5, ...) que llena #TIPO_CREDITOS en CIERRE.SP_CMR_GEN_MES"},
+ {b:'SEGMENTO_SINDICADA', area:'Negocio', seg:true, filtros:24, archivos:17,
+  desc:'Cartera sindicada. Hoy está comentada dentro del cierre comercial.',
+  origen:"el 7, comentado como «--,7 -- sindicada» en CIERRE.SP_CMR_GEN_MES"},
+ {b:'ES_MINORISTA', area:'Negocio', seg:false, filtros:51, archivos:31,
+  desc:'Etiquetado «minoristas» dentro del cierre comercial.', origen:"12,13,14,15,28"},
+ {b:'ES_PUENTE', area:'Negocio', seg:false, filtros:50, archivos:30,
+  desc:'Crédito puente.', origen:"2,18,27"},
+ {b:'ES_MEZZANINE', area:'Negocio', seg:false, filtros:24, archivos:15,
+  desc:'Opción mezzanine.', origen:"el 5, presente en 24 de los 50 filtros comerciales"},
+ {b:'ES_EMPLEADO', area:'Negocio', seg:false, filtros:66, archivos:38,
+  desc:'Crédito a empleado. Fuerza los atributos de salida ID_PRODUCTO y NOMBRE_PRODUCTO.',
+  origen:"IN (9,10,11) en PO.SP_IND_CASTIGOS_CONDONACION y hermanos"},
+ {b:'ES_ADMINISTRADA_IND', area:'Negocio', seg:false, filtros:4, archivos:3,
+  desc:'Cartera administrada individual.', origen:"IN (4,20,23)"},
+ {b:'ES_ADMINISTRADA_COM', area:'Negocio', seg:false, filtros:7, archivos:5,
+  desc:'Cartera administrada comercial.', origen:"IN (6,19,21,22,24)"},
+ {b:'ES_CASTIGO_COMERCIAL', area:'Contabilidad', seg:false, filtros:16, archivos:11,
+  desc:'Tipo de castigo comercial.', origen:"IN (25,29)"},
+ {b:'ES_CASTIGO_INDIVIDUAL', area:'Contabilidad', seg:false, filtros:16, archivos:14,
+  desc:'Tipo de castigo individual.', origen:"el 26"},
+ {b:'ES_ADMON_AFIRME', area:'Negocio', seg:false, filtros:0, archivos:0,
+  desc:'Cartera en administración Afirme, sujeta a factor de participación. No se usa como filtro: alimenta el factor del reporte de cobranza.',
+  origen:"el 4 y la cadena 'ADMINISTRACION INDIVIDUAL'"}
+];
+BANDERAS.forEach(x => {x.estado = 'Vigente'; x.desde = '2019-01-01';});
+
+/* CAT_TIPO_CREDITO_BANDERA: las casillas derivadas de los filtros del código. */
+const MATRIZ_BASE = {
+ SEGMENTO_INDIVIDUAL:[1,3,4,9,10,11,16,17],
+ SEGMENTO_COMERCIAL:[2,12,13,14,15,18,27,28],
+ SEGMENTO_SINDICADA:[7],
+ ES_MINORISTA:[12,13,14,15,28],
+ ES_PUENTE:[2,18,27],
+ ES_MEZZANINE:[5],
+ ES_EMPLEADO:[9,10,11],
+ ES_ADMINISTRADA_IND:[4,20,23],
+ ES_ADMINISTRADA_COM:[6,19,21,22,24],
+ ES_CASTIGO_COMERCIAL:[25,29],
+ ES_CASTIGO_INDIVIDUAL:[26],
+ ES_ADMON_AFIRME:[4]
+};
+/* Estado aplicado (lo que hoy devolvería FN_TIPOS_CREDITO) y borrador de la sesión. */
+let MATRIZ = {}; Object.keys(MATRIZ_BASE).forEach(b => MATRIZ[b] = new Set(MATRIZ_BASE[b]));
+let BORRADOR = {};
+
+/* CAT_PRODUCTO_POR_BANDERA */
+let PRODUCTOS = [
+ {bandera:'ES_EMPLEADO', idp:51, nom:'EMPLEADO', desde:'2019-01-01', hasta:'9999-12-31',
+  origen:'PO.SP_IND_CASTIGOS_CONDONACION y 6 hermanos'},
+ {bandera:'ES_CASTIGO_INDIVIDUAL', idp:37, nom:'INDIVIDUAL CASTIGO', desde:'2019-01-01', hasta:'9999-12-31',
+  origen:'dbo.REPORTE_COBRANZA_INTEGRACION (etiqueta de la póliza 37)'},
+ {bandera:'ES_ADMON_AFIRME', idp:9, nom:'ADMINISTRACION INDIVIDUAL', desde:'2019-01-01', hasta:'9999-12-31',
+  origen:'factor observado «monto * 9» — pendiente de validar con contabilidad'}
+];
+
+/* Solicitudes de cambio (cuatro ojos) */
+let SOLS = [
+ {id:'SOL-0031', tabla:'CAT_TIPO_CREDITO_BANDERA', resumen:'Alta de 23 en ES_ADMINISTRADA_IND',
+  detalle:['+ 23 → ES_ADMINISTRADA_IND (desde 2026-10-01)'], motivo:'Alta del convenio de administración pendiente desde agosto.',
+  solicita:'E. Navarro (Negocio)', fecha:'2026-09-28 10:14', estado:'Pendiente', amb:'QA', aprueba:'', nota:''},
+ {id:'SOL-0030', tabla:'CAT_PRODUCTO_POR_BANDERA', resumen:'Cambio de NOMBRE_PRODUCTO de ES_EMPLEADO',
+  detalle:["NOMBRE_PRODUCTO: 'EMPLEADO' → 'EMPLEADO ION' (desde 2026-11-01)"],
+  motivo:'Alineación con la nomenclatura del estado de cuenta.',
+  solicita:'E. Navarro (Negocio)', fecha:'2026-09-27 17:02', estado:'Pendiente', amb:'QA', aprueba:'', nota:''},
+ {id:'SOL-0029', tabla:'CAT_TIPO_CREDITO_BANDERA', resumen:'Baja de 7 en SEGMENTO_COMERCIAL',
+  detalle:['− 7 → SEGMENTO_COMERCIAL (vigencia cerrada al 2026-08-31)'],
+  motivo:'Formaliza el «--,7» que hoy está comentado en el código, con fecha y autor.',
+  solicita:'E. Navarro (Negocio)', fecha:'2026-09-01 09:20', estado:'Aprobada', amb:'QA',
+  aprueba:'C. Rangel (Contabilidad)', nota:'Se confirma con el acta de septiembre.'}
+];
+
+/* Bitácora */
+let BITA = [
+ {f:'2026-09-01 11:40', u:'C. Rangel', acc:'Aprobó SOL-0029', obj:'CAT_TIPO_CREDITO_BANDERA',
+  det:'Cierra vigencia de 7 en SEGMENTO_COMERCIAL al 2026-08-31', amb:'QA'},
+ {f:'2026-08-28 16:05', u:'E. Navarro', acc:'Creó SOL-0029', obj:'CAT_TIPO_CREDITO_BANDERA',
+  det:'Solicitud de baja de la cartera sindicada del cierre comercial', amb:'QA'},
+ {f:'2026-08-20 12:11', u:'sistema', acc:'Sincronizó catálogo', obj:'CAT_TIPO_CREDITO',
+  det:'24 tipos leídos de PO.SAF_CAT_DESC_TIPO; 6 valores del código sin contraparte', amb:'QA'}
+];
+
+const PESTANAS = [
+ ['inicio','Inicio'], ['banderas','Banderas'], ['tipos','Tipos de crédito'],
+ ['matriz','Matriz de banderas'], ['productos','Atributos de salida'],
+ ['aprob','Aprobaciones'], ['audit','Bitácora']
+];
+
+/* ==========================================================================
+   UTILIDADES
+   ========================================================================== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const hoy = () => new Date().toISOString().slice(0,16).replace('T',' ');
+let VISTA = 'inicio', BAND_SEL = null, ROL = 'Editor', ENV = 'QA';
+
+function toast(txt, err){
+  $('toastT').textContent = txt;
+  $('toastT').className = 't' + (err ? ' err' : '');
+  $('toast').classList.add('on');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => $('toast').classList.remove('on'), 3200);
+}
+function puedeEditar(){ return ROL === 'Editor' && ENV === 'QA'; }
+function puedeAprobar(){ return ROL === 'Aprobador' && ENV === 'QA'; }
+
+function ir(v){
+  VISTA = v;
+  PESTANAS.forEach(([k]) => $('v-' + k).classList.toggle('hide', k !== v));
+  $('v-bandera').classList.toggle('hide', v !== 'bandera');
+  [...$('tabs').children].forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  render();
+  window.scrollTo(0,0);
+}
+function setEnv(){ ENV = $('env').value; render(); }
+function setRol(){
+  ROL = $('rol').value;
+  $('ini').textContent = ROL === 'Aprobador' ? 'CR' : ROL === 'Lectura' ? 'LC' : 'EN';
+  render();
+}
+
+/* ==========================================================================
+   RENDER
+   ========================================================================== */
+function render(){
+  $('tabs').innerHTML = PESTANAS.map(([k,n]) => {
+    const c = k === 'aprob' ? `<span class="cnt">${SOLS.filter(s => s.estado === 'Pendiente').length}</span>` : '';
+    return `<button data-v="${k}" class="${VISTA === k ? 'on' : ''}" onclick="ir('${k}')">${n}${c}</button>`;
+  }).join('');
+
+  $('avisoEnv').innerHTML = ENV === 'PROD'
+    ? `<div class="aviso bad"><div><b>Producción es de solo lectura desde el portal.</b> Los cambios se hacen
+       en QA (CUA), pasan la prueba de equivalencia y se promueven con el despliegue autorizado. Esta vista
+       muestra la configuración vigente en producción.</div></div>`
+    : ROL === 'Lectura'
+      ? `<div class="aviso info"><div>Rol de solo lectura: puedes consultar la configuración y su historial,
+         pero no crear solicitudes.</div></div>`
+      : '';
+
+  llenaSelect('fBarea', [...new Set(BANDERAS.map(b => b.area))]);
+  llenaSelect('fMarea', [...new Set(BANDERAS.map(b => b.area))]);
+  llenaSelect('fTcart', [...new Set(TIPOS.map(t => t.cartera))]);
+  llenaSelect('fTadm', [...new Set(TIPOS.map(t => t.admin))]);
+
+  if (VISTA === 'inicio') renderInicio();
+  if (VISTA === 'banderas') renderBanderas();
+  if (VISTA === 'bandera') renderDetalle();
+  if (VISTA === 'tipos') renderTipos();
+  if (VISTA === 'matriz') renderMatriz();
+  if (VISTA === 'productos') renderProductos();
+  if (VISTA === 'aprob') renderAprob();
+  if (VISTA === 'audit') renderBita();
+}
+function llenaSelect(id, vals){
+  const s = $(id); if (!s || s.dataset.ok) return;
+  vals.sort().forEach(v => s.insertAdjacentHTML('beforeend', `<option>${esc(v)}</option>`));
+  s.dataset.ok = '1';
+}
+
+/* -------------------------------------------------------------- validaciones */
+function sinBandera(){
+  return TIPOS.filter(t => t.num !== 0 && EN_CODIGO.has(t.num)
+    && !Object.keys(MATRIZ).some(b => MATRIZ[b].has(t.num))).map(t => t.num);
+}
+function dobleSegmento(){
+  const seg = BANDERAS.filter(b => b.seg).map(b => b.b);
+  return TIPOS.filter(t => seg.filter(s => MATRIZ[s].has(t.num)).length > 1).map(t => t.num);
+}
+function huerfanos(){ return TIPOS.filter(t => !t.enCatalogo).map(t => t.num); }
+function sinUso(){ return TIPOS.filter(t => t.enCatalogo && !EN_CODIGO.has(t.num)).map(t => t.num); }
+function nCambios(){ return Object.keys(BORRADOR).length; }
+
+/* -------------------------------------------------------------------- inicio */
+function renderInicio(){
+  const pend = SOLS.filter(s => s.estado === 'Pendiente');
+  $('kpisIni').innerHTML = `
+   <div class="kpi"><b>${BANDERAS.length}</b><span>banderas activas</span></div>
+   <div class="kpi"><b>${TIPOS.filter(t => t.enCatalogo).length}</b><span>tipos en el catálogo del core</span></div>
+   <div class="kpi g"><b>${Object.values(MATRIZ).reduce((a,s) => a + s.size, 0)}</b><span>casillas marcadas en la matriz</span></div>
+   <div class="kpi w"><b>${pend.length}</b><span>solicitudes por aprobar</span></div>
+   <div class="kpi d"><b>${huerfanos().length}</b><span>tipos usados en código sin catálogo</span></div>`;
+
+  const chk = [
+   ['Tipos usados en el código que no existen en PO.SAF_CAT_DESC_TIPO', huerfanos(), 'bad',
+    'El proceso los filtra pero nadie puede describir qué son. Requiere confirmación de negocio: ¿tipos dados de baja o catálogo desactualizado?'],
+   ['Tipos usados en el código sin ninguna bandera asignada', sinBandera(), 'warn',
+    'Quedarían fuera de todo proceso: ningún filtro del cierre los alcanzaría. Es la validación que impide que un tipo nuevo se pierda en silencio.'],
+   ['Tipos en más de un segmento a la vez', dobleSegmento(), 'warn',
+    'La precedencia comercial sobre individual está en código, no en el catálogo: revisar antes de aprobar.'],
+   ['Tipos del catálogo sin uso en el código', sinUso(), 'info',
+    'No es un error: son tipos que ningún proceso contable filtra hoy.']
+  ];
+  $('salud').innerHTML = '<table><thead><tr><th class="nosort">Validación</th><th class="nosort">Resultado</th>'
+    + '<th class="nosort">Qué implica</th></tr></thead><tbody>'
+    + chk.map(([t,l,c,d]) => `<tr><td>${esc(t)}</td>
+        <td><span class="pill ${l.length ? c : 'ok'}">${l.length ? l.join(', ') : 'sin hallazgos'}</span></td>
+        <td style="color:var(--tx2)">${esc(d)}</td></tr>`).join('')
+    + '</tbody></table>';
+
+  $('pendIni').innerHTML = pend.length
+    ? '<table><tbody>' + pend.map(s => `<tr>
+        <td><a class="lnk" onclick="ir('aprob')">${s.id}</a><br>
+            <span style="color:var(--tx2)">${esc(s.resumen)}</span></td>
+        <td class="num">${esc(s.solicita)}<br>${esc(s.fecha)}</td>
+        <td><span class="pill warn">Pendiente</span></td></tr>`).join('') + '</tbody></table>'
+    : '<div class="cuerpo" style="color:var(--tx2)">Sin solicitudes pendientes.</div>';
+
+  $('actIni').innerHTML = '<table><tbody>' + BITA.slice(0,5).map(b => `<tr>
+      <td class="num">${esc(b.f)}</td><td><b>${esc(b.u)}</b> ${esc(b.acc)}<br>
+      <span style="color:var(--tx2)">${esc(b.det)}</span></td></tr>`).join('') + '</tbody></table>';
+}
+
+/* ------------------------------------------------------------------ banderas */
+function renderBanderas(){
+  const q = ($('fB').value || '').toLowerCase(), ar = $('fBarea').value, es = $('fBest').value,
+        uso = $('fBuso').checked;
+  const fs = BANDERAS.filter(b =>
+      (!q || (b.b + b.desc).toLowerCase().includes(q)) &&
+      (!ar || b.area === ar) && (!es || b.estado === es) && (!uso || b.filtros > 0));
+  $('tblB').innerHTML = `<table><thead><tr>
+      <th class="nosort">Bandera</th><th class="nosort">Área dueña</th><th class="nosort">Tipos vigentes</th>
+      <th class="nosort">Filtros que sustituye</th><th class="nosort">Archivos</th>
+      <th class="nosort">Estado</th><th class="nosort"></th></tr></thead><tbody>`
+    + fs.map(b => `<tr>
+        <td><a class="lnk" onclick="verBandera('${b.b}')">${b.b}</a><br>
+            <span style="color:var(--tx2)">${esc(b.desc)}</span></td>
+        <td>${esc(b.area)}</td>
+        <td class="num">${MATRIZ[b.b].size}</td>
+        <td class="num">${b.filtros || '—'}</td>
+        <td class="num">${b.archivos || '—'}</td>
+        <td><span class="pill ${b.estado === 'Vigente' ? 'ok' : 'warn'}">${b.estado}</span></td>
+        <td><button class="btn mini" onclick="verBandera('${b.b}')">Abrir</button></td></tr>`).join('')
+    + `</tbody></table>`;
+}
+
+function verBandera(b){ BAND_SEL = b; ir('bandera'); }
+
+function renderDetalle(){
+  const b = BANDERAS.find(x => x.b === BAND_SEL); if (!b) return;
+  const tipos = [...MATRIZ[b.b]].sort((x,y) => x - y);
+  const sols = SOLS.filter(s => s.detalle.join(' ').includes(b.b));
+  const pasos = ['Borrador','En aprobación','Vigente'];
+  const idx = b.estado === 'Vigente' ? 2 : b.estado === 'En aprobación' ? 1 : 0;
+  $('detB').innerHTML = `
+  <div class="high">
+    <div class="fila1">
+      <div class="icono">⚑</div>
+      <div><div class="obj">Bandera</div><div class="tit">${b.b}</div></div>
+      <div class="acc">
+        <button class="btn" onclick="ir('matriz')">Editar tipos en la matriz</button>
+        <button class="btn" ${puedeEditar() ? '' : 'disabled'} onclick="editarBandera('${b.b}')">Editar</button>
+      </div>
+    </div>
+    <div class="campos">
+      <div><span>Área dueña</span><b>${esc(b.area)}</b></div>
+      <div><span>Tipos vigentes</span><b>${tipos.length}</b></div>
+      <div><span>Filtros del código que sustituye</span><b>${b.filtros || '—'}</b></div>
+      <div><span>Archivos afectados</span><b>${b.archivos || '—'}</b></div>
+      <div><span>Vigente desde</span><b>${b.desde}</b></div>
+      <div><span>Ambiente</span><b>${ENV}</b></div>
+    </div>
+    <div class="path">${pasos.map((p,i) =>
+      `<div class="${i < idx ? 'hecho' : i === idx ? 'act' : ''}">${p}</div>`).join('')}</div>
+  </div>
+
+  <div class="grid2">
+    <div class="card"><h3>Detalle</h3><div class="cuerpo">
+      <dl class="dl">
+        <dt>Descripción</dt><dd>${esc(b.desc)}</dd>
+        <dt>De dónde sale</dt><dd class="mono">${esc(b.origen)}</dd>
+        <dt>¿Define segmento?</dt><dd>${b.seg ? 'Sí — participa en la validación de segmento único' : 'No'}</dd>
+        <dt>Autorización requerida</dt>
+        <dd>${b.area === 'Contabilidad'
+            ? 'Aprobador de contabilidad (afecta la póliza)'
+            : 'Aprobador de contabilidad, a solicitud de negocio'}</dd>
+      </dl></div></div>
+
+    <div class="card"><h3>Tipos de crédito con esta bandera
+      <span class="der">${tipos.length} de ${TIPOS.length}</span></h3>
+      <table><thead><tr><th class="nosort">#</th><th class="nosort">Descripción</th>
+        <th class="nosort">Cartera</th><th class="nosort">Administrador</th></tr></thead><tbody>
+      ${tipos.map(n => {
+        const t = TIPOS.find(x => x.num === n);
+        return `<tr><td class="num">${n}</td>
+          <td>${esc(t.desc)}${t.enCatalogo ? '' : ' <span class="pill bad">sin catálogo</span>'}</td>
+          <td>${esc(t.cartera)}</td><td>${esc(t.admin)}</td></tr>`;
+      }).join('')}
+      </tbody></table></div>
+  </div>
+
+  <div class="card"><h3>Solicitudes relacionadas</h3>
+    ${sols.length ? `<table><thead><tr><th class="nosort">Solicitud</th><th class="nosort">Cambio</th>
+      <th class="nosort">Solicitó</th><th class="nosort">Estado</th></tr></thead><tbody>`
+      + sols.map(s => `<tr><td>${s.id}</td><td>${esc(s.resumen)}</td><td>${esc(s.solicita)}</td>
+        <td><span class="pill ${s.estado === 'Aprobada' ? 'ok' : s.estado === 'Rechazada' ? 'bad' : 'warn'}">${s.estado}</span></td></tr>`).join('')
+      + '</tbody></table>'
+      : '<div class="cuerpo" style="color:var(--tx2)">Sin solicitudes.</div>'}
+  </div>`;
+}
+
+function editarBandera(b){
+  const x = BANDERAS.find(y => y.b === b);
+  modal('Editar bandera', `
+    <div class="campo"><label>Nombre</label><input value="${x.b}" disabled></div>
+    <div class="campo"><label>Descripción</label><textarea id="edDesc">${esc(x.desc)}</textarea></div>
+    <div class="campo"><label>Área dueña</label>
+      <select id="edArea">${['Contabilidad','Negocio','Riesgos'].map(a =>
+        `<option ${a === x.area ? 'selected' : ''}>${a}</option>`).join('')}</select></div>
+    <p class="ayuda">Cambiar el área dueña cambia quién puede autorizar los movimientos de esta bandera.</p>`,
+    [['Cancelar', 'cerrarModal()', ''],
+     ['Guardar', `guardarBandera('${b}')`, 'pri']]);
+}
+function guardarBandera(b){
+  const x = BANDERAS.find(y => y.b === b);
+  x.desc = $('edDesc').value; x.area = $('edArea').value;
+  BITA.unshift({f:hoy(), u:'E. Navarro', acc:'Editó bandera', obj:'CAT_BANDERA',
+    det:`${b}: descripción y área dueña`, amb:ENV});
+  cerrarModal(); toast('Bandera actualizada'); render();
+}
+function nuevaBandera(){
+  if (!puedeEditar()) return toast('Solo el editor de negocio en QA puede crear banderas', true);
+  modal('Nueva bandera', `
+    <div class="campo"><label>Nombre</label><input id="nbNom" placeholder="ES_..."></div>
+    <div class="campo"><label>Descripción</label><textarea id="nbDesc"></textarea></div>
+    <div class="campo"><label>Área dueña</label>
+      <select id="nbArea"><option>Contabilidad</option><option>Negocio</option><option>Riesgos</option></select></div>
+    <div class="aviso info"><div>Una bandera nueva nace sin tipos y sin uso en el código: no cambia ninguna
+    cifra hasta que un procedimiento la consulte. Por eso su alta no requiere aprobación; lo que sí la requiere
+    es marcar tipos en la matriz.</div></div>`,
+    [['Cancelar','cerrarModal()',''],['Crear','crearBandera()','pri']]);
+}
+function crearBandera(){
+  const n = ($('nbNom').value || '').trim().toUpperCase();
+  if (!n) return toast('El nombre es obligatorio', true);
+  if (BANDERAS.some(b => b.b === n)) return toast('Esa bandera ya existe', true);
+  BANDERAS.push({b:n, area:$('nbArea').value, seg:false, filtros:0, archivos:0,
+    desc:$('nbDesc').value || '(sin descripción)', origen:'creada desde el portal',
+    estado:'Borrador', desde:new Date().toISOString().slice(0,10)});
+  MATRIZ[n] = new Set();
+  BITA.unshift({f:hoy(), u:'E. Navarro', acc:'Creó bandera', obj:'CAT_BANDERA', det:n, amb:ENV});
+  cerrarModal(); toast('Bandera creada en borrador'); render();
+}
+
+/* --------------------------------------------------------------------- tipos */
+function renderTipos(){
+  const q = ($('fT').value || '').toLowerCase(), ca = $('fTcart').value, ad = $('fTadm').value,
+        es = $('fTest').value, sinSeg = sinBandera(), su = sinUso();
+  const fs = TIPOS.filter(t =>
+    (!q || (t.num + ' ' + t.desc).toLowerCase().includes(q)) &&
+    (!ca || t.cartera === ca) && (!ad || t.admin === ad) &&
+    (es !== 'sin'   || sinSeg.includes(t.num)) &&
+    (es !== 'huerf' || !t.enCatalogo) &&
+    (es !== 'nouso' || su.includes(t.num)));
+  $('tblT').innerHTML = `<table><thead><tr>
+    <th class="nosort">#</th><th class="nosort">Descripción</th><th class="nosort">Cartera</th>
+    <th class="nosort">Administrador</th><th class="nosort">Banderas vigentes</th>
+    <th class="nosort">Estado</th></tr></thead><tbody>`
+   + fs.map(t => {
+      const bs = Object.keys(MATRIZ).filter(b => MATRIZ[b].has(t.num));
+      const et = !t.enCatalogo ? '<span class="pill bad">usado en código, sin catálogo</span>'
+        : sinSeg.includes(t.num) ? '<span class="pill warn">sin bandera</span>'
+        : su.includes(t.num) ? '<span class="pill neu">sin uso en el código</span>'
+        : '<span class="pill ok">correcto</span>';
+      return `<tr><td class="num">${t.num}</td><td>${esc(t.desc)}</td><td>${esc(t.cartera)}</td>
+        <td>${esc(t.admin)}</td>
+        <td>${bs.length ? bs.map(b =>
+            `<span class="pill info" style="margin:1px 2px">${b}</span>`).join('') : '—'}</td>
+        <td>${et}</td></tr>`;
+     }).join('')
+   + '</tbody></table>';
+}
+
+/* -------------------------------------------------------------------- matriz */
+function tieneCasilla(b, n){
+  const k = b + '|' + n;
+  return (k in BORRADOR) ? BORRADOR[k] : MATRIZ[b].has(n);
+}
+function toggle(b, n){
+  if (!puedeEditar()){ toast('Necesitas el rol de editor de negocio en QA', true); render(); return; }
+  const k = b + '|' + n, nuevo = !tieneCasilla(b, n);
+  if (nuevo === MATRIZ[b].has(n)) delete BORRADOR[k]; else BORRADOR[k] = nuevo;
+  renderMatriz();
+}
+function descartar(){ BORRADOR = {}; renderMatriz(); toast('Cambios descartados'); }
+
+function renderMatriz(){
+  const ar = $('fMarea').value, soloC = $('fMcambio').checked;
+  const bs = BANDERAS.filter(b => !ar || b.area === ar);
+  const tps = TIPOS.filter(t => !soloC || bs.some(b => (b.b + '|' + t.num) in BORRADOR));
+  $('matEstado').innerHTML = nCambios()
+    ? `<span class="pill warn">${nCambios()} cambio(s) sin enviar</span>`
+    : `<span class="pill ok">sin cambios pendientes</span>`;
+  $('btnEnv').disabled = !nCambios() || !puedeEditar();
+  $('btnDesc').disabled = !nCambios();
+
+  $('tblM').innerHTML = `<table><thead><tr>
+      <th class="nosort" style="min-width:250px">Tipo de crédito</th>
+      ${bs.map(b => `<th class="rot nosort" title="${esc(b.desc)}">${b.b}</th>`).join('')}
+    </tr></thead><tbody>`
+   + tps.map(t => `<tr>
+      <th>${t.num} &middot; ${esc(t.desc)}
+        ${t.enCatalogo ? '' : ' <span class="pill bad">sin catálogo</span>'}</th>
+      ${bs.map(b => {
+        const k = b.b + '|' + t.num, ch = tieneCasilla(b.b, t.num), dif = k in BORRADOR;
+        return `<td class="chk ${dif ? 'dif' : ''}">
+          <input type="checkbox" ${ch ? 'checked' : ''} ${puedeEditar() ? '' : 'disabled'}
+                 onclick="toggle('${b.b}',${t.num})"></td>`;
+      }).join('')}
+     </tr>`).join('')
+   + '</tbody></table>';
+}
+
+function abrirEnvio(){
+  const det = Object.entries(BORRADOR).map(([k,v]) => {
+    const [b,n] = k.split('|');
+    const t = TIPOS.find(x => x.num === +n);
+    return `${v ? '+' : '−'} ${n} (${t.desc}) → ${b}`;
+  });
+  modal('Enviar cambios a aprobación', `
+    <div class="campo"><label>Cambios incluidos (${det.length})</label>
+      <div class="mono" style="background:#fafaf9;border:1px solid var(--line);border-radius:4px;padding:9px">
+      ${det.map(d => esc(d)).join('<br>')}</div></div>
+    <div class="campo"><label>Vigente desde</label><input type="date" id="soDesde" value="2026-10-01"></div>
+    <div class="campo"><label>Motivo del cambio (obligatorio)</label>
+      <textarea id="soMot" placeholder="Acta, ticket o acuerdo que respalda el cambio"></textarea></div>
+    <div class="aviso warn"><div>La vigencia nunca es retroactiva por omisión: el cierre de días anteriores
+    sigue resolviéndose con la matriz que estaba vigente ese día. Un efecto retroactivo es una excepción que
+    debe aprobarse aparte y declarar el reproceso.</div></div>`,
+    [['Cancelar','cerrarModal()',''],['Enviar','enviarSolicitud()','pri']]);
+}
+function enviarSolicitud(){
+  const mot = ($('soMot').value || '').trim();
+  if (!mot) return toast('El motivo es obligatorio', true);
+  const det = Object.entries(BORRADOR).map(([k,v]) => {
+    const [b,n] = k.split('|');
+    return `${v ? '+' : '−'} ${n} → ${b} (desde ${$('soDesde').value})`;
+  });
+  const id = 'SOL-' + String(32 + SOLS.length).padStart(4,'0');
+  SOLS.unshift({id, tabla:'CAT_TIPO_CREDITO_BANDERA',
+    resumen:`${det.length} cambio(s) en la matriz de banderas`, detalle:det, motivo:mot,
+    solicita:'E. Navarro (Negocio)', fecha:hoy(), estado:'Pendiente', amb:ENV, aprueba:'', nota:'',
+    payload:{...BORRADOR}});
+  BITA.unshift({f:hoy(), u:'E. Navarro', acc:`Creó ${id}`, obj:'CAT_TIPO_CREDITO_BANDERA',
+    det:det.join(' · '), amb:ENV});
+  BORRADOR = {};
+  cerrarModal();
+  toast(`${id} enviada. Requiere aprobación de otra persona.`);
+  ir('aprob');
+}
+
+/* ----------------------------------------------------------------- productos */
+function renderProductos(){
+  $('tblP').innerHTML = `<table><thead><tr>
+    <th class="nosort">Bandera</th><th class="nosort">ID_PRODUCTO</th><th class="nosort">NOMBRE_PRODUCTO</th>
+    <th class="nosort">Vigencia</th><th class="nosort">De dónde sale</th><th class="nosort"></th>
+    </tr></thead><tbody>`
+   + PRODUCTOS.map((p,i) => `<tr>
+      <td><a class="lnk" onclick="verBandera('${p.bandera}')">${p.bandera}</a></td>
+      <td class="num">${p.idp}</td><td class="mono">${esc(p.nom)}</td>
+      <td class="num">${p.desde} → ${p.hasta}</td>
+      <td style="color:var(--tx2)">${esc(p.origen)}</td>
+      <td><button class="btn mini" ${puedeEditar() ? '' : 'disabled'} onclick="editarProducto(${i})">Editar</button></td>
+     </tr>`).join('')
+   + '</tbody></table>';
+}
+function editarProducto(i){
+  const p = PRODUCTOS[i];
+  modal('Editar atributo de salida', `
+    <div class="campo"><label>Bandera</label><input value="${p.bandera}" disabled></div>
+    <div class="campo"><label>ID_PRODUCTO</label><input id="epId" value="${p.idp}"></div>
+    <div class="campo"><label>NOMBRE_PRODUCTO</label><input id="epNom" value="${esc(p.nom)}"></div>
+    <div class="campo"><label>Vigente desde</label><input type="date" id="epDes" value="2026-11-01"></div>
+    <div class="campo"><label>Motivo</label><textarea id="epMot"></textarea></div>
+    <div class="aviso bad"><div>Este valor viaja a la póliza y al estado de cuenta. El cambio no se aplica al
+    guardar: genera una solicitud que debe aprobar contabilidad, y el histórico anterior conserva el valor
+    con el que se publicó.</div></div>`,
+    [['Cancelar','cerrarModal()',''],['Enviar a aprobación',`solProducto(${i})`,'pri']]);
+}
+function solProducto(i){
+  const p = PRODUCTOS[i], mot = ($('epMot').value || '').trim();
+  if (!mot) return toast('El motivo es obligatorio', true);
+  const id = 'SOL-' + String(32 + SOLS.length).padStart(4,'0');
+  SOLS.unshift({id, tabla:'CAT_PRODUCTO_POR_BANDERA',
+    resumen:`Cambio de atributos de ${p.bandera}`,
+    detalle:[`ID_PRODUCTO: ${p.idp} → ${$('epId').value}`,
+             `NOMBRE_PRODUCTO: '${p.nom}' → '${$('epNom').value}'`,
+             `desde ${$('epDes').value}`],
+    motivo:mot, solicita:'E. Navarro (Negocio)', fecha:hoy(), estado:'Pendiente', amb:ENV,
+    aprueba:'', nota:'', prod:{i, idp:$('epId').value, nom:$('epNom').value, desde:$('epDes').value}});
+  cerrarModal(); toast(`${id} enviada a contabilidad.`); ir('aprob');
+}
+function nuevoProducto(){
+  if (!puedeEditar()) return toast('Necesitas el rol de editor de negocio en QA', true);
+  modal('Nuevo atributo de salida', `
+    <div class="campo"><label>Bandera</label>
+      <select id="npB">${BANDERAS.map(b => `<option>${b.b}</option>`).join('')}</select></div>
+    <div class="campo"><label>ID_PRODUCTO</label><input id="npId"></div>
+    <div class="campo"><label>NOMBRE_PRODUCTO</label><input id="npNom"></div>
+    <div class="campo"><label>Vigente desde</label><input type="date" id="npDes" value="2026-11-01"></div>`,
+    [['Cancelar','cerrarModal()',''],['Crear','crearProducto()','pri']]);
+}
+function crearProducto(){
+  if (!$('npId').value || !$('npNom').value) return toast('Faltan campos', true);
+  PRODUCTOS.push({bandera:$('npB').value, idp:$('npId').value, nom:$('npNom').value,
+    desde:$('npDes').value, hasta:'9999-12-31', origen:'alta desde el portal'});
+  BITA.unshift({f:hoy(), u:'E. Navarro', acc:'Creó atributo de salida', obj:'CAT_PRODUCTO_POR_BANDERA',
+    det:`${$('npB').value} → ${$('npNom').value}`, amb:ENV});
+  cerrarModal(); toast('Atributo creado'); render();
+}
+
+/* --------------------------------------------------------------- aprobación */
+function renderAprob(){
+  const es = $('fAest').value;
+  $('quienAprueba').textContent = puedeAprobar()
+    ? 'Puedes resolver solicitudes que no hayas creado'
+    : 'Cambia el rol a «Aprobador de contabilidad» para resolver';
+  const fs = SOLS.filter(s => !es || s.estado === es);
+  $('tblA').innerHTML = `<table><thead><tr>
+    <th class="nosort">Solicitud</th><th class="nosort">Tabla</th><th class="nosort">Cambio</th>
+    <th class="nosort">Motivo</th><th class="nosort">Solicitó</th><th class="nosort">Estado</th>
+    <th class="nosort"></th></tr></thead><tbody>`
+   + fs.map(s => `<tr>
+      <td><b>${s.id}</b><br><span style="color:var(--tx2)">${esc(s.fecha)} · ${s.amb}</span></td>
+      <td class="mono">${s.tabla}</td>
+      <td class="mono" style="font-size:11.5px">${s.detalle.map(d => esc(d)).join('<br>')}</td>
+      <td style="color:var(--tx2);max-width:240px">${esc(s.motivo)}
+        ${s.nota ? `<br><b>Nota:</b> ${esc(s.nota)}` : ''}</td>
+      <td>${esc(s.solicita)}${s.aprueba ? `<br><span style="color:var(--tx2)">resolvió ${esc(s.aprueba)}</span>` : ''}</td>
+      <td><span class="pill ${s.estado === 'Aprobada' ? 'ok' : s.estado === 'Rechazada' ? 'bad' : 'warn'}">${s.estado}</span></td>
+      <td>${s.estado === 'Pendiente'
+          ? `<button class="btn mini pri" ${puedeAprobar() ? '' : 'disabled'} onclick="resolver('${s.id}',1)">Aprobar</button>
+             <button class="btn mini dan" ${puedeAprobar() ? '' : 'disabled'} onclick="resolver('${s.id}',0)">Rechazar</button>`
+          : ''}</td></tr>`).join('')
+   + '</tbody></table>'
+   + `<div class="cuerpo"><p class="ayuda">Cuatro ojos: quien crea la solicitud no puede aprobarla, y la
+      restricción vive en la base de datos, no solo en la interfaz. Al aprobar se ejecutan las validaciones de
+      integridad; si alguna falla, el cambio no se aplica.</p></div>`;
+}
+function resolver(id, ok){
+  const s = SOLS.find(x => x.id === id);
+  if (!puedeAprobar()) return toast('Solo el aprobador de contabilidad puede resolver', true);
+  if (s.solicita.startsWith('C. Rangel')) return toast('No puedes aprobar tu propia solicitud', true);
+  if (ok && s.payload){
+    /* Simula la validación de integridad previa a aplicar. */
+    const antes = JSON.stringify([...MATRIZ.SEGMENTO_INDIVIDUAL]);
+    Object.entries(s.payload).forEach(([k,v]) => {
+      const [b,n] = k.split('|');
+      if (v) MATRIZ[b].add(+n); else MATRIZ[b].delete(+n);
+    });
+    const dobles = dobleSegmento();
+    if (dobles.length){
+      Object.entries(s.payload).forEach(([k,v]) => {
+        const [b,n] = k.split('|');
+        if (v) MATRIZ[b].delete(+n); else MATRIZ[b].add(+n);
+      });
+      void antes;
+      return toast(`Rechazado por validación: el tipo ${dobles.join(', ')} quedaría en dos segmentos`, true);
+    }
+  }
+  if (ok && s.prod){
+    const p = PRODUCTOS[s.prod.i];
+    p.idp = s.prod.idp; p.nom = s.prod.nom; p.desde = s.prod.desde;
+  }
+  s.estado = ok ? 'Aprobada' : 'Rechazada';
+  s.aprueba = 'C. Rangel (Contabilidad)';
+  BITA.unshift({f:hoy(), u:'C. Rangel', acc:`${ok ? 'Aprobó' : 'Rechazó'} ${s.id}`, obj:s.tabla,
+    det:s.detalle.join(' · '), amb:s.amb});
+  toast(ok ? `${s.id} aprobada y aplicada en ${s.amb}` : `${s.id} rechazada`, !ok);
+  render();
+}
+
+/* ------------------------------------------------------------------ bitácora */
+function renderBita(){
+  $('tblL').innerHTML = `<table><thead><tr>
+    <th class="nosort">Fecha</th><th class="nosort">Usuario</th><th class="nosort">Acción</th>
+    <th class="nosort">Objeto</th><th class="nosort">Detalle</th><th class="nosort">Ambiente</th>
+    </tr></thead><tbody>`
+   + BITA.map(b => `<tr><td class="num">${esc(b.f)}</td><td>${esc(b.u)}</td><td>${esc(b.acc)}</td>
+      <td class="mono">${esc(b.obj)}</td><td style="color:var(--tx2)">${esc(b.det)}</td>
+      <td>${esc(b.amb)}</td></tr>`).join('')
+   + '</tbody></table>';
+}
+
+/* --------------------------------------------------------------------- modal */
+function modal(tit, cuerpo, botones){
+  $('mTit').textContent = tit;
+  $('mCue').innerHTML = cuerpo;
+  $('mPie').innerHTML = botones.map(([t,f,c]) =>
+    `<button class="btn ${c}" onclick="${f}">${t}</button>`).join('');
+  $('ov').classList.add('on'); $('modal').classList.add('on');
+}
+function cerrarModal(){ $('ov').classList.remove('on'); $('modal').classList.remove('on'); }
+
+/* ------------------------------------------------------------------ búsqueda */
+$('q').addEventListener('keydown', ev => {
+  if (ev.key !== 'Enter') return;
+  const q = ev.target.value.trim().toLowerCase();
+  if (!q) return;
+  const b = BANDERAS.find(x => x.b.toLowerCase().includes(q));
+  if (b) return verBandera(b.b);
+  ir('tipos'); $('fT').value = q; renderTipos();
+});
+
+render();
+</script>
+</body>
+</html>

@@ -63,6 +63,7 @@ NAV = """<nav class="docs">
 <a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
 <a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
 <a href="09_demo_portal.html">Demo del portal</a>
+<a href="14_demo_portal_banderas.html">Demo de banderas</a>
 <a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
 <a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
 <a href="12_preguntas_negocio.html">Confirmaciones con negocio</a>
@@ -282,7 +283,8 @@ consultaron datos productivos.</p>
     <a href="05_dependencias.html">Dependencias y capa de reportes</a></li>
 <li><a href="07_plan_remediacion.html">Plan de remediación por olas</a> &middot;
     <a href="08_portal_admin.html">Propuesta del portal de administración</a> &middot;
-    <a href="09_demo_portal.html">Demo navegable del portal</a> (prototipo sin backend)</li>
+    <a href="09_demo_portal.html">Demo navegable del portal</a> y
+    <a href="14_demo_portal_banderas.html">demo de administración de banderas</a> (prototipos sin backend)</li>
 <li><a href="10_contexto_migracion.html">Contexto operativo y estrategia ante el cambio de core</a> &mdash;
     ajustes de interpretación, matriz de las cuatro pólizas y salida de SAF/Sisde</li>
 </ul>
@@ -1794,7 +1796,8 @@ dueña; si se necesita efecto retroactivo, es una excepción con aprobación exp
 <li><b>Separación por ambiente.</b> El catálogo se edita en QA (CUA), se valida con la prueba de equivalencia y
 se promueve a producción; el portal no permite editar producción directamente.</li>
 <li><b>Cuatro ojos y bitácora</b> sobre las tablas de catálogo, con usuario y fecha en cada fila, tal como está
-maquetado en <a href="09_demo_portal.html">la demo del portal</a>.</li>
+maquetado en <a href="14_demo_portal_banderas.html">la demo de administración de banderas</a>, que opera
+sobre estas tres tablas con el catálogo real de <span class="mono">PO.SAF_CAT_DESC_TIPO</span>.</li>
 <li><b>Dueño por bandera.</b> La columna de área dueña de la tabla de banderas es donde aterrizan las
 respuestas de Q14 y Q31 de las <a href="12_preguntas_negocio.html">confirmaciones pendientes</a>.</li>
 </ul>
