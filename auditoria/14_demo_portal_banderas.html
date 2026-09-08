@@ -507,6 +507,10 @@ const PESTANAS = [
    ========================================================================== */
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+let FOLIO = 32;
+const nuevoFolio = () => 'SOL-' + String(FOLIO++).padStart(4,'0');
+const sinFilas = cols => `<tr><td colspan="${cols}" style="color:var(--tx2);text-align:center;padding:18px">`
+  + 'Ningún registro cumple los filtros seleccionados.</td></tr>';
 const hoy = () => new Date().toISOString().slice(0,16).replace('T',' ');
 let VISTA = 'inicio', BAND_SEL = null, ROL = 'Editor', ENV = 'QA';
 
@@ -646,6 +650,7 @@ function renderBanderas(){
         <td class="num">${b.archivos || '—'}</td>
         <td><span class="pill ${b.estado === 'Vigente' ? 'ok' : 'warn'}">${b.estado}</span></td>
         <td><button class="btn mini" onclick="verBandera('${b.b}')">Abrir</button></td></tr>`).join('')
+    + (fs.length ? '' : sinFilas(7))
     + `</tbody></table>`;
 }
 
@@ -783,6 +788,7 @@ function renderTipos(){
             `<span class="pill info" style="margin:1px 2px">${b}</span>`).join('') : '—'}</td>
         <td>${et}</td></tr>`;
      }).join('')
+   + (fs.length ? '' : sinFilas(6))
    + '</tbody></table>';
 }
 
@@ -803,21 +809,26 @@ function renderMatriz(){
   const ar = $('fMarea').value, soloC = $('fMcambio').checked;
   const bs = BANDERAS.filter(b => !ar || b.area === ar);
   const tps = TIPOS.filter(t => !soloC || bs.some(b => (b.b + '|' + t.num) in BORRADOR));
-  $('matEstado').innerHTML = nCambios()
+  $('matEstado').innerHTML = ENV !== 'QA'
+    ? `<span class="pill neu">configuración vigente en producción${nCambios()
+        ? ` · ${nCambios()} cambio(s) en el borrador de QA` : ''}</span>`
+    : nCambios()
     ? `<span class="pill warn">${nCambios()} cambio(s) sin enviar</span>`
     : `<span class="pill ok">sin cambios pendientes</span>`;
   $('btnEnv').disabled = !nCambios() || !puedeEditar();
-  $('btnDesc').disabled = !nCambios();
+  $('btnDesc').disabled = !nCambios() || !puedeEditar();
 
   $('tblM').innerHTML = `<table><thead><tr>
       <th class="nosort" style="min-width:250px">Tipo de crédito</th>
       ${bs.map(b => `<th class="rot nosort" title="${esc(b.desc)}">${b.b}</th>`).join('')}
     </tr></thead><tbody>`
+   + (tps.length ? '' : sinFilas(bs.length + 1))
    + tps.map(t => `<tr>
       <th>${t.num} &middot; ${esc(t.desc)}
         ${t.enCatalogo ? '' : ' <span class="pill bad">sin catálogo</span>'}</th>
       ${bs.map(b => {
-        const k = b.b + '|' + t.num, ch = tieneCasilla(b.b, t.num), dif = k in BORRADOR;
+        const k = b.b + '|' + t.num, borr = puedeEditar() && k in BORRADOR,
+              ch = borr ? BORRADOR[k] : MATRIZ[b.b].has(t.num), dif = borr;
         return `<td class="chk ${dif ? 'dif' : ''}">
           <input type="checkbox" ${ch ? 'checked' : ''} ${puedeEditar() ? '' : 'disabled'}
                  onclick="toggle('${b.b}',${t.num})"></td>`;
@@ -851,7 +862,7 @@ function enviarSolicitud(){
     const [b,n] = k.split('|');
     return `${v ? '+' : '−'} ${n} → ${b} (desde ${$('soDesde').value})`;
   });
-  const id = 'SOL-' + String(32 + SOLS.length).padStart(4,'0');
+  const id = nuevoFolio();
   SOLS.unshift({id, tabla:'CAT_TIPO_CREDITO_BANDERA',
     resumen:`${det.length} cambio(s) en la matriz de banderas`, detalle:det, motivo:mot,
     solicita:'E. Navarro (Negocio)', fecha:hoy(), estado:'Pendiente', amb:ENV, aprueba:'', nota:'',
@@ -895,7 +906,7 @@ function editarProducto(i){
 function solProducto(i){
   const p = PRODUCTOS[i], mot = ($('epMot').value || '').trim();
   if (!mot) return toast('El motivo es obligatorio', true);
-  const id = 'SOL-' + String(32 + SOLS.length).padStart(4,'0');
+  const id = nuevoFolio();
   SOLS.unshift({id, tabla:'CAT_PRODUCTO_POR_BANDERA',
     resumen:`Cambio de atributos de ${p.bandera}`,
     detalle:[`ID_PRODUCTO: ${p.idp} → ${$('epId').value}`,
@@ -929,7 +940,9 @@ function renderAprob(){
   const es = $('fAest').value;
   $('quienAprueba').textContent = puedeAprobar()
     ? 'Puedes resolver solicitudes que no hayas creado'
-    : 'Cambia el rol a «Aprobador de contabilidad» para resolver';
+    : ENV !== 'QA'
+      ? 'Las solicitudes se resuelven en QA (CUA); producción es de solo lectura'
+      : 'Cambia el rol a «Aprobador de contabilidad» para resolver';
   const fs = SOLS.filter(s => !es || s.estado === es);
   $('tblA').innerHTML = `<table><thead><tr>
     <th class="nosort">Solicitud</th><th class="nosort">Tabla</th><th class="nosort">Cambio</th>
@@ -947,6 +960,7 @@ function renderAprob(){
           ? `<button class="btn mini pri" ${puedeAprobar() ? '' : 'disabled'} onclick="resolver('${s.id}',1)">Aprobar</button>
              <button class="btn mini dan" ${puedeAprobar() ? '' : 'disabled'} onclick="resolver('${s.id}',0)">Rechazar</button>`
           : ''}</td></tr>`).join('')
+   + (fs.length ? '' : sinFilas(7))
    + '</tbody></table>'
    + `<div class="cuerpo"><p class="ayuda">Cuatro ojos: quien crea la solicitud no puede aprobarla, y la
       restricción vive en la base de datos, no solo en la interfaz. Al aprobar se ejecutan las validaciones de
@@ -970,6 +984,9 @@ function resolver(id, ok){
         if (v) MATRIZ[b].delete(+n); else MATRIZ[b].add(+n);
       });
       void antes;
+      BITA.unshift({f:hoy(), u:'C. Rangel', acc:`Intento de aprobación rechazado por validación en ${s.id}`,
+        obj:s.tabla, det:`El tipo ${dobles.join(', ')} quedaría en dos segmentos`, amb:s.amb});
+      render();
       return toast(`Rechazado por validación: el tipo ${dobles.join(', ')} quedaría en dos segmentos`, true);
     }
   }
