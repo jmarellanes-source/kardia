@@ -184,8 +184,10 @@ footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
 
 <div id="proto">
   <div class="txt"><b>Prototipo navegable.</b> Maqueta de la administración de <span class="mono">CAT_BANDERA</span>,
-  <span class="mono">CAT_TIPO_CREDITO_BANDERA</span> y <span class="mono">CAT_PRODUCTO_POR_BANDERA</span>.
-  No hay backend: los cambios viven en memoria y se pierden al recargar. Datos reales de
+  <span class="mono">CAT_TIPO_CARTERA_BANDERA</span> y <span class="mono">CAT_PRODUCTO_POR_BANDERA</span>.
+  No hay backend: los cambios viven en memoria y se pierden al recargar. El catálogo de tipos de cartera es
+  el de <span class="mono">Quiero_Confianza.PR.PR_DESC_TIPOS_CREDITO</span>, fuente autoritativa confirmada por
+  el cliente; los datos con que está sembrado provienen de la copia local
   <span class="mono">PO.SAF_CAT_DESC_TIPO</span> y de los filtros del código de producción.</div>
   <span class="x" onclick="this.parentNode.remove()">Cerrar</span>
 </div>
@@ -193,7 +195,7 @@ footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
 <header>
   <div class="grid" title="Menú de aplicaciones">⋮⋮⋮</div>
   <div class="app">KARDIA · Configuración contable</div>
-  <div class="search"><input type="text" placeholder="Buscar banderas, tipos de crédito o solicitudes..." id="q"></div>
+  <div class="search"><input type="text" placeholder="Buscar banderas, tipos de cartera o solicitudes..." id="q"></div>
   <div class="right">
     <label>Ambiente
       <select id="env" onchange="setEnv()">
@@ -204,7 +206,7 @@ footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
     <label>Rol
       <select id="rol" onchange="setRol()">
         <option value="Editor">Editor de negocio</option>
-        <option value="Aprobador">Aprobador de contabilidad</option>
+        <option value="Aprobador">Cartera (autoriza)</option>
         <option value="Lectura">Solo lectura</option>
       </select>
     </label>
@@ -266,17 +268,25 @@ footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
   <!-- ============================================================ TIPOS -->
   <section id="v-tipos" class="hide">
     <div class="card">
-      <h3>CAT_TIPO_CREDITO
-        <span class="der">Origen: <span class="mono">PO.SAF_CAT_DESC_TIPO</span> · el portal no da de alta tipos,
-        los sincroniza del core</span></h3>
+      <h3>CAT_TIPO_CARTERA
+        <span class="der">Origen: <span class="mono">Quiero_Confianza.PR.PR_DESC_TIPOS_CREDITO</span> · el portal
+        no da de alta tipos de cartera, los sincroniza del origen</span></h3>
+      <div class="cuerpo">
+        <div class="aviso info">
+          <div>El tipo de cartera se administra en el sistema de origen, no aquí: esta tabla es un espejo de
+          <span class="mono">PR.PR_DESC_TIPOS_CREDITO</span> que sólo sirve para colgarle las banderas locales.
+          Un tipo nuevo aparece cuando el origen lo publica; lo que el portal decide es en qué procesos
+          participa.</div>
+        </div>
+      </div>
       <div class="filtros">
-        <input type="text" id="fT" placeholder="Buscar tipo o descripción..." oninput="renderTipos()">
+        <input type="text" id="fT" placeholder="Buscar tipo de cartera o descripción..." oninput="renderTipos()">
         <select id="fTcart" onchange="renderTipos()"><option value="">Todas las carteras</option></select>
         <select id="fTadm" onchange="renderTipos()"><option value="">Todos los administradores</option></select>
         <select id="fTest" onchange="renderTipos()">
           <option value="">Todos</option>
           <option value="sin">Sin ninguna bandera</option>
-          <option value="huerf">Usado en código, ausente del catálogo</option>
+          <option value="huerf">Usado en código, ausente del origen</option>
           <option value="nouso">En catálogo, sin uso en el código</option>
         </select>
       </div>
@@ -287,7 +297,7 @@ footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
   <!-- =========================================================== MATRIZ -->
   <section id="v-matriz" class="hide">
     <div class="card">
-      <h3>CAT_TIPO_CREDITO_BANDERA
+      <h3>CAT_TIPO_CARTERA_BANDERA
         <span class="der" id="matEstado"></span></h3>
       <div class="filtros">
         <label>Vigente al <input type="date" id="fecMat" value="2026-09-30" onchange="renderMatriz()"></label>
@@ -299,7 +309,7 @@ footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
       </div>
       <div class="matriz" id="tblM"></div>
       <div class="cuerpo">
-        <p class="ayuda">Cada casilla es una fila de <span class="mono">CAT_TIPO_CREDITO_BANDERA</span> con su
+        <p class="ayuda">Cada casilla es una fila de <span class="mono">CAT_TIPO_CARTERA_BANDERA</span> con su
         vigencia. Marcar una casilla no escribe en la tabla: genera una solicitud que otro usuario debe aprobar.
         Las celdas ámbar son los cambios de esta sesión. En el portal real, la fecha «vigente al» reconstruye
         la matriz de cualquier día pasado, que es lo que permite explicar por qué una póliza de ayer salió
@@ -312,7 +322,7 @@ footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
   <section id="v-productos" class="hide">
     <div class="card">
       <h3>CAT_PRODUCTO_POR_BANDERA
-        <span class="der">Atributos de salida &mdash; requieren aprobación de contabilidad, nunca autoservicio</span></h3>
+        <span class="der">Atributos de salida &mdash; requieren autorización del área de cartera, nunca autoservicio</span></h3>
       <div class="cuerpo">
         <div class="aviso info">
           <div>Esta tabla no define <b>quién pertenece</b> a un grupo, sino <b>qué se escribe</b> cuando pertenece.
@@ -370,7 +380,8 @@ footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
    DATOS
    ========================================================================== */
 
-/* PO.SAF_CAT_DESC_TIPO tal como lo entregó el equipo. */
+/* Espejo del catálogo de tipos de cartera. Sembrado con PO.SAF_CAT_DESC_TIPO, que es la copia local del
+   catálogo autoritativo Quiero_Confianza.PR.PR_DESC_TIPOS_CREDITO. */
 const TIPOS = [
  [0,'POR ASIGNAR','N/D','N/A'],
  [1,'CONSUMO','CONSUMO','ION'],
@@ -398,7 +409,7 @@ const TIPOS = [
  [26,'CARTERA_CASTIGADA','INDIVIDUAL','ION']
 ].map(t => ({num:t[0], desc:t[1], cartera:t[2], admin:t[3], enCatalogo:true}));
 
-/* Valores que aparecen en filtros de BD_prod y no están en el catálogo entregado. */
+/* Valores que aparecen en filtros de BD_prod y no están en el catálogo espejo. */
 const HUERFANOS = [23,24,25,27,28,29];
 HUERFANOS.forEach(n => TIPOS.push(
   {num:n, desc:'(sin descripción en el catálogo)', cartera:'—', admin:'—', enCatalogo:false}));
@@ -441,7 +452,7 @@ const BANDERAS = [
 ];
 BANDERAS.forEach(x => {x.estado = 'Vigente'; x.desde = '2019-01-01';});
 
-/* CAT_TIPO_CREDITO_BANDERA: las casillas derivadas de los filtros del código. */
+/* CAT_TIPO_CARTERA_BANDERA: las casillas derivadas de los filtros del código. */
 const MATRIZ_BASE = {
  SEGMENTO_INDIVIDUAL:[1,3,4,9,10,11,16,17],
  SEGMENTO_COMERCIAL:[2,12,13,14,15,18,27,28],
@@ -472,32 +483,33 @@ let PRODUCTOS = [
 
 /* Solicitudes de cambio (cuatro ojos) */
 let SOLS = [
- {id:'SOL-0031', tabla:'CAT_TIPO_CREDITO_BANDERA', resumen:'Alta de 23 en ES_ADMINISTRADA_IND',
+ {id:'SOL-0031', tabla:'CAT_TIPO_CARTERA_BANDERA', resumen:'Alta de 23 en ES_ADMINISTRADA_IND',
   detalle:['+ 23 → ES_ADMINISTRADA_IND (desde 2026-10-01)'], motivo:'Alta del convenio de administración pendiente desde agosto.',
   solicita:'E. Navarro (Negocio)', fecha:'2026-09-28 10:14', estado:'Pendiente', amb:'QA', aprueba:'', nota:''},
  {id:'SOL-0030', tabla:'CAT_PRODUCTO_POR_BANDERA', resumen:'Cambio de NOMBRE_PRODUCTO de ES_EMPLEADO',
   detalle:["NOMBRE_PRODUCTO: 'EMPLEADO' → 'EMPLEADO ION' (desde 2026-11-01)"],
   motivo:'Alineación con la nomenclatura del estado de cuenta.',
   solicita:'E. Navarro (Negocio)', fecha:'2026-09-27 17:02', estado:'Pendiente', amb:'QA', aprueba:'', nota:''},
- {id:'SOL-0029', tabla:'CAT_TIPO_CREDITO_BANDERA', resumen:'Baja de 7 en SEGMENTO_COMERCIAL',
+ {id:'SOL-0029', tabla:'CAT_TIPO_CARTERA_BANDERA', resumen:'Baja de 7 en SEGMENTO_COMERCIAL',
   detalle:['− 7 → SEGMENTO_COMERCIAL (vigencia cerrada al 2026-08-31)'],
   motivo:'Formaliza el «--,7» que hoy está comentado en el código, con fecha y autor.',
   solicita:'E. Navarro (Negocio)', fecha:'2026-09-01 09:20', estado:'Aprobada', amb:'QA',
-  aprueba:'C. Rangel (Contabilidad)', nota:'Se confirma con el acta de septiembre.'}
+  aprueba:'C. Rangel (Cartera)', nota:'Se confirma con el acta de septiembre.'}
 ];
 
 /* Bitácora */
 let BITA = [
- {f:'2026-09-01 11:40', u:'C. Rangel', acc:'Aprobó SOL-0029', obj:'CAT_TIPO_CREDITO_BANDERA',
+ {f:'2026-09-01 11:40', u:'C. Rangel', acc:'Aprobó SOL-0029', obj:'CAT_TIPO_CARTERA_BANDERA',
   det:'Cierra vigencia de 7 en SEGMENTO_COMERCIAL al 2026-08-31', amb:'QA'},
- {f:'2026-08-28 16:05', u:'E. Navarro', acc:'Creó SOL-0029', obj:'CAT_TIPO_CREDITO_BANDERA',
+ {f:'2026-08-28 16:05', u:'E. Navarro', acc:'Creó SOL-0029', obj:'CAT_TIPO_CARTERA_BANDERA',
   det:'Solicitud de baja de la cartera sindicada del cierre comercial', amb:'QA'},
- {f:'2026-08-20 12:11', u:'sistema', acc:'Sincronizó catálogo', obj:'CAT_TIPO_CREDITO',
-  det:'24 tipos leídos de PO.SAF_CAT_DESC_TIPO; 6 valores del código sin contraparte', amb:'QA'}
+ {f:'2026-08-20 12:11', u:'sistema', acc:'Sincronizó catálogo', obj:'CAT_TIPO_CARTERA',
+  det:'24 tipos de cartera leídos de PR.PR_DESC_TIPOS_CREDITO; 6 valores del código sin contraparte',
+  amb:'QA'}
 ];
 
 const PESTANAS = [
- ['inicio','Inicio'], ['banderas','Banderas'], ['tipos','Tipos de crédito'],
+ ['inicio','Inicio'], ['banderas','Banderas'], ['tipos','Tipos de cartera'],
  ['matriz','Matriz de banderas'], ['productos','Atributos de salida'],
  ['aprob','Aprobaciones'], ['audit','Bitácora']
 ];
@@ -512,6 +524,19 @@ const nuevoFolio = () => 'SOL-' + String(FOLIO++).padStart(4,'0');
 const sinFilas = cols => `<tr><td colspan="${cols}" style="color:var(--tx2);text-align:center;padding:18px">`
   + 'Ningún registro cumple los filtros seleccionados.</td></tr>';
 const hoy = () => new Date().toISOString().slice(0,16).replace('T',' ');
+const hoyISO = () => new Date().toISOString().slice(0,10);
+const manana = () => new Date(Date.now() + 864e5).toISOString().slice(0,10);
+/* La vigencia sólo puede empezar después de hoy: el cliente confirmó que un cambio retroactivo no debe
+   ocurrir, porque el histórico ya publicado se resolvió con la configuración de su fecha. */
+function vigenciaValida(id){
+  const v = $(id).value, t = Date.parse(v);
+  if (!v || Number.isNaN(t)) { toast('La fecha de vigencia es obligatoria', true); return false; }
+  if (t <= Date.parse(hoyISO())) {
+    toast(`Vigencia retroactiva rechazada: debe ser posterior a ${hoyISO()}`, true);
+    return false;
+  }
+  return true;
+}
 let VISTA = 'inicio', BAND_SEL = null, ROL = 'Editor', ENV = 'QA';
 
 function toast(txt, err){
@@ -595,19 +620,19 @@ function renderInicio(){
   const pend = SOLS.filter(s => s.estado === 'Pendiente');
   $('kpisIni').innerHTML = `
    <div class="kpi"><b>${BANDERAS.length}</b><span>banderas activas</span></div>
-   <div class="kpi"><b>${TIPOS.filter(t => t.enCatalogo).length}</b><span>tipos en el catálogo del core</span></div>
+   <div class="kpi"><b>${TIPOS.filter(t => t.enCatalogo).length}</b><span>tipos de cartera en el origen</span></div>
    <div class="kpi g"><b>${Object.values(MATRIZ).reduce((a,s) => a + s.size, 0)}</b><span>casillas marcadas en la matriz</span></div>
    <div class="kpi w"><b>${pend.length}</b><span>solicitudes por aprobar</span></div>
-   <div class="kpi d"><b>${huerfanos().length}</b><span>tipos usados en código sin catálogo</span></div>`;
+   <div class="kpi d"><b>${huerfanos().length}</b><span>tipos usados en código sin origen</span></div>`;
 
   const chk = [
-   ['Tipos usados en el código que no existen en PO.SAF_CAT_DESC_TIPO', huerfanos(), 'bad',
-    'El proceso los filtra pero nadie puede describir qué son. Requiere confirmación de negocio: ¿tipos dados de baja o catálogo desactualizado?'],
-   ['Tipos usados en el código sin ninguna bandera asignada', sinBandera(), 'warn',
+   ['Tipos de cartera usados en el código que no existen en PR.PR_DESC_TIPOS_CREDITO', huerfanos(), 'bad',
+    'El proceso los filtra pero nadie puede describir qué son. Requiere confirmación del área de cartera: ¿tipos dados de baja o catálogo desactualizado?'],
+   ['Tipos de cartera usados en el código sin ninguna bandera asignada', sinBandera(), 'warn',
     'Quedarían fuera de todo proceso: ningún filtro del cierre los alcanzaría. Es la validación que impide que un tipo nuevo se pierda en silencio.'],
-   ['Tipos en más de un segmento a la vez', dobleSegmento(), 'warn',
+   ['Tipos de cartera en más de un segmento a la vez', dobleSegmento(), 'warn',
     'La precedencia comercial sobre individual está en código, no en el catálogo: revisar antes de aprobar.'],
-   ['Tipos del catálogo sin uso en el código', sinUso(), 'info',
+   ['Tipos de cartera del origen sin uso en el código', sinUso(), 'info',
     'No es un error: son tipos que ningún proceso contable filtra hoy.']
   ];
   $('salud').innerHTML = '<table><thead><tr><th class="nosort">Validación</th><th class="nosort">Resultado</th>'
@@ -691,12 +716,11 @@ function renderDetalle(){
         <dt>De dónde sale</dt><dd class="mono">${esc(b.origen)}</dd>
         <dt>¿Define segmento?</dt><dd>${b.seg ? 'Sí — participa en la validación de segmento único' : 'No'}</dd>
         <dt>Autorización requerida</dt>
-        <dd>${b.area === 'Contabilidad'
-            ? 'Aprobador de contabilidad (afecta la póliza)'
-            : 'Aprobador de contabilidad, a solicitud de negocio'}</dd>
+        <dd>Área de cartera, dueña de los catálogos${b.area === 'Contabilidad'
+            ? ', con aviso a contabilidad porque afecta la póliza' : ''}</dd>
       </dl></div></div>
 
-    <div class="card"><h3>Tipos de crédito con esta bandera
+    <div class="card"><h3>Tipos de cartera con esta bandera
       <span class="der">${tipos.length} de ${TIPOS.length}</span></h3>
       <table><thead><tr><th class="nosort">#</th><th class="nosort">Descripción</th>
         <th class="nosort">Cartera</th><th class="nosort">Administrador</th></tr></thead><tbody>
@@ -778,7 +802,7 @@ function renderTipos(){
     <th class="nosort">Estado</th></tr></thead><tbody>`
    + fs.map(t => {
       const bs = Object.keys(MATRIZ).filter(b => MATRIZ[b].has(t.num));
-      const et = !t.enCatalogo ? '<span class="pill bad">usado en código, sin catálogo</span>'
+      const et = !t.enCatalogo ? '<span class="pill bad">usado en código, sin origen</span>'
         : sinSeg.includes(t.num) ? '<span class="pill warn">sin bandera</span>'
         : su.includes(t.num) ? '<span class="pill neu">sin uso en el código</span>'
         : '<span class="pill ok">correcto</span>';
@@ -819,7 +843,7 @@ function renderMatriz(){
   $('btnDesc').disabled = !nCambios() || !puedeEditar();
 
   $('tblM').innerHTML = `<table><thead><tr>
-      <th class="nosort" style="min-width:250px">Tipo de crédito</th>
+      <th class="nosort" style="min-width:250px">Tipo de cartera</th>
       ${bs.map(b => `<th class="rot nosort" title="${esc(b.desc)}">${b.b}</th>`).join('')}
     </tr></thead><tbody>`
    + (tps.length ? '' : sinFilas(bs.length + 1))
@@ -847,31 +871,33 @@ function abrirEnvio(){
     <div class="campo"><label>Cambios incluidos (${det.length})</label>
       <div class="mono" style="background:#fafaf9;border:1px solid var(--line);border-radius:4px;padding:9px">
       ${det.map(d => esc(d)).join('<br>')}</div></div>
-    <div class="campo"><label>Vigente desde</label><input type="date" id="soDesde" value="2026-10-01"></div>
+    <div class="campo"><label>Vigente desde</label>
+      <input type="date" id="soDesde" min="${manana()}" value="${manana()}"></div>
     <div class="campo"><label>Motivo del cambio (obligatorio)</label>
       <textarea id="soMot" placeholder="Acta, ticket o acuerdo que respalda el cambio"></textarea></div>
-    <div class="aviso warn"><div>La vigencia nunca es retroactiva por omisión: el cierre de días anteriores
-    sigue resolviéndose con la matriz que estaba vigente ese día. Un efecto retroactivo es una excepción que
-    debe aprobarse aparte y declarar el reproceso.</div></div>`,
+    <div class="aviso warn"><div>La vigencia no puede ser retroactiva: sólo se admiten fechas posteriores a
+    ${hoyISO()}. El cierre de días anteriores sigue resolviéndose con la matriz que estaba vigente ese día, y
+    el histórico ya publicado no se reescribe desde el portal.</div></div>`,
     [['Cancelar','cerrarModal()',''],['Enviar','enviarSolicitud()','pri']]);
 }
 function enviarSolicitud(){
   const mot = ($('soMot').value || '').trim();
   if (!mot) return toast('El motivo es obligatorio', true);
+  if (!vigenciaValida('soDesde')) return;
   const det = Object.entries(BORRADOR).map(([k,v]) => {
     const [b,n] = k.split('|');
     return `${v ? '+' : '−'} ${n} → ${b} (desde ${$('soDesde').value})`;
   });
   const id = nuevoFolio();
-  SOLS.unshift({id, tabla:'CAT_TIPO_CREDITO_BANDERA',
+  SOLS.unshift({id, tabla:'CAT_TIPO_CARTERA_BANDERA',
     resumen:`${det.length} cambio(s) en la matriz de banderas`, detalle:det, motivo:mot,
     solicita:'E. Navarro (Negocio)', fecha:hoy(), estado:'Pendiente', amb:ENV, aprueba:'', nota:'',
     payload:{...BORRADOR}});
-  BITA.unshift({f:hoy(), u:'E. Navarro', acc:`Creó ${id}`, obj:'CAT_TIPO_CREDITO_BANDERA',
+  BITA.unshift({f:hoy(), u:'E. Navarro', acc:`Creó ${id}`, obj:'CAT_TIPO_CARTERA_BANDERA',
     det:det.join(' · '), amb:ENV});
   BORRADOR = {};
   cerrarModal();
-  toast(`${id} enviada. Requiere aprobación de otra persona.`);
+  toast(`${id} enviada. Requiere autorización del área de cartera.`);
   ir('aprob');
 }
 
@@ -896,16 +922,18 @@ function editarProducto(i){
     <div class="campo"><label>Bandera</label><input value="${p.bandera}" disabled></div>
     <div class="campo"><label>ID_PRODUCTO</label><input id="epId" value="${p.idp}"></div>
     <div class="campo"><label>NOMBRE_PRODUCTO</label><input id="epNom" value="${esc(p.nom)}"></div>
-    <div class="campo"><label>Vigente desde</label><input type="date" id="epDes" value="2026-11-01"></div>
+    <div class="campo"><label>Vigente desde</label>
+      <input type="date" id="epDes" min="${manana()}" value="${manana()}"></div>
     <div class="campo"><label>Motivo</label><textarea id="epMot"></textarea></div>
     <div class="aviso bad"><div>Este valor viaja a la póliza y al estado de cuenta. El cambio no se aplica al
-    guardar: genera una solicitud que debe aprobar contabilidad, y el histórico anterior conserva el valor
-    con el que se publicó.</div></div>`,
+    guardar: genera una solicitud que debe autorizar el área de cartera, la vigencia sólo puede ser futura y
+    el histórico anterior conserva el valor con el que se publicó.</div></div>`,
     [['Cancelar','cerrarModal()',''],['Enviar a aprobación',`solProducto(${i})`,'pri']]);
 }
 function solProducto(i){
   const p = PRODUCTOS[i], mot = ($('epMot').value || '').trim();
   if (!mot) return toast('El motivo es obligatorio', true);
+  if (!vigenciaValida('epDes')) return;
   const id = nuevoFolio();
   SOLS.unshift({id, tabla:'CAT_PRODUCTO_POR_BANDERA',
     resumen:`Cambio de atributos de ${p.bandera}`,
@@ -914,7 +942,7 @@ function solProducto(i){
              `desde ${$('epDes').value}`],
     motivo:mot, solicita:'E. Navarro (Negocio)', fecha:hoy(), estado:'Pendiente', amb:ENV,
     aprueba:'', nota:'', prod:{i, idp:$('epId').value, nom:$('epNom').value, desde:$('epDes').value}});
-  cerrarModal(); toast(`${id} enviada a contabilidad.`); ir('aprob');
+  cerrarModal(); toast(`${id} enviada al área de cartera.`); ir('aprob');
 }
 function nuevoProducto(){
   if (!puedeEditar()) return toast('Necesitas el rol de editor de negocio en QA', true);
@@ -923,11 +951,13 @@ function nuevoProducto(){
       <select id="npB">${BANDERAS.map(b => `<option>${b.b}</option>`).join('')}</select></div>
     <div class="campo"><label>ID_PRODUCTO</label><input id="npId"></div>
     <div class="campo"><label>NOMBRE_PRODUCTO</label><input id="npNom"></div>
-    <div class="campo"><label>Vigente desde</label><input type="date" id="npDes" value="2026-11-01"></div>`,
+    <div class="campo"><label>Vigente desde</label>
+      <input type="date" id="npDes" min="${manana()}" value="${manana()}"></div>`,
     [['Cancelar','cerrarModal()',''],['Crear','crearProducto()','pri']]);
 }
 function crearProducto(){
   if (!$('npId').value || !$('npNom').value) return toast('Faltan campos', true);
+  if (!vigenciaValida('npDes')) return;
   PRODUCTOS.push({bandera:$('npB').value, idp:$('npId').value, nom:$('npNom').value,
     desde:$('npDes').value, hasta:'9999-12-31', origen:'alta desde el portal'});
   BITA.unshift({f:hoy(), u:'E. Navarro', acc:'Creó atributo de salida', obj:'CAT_PRODUCTO_POR_BANDERA',
@@ -942,7 +972,7 @@ function renderAprob(){
     ? 'Puedes resolver solicitudes que no hayas creado'
     : ENV !== 'QA'
       ? 'Las solicitudes se resuelven en QA (CUA); producción es de solo lectura'
-      : 'Cambia el rol a «Aprobador de contabilidad» para resolver';
+      : 'Cambia el rol a «Cartera» para resolver';
   const fs = SOLS.filter(s => !es || s.estado === es);
   $('tblA').innerHTML = `<table><thead><tr>
     <th class="nosort">Solicitud</th><th class="nosort">Tabla</th><th class="nosort">Cambio</th>
@@ -968,7 +998,7 @@ function renderAprob(){
 }
 function resolver(id, ok){
   const s = SOLS.find(x => x.id === id);
-  if (!puedeAprobar()) return toast('Solo el aprobador de contabilidad puede resolver', true);
+  if (!puedeAprobar()) return toast('Solo el área de cartera puede resolver', true);
   if (s.solicita.startsWith('C. Rangel')) return toast('No puedes aprobar tu propia solicitud', true);
   if (ok && s.payload){
     /* Simula la validación de integridad previa a aplicar. */
@@ -995,7 +1025,7 @@ function resolver(id, ok){
     p.idp = s.prod.idp; p.nom = s.prod.nom; p.desde = s.prod.desde;
   }
   s.estado = ok ? 'Aprobada' : 'Rechazada';
-  s.aprueba = 'C. Rangel (Contabilidad)';
+  s.aprueba = 'C. Rangel (Cartera)';
   BITA.unshift({f:hoy(), u:'C. Rangel', acc:`${ok ? 'Aprobó' : 'Rechazó'} ${s.id}`, obj:s.tabla,
     det:s.detalle.join(' · '), amb:s.amb});
   toast(ok ? `${s.id} aprobada y aplicada en ${s.amb}` : `${s.id} rechazada`, !ok);
