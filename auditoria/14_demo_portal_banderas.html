@@ -185,7 +185,9 @@ footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
 <div id="proto">
   <div class="txt"><b>Prototipo navegable.</b> Maqueta de la administración de <span class="mono">CAT_BANDERA</span>,
   <span class="mono">CAT_TIPO_CARTERA_BANDERA</span>, <span class="mono">CAT_PRODUCTO_POR_BANDERA</span> y
-<span class="mono">CAT_RUBRO</span>, con el sello de configuración por corrida del cierre.
+<span class="mono">CAT_RUBRO</span>, <span class="mono">CAT_ORIGEN_FONDOS</span>,
+<span class="mono">CAT_PARTICIPACION_CONVENIO</span> y <span class="mono">CAT_CONSTANTE</span>, con el sello
+de configuración por corrida del cierre.
   No hay backend: los cambios viven en memoria y se pierden al recargar. El catálogo de tipos de cartera es
   el de <span class="mono">Quiero_Confianza.PR.PR_DESC_TIPOS_CREDITO</span>, fuente autoritativa confirmada por
   el cliente; los datos con que está sembrado provienen de la copia local
@@ -392,6 +394,85 @@ footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
     </div>
   </section>
 
+  <!-- ========================================================= ORIGENES -->
+  <section id="v-origenes" class="hide">
+    <div class="card">
+      <h3>CAT_ORIGEN_FONDOS
+        <span class="der">Origen: <span class="mono">Quiero_Confianza.PR.PR_ORIGEN_FONDOS</span> · el portal
+        administra la restricci&oacute;n, no el c&oacute;digo</span></h3>
+      <div class="cuerpo">
+        <div class="aviso bad">
+          <div>La regla «no restringido» está escrita tres veces y no dice lo mismo:
+          <span class="mono">IN ('008','031')</span> en 28 archivos,
+          <span class="mono">IN ('008','031','046')</span> en 1 y
+          <span class="mono">NOT IN (22,23,28,35)</span> en 19 &mdash; esta última comparando el código como
+          número y no como cadena. Con el catálogo la pregunta se responde una sola vez y todos los procesos
+          leen la misma respuesta.</div>
+        </div>
+      </div>
+      <div class="filtros">
+        <input type="text" id="fO" placeholder="Buscar código o descripción..." oninput="renderOrigenes()">
+        <select id="fOest" onchange="renderOrigenes()">
+          <option value="">Todos</option>
+          <option value="nr">No restringidos</option>
+          <option value="ex">Excluidos del castigo comercial</option>
+          <option value="dif">Con lecturas contradictorias en el código</option>
+        </select>
+      </div>
+      <div id="tblO"></div>
+    </div>
+  </section>
+
+  <!-- ======================================================== CONVENIOS -->
+  <section id="v-convenios" class="hide">
+    <div class="card">
+      <h3>CAT_PARTICIPACION_CONVENIO
+        <span class="der">Participación propia / cedida por convenio, con vigencia</span></h3>
+      <div class="cuerpo">
+        <div class="aviso warn">
+          <div>Hoy la partición vive como <span class="mono">0.90</span> / <span class="mono">0.10</span> en 65
+          lugares del código: cada convenio nuevo es una liberación. La regla que el cliente confirmó es que
+          Afirme es 90/10, la administrada 100/0 y la sindicada variable; cuando llega un cedido sin
+          participación configurada el estado es <b>no establecido</b> y el cierre debe detenerse, nunca
+          reutilizar el valor del convenio anterior.</div>
+        </div>
+      </div>
+      <div class="filtros">
+        <input type="text" id="fV" placeholder="Buscar convenio..." oninput="renderConvenios()">
+        <select id="fVest" onchange="renderConvenios()">
+          <option value="">Todos</option>
+          <option value="ne">No establecidos (bloquean el cierre)</option>
+          <option value="ok">Con participación vigente</option>
+        </select>
+      </div>
+      <div id="tblV"></div>
+    </div>
+  </section>
+
+  <!-- ======================================================= CONSTANTES -->
+  <section id="v-constantes" class="hide">
+    <div class="card">
+      <h3>CAT_CONSTANTE
+        <span class="der">Valor con vigencia e histórico: cambiar el valor de hoy no reescribe el pasado</span></h3>
+      <div class="cuerpo">
+        <div class="aviso info">
+          <div>Cada constante guarda su historia. Si la tasa de IVA cambia, el cierre de un mes anterior sigue
+          resolviéndose con la tasa que estaba vigente ese día, porque el proceso pide el valor
+          <b>a la fecha de negocio</b> y no el valor actual.</div>
+        </div>
+      </div>
+      <div class="filtros">
+        <input type="text" id="fK" placeholder="Buscar constante..." oninput="renderConstantes()">
+        <select id="fKest" onchange="renderConstantes()">
+          <option value="">Todas</option>
+          <option value="dif">Con valor distinto entre QA y producción</option>
+          <option value="hist">Con más de una versión</option>
+        </select>
+      </div>
+      <div id="tblK"></div>
+    </div>
+  </section>
+
   <!-- ========================================================= CORRIDAS -->
   <section id="v-corridas" class="hide">
     <div class="card">
@@ -588,6 +669,62 @@ let RUBROS = [
   'Sin concepto contable definido: contabilidad debe decidir si es devengo o cuenta de orden.']
 ].map(r => ({rubro:r[0], grupo:r[1], poliza:r[2], pred:r[3], proc:r[4], iva:r[5], forma:r[6], nota:r[7]}));
 
+/* CAT_ORIGEN_FONDOS: espejo de PR.PR_ORIGEN_FONDOS. Las descripciones no están en el repositorio, se
+   siembran como pendientes de tesorería; las banderas salen de las tres listas del código. */
+let ORIGENES = [
+ ['008','Línea de fondeo propia (por confirmar con tesorería)',true,false,
+  "IN ('008','031') · IN ('008','031','046')",''],
+ ['031','Recursos propios (por confirmar con tesorería)',true,false,
+  "IN ('008','031') · IN ('008','031','046')",''],
+ ['046','Por confirmar con tesorería',true,false,"IN ('008','031','046')",
+  'Sólo una de las tres listas lo trata como no restringido: en 28 archivos queda como restringido.'],
+ ['022','Por confirmar con tesorería',false,true,'NOT IN (22,23,28,35)',
+  'El código lo compara como número (22) y no como cadena (\'022\'): confirmar el tipo real de COD_ORIGEN.'],
+ ['023','Por confirmar con tesorería',false,true,'NOT IN (22,23,28,35)',''],
+ ['028','Por confirmar con tesorería',false,true,'NOT IN (22,23,28,35)',''],
+ ['035','Por confirmar con tesorería',false,true,'NOT IN (22,23,28,35)',''],
+ ['001','Fondeo SHF (por confirmar con tesorería)',false,false,'—',''],
+ ['012','Fondeo bursátil (por confirmar con tesorería)',false,false,'—','']
+].map(o => ({cod:o[0], desc:o[1], nr:o[2], exCast:o[3], listas:o[4], nota:o[5]}));
+
+/* CAT_PARTICIPACION_CONVENIO. 90/10 y 100/0 son las reglas que confirmó el cliente; la sindicada es
+   variable y por eso puede quedar en «no establecido», estado que detiene el cierre. */
+let CONVENIOS = [
+ ['AFIRME','ADMINISTRACION INDIVIDUAL',90,10,'2019-01-01','Vigente',
+  'Escrito como 0.90 / 0.10 en 34 archivos de BD y 31 de BD_prod.'],
+ ['ION (administrada)','CONSUMO · COMERCIAL · VIVIENDA',100,0,'2018-01-01','Vigente',''],
+ ['SINDICADO ASOCIADO','SINDICADO ASOCIADO',null,null,'','No establecido',
+  'La participación es variable por operación: mientras no se configure, el cierre debe detenerse.'],
+ ['INBURSA','ADMINISTRACIÓN INBURSA',100,0,'2020-06-01','Vigente',''],
+ ['BANCOPPEL','ADMINISTRACION BANCOPPEL',100,0,'2021-03-01','Vigente',''],
+ ['QUIERO BILLETE','ADMO INDIVIDUAL / COMERCIAL QUIERO BILLETE',100,0,'2022-01-01','Vigente',''],
+ ['BALI','ADMINISTRACION BALI',100,0,'2022-09-01','Vigente',''],
+ ['MEZZANINE','OPCION MEZZANINE',null,null,'','No establecido',
+  'Convenio activo en el catálogo de tipos de cartera sin participación registrada.']
+].map(c => ({conv:c[0], tipos:c[1], propia:c[2], cedida:c[3], desde:c[4], estado:c[5], nota:c[6]}));
+
+/* CAT_CONSTANTE con histórico: el proceso pide el valor a la fecha de negocio, no el valor actual. */
+let CONSTANTES = [
+ {k:'TASA_IVA', desc:'Tasa de IVA aplicada a intereses, comisiones y seguros',
+  val:'0.16', prod:'0.16', usos:188, arch:'99 en BD · 89 en BD_prod',
+  hist:[['2014-01-01','0.16','Reforma fiscal'],['2010-01-01','0.15','Vigente hasta 2013']]},
+ {k:'UMBRAL_COVID_CREDITO', desc:'Crédito máximo considerado en el programa COVID (dbo.FN_ES_COVID)',
+  val:'6086', prod:'6051', usos:2, arch:'dbo.FN_ES_COVID en ambos ambientes',
+  hist:[['2021-01-01','6051','Corte original del programa']]},
+ {k:'FEC_CORTE_COMISIONES', desc:'Fecha de la que SP_CMR_GEN_MES lee comisiones en lugar del período',
+  val:'20260123', prod:'20260123', usos:2, arch:'CIERRE.SP_CMR_GEN_MES',
+  hist:[['2026-01-23','20260123','Valor fijo dejado en el código: debe ser la fecha del período']]},
+ {k:'PARTICIPACION_AFIRME', desc:'Factor de participación propia del convenio Afirme',
+  val:'0.90', prod:'0.90', usos:65, arch:'34 en BD · 31 en BD_prod',
+  hist:[['2019-01-01','0.90','Convenio original']]},
+ {k:'FEC_INICIO_EDC_CREDITO', desc:'Fecha desde la que se arman los estados de cuenta de crédito',
+  val:'20250301', prod:'20250301', usos:4, arch:'edc.sp_inserEdcCredito · edc.sp_inserEdcMovimientos',
+  hist:[['2025-03-01','20250301','Arranque del estado de cuenta']]},
+ {k:'FEC_INICIO_EDC_VENCIDOS', desc:'Fecha desde la que se arman cuotas pospuestas y vencidos',
+  val:'20250101', prod:'20250101', usos:4, arch:'edc.sp_inserEdcVencidos · edc.sp_inserEdcCuotasPospuestas',
+  hist:[['2025-01-01','20250101','Arranque del estado de cuenta']]}
+];
+
 /* Corridas del cierre. El sello se empieza a guardar el 2026-09-01: antes de esa fecha no hay con qué
    reconstruir la configuración, que es el hueco que D7 cierra. */
 const PROCESOS = ['CIERRE.SP_IND_GEN_MES','CIERRE.SP_CMR_GEN_MES','CIERRE.SP_SAF_SALDOS',
@@ -635,6 +772,7 @@ let BITA = [
 const PESTANAS = [
  ['inicio','Inicio'], ['banderas','Banderas'], ['tipos','Tipos de cartera'], ['rubros','Rubros'],
  ['matriz','Matriz de banderas'], ['productos','Atributos de salida'],
+ ['origenes','Orígenes de fondos'], ['convenios','Participación'], ['constantes','Constantes'],
  ['aprob','Aprobaciones'], ['corridas','Corridas del cierre'], ['audit','Bitácora']
 ];
 
@@ -720,6 +858,9 @@ function render(){
   if (VISTA === 'tipos') renderTipos();
   if (VISTA === 'rubros') renderRubros();
   if (VISTA === 'corridas') renderCorridas();
+  if (VISTA === 'origenes') renderOrigenes();
+  if (VISTA === 'convenios') renderConvenios();
+  if (VISTA === 'constantes') renderConstantes();
   if (VISTA === 'matriz') renderMatriz();
   if (VISTA === 'productos') renderProductos();
   if (VISTA === 'aprob') renderAprob();
@@ -744,6 +885,14 @@ function huerfanos(){ return TIPOS.filter(t => !t.enCatalogo).map(t => t.num); }
 function rubrosSinConcepto(){ return RUBROS.filter(r => !r.grupo).map(r => r.rubro); }
 function rubrosConNota(){ return RUBROS.filter(r => r.grupo && r.nota).map(r => r.rubro); }
 function corridasSinSello(){ return CORRIDAS.filter(c => !c.cfg); }
+function origenesContradictorios(){ return ORIGENES.filter(o => o.nota).map(o => o.cod); }
+function conveniosSinParticipacion(){
+  return CONVENIOS.filter(c => c.estado === 'No establecido').map(c => c.conv);
+}
+function participacionInvalida(){
+  return CONVENIOS.filter(c => c.propia !== null && c.propia + c.cedida !== 100).map(c => c.conv);
+}
+function constantesDivergentes(){ return CONSTANTES.filter(c => c.val !== c.prod).map(c => c.k); }
 function sinUso(){ return TIPOS.filter(t => t.enCatalogo && !EN_CODIGO.has(t.num)).map(t => t.num); }
 function nCambios(){ return Object.keys(BORRADOR).length; }
 
@@ -757,7 +906,9 @@ function renderInicio(){
    <div class="kpi w"><b>${pend.length}</b><span>solicitudes por aprobar</span></div>
    <div class="kpi d"><b>${huerfanos().length}</b><span>tipos usados en código sin origen</span></div>
    <div class="kpi"><b>${RUBROS.length}</b><span>rubros del cierre y la cobranza</span></div>
-   <div class="kpi d"><b>${corridasSinSello().length}</b><span>corridas sin sello de configuración</span></div>`;
+   <div class="kpi d"><b>${corridasSinSello().length}</b><span>corridas sin sello de configuración</span></div>
+   <div class="kpi w"><b>${conveniosSinParticipacion().length}</b><span>convenios sin participación</span></div>
+   <div class="kpi"><b>${CONSTANTES.reduce((a,c) => a + c.usos, 0)}</b><span>usos de constantes en el código</span></div>`;
 
   const chk = [
    ['Tipos de cartera usados en el código que no existen en PR.PR_DESC_TIPOS_CREDITO', huerfanos(), 'bad',
@@ -774,7 +925,15 @@ function renderInicio(){
     'Pares como COM_PRORROGA/PRORROGA y OPI VALOR/OPI_VALOR conviven en las mismas listas del código: hay que confirmar cuál es el rubro del origen.'],
    ['Corridas del cierre sin sello de configuración',
     corridasSinSello().map(c => c.fecha).filter((v,i,a) => a.indexOf(v) === i), 'bad',
-    'Son las fechas cuya póliza no se puede explicar: no queda registro de con qué catálogos se resolvió.']
+    'Son las fechas cuya póliza no se puede explicar: no queda registro de con qué catálogos se resolvió.'],
+   ['Orígenes de fondos con lecturas contradictorias en el código', origenesContradictorios(), 'bad',
+    'El mismo origen es restringido o no según qué proceso lo lea, y en una de las listas el código se compara como número: tesorería debe fijar la respuesta única.'],
+   ['Convenios sin participación establecida', conveniosSinParticipacion(), 'bad',
+    'El cierre se detiene hasta que cartera capture la participación: es preferible a resolver la póliza con la participación del convenio anterior.'],
+   ['Convenios cuya participación no suma 100', participacionInvalida(), 'warn',
+    'La suma de propia y cedida debe ser exactamente 100; el portal lo impide al capturar.'],
+   ['Constantes con valor distinto entre QA y producción', constantesDivergentes(), 'bad',
+    'El mismo proceso da resultados distintos por ambiente. Hasta alinearlas, la prueba de equivalencia previa a promover no puede pasar.']
   ];
   $('salud').innerHTML = '<table><thead><tr><th class="nosort">Validación</th><th class="nosort">Resultado</th>'
     + '<th class="nosort">Qué implica</th></tr></thead><tbody>'
@@ -1027,6 +1186,166 @@ function solRubro(i){
     motivo:mot, solicita:'E. Navarro (Negocio)', fecha:hoy(), estado:'Pendiente', amb:ENV,
     aprueba:'', nota:'', rubro:{i, grupo:$('erGru').value, poliza:$('erPol').value}});
   cerrarModal(); toast(`${id} enviada al área de cartera.`); ir('aprob');
+}
+
+/* ------------------------------------------------------------------ orígenes */
+function renderOrigenes(){
+  const q = ($('fO').value || '').toLowerCase(), es = $('fOest').value;
+  const fs = ORIGENES.filter(o =>
+    (!q || (o.cod + ' ' + o.desc).toLowerCase().includes(q)) &&
+    (es !== 'nr'  || o.nr) && (es !== 'ex' || o.exCast) && (es !== 'dif' || o.nota));
+  $('tblO').innerHTML = `<table><thead><tr>
+    <th class="nosort">Código</th><th class="nosort">Descripción</th>
+    <th class="nosort">No restringido</th><th class="nosort">Excluido del castigo comercial</th>
+    <th class="nosort">Listas del código</th><th class="nosort">Estado</th><th class="nosort"></th>
+    </tr></thead><tbody>`
+   + fs.map(o => `<tr>
+      <td class="mono">${o.cod}</td>
+      <td>${esc(o.desc)}${o.nota
+        ? `<br><span style="color:var(--tx2)">${esc(o.nota)}</span>` : ''}</td>
+      <td>${o.nr ? '<span class="pill ok">Sí</span>' : '<span class="pill neu">No</span>'}</td>
+      <td>${o.exCast ? '<span class="pill warn">Sí</span>' : '<span class="pill neu">No</span>'}</td>
+      <td class="mono" style="color:var(--tx2)">${esc(o.listas)}</td>
+      <td>${o.nota ? '<span class="pill bad">lecturas contradictorias</span>'
+                   : '<span class="pill ok">consistente</span>'}</td>
+      <td><button class="btn mini" ${puedeEditar() ? '' : 'disabled'}
+          onclick="editarOrigen(${ORIGENES.indexOf(o)})">Editar</button></td></tr>`).join('')
+   + (fs.length ? '' : sinFilas(7))
+   + '</tbody></table>';
+}
+function editarOrigen(i){
+  const o = ORIGENES[i];
+  modal(`Origen de fondos ${o.cod}`, `
+    <div class="campo"><label>Código (viene del origen, no editable)</label>
+      <input value="${o.cod}" disabled></div>
+    <div class="campo"><label>¿No restringido?</label>
+      <select id="eoNr"><option value="1" ${o.nr ? 'selected' : ''}>Sí</option>
+        <option value="0" ${o.nr ? '' : 'selected'}>No</option></select></div>
+    <div class="campo"><label>¿Excluido del castigo comercial?</label>
+      <select id="eoEx"><option value="1" ${o.exCast ? 'selected' : ''}>Sí</option>
+        <option value="0" ${o.exCast ? '' : 'selected'}>No</option></select></div>
+    <div class="campo"><label>Vigente desde</label>
+      <input type="date" id="eoDes" min="${manana()}" value="${manana()}"></div>
+    <div class="campo"><label>Motivo</label><textarea id="eoMot"></textarea></div>
+    <div class="aviso info"><div>La respuesta queda en un solo lugar: los tres filtros del código
+    (<span class="mono">IN ('008','031')</span>, <span class="mono">IN ('008','031','046')</span> y
+    <span class="mono">NOT IN (22,23,28,35)</span>) se sustituyen por un join a esta bandera.</div></div>`,
+    [['Cancelar','cerrarModal()',''],['Enviar a aprobación',`solOrigen(${i})`,'pri']]);
+}
+function solOrigen(i){
+  const o = ORIGENES[i], mot = ($('eoMot').value || '').trim();
+  if (!mot) return toast('El motivo es obligatorio', true);
+  if (!vigenciaValida('eoDes')) return;
+  const nr = $('eoNr').value === '1', ex = $('eoEx').value === '1';
+  if (nr === o.nr && ex === o.exCast) return toast('No hay ningún cambio que enviar', true);
+  const id = nuevoFolio();
+  SOLS.unshift({id, tabla:'CAT_ORIGEN_FONDOS', resumen:`Restricción del origen ${o.cod}`,
+    detalle:[`${o.cod} · no restringido: ${o.nr ? 'Sí' : 'No'} → ${nr ? 'Sí' : 'No'}`,
+             `excluido del castigo comercial: ${o.exCast ? 'Sí' : 'No'} → ${ex ? 'Sí' : 'No'}`,
+             `desde ${$('eoDes').value}`],
+    motivo:mot, solicita:'E. Navarro (Negocio)', fecha:hoy(), estado:'Pendiente', amb:ENV,
+    aprueba:'', nota:'', orig:{i, nr, exCast:ex}});
+  cerrarModal(); toast(`${id} enviada al área de cartera.`); ir('aprob');
+}
+
+/* ----------------------------------------------------------------- convenios */
+function renderConvenios(){
+  const q = ($('fV').value || '').toLowerCase(), es = $('fVest').value;
+  const fs = CONVENIOS.filter(c =>
+    (!q || (c.conv + ' ' + c.tipos).toLowerCase().includes(q)) &&
+    (es !== 'ne' || c.estado === 'No establecido') &&
+    (es !== 'ok' || c.estado === 'Vigente'));
+  $('tblV').innerHTML = `<table><thead><tr>
+    <th class="nosort">Convenio</th><th class="nosort">Tipos de cartera</th>
+    <th class="nosort">Propia</th><th class="nosort">Cedida</th><th class="nosort">Vigente desde</th>
+    <th class="nosort">Estado</th><th class="nosort"></th></tr></thead><tbody>`
+   + fs.map(c => `<tr>
+      <td><b>${esc(c.conv)}</b>${c.nota
+        ? `<br><span style="color:var(--tx2)">${esc(c.nota)}</span>` : ''}</td>
+      <td style="color:var(--tx2)">${esc(c.tipos)}</td>
+      <td class="num">${c.propia === null ? '—' : c.propia + '%'}</td>
+      <td class="num">${c.cedida === null ? '—' : c.cedida + '%'}</td>
+      <td class="num">${c.desde || '—'}</td>
+      <td>${c.estado === 'Vigente' ? '<span class="pill ok">Vigente</span>'
+        : '<span class="pill bad">No establecido · detiene el cierre</span>'}</td>
+      <td><button class="btn mini" ${puedeEditar() ? '' : 'disabled'}
+          onclick="editarConvenio(${CONVENIOS.indexOf(c)})">Editar</button></td></tr>`).join('')
+   + (fs.length ? '' : sinFilas(7))
+   + '</tbody></table>';
+}
+function editarConvenio(i){
+  const c = CONVENIOS[i];
+  modal(`Participación de ${c.conv}`, `
+    <div class="campo"><label>Convenio</label><input value="${esc(c.conv)}" disabled></div>
+    <div class="campo"><label>Participación propia (%)</label>
+      <input type="number" id="evPro" min="0" max="100" value="${c.propia === null ? '' : c.propia}"></div>
+    <div class="campo"><label>Participación cedida (%)</label>
+      <input type="number" id="evCed" min="0" max="100" value="${c.cedida === null ? '' : c.cedida}"></div>
+    <div class="campo"><label>Vigente desde</label>
+      <input type="date" id="evDes" min="${manana()}" value="${manana()}"></div>
+    <div class="campo"><label>Motivo</label><textarea id="evMot"></textarea></div>
+    <div class="aviso warn"><div>Las dos participaciones deben sumar 100. Mientras el convenio esté en «no
+    establecido» el cierre se detiene: es preferible a resolver la póliza con la participación del convenio
+    anterior.</div></div>`,
+    [['Cancelar','cerrarModal()',''],['Enviar a aprobación',`solConvenio(${i})`,'pri']]);
+}
+function solConvenio(i){
+  const c = CONVENIOS[i], mot = ($('evMot').value || '').trim();
+  const pro = Number($('evPro').value), ced = Number($('evCed').value);
+  if ($('evPro').value === '' || $('evCed').value === '')
+    return toast('Captura ambas participaciones', true);
+  if (pro + ced !== 100)
+    return toast(`La participación propia y la cedida deben sumar 100 (van ${pro + ced})`, true);
+  if (!mot) return toast('El motivo es obligatorio', true);
+  if (!vigenciaValida('evDes')) return;
+  const id = nuevoFolio();
+  SOLS.unshift({id, tabla:'CAT_PARTICIPACION_CONVENIO', resumen:`Participación de ${c.conv}`,
+    detalle:[`${c.conv} · propia: ${c.propia === null ? 'no establecida' : c.propia + '%'} → ${pro}%`,
+             `cedida: ${c.cedida === null ? 'no establecida' : c.cedida + '%'} → ${ced}%`,
+             `desde ${$('evDes').value}`],
+    motivo:mot, solicita:'E. Navarro (Negocio)', fecha:hoy(), estado:'Pendiente', amb:ENV,
+    aprueba:'', nota:'', conv:{i, propia:pro, cedida:ced, desde:$('evDes').value}});
+  cerrarModal(); toast(`${id} enviada al área de cartera.`); ir('aprob');
+}
+
+/* ---------------------------------------------------------------- constantes */
+function renderConstantes(){
+  const q = ($('fK').value || '').toLowerCase(), es = $('fKest').value;
+  const fs = CONSTANTES.filter(c =>
+    (!q || (c.k + ' ' + c.desc).toLowerCase().includes(q)) &&
+    (es !== 'dif'  || c.val !== c.prod) &&
+    (es !== 'hist' || c.hist.length > 1));
+  $('tblK').innerHTML = `<table><thead><tr>
+    <th class="nosort">Constante</th><th class="nosort">Valor en QA</th>
+    <th class="nosort">Valor en producción</th><th class="nosort">Usos en el código</th>
+    <th class="nosort">Versiones</th><th class="nosort">Estado</th><th class="nosort"></th>
+    </tr></thead><tbody>`
+   + fs.map(c => `<tr>
+      <td class="mono">${c.k}<br><span style="color:var(--tx2);font-family:inherit">${esc(c.desc)}</span></td>
+      <td class="mono">${c.val}</td>
+      <td class="mono">${c.prod}</td>
+      <td class="num">${c.usos}<br><span style="color:var(--tx2)">${esc(c.arch)}</span></td>
+      <td class="num">${c.hist.length}</td>
+      <td>${c.val !== c.prod ? '<span class="pill bad">difiere entre ambientes</span>'
+                             : '<span class="pill ok">alineada</span>'}</td>
+      <td><button class="btn mini" onclick="verConstante(${CONSTANTES.indexOf(c)})">Histórico</button></td>
+     </tr>`).join('')
+   + (fs.length ? '' : sinFilas(7))
+   + '</tbody></table>';
+}
+function verConstante(i){
+  const c = CONSTANTES[i];
+  modal(`Histórico de ${c.k}`, `
+    <table><thead><tr><th class="nosort">Vigente desde</th><th class="nosort">Valor</th>
+      <th class="nosort">Motivo</th></tr></thead><tbody>
+      <tr><td class="num">hoy</td><td class="mono">${c.val}</td><td>valor vigente en QA</td></tr>`
+    + c.hist.map(([d,v,m]) =>
+        `<tr><td class="num">${d}</td><td class="mono">${v}</td><td>${esc(m)}</td></tr>`).join('')
+    + `</tbody></table>
+    <div class="aviso info"><div>El cierre del ${c.hist[c.hist.length-1][0]} se resolvió con
+    <span class="mono">${c.hist[c.hist.length-1][1]}</span> y así se queda: el proceso pide el valor vigente a
+    la fecha de negocio, no el de hoy.</div></div>`,
+    [['Cerrar','cerrarModal()','pri']]);
 }
 
 /* ------------------------------------------------------------------ corridas */
@@ -1293,6 +1612,15 @@ function resolver(id, ok){
   if (ok && s.rubro){
     const r = RUBROS[s.rubro.i];
     r.grupo = s.rubro.grupo; r.poliza = s.rubro.poliza; r.nota = '';
+  }
+  if (ok && s.orig){
+    const o = ORIGENES[s.orig.i];
+    o.nr = s.orig.nr; o.exCast = s.orig.exCast; o.nota = '';
+  }
+  if (ok && s.conv){
+    const c = CONVENIOS[s.conv.i];
+    c.propia = s.conv.propia; c.cedida = s.conv.cedida; c.desde = s.conv.desde;
+    c.estado = 'Vigente'; c.nota = '';
   }
   s.estado = ok ? 'Aprobada' : 'Rechazada';
   s.aprueba = 'C. Rangel (Cartera)';
