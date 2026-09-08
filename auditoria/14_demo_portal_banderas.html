@@ -184,7 +184,8 @@ footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
 
 <div id="proto">
   <div class="txt"><b>Prototipo navegable.</b> Maqueta de la administración de <span class="mono">CAT_BANDERA</span>,
-  <span class="mono">CAT_TIPO_CARTERA_BANDERA</span> y <span class="mono">CAT_PRODUCTO_POR_BANDERA</span>.
+  <span class="mono">CAT_TIPO_CARTERA_BANDERA</span>, <span class="mono">CAT_PRODUCTO_POR_BANDERA</span> y
+<span class="mono">CAT_RUBRO</span>, con el sello de configuración por corrida del cierre.
   No hay backend: los cambios viven en memoria y se pierden al recargar. El catálogo de tipos de cartera es
   el de <span class="mono">Quiero_Confianza.PR.PR_DESC_TIPOS_CREDITO</span>, fuente autoritativa confirmada por
   el cliente; los datos con que está sembrado provienen de la copia local
@@ -294,6 +295,44 @@ footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
     </div>
   </section>
 
+  <!-- =========================================================== RUBROS -->
+  <section id="v-rubros" class="hide">
+    <div class="card">
+      <h3>CAT_RUBRO
+        <span class="der">Origen: <span class="mono">Quiero_Confianza.PR.PR_RUBRO</span> · el portal decide a qué
+        póliza y concepto va cada rubro</span></h3>
+      <div class="cuerpo">
+        <div class="aviso warn">
+          <div>Un rubro nuevo hoy no se resuelve agregando una fila: el cierre lo lleva escrito en la forma del
+          <span class="mono">SELECT</span> &mdash; una columna, un <span class="mono">JOIN</span> o un
+          <span class="mono">CASE WHEN rubro IN (...)</span> por concepto contable
+          (<span class="mono">SP_IND_GEN_MES</span> 171 predicados, <span class="mono">SP_CMR_GEN_MES</span> 68,
+          <span class="mono">REPORTE_COBRANZA_INTEGRACION</span> 39, <span class="mono">SP_SAF_SALDOS</span> 12).
+          Lo que administra esta pantalla es el <b>concepto contable</b> al que pertenece el rubro; con eso los
+          <span class="mono">CASE</span> se sustituyen por un join al catálogo y el rubro nuevo entra sin
+          liberar código.</div>
+        </div>
+      </div>
+      <div class="filtros">
+        <input type="text" id="fR" placeholder="Buscar rubro..." oninput="renderRubros()">
+        <select id="fRpol" onchange="renderRubros()"><option value="">Todas las pólizas</option></select>
+        <select id="fRgru" onchange="renderRubros()"><option value="">Todos los conceptos</option></select>
+        <select id="fRest" onchange="renderRubros()">
+          <option value="">Todos</option>
+          <option value="pend">Requiere definición</option>
+          <option value="iva">Con IVA asociado</option>
+          <option value="forma">Hoy exige cambiar el SP</option>
+        </select>
+      </div>
+      <div id="tblR"></div>
+      <div class="cuerpo">
+        <p class="ayuda">El renglón del rubro no es editable: viene del origen. Lo editable es su concepto
+        contable y su póliza destino, y el cambio pasa por la misma aprobación y la misma vigencia futura que
+        las banderas.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- =========================================================== MATRIZ -->
   <section id="v-matriz" class="hide">
     <div class="card">
@@ -350,6 +389,35 @@ footer{color:var(--tx2);font-size:12px;padding:16px;text-align:center}
         </select>
       </div>
       <div id="tblA"></div>
+    </div>
+  </section>
+
+  <!-- ========================================================= CORRIDAS -->
+  <section id="v-corridas" class="hide">
+    <div class="card">
+      <h3>Corridas del cierre
+        <span class="der">Una fila por fecha de negocio y proceso, con el sello de la configuración que
+        us&oacute;</span></h3>
+      <div class="cuerpo">
+        <div class="aviso info">
+          <div>El cierre corre a diario minutos después de que SAF cierra, y el histórico publicado queda
+          bloqueado. Hoy no queda registro de <b>con qué configuración</b> se resolvió cada día: si un rubro o
+          una bandera cambian, la póliza de ayer ya no se puede explicar. El sello
+          (<span class="mono">HASH_CONFIG</span>) es la versión de catálogos vigente al momento de la corrida;
+          se guarda junto a la póliza y permite reconstruir la configuración exacta de cualquier fecha.</div>
+        </div>
+      </div>
+      <div class="filtros">
+        <label>Configuración vigente al <input type="date" id="fecCfg" onchange="renderCorridas()"></label>
+        <select id="fCproc" onchange="renderCorridas()"><option value="">Todos los procesos</option></select>
+        <label><input type="checkbox" id="fCsin" onchange="renderCorridas()"> Solo corridas sin sello</label>
+      </div>
+      <div id="tblC"></div>
+      <div class="cuerpo">
+        <p class="ayuda">Las corridas anteriores al arranque del portal aparecen sin sello: es exactamente la
+        trazabilidad que hoy no existe. Desde la fecha en que el sello empieza a guardarse, cada póliza queda
+        amarrada a una versión de catálogos consultable.</p>
+      </div>
     </div>
   </section>
 
@@ -481,6 +549,62 @@ let PRODUCTOS = [
   origen:'factor observado «monto * 9» — pendiente de validar con contabilidad'}
 ];
 
+/* CAT_RUBRO: espejo de PR.PR_RUBRO. Los rubros y los conteos son los literales medidos en
+   CIERRE.SP_CMR_GEN_MES, CIERRE.SP_IND_GEN_MES, CIERRE.SP_SAF_SALDOS y dbo.REPORTE_COBRANZA_INTEGRACION.
+   pred = predicados del código que hoy nombran el rubro; forma = el rubro tiene columna o join propio,
+   así que darlo de alta hoy cambia la forma del SELECT. */
+const POLIZAS = ['Devengo de intereses','Devengo de moratorios','Seguros','Otras comisiones',
+                 'Balance (sin devengo)','Cuentas de orden'];
+let RUBROS = [
+ ['INTERESES','INTERES_ORDINARIO','Devengo de intereses',98,['CMR','COB','IND','SAF'],true,true,''],
+ ['COMISION_ADMINISTRACION','COMISION_ADMON','Otras comisiones',71,['CMR','COB','IND'],true,true,''],
+ ['MORATORIOS','MORATORIOS','Devengo de moratorios',43,['CMR','COB','IND','SAF'],true,true,''],
+ ['PRINCIPAL','PRINCIPAL','Balance (sin devengo)',40,['CMR','COB','IND','SAF'],false,true,''],
+ ['SEGURO_VIDA','SEGURO_VIDA','Seguros',37,['CMR','COB','IND','SAF'],false,true,''],
+ ['SEGURO_DANOS','SEGURO_DANOS','Seguros',37,['CMR','COB','IND'],true,true,''],
+ ['CARGO_PORCENTAJE','SEGURO_VIDA','Seguros',25,['CMR','COB','IND','SAF'],false,true,''],
+ ['INTERES_MORATORIO','MORATORIOS','Devengo de moratorios',10,['CMR','COB','SAF'],true,false,''],
+ ['MORA_EMPRESARIAL','MORATORIOS','Devengo de moratorios',10,['CMR','COB','SAF'],true,false,''],
+ ['COMISION_PREPAGO','OTRAS_COMISIONES','Otras comisiones',8,['CMR','COB'],true,false,''],
+ ['ASE_FINANCIERA','OTRAS_COMISIONES','Otras comisiones',8,['CMR','COB'],true,false,''],
+ ['COM_PRORROGA','OTRAS_COMISIONES','Otras comisiones',8,['CMR','COB'],true,false,''],
+ ['COM_REESTRUCTURA','OTRAS_COMISIONES','Otras comisiones',8,['CMR','COB'],true,false,''],
+ ['VISITA_EXTRA','OTRAS_COMISIONES','Otras comisiones',8,['CMR','COB'],true,false,''],
+ ['COM_CIERRE_OBRA','OTRAS_COMISIONES','Otras comisiones',7,['CMR','COB'],true,false,''],
+ ['OPI VALOR','OTRAS_COMISIONES','Otras comisiones',7,['CMR','COB'],true,false,''],
+ ['INTERES_ORDINARIO_A','INTERES_ORDINARIO','Devengo de intereses',6,['COB'],true,false,''],
+ ['SEG_DAN','SEGURO_DANOS','Seguros',6,['COB'],true,false,''],
+ ['CARGO_SEGURO','SEGURO_DANOS','Seguros',6,['COB'],true,false,''],
+ ['COMISION_ANTIC_M','OTRAS_COMISIONES','Otras comisiones',6,['COB'],true,false,''],
+ ['PRORROGA','OTRAS_COMISIONES','Otras comisiones',6,['COB'],true,false,
+  'Convive con COM_PRORROGA en la misma lista: confirmar si son dos rubros o uno duplicado.'],
+ ['COMISION_ANTICIPADA','OTRAS_COMISIONES','Otras comisiones',4,['COB'],true,false,
+  'Aparece en el bloque de comisiones sin IVA en una de las tres variantes del reporte.'],
+ ['SALDO_FAVOR','SALDO_FAVOR','Balance (sin devengo)',3,['COB'],false,false,''],
+ ['OPI_VALOR','','',1,['CMR'],false,false,
+  "Variante con guion bajo de 'OPI VALOR': confirmar cuál es el rubro real del origen."],
+ ['PRINCIPAL_VENCIDO','PRINCIPAL','Balance (sin devengo)',1,['CMR'],false,false,''],
+ ['INTERES_NO_EXIGIBLES','','',1,['CMR'],false,false,
+  'Sin concepto contable definido: contabilidad debe decidir si es devengo o cuenta de orden.']
+].map(r => ({rubro:r[0], grupo:r[1], poliza:r[2], pred:r[3], proc:r[4], iva:r[5], forma:r[6], nota:r[7]}));
+
+/* Corridas del cierre. El sello se empieza a guardar el 2026-09-01: antes de esa fecha no hay con qué
+   reconstruir la configuración, que es el hueco que D7 cierra. */
+const PROCESOS = ['CIERRE.SP_IND_GEN_MES','CIERRE.SP_CMR_GEN_MES','CIERRE.SP_SAF_SALDOS',
+                  'dbo.REPORTE_COBRANZA_INTEGRACION'];
+const CORRIDAS = [
+ ['2026-09-07','CIERRE.SP_IND_GEN_MES','CFG-0007-a41f','Publicada',184532,'2026-09-07 23:41'],
+ ['2026-09-07','CIERRE.SP_CMR_GEN_MES','CFG-0007-a41f','Publicada',21874,'2026-09-07 23:48'],
+ ['2026-09-07','dbo.REPORTE_COBRANZA_INTEGRACION','CFG-0007-a41f','Publicada',9310,'2026-09-08 00:02'],
+ ['2026-09-04','CIERRE.SP_IND_GEN_MES','CFG-0004-a41f','Publicada',183990,'2026-09-04 23:39'],
+ ['2026-09-04','CIERRE.SP_SAF_SALDOS','CFG-0004-a41f','Publicada',47120,'2026-09-04 23:52'],
+ ['2026-09-02','CIERRE.SP_IND_GEN_MES','CFG-0002-7c03','Publicada con ajuste',183744,'2026-09-02 23:44'],
+ ['2026-09-01','CIERRE.SP_IND_GEN_MES','CFG-0001-7c03','Reproceso controlado',183702,'2026-09-01 07:15'],
+ ['2026-08-31','CIERRE.SP_IND_GEN_MES','','Publicada',183120,'2026-08-31 23:40'],
+ ['2026-08-31','CIERRE.SP_CMR_GEN_MES','','Publicada',21690,'2026-08-31 23:47'],
+ ['2026-08-28','CIERRE.SP_IND_GEN_MES','','Publicada',182871,'2026-08-28 23:38']
+].map(c => ({fecha:c[0], proc:c[1], cfg:c[2], estado:c[3], filas:c[4], fin:c[5]}));
+
 /* Solicitudes de cambio (cuatro ojos) */
 let SOLS = [
  {id:'SOL-0031', tabla:'CAT_TIPO_CARTERA_BANDERA', resumen:'Alta de 23 en ES_ADMINISTRADA_IND',
@@ -509,9 +633,9 @@ let BITA = [
 ];
 
 const PESTANAS = [
- ['inicio','Inicio'], ['banderas','Banderas'], ['tipos','Tipos de cartera'],
+ ['inicio','Inicio'], ['banderas','Banderas'], ['tipos','Tipos de cartera'], ['rubros','Rubros'],
  ['matriz','Matriz de banderas'], ['productos','Atributos de salida'],
- ['aprob','Aprobaciones'], ['audit','Bitácora']
+ ['aprob','Aprobaciones'], ['corridas','Corridas del cierre'], ['audit','Bitácora']
 ];
 
 /* ==========================================================================
@@ -586,11 +710,16 @@ function render(){
   llenaSelect('fMarea', [...new Set(BANDERAS.map(b => b.area))]);
   llenaSelect('fTcart', [...new Set(TIPOS.map(t => t.cartera))]);
   llenaSelect('fTadm', [...new Set(TIPOS.map(t => t.admin))]);
+  llenaSelect('fRpol', POLIZAS);
+  llenaSelect('fRgru', [...new Set(RUBROS.map(r => r.grupo).filter(Boolean))]);
+  llenaSelect('fCproc', PROCESOS);
 
   if (VISTA === 'inicio') renderInicio();
   if (VISTA === 'banderas') renderBanderas();
   if (VISTA === 'bandera') renderDetalle();
   if (VISTA === 'tipos') renderTipos();
+  if (VISTA === 'rubros') renderRubros();
+  if (VISTA === 'corridas') renderCorridas();
   if (VISTA === 'matriz') renderMatriz();
   if (VISTA === 'productos') renderProductos();
   if (VISTA === 'aprob') renderAprob();
@@ -612,6 +741,9 @@ function dobleSegmento(){
   return TIPOS.filter(t => seg.filter(s => MATRIZ[s].has(t.num)).length > 1).map(t => t.num);
 }
 function huerfanos(){ return TIPOS.filter(t => !t.enCatalogo).map(t => t.num); }
+function rubrosSinConcepto(){ return RUBROS.filter(r => !r.grupo).map(r => r.rubro); }
+function rubrosConNota(){ return RUBROS.filter(r => r.grupo && r.nota).map(r => r.rubro); }
+function corridasSinSello(){ return CORRIDAS.filter(c => !c.cfg); }
 function sinUso(){ return TIPOS.filter(t => t.enCatalogo && !EN_CODIGO.has(t.num)).map(t => t.num); }
 function nCambios(){ return Object.keys(BORRADOR).length; }
 
@@ -623,7 +755,9 @@ function renderInicio(){
    <div class="kpi"><b>${TIPOS.filter(t => t.enCatalogo).length}</b><span>tipos de cartera en el origen</span></div>
    <div class="kpi g"><b>${Object.values(MATRIZ).reduce((a,s) => a + s.size, 0)}</b><span>casillas marcadas en la matriz</span></div>
    <div class="kpi w"><b>${pend.length}</b><span>solicitudes por aprobar</span></div>
-   <div class="kpi d"><b>${huerfanos().length}</b><span>tipos usados en código sin origen</span></div>`;
+   <div class="kpi d"><b>${huerfanos().length}</b><span>tipos usados en código sin origen</span></div>
+   <div class="kpi"><b>${RUBROS.length}</b><span>rubros del cierre y la cobranza</span></div>
+   <div class="kpi d"><b>${corridasSinSello().length}</b><span>corridas sin sello de configuración</span></div>`;
 
   const chk = [
    ['Tipos de cartera usados en el código que no existen en PR.PR_DESC_TIPOS_CREDITO', huerfanos(), 'bad',
@@ -633,7 +767,14 @@ function renderInicio(){
    ['Tipos de cartera en más de un segmento a la vez', dobleSegmento(), 'warn',
     'La precedencia comercial sobre individual está en código, no en el catálogo: revisar antes de aprobar.'],
    ['Tipos de cartera del origen sin uso en el código', sinUso(), 'info',
-    'No es un error: son tipos que ningún proceso contable filtra hoy.']
+    'No es un error: son tipos que ningún proceso contable filtra hoy.'],
+   ['Rubros sin concepto contable definido', rubrosSinConcepto(), 'bad',
+    'El importe no sabe a qué póliza va. En el diseño objetivo esta validación detiene el cierre en vez de dejar el rubro fuera en silencio.'],
+   ['Rubros con nomenclatura por confirmar', rubrosConNota(), 'warn',
+    'Pares como COM_PRORROGA/PRORROGA y OPI VALOR/OPI_VALOR conviven en las mismas listas del código: hay que confirmar cuál es el rubro del origen.'],
+   ['Corridas del cierre sin sello de configuración',
+    corridasSinSello().map(c => c.fecha).filter((v,i,a) => a.indexOf(v) === i), 'bad',
+    'Son las fechas cuya póliza no se puede explicar: no queda registro de con qué catálogos se resolvió.']
   ];
   $('salud').innerHTML = '<table><thead><tr><th class="nosort">Validación</th><th class="nosort">Resultado</th>'
     + '<th class="nosort">Qué implica</th></tr></thead><tbody>'
@@ -814,6 +955,131 @@ function renderTipos(){
      }).join('')
    + (fs.length ? '' : sinFilas(6))
    + '</tbody></table>';
+}
+
+/* -------------------------------------------------------------------- rubros */
+const PROC_NOM = {CMR:'CIERRE.SP_CMR_GEN_MES', IND:'CIERRE.SP_IND_GEN_MES',
+                  SAF:'CIERRE.SP_SAF_SALDOS', COB:'dbo.REPORTE_COBRANZA_INTEGRACION'};
+function renderRubros(){
+  const q = ($('fR').value || '').toLowerCase(), po = $('fRpol').value, gr = $('fRgru').value,
+        es = $('fRest').value;
+  const fs = RUBROS.filter(r =>
+    (!q || r.rubro.toLowerCase().includes(q)) &&
+    (!po || r.poliza === po) && (!gr || r.grupo === gr) &&
+    (es !== 'pend'  || !r.grupo || r.nota) &&
+    (es !== 'iva'   || r.iva) &&
+    (es !== 'forma' || r.forma));
+  $('tblR').innerHTML = `<table><thead><tr>
+    <th class="nosort">Rubro</th><th class="nosort">Concepto contable</th><th class="nosort">Póliza destino</th>
+    <th class="nosort">IVA</th><th class="nosort">Procesos que lo nombran</th>
+    <th class="nosort">Predicados</th><th class="nosort">Estado</th><th class="nosort"></th>
+    </tr></thead><tbody>`
+   + fs.map((r,i) => {
+      const idx = RUBROS.indexOf(r);
+      const et = !r.grupo ? '<span class="pill bad">sin concepto</span>'
+        : r.nota ? '<span class="pill warn">por confirmar</span>'
+        : r.forma ? '<span class="pill neu">columna propia en el SP</span>'
+        : '<span class="pill ok">correcto</span>';
+      return `<tr>
+        <td class="mono">${esc(r.rubro)}${r.nota
+            ? `<br><span style="color:var(--tx2);font-family:inherit">${esc(r.nota)}</span>` : ''}</td>
+        <td class="mono">${r.grupo ? esc(r.grupo) : '—'}</td>
+        <td>${r.poliza ? esc(r.poliza) : '—'}</td>
+        <td>${r.iva ? 'Sí' : 'No'}</td>
+        <td>${r.proc.map(p =>
+            `<span class="pill info" style="margin:1px 2px" title="${PROC_NOM[p]}">${p}</span>`).join('')}</td>
+        <td class="num">${r.pred}</td>
+        <td>${et}</td>
+        <td><button class="btn mini" ${puedeEditar() ? '' : 'disabled'}
+            onclick="editarRubro(${idx})">Editar</button></td></tr>`;
+     }).join('')
+   + (fs.length ? '' : sinFilas(8))
+   + '</tbody></table>';
+}
+function editarRubro(i){
+  const r = RUBROS[i];
+  modal(`Concepto contable de ${r.rubro}`, `
+    <div class="campo"><label>Rubro (viene del origen, no editable)</label>
+      <input value="${esc(r.rubro)}" disabled></div>
+    <div class="campo"><label>Concepto contable</label>
+      <select id="erGru">${[...new Set(RUBROS.map(x => x.grupo).filter(Boolean))].sort().map(g =>
+        `<option ${g === r.grupo ? 'selected' : ''}>${g}</option>`).join('')}</select></div>
+    <div class="campo"><label>Póliza destino</label>
+      <select id="erPol">${POLIZAS.map(p =>
+        `<option ${p === r.poliza ? 'selected' : ''}>${esc(p)}</option>`).join('')}</select></div>
+    <div class="campo"><label>Vigente desde</label>
+      <input type="date" id="erDes" min="${manana()}" value="${manana()}"></div>
+    <div class="campo"><label>Motivo</label><textarea id="erMot"></textarea></div>
+    <div class="aviso warn"><div>Mover un rubro de concepto cambia a qué póliza va su importe. El cambio no se
+    aplica al guardar: genera una solicitud que autoriza el área de cartera con aviso a contabilidad, y las
+    corridas ya publicadas conservan el concepto con que se resolvieron.</div></div>`,
+    [['Cancelar','cerrarModal()',''],['Enviar a aprobación',`solRubro(${i})`,'pri']]);
+}
+function solRubro(i){
+  const r = RUBROS[i], mot = ($('erMot').value || '').trim();
+  if (!mot) return toast('El motivo es obligatorio', true);
+  if (!vigenciaValida('erDes')) return;
+  const id = nuevoFolio();
+  SOLS.unshift({id, tabla:'CAT_RUBRO', resumen:`Concepto contable de ${r.rubro}`,
+    detalle:[`${r.rubro} · concepto: ${r.grupo || '(sin concepto)'} → ${$('erGru').value}`,
+             `póliza: ${r.poliza || '(sin póliza)'} → ${$('erPol').value}`,
+             `desde ${$('erDes').value}`],
+    motivo:mot, solicita:'E. Navarro (Negocio)', fecha:hoy(), estado:'Pendiente', amb:ENV,
+    aprueba:'', nota:'', rubro:{i, grupo:$('erGru').value, poliza:$('erPol').value}});
+  cerrarModal(); toast(`${id} enviada al área de cartera.`); ir('aprob');
+}
+
+/* ------------------------------------------------------------------ corridas */
+function renderCorridas(){
+  const f = $('fecCfg').value, pr = $('fCproc').value, sinS = $('fCsin').checked;
+  const fs = CORRIDAS.filter(c => (!f || c.fecha <= f) && (!pr || c.proc === pr) && (!sinS || !c.cfg));
+  $('tblC').innerHTML = `<table><thead><tr>
+    <th class="nosort">Fecha de negocio</th><th class="nosort">Proceso</th>
+    <th class="nosort">Sello de configuración</th><th class="nosort">Filas</th>
+    <th class="nosort">Terminó</th><th class="nosort">Estado</th><th class="nosort"></th>
+    </tr></thead><tbody>`
+   + fs.map(c => `<tr>
+      <td class="num">${c.fecha}</td><td class="mono">${esc(c.proc)}</td>
+      <td>${c.cfg ? `<span class="pill ok mono">${c.cfg}</span>`
+                  : '<span class="pill bad">sin sello</span>'}</td>
+      <td class="num">${c.filas.toLocaleString('es-MX')}</td>
+      <td class="num">${c.fin}</td>
+      <td><span class="pill ${c.estado === 'Publicada' ? 'ok'
+            : c.estado === 'Reproceso controlado' ? 'warn' : 'neu'}">${esc(c.estado)}</span></td>
+      <td><button class="btn mini" onclick="verConfig('${c.fecha}','${c.cfg}')">Ver configuración</button></td>
+     </tr>`).join('')
+   + (fs.length ? '' : sinFilas(7))
+   + '</tbody></table>';
+}
+function verConfig(fecha, cfg){
+  const aprob = SOLS.filter(s => s.estado === 'Aprobada');
+  modal(`Configuración usada el ${fecha}`, `
+    <dl class="dl">
+      <dt>Sello</dt><dd class="mono">${cfg || 'sin sello — no se puede reconstruir'}</dd>
+      <dt>Tipos de cartera con al menos una bandera</dt>
+      <dd>${TIPOS.filter(t => Object.keys(MATRIZ).some(b => MATRIZ[b].has(t.num))).length}
+          de ${TIPOS.length}</dd>
+      <dt>Casillas vigentes en la matriz</dt>
+      <dd>${Object.values(MATRIZ).reduce((a,s) => a + s.size, 0)}</dd>
+      <dt>Rubros con concepto contable definido</dt>
+      <dd>${RUBROS.filter(r => r.grupo).length} de ${RUBROS.length}</dd>
+      <dt>Cambios de configuración autorizados hasta esa fecha</dt>
+      <dd>${aprob.length ? aprob.map(s => `${s.id}: ${esc(s.resumen)}`).join('<br>') : 'ninguno'}</dd>
+    </dl>
+    <div class="aviso ${cfg ? 'info' : 'bad'}"><div>${cfg
+      ? `Con el sello, la póliza de esa fecha se explica sin depender de la memoria de nadie: el portal
+         reconstruye la matriz y los conceptos tal como estaban. En la maqueta el detalle es ilustrativo.`
+      : `Esta corrida es anterior al sello. Hoy sólo se puede inferir la configuración leyendo el código que
+         estaba liberado ese día, y por eso una diferencia contra el mes anterior no se puede justificar.`}
+    </div></div>`,
+    [['Cerrar','cerrarModal()',''],
+     ['Reconstruir la matriz a esa fecha',`reconstruir('${fecha}')`,'pri']]);
+}
+function reconstruir(fecha){
+  $('fecMat').value = fecha;
+  cerrarModal();
+  ir('matriz');
+  toast(`Matriz reconstruida al ${fecha} (ilustrativo en la maqueta)`);
 }
 
 /* -------------------------------------------------------------------- matriz */
@@ -1024,6 +1290,10 @@ function resolver(id, ok){
     const p = PRODUCTOS[s.prod.i];
     p.idp = s.prod.idp; p.nom = s.prod.nom; p.desde = s.prod.desde;
   }
+  if (ok && s.rubro){
+    const r = RUBROS[s.rubro.i];
+    r.grupo = s.rubro.grupo; r.poliza = s.rubro.poliza; r.nota = '';
+  }
   s.estado = ok ? 'Aprobada' : 'Rechazada';
   s.aprueba = 'C. Rangel (Cartera)';
   BITA.unshift({f:hoy(), u:'C. Rangel', acc:`${ok ? 'Aprobó' : 'Rechazó'} ${s.id}`, obj:s.tabla,
@@ -1061,6 +1331,9 @@ $('q').addEventListener('keydown', ev => {
   if (!q) return;
   const b = BANDERAS.find(x => x.b.toLowerCase().includes(q));
   if (b) return verBandera(b.b);
+  if (RUBROS.some(r => r.rubro.toLowerCase().includes(q))){
+    ir('rubros'); $('fR').value = q; renderRubros(); return;
+  }
   ir('tipos'); $('fT').value = q; renderTipos();
 });
 
