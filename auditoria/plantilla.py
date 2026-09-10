@@ -63,6 +63,7 @@ NAV = """<nav class="docs">
 <a href="15_respuestas_cliente.html">Respuestas del cliente</a>
 <a href="16_reclasificacion.html">Reclasificación de hallazgos</a>
 <a href="17_objetos_vigentes.html">Objetos vigentes</a>
+<a href="18_version_sept10.html">Versión SPs_Sept10</a>
 <a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a>
 <a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
 </nav>"""
