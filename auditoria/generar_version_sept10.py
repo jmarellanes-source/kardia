@@ -38,6 +38,8 @@ SENALES = [
      '9 / 11', '9 / 11', 'no', 'el patrón de referencia sigue aplicado en 9 objetos, no en la familia completa'),
     ('Filtros con <code>NUM_DESC_TIPO_CREDITO</code> hardcodeado',
      '90 / 314', '92 / 318', 'no', 'el hardcodeo crece: la versión nueva agrega listas, no las quita'),
+    ('Fecha fija <code>FECHA_SISTEMA=\'20260123\'</code> en el cierre comercial (Q06)',
+     '1 / 1', '1 / 1', 'no', 'sigue en la línea 461 de <code>CIERRE.SP_CMR_GEN_MES</code>, en las dos copias'),
 ]
 
 CERRADOS = [
@@ -76,6 +78,14 @@ NUEVO = [
      'En <code>CIERRE.SP_CMR_GEN_MES</code>: <code>CASE WHEN C.NUM_DESC_TIPO_CREDITO = 5 THEN \'COMERCIAL\' '
      'ELSE dbo.FN_TIPO_CANAL(C.TIP_TASA) END</code>. Confirma la observación de la auditoría: el canal no se deriva '
      'de una sola regla y ahora tiene una excepción por tipo (el 5, <code>DCM</code>) incrustada en el SP.'),
+    ('La fecha fija de Q06 sigue exactamente igual, en un objeto que sí se editó', 'rojo',
+     'En <code>CIERRE.SP_CMR_GEN_MES</code>, línea 461: <code>WHERE FECHA_SISTEMA=\'20260123\' AND TIPO=\'N\'</code>, '
+     'idéntica en la copia de desarrollo y en la de producción de la entrega. En el mismo procedimiento hay 23 filtros '
+     'que sí usan el parámetro de fecha (<code>FECHA_SISTEMA=@...</code>) y sólo ése usa un literal, lo que apunta a un '
+     'valor de prueba que quedó publicado. Pesa doble porque es la misma consulta de «otras comisiones» que filtra '
+     '<code>\'OPI VALOR\'</code> con espacio: el bloque toma un solo día del mes y, sobre ese día, un rubro que no '
+     'existe en <code>PR.PR_RUBRO</code>. Y el objeto sí se tocó en esta entrega (se le agregó la excepción del tipo 5), '
+     'así que no es un archivo olvidado.'),
     ('Aparecen dos controles que la auditoría había pedido', 'verde',
      '<code>PO.SP_SAF_POLIZA_FINALIZA</code> ahora sale sin hacer nada si la póliza del día ya está '
      '<code>ENVIADA</code>, que es una guarda de reproceso, y <code>PO.SP_SND_POLIZA_DIARIA</code> registra duración '
@@ -134,11 +144,12 @@ lógica. No se ejecutó nada contra SQL Server.</p>
 <div class="kpi"><b>0</b><span>objetos eliminados</span></div>
 <div class="kpi c"><b>0</b><span>hallazgos que cierra</span></div>
 <div class="kpi m"><b>2</b><span>controles nuevos parciales</span></div>
+<div class="kpi c"><b>13</b><span>indicadores medidos, ninguno a la baja</span></div>
 </div>
 
 <h2>Respuesta corta</h2>
 <div class="card rojo"><h3>Ningún hallazgo se cierra con esta versión, y el hardcodeo crece</h3>
-<p>Los doce indicadores que sostienen los hallazgos abiertos se midieron en las dos copias del código y ninguno bajó:
+<p>Los trece indicadores que sostienen los hallazgos abiertos se midieron en las dos copias del código y ninguno bajó:
 tres suben porque los dos objetos nuevos repiten los mismos patrones. La entrega sí trae dos controles que la auditoría
 había pedido (guarda de reproceso y bitácora de duración), pero acotados a la familia sindicada.</p></div>
 
