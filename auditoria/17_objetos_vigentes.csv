@@ -1,0 +1,199 @@
+objeto,tipo,estado,lineas,en_prod,invocadores,reportes,creacion,modificacion,escribe,motivo
+CIERRE.SP_CASTIGO_INI_RPT,StoredProcedure,Ausente del export (indeterminado),273,no,0,0,,,no,no esta en el export de BD_prod y sin ninguna evidencia de uso en el repositorio; hay que verificarlo contra los metadatos de la instancia
+CIERRE.SP_CMR_DIA,StoredProcedure,Ausente del export (indeterminado),393,no,0,0,20250521,,si,no esta en el export de BD_prod y sin ninguna evidencia de uso en el repositorio; hay que verificarlo contra los metadatos de la instancia
+CIERRE.SP_CMR_DIA_VIS,StoredProcedure,Ausente del export (indeterminado),75,no,0,0,202500521,,no,no esta en el export de BD_prod y sin ninguna evidencia de uso en el repositorio; hay que verificarlo contra los metadatos de la instancia
+CIERRE.SP_CMR_GEN_DIA,StoredProcedure,Ausente del export (indeterminado),515,no,0,0,20250424,,si,no esta en el export de BD_prod y sin ninguna evidencia de uso en el repositorio; hay que verificarlo contra los metadatos de la instancia
+CIERRE.SP_CMR_GEN_DIA_CARTERA_VIS,StoredProcedure,Ausente del export (indeterminado),123,no,0,0,20250526,,no,no esta en el export de BD_prod y sin ninguna evidencia de uso en el repositorio; hay que verificarlo contra los metadatos de la instancia
+CIERRE.SP_CMR_GEN_DIA_CONTABILIDAD_VIS,StoredProcedure,Ausente del export (indeterminado),135,no,0,0,20250526,,no,no esta en el export de BD_prod y sin ninguna evidencia de uso en el repositorio; hay que verificarlo contra los metadatos de la instancia
+CIERRE.SP_CMR_GEN_DIA_CONTROL_VIS,StoredProcedure,Ausente del export (indeterminado),112,no,0,0,20250526,,no,no esta en el export de BD_prod y sin ninguna evidencia de uso en el repositorio; hay que verificarlo contra los metadatos de la instancia
+CIERRE.SP_CMR_GEN_DIA_FINANZAS_VIS,StoredProcedure,Ausente del export (indeterminado),123,no,0,0,20250526,,no,no esta en el export de BD_prod y sin ninguna evidencia de uso en el repositorio; hay que verificarlo contra los metadatos de la instancia
+CIERRE.SP_CMR_GEN_DIA_RIESGOS_VIS,StoredProcedure,Ausente del export (indeterminado),140,no,0,0,20250526,,no,no esta en el export de BD_prod y sin ninguna evidencia de uso en el repositorio; hay que verificarlo contra los metadatos de la instancia
+CIERRE.SP_IND_GEN_MES,StoredProcedure,Ausente del export (indeterminado),1303,no,0,0,,,si,no esta en el export de BD_prod y sin ninguna evidencia de uso en el repositorio; hay que verificarlo contra los metadatos de la instancia
+CIERRE.SP_SAF_SALDOS_SND,StoredProcedure,Ausente del export (indeterminado),368,no,0,0,20260106,,si,no esta en el export de BD_prod y sin ninguna evidencia de uso en el repositorio; hay que verificarlo contra los metadatos de la instancia
+PO.SP_CAP_IMPORTA,StoredProcedure,Ausente del export (indeterminado),152,no,0,0,20250529,,si,no esta en el export de BD_prod y sin ninguna evidencia de uso en el repositorio; hay que verificarlo contra los metadatos de la instancia
+PO.SP_SAF_POLIZA_RUBRO_HISTORICO,StoredProcedure,Ausente del export (indeterminado),54,no,0,0,20250516,,si,no esta en el export de BD_prod y sin ninguna evidencia de uso en el repositorio; hay que verificarlo contra los metadatos de la instancia
+PO.SP_SAF_POLIZA_PASE_CLASIF_PROD_QA,StoredProcedure,Candidato a baja,47,no,0,0,2024113,,si,"es una herramienta de promocion entre ambientes, fuera del camino contable; sin ninguna evidencia de uso en el repositorio"
+PO.SP_SAF_POLIZA_PASE_EXT_PROD_QA_E,StoredProcedure,Candidato a baja,65,no,0,0,20241210,,si,"es una herramienta de promocion entre ambientes, fuera del camino contable; sin ninguna evidencia de uso en el repositorio"
+PO.SP_SAF_POLIZA_PASE_EXT_QA_PROD,StoredProcedure,Candidato a baja,125,no,0,0,20241107,,si,"es una herramienta de promocion entre ambientes, fuera del camino contable; sin ninguna evidencia de uso en el repositorio"
+CIERRE.SP_IND_GEN_MES_MOD,StoredProcedure,Fuera de uso (declarado),227,no,0,0,,,si,El cliente declara que no esta en uso; el ejemplo vigente de ballon es CIERRE.SP_SAF_SALDOS linea 90.
+PO.SYS_SP_AVALUO_AND_UPDATE,StoredProcedure,Fuera de uso (declarado),237,si,4,0,,,si,Lee la base Quiero_Confianza_CreditoPuente_QA: el cliente declaro que estos cuatro objetos son la primera version de la poliza y seran borrados.
+PO.SYS_SP_MOV_ABONO,StoredProcedure,Fuera de uso (declarado),384,si,0,0,,,si,Lee la base Quiero_Confianza_CreditoPuente_QA: el cliente declaro que estos cuatro objetos son la primera version de la poliza y seran borrados.
+PO.SYS_SP_MOV_CARGO,StoredProcedure,Fuera de uso (declarado),281,si,0,0,,,si,Lee la base Quiero_Confianza_CreditoPuente_QA: el cliente declaro que estos cuatro objetos son la primera version de la poliza y seran borrados.
+PO.SYS_SP_MOV_INTERES,StoredProcedure,Fuera de uso (declarado),311,si,0,0,,,si,Lee la base Quiero_Confianza_CreditoPuente_QA: el cliente declaro que estos cuatro objetos son la primera version de la poliza y seran borrados.
+CIERRE.SP_CAS_CIERRE_RPT,StoredProcedure,Solo en el repositorio,157,no,0,1,,,no,lo usan 1 reportes .rdl; no aparece en el export de BD_prod
+CIERRE.SP_CMR_RPT_CIERRE_VIS,StoredProcedure,Solo en el repositorio,102,no,0,1,,,no,lo usan 1 reportes .rdl; no aparece en el export de BD_prod
+CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS,StoredProcedure,Solo en el repositorio,558,no,0,1,,,si,lo usan 1 reportes .rdl; no aparece en el export de BD_prod
+CIERRE.SP_IND_RPT_CIERRE_VIS,StoredProcedure,Solo en el repositorio,273,no,0,1,,,no,lo usan 1 reportes .rdl; no aparece en el export de BD_prod
+CIERRE.SP_IND_RPT_INTERESES_DEVENGADOS_VIS,StoredProcedure,Solo en el repositorio,385,no,0,1,,,si,lo usan 1 reportes .rdl; no aparece en el export de BD_prod
+CIERRE.SP_RPT_CASTIGOS_CARTERA_VIS,StoredProcedure,Solo en el repositorio,366,no,0,1,,,no,lo usan 1 reportes .rdl; no aparece en el export de BD_prod
+CIERRE.SP_RPT_QUITAS_Y_CONDINACIONES_CARTERA_VIS,StoredProcedure,Solo en el repositorio,149,no,0,1,,,no,lo usan 1 reportes .rdl; no aparece en el export de BD_prod
+CIERRE.SP_CMR_GEN_MES,StoredProcedure,Vigente,880,si,1,0,20250424,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+CIERRE.SP_CMR_MES_VIS,StoredProcedure,Vigente,183,si,0,2,20250428,,no,existe en el export de BD_prod; lo usan 2 reportes .rdl
+CIERRE.SP_CMR_RPT_DESEMBOLSOS_CARTERA_VIS,StoredProcedure,Vigente,58,si,0,2,,,no,existe en el export de BD_prod; lo usan 2 reportes .rdl
+CIERRE.SP_IND_RPT_DESEMBOLSOS_CARTERA_VIS,StoredProcedure,Vigente,52,si,0,2,,,no,existe en el export de BD_prod; lo usan 2 reportes .rdl
+CIERRE.SP_RPT_COBRANZA_CARTERA_CMR_IND_VIS,StoredProcedure,Vigente,286,si,0,2,,,no,existe en el export de BD_prod; lo usan 2 reportes .rdl
+CIERRE.SP_RPT_VENTAS_DE_CARTERA_VIS,StoredProcedure,Vigente,273,si,0,2,,,no,existe en el export de BD_prod; lo usan 2 reportes .rdl
+PO.DE_SP_SELECT_DESEMBOLSO,StoredProcedure,Vigente,37,si,1,0,,,no,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_ADMINISTRADA,StoredProcedure,Vigente,153,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_CANCELACION,StoredProcedure,Vigente,216,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_CASTIGOS,StoredProcedure,Vigente,939,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_CASTIGOS_DAC_ADJ,StoredProcedure,Vigente,913,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_CASTIGOS_REVERSO_DAC_ADJ,StoredProcedure,Vigente,914,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_COBRANZA,StoredProcedure,Vigente,691,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_COBRANZA_CASTIGOS,StoredProcedure,Vigente,950,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_CONDONACION,StoredProcedure,Vigente,533,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_DACION_ADJUDICACION,StoredProcedure,Vigente,602,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_DESEMBOLSO,StoredProcedure,Vigente,296,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_DEV_ACCESORIOS,StoredProcedure,Vigente,182,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_DEV_COMISIONES,StoredProcedure,Vigente,169,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_DEV_INTERES,StoredProcedure,Vigente,227,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_DEV_MORATORIO,StoredProcedure,Vigente,325,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_FIRMA,StoredProcedure,Vigente,218,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_OPERACIONES_PENDIENTES,StoredProcedure,Vigente,149,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_REESTRCTURA_CAP,StoredProcedure,Vigente,710,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_REESTRCTURA_SN_CAP,StoredProcedure,Vigente,746,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_REVERSO_COBRANZA,StoredProcedure,Vigente,862,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_REVERSO_COBRANZA_CASTIGOS,StoredProcedure,Vigente,956,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_REVERSO_COMISION,StoredProcedure,Vigente,290,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_REVERSO_CONDONACION,StoredProcedure,Vigente,526,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_REVERSO_DACION_ADJUDICACION,StoredProcedure,Vigente,598,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_REVERSO_DESEMBOLSO,StoredProcedure,Vigente,295,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_REVERSO_INTERES,StoredProcedure,Vigente,273,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_REVERSO_MORATORIO,StoredProcedure,Vigente,266,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_TRASPASO,StoredProcedure,Vigente,411,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_TRASPASO_INSERT,StoredProcedure,Vigente,371,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_COM_VENTA_CARTERA,StoredProcedure,Vigente,759,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_ADMINISTRADA,StoredProcedure,Vigente,158,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_BALLON_APLI,StoredProcedure,Vigente,200,si,17,0,,,si,existe en el export de BD_prod; lo invocan 17 objetos que tambien estan en produccion
+PO.SP_IND_CASTIGOS,StoredProcedure,Vigente,913,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_CASTIGOS_DAC_ADJ,StoredProcedure,Vigente,954,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_CASTIGOS_REVERSO_DAC_ADJ,StoredProcedure,Vigente,951,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_COBRANZA,StoredProcedure,Vigente,903,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_COBRANZA_CASTIGOS,StoredProcedure,Vigente,996,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_CONDONACION,StoredProcedure,Vigente,642,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_DACION_ADJUDICACION,StoredProcedure,Vigente,643,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_DESEMBOLSO,StoredProcedure,Vigente,305,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_DEVOLUCIONES,StoredProcedure,Vigente,210,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_DEV_COMISIONES,StoredProcedure,Vigente,179,si,2,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_DEV_INTERES,StoredProcedure,Vigente,207,si,2,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_DEV_MORATORIO,StoredProcedure,Vigente,285,si,2,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_DEV_SEGUROS,StoredProcedure,Vigente,196,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_FIRMA,StoredProcedure,Vigente,311,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_OPERACIONES_PENDIENTES,StoredProcedure,Vigente,187,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_PAG_X_IDENTIFICAR,StoredProcedure,Vigente,225,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_REESTRCTURA_CAP,StoredProcedure,Vigente,754,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_REESTRCTURA_SN_CAP,StoredProcedure,Vigente,661,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_REVERSO_COBRANZA,StoredProcedure,Vigente,893,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_REVERSO_COBRANZA_CASTIGOS,StoredProcedure,Vigente,996,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_REVERSO_COMISION,StoredProcedure,Vigente,295,si,2,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_REVERSO_CONDONACION,StoredProcedure,Vigente,610,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_REVERSO_DACION_ADJUDICACION,StoredProcedure,Vigente,646,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_REVERSO_DESEMBOLSO,StoredProcedure,Vigente,295,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_REVERSO_DEVOLUCIONES,StoredProcedure,Vigente,221,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_REVERSO_INTERES,StoredProcedure,Vigente,252,si,2,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_REVERSO_MORATORIO,StoredProcedure,Vigente,288,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_TRASPASO,StoredProcedure,Vigente,467,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_TRASPASO_SALDO_FAVOR,StoredProcedure,Vigente,190,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_IND_VENTA_CARTERA,StoredProcedure,Vigente,705,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SAF_CASTIGO_AGR,StoredProcedure,Vigente,31,si,3,0,20250430,,si,existe en el export de BD_prod; lo invocan 3 objetos que tambien estan en produccion
+PO.SP_SAF_POLIZA_CUENTAS_VAL,StoredProcedure,Vigente,282,si,3,0,20240820,,si,existe en el export de BD_prod; lo invocan 3 objetos que tambien estan en produccion
+PO.SP_SAF_POLIZA_FINALIZA,StoredProcedure,Vigente,103,si,92,0,20240822,,si,existe en el export de BD_prod; lo invocan 91 objetos que tambien estan en produccion
+PO.SP_SAF_POLIZA_MOVxDIA,StoredProcedure,Vigente,84,si,0,4,20240827,,si,existe en el export de BD_prod; lo usan 4 reportes .rdl
+PO.SP_SAF_POLIZA_REEST_CAST,StoredProcedure,Vigente,545,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SAF_POLIZA_REEST_CAST_APLI,StoredProcedure,Vigente,194,si,17,0,,,si,existe en el export de BD_prod; lo invocan 17 objetos que tambien estan en produccion
+PO.SP_SND_ADMINISTRADA,StoredProcedure,Vigente,335,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_CAPITAL,StoredProcedure,Vigente,176,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_CASTIGOS,StoredProcedure,Vigente,901,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_COBRANZA,StoredProcedure,Vigente,574,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_COBRANZA_CASTIGOS,StoredProcedure,Vigente,460,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_CONDONACION,StoredProcedure,Vigente,329,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_DACION_ADJUDICACION,StoredProcedure,Vigente,311,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_DEV_ACCESORIOS,StoredProcedure,Vigente,201,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_DEV_COMISIONES,StoredProcedure,Vigente,210,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_DEV_INTERES,StoredProcedure,Vigente,161,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_DEV_MORATORIO,StoredProcedure,Vigente,175,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_RECLASIFICACION,StoredProcedure,Vigente,183,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_REVERSO_ACCESORIOS,StoredProcedure,Vigente,233,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_REVERSO_COBRANZA,StoredProcedure,Vigente,556,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_REVERSO_COBRANZA_CASTIGOS,StoredProcedure,Vigente,460,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_REVERSO_COMISION,StoredProcedure,Vigente,297,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_REVERSO_CONDONACION,StoredProcedure,Vigente,331,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_REVERSO_DACION_ADJUDICACION,StoredProcedure,Vigente,309,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_REVERSO_INTERES,StoredProcedure,Vigente,165,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_REVERSO_MORATORIO,StoredProcedure,Vigente,174,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_SECUENCIAS_MAN,StoredProcedure,Vigente,253,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_TRASPASO,StoredProcedure,Vigente,426,si,1,0,,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SP_SND_TRASPASO_INSERT,StoredProcedure,Vigente,196,si,1,0,20260106,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SYS_SP_ACCOUNT_BALANCE_ORDEN,StoredProcedure,Vigente,92,si,4,0,,,si,existe en el export de BD_prod; lo invocan 4 objetos que tambien estan en produccion
+PO.SYS_SP_BALANCE_ACCOUNT_SQL,StoredProcedure,Vigente,75,si,0,3,,,no,existe en el export de BD_prod; lo usan 3 reportes .rdl
+PO.SYS_SP_BALANCE_DETAIL_SQL,StoredProcedure,Vigente,174,si,0,3,,,no,existe en el export de BD_prod; lo usan 3 reportes .rdl
+PO.SYS_SP_CONTROL_HISTORICO_TRASPASOS,StoredProcedure,Vigente,99,si,1,0,2024-06-07,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+PO.SYS_SP_INSERT_TRASPASO,StoredProcedure,Vigente,356,si,2,0,,,si,existe en el export de BD_prod; lo invocan 2 objetos que tambien estan en produccion
+PO.VERIFICAR_CREDITOS_FALTANTES,StoredProcedure,Vigente,38,si,1,0,20240619,,si,existe en el export de BD_prod; lo invocan 1 objetos que tambien estan en produccion
+dbo.REPORTE_COBRANZA_INTEGRACION,StoredProcedure,Vigente,204,si,0,2,,,no,existe en el export de BD_prod; lo usan 2 reportes .rdl
+CIERRE.SP_SAF_SALDOS,StoredProcedure,Vigente de referencia,574,si,0,0,20250425,,si,El cliente lo senala como implementacion de referencia del concepto ballon (linea 90).
+PO.DE_SP_DELETE_MOVIMIENTO,StoredProcedure,Vigente sin invocador conocido,19,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.DE_SP_INSERT_DESEMBOLSO,StoredProcedure,Vigente sin invocador conocido,75,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.DE_SP_INSERT_MOVIMIENTO,StoredProcedure,Vigente sin invocador conocido,95,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.DE_SP_SELECT_MOVIMIENTO,StoredProcedure,Vigente sin invocador conocido,36,si,0,0,,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_COM_CASTIGOS_CONDONACION,StoredProcedure,Vigente sin invocador conocido,917,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_COM_CASTIGOS_REVERSO_COMISIONES,StoredProcedure,Vigente sin invocador conocido,957,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_COM_CASTIGOS_REVERSO_CONDONACION,StoredProcedure,Vigente sin invocador conocido,917,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_COM_CASTIGOS_REVERSO_INTERESES,StoredProcedure,Vigente sin invocador conocido,955,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS,StoredProcedure,Vigente sin invocador conocido,1003,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_IND_ADMINISTRADA_POL,StoredProcedure,Vigente sin invocador conocido,54,si,0,0,20241203,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_IND_CASTIGOS_CONDONACION,StoredProcedure,Vigente sin invocador conocido,959,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_IND_CASTIGOS_REVERSO_COMISIONES,StoredProcedure,Vigente sin invocador conocido,951,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_IND_CASTIGOS_REVERSO_CONDONACION,StoredProcedure,Vigente sin invocador conocido,960,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_IND_CASTIGOS_REVERSO_INTERESES,StoredProcedure,Vigente sin invocador conocido,949,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_IND_CASTIGOS_REVERSO_MORATORIOS,StoredProcedure,Vigente sin invocador conocido,949,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_IND_COBRANZA_POL,StoredProcedure,Vigente sin invocador conocido,78,si,0,0,20241125,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_CAPITAL_ENC_AGR,StoredProcedure,Vigente sin invocador conocido,30,si,0,0,20250725,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_CAPITAL_EST_ACT,StoredProcedure,Vigente sin invocador conocido,24,si,0,0,20250725,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_CAPITAL_IMPORTA,StoredProcedure,Vigente sin invocador conocido,126,si,0,0,20250731,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_COBRANZA_ENC_AGR,StoredProcedure,Vigente sin invocador conocido,31,si,0,0,20250725,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_COBRANZA_ENC_LST,StoredProcedure,Vigente sin invocador conocido,23,si,0,0,20250725,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_COBRANZA_ENC_SEL,StoredProcedure,Vigente sin invocador conocido,26,si,0,0,20250725,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_COBRANZA_EST_ACT,StoredProcedure,Vigente sin invocador conocido,24,si,0,0,20250725,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_COBRANZA_IMPORTA,StoredProcedure,Vigente sin invocador conocido,284,si,0,0,20250731,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_DEVENGO_ENC_AGR,StoredProcedure,Vigente sin invocador conocido,31,si,0,0,20250725,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_DEVENGO_ENC_LST,StoredProcedure,Vigente sin invocador conocido,23,si,0,0,20250725,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_DEVENGO_ENC_SEL,StoredProcedure,Vigente sin invocador conocido,26,si,0,0,20250725,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_DEVENGO_EST_ACT,StoredProcedure,Vigente sin invocador conocido,24,si,0,0,20250725,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_DEVENGO_IMPORTA,StoredProcedure,Vigente sin invocador conocido,204,si,0,0,20250731,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_MINISTRACION_ENC_AGR,StoredProcedure,Vigente sin invocador conocido,31,si,0,0,20250725,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_MINISTRACION_ENC_LST,StoredProcedure,Vigente sin invocador conocido,27,si,0,0,20250725,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_MINISTRACION_ENC_SEL,StoredProcedure,Vigente sin invocador conocido,25,si,0,0,20250725,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_MINISTRACION_EST_ACT,StoredProcedure,Vigente sin invocador conocido,24,si,0,0,20250725,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_PR_MINISTRACION_IMPORTA,StoredProcedure,Vigente sin invocador conocido,126,si,0,0,20250731,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_CIERRE_LIS,StoredProcedure,Vigente sin invocador conocido,30,si,0,0,20241209,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_CREDITO_TIPO_FALTANTE,StoredProcedure,Vigente sin invocador conocido,26,si,0,0,20250310,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_IMPAGO_AGR,StoredProcedure,Vigente sin invocador conocido,32,si,0,0,20241129,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_POLIZA_CUENTAS_DYN_VAL,StoredProcedure,Vigente sin invocador conocido,64,si,0,0,20250220,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_POLIZA_DIARIA,StoredProcedure,Vigente sin invocador conocido,156,si,0,0,,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_POLIZA_ENVIO_1P_CON,StoredProcedure,Vigente sin invocador conocido,96,si,0,0,20240913,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_POLIZA_ENVIO_1P_ERR_LIS,StoredProcedure,Vigente sin invocador conocido,29,si,0,0,20250221,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_POLIZA_ENVIO_1P_ESTADO_ACT,StoredProcedure,Vigente sin invocador conocido,35,si,0,0,20240913,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_POLIZA_ENVIO_1P_ESTADO_REP,StoredProcedure,Vigente sin invocador conocido,35,si,0,0,20250219,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_POLIZA_ENVIO_1P_LIS,StoredProcedure,Vigente sin invocador conocido,26,si,0,0,20240913,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_POLIZA_ENVIO_CON,StoredProcedure,Vigente sin invocador conocido,42,si,0,0,20240913,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_POLIZA_ENVIO_ESTADO_ACT,StoredProcedure,Vigente sin invocador conocido,37,si,0,0,20240913,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_POLIZA_ENVIO_ESTADO_REP,StoredProcedure,Vigente sin invocador conocido,50,si,0,0,20240913,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_POLIZA_ENVIO_LIS,StoredProcedure,Vigente sin invocador conocido,26,si,0,0,20260720,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SAF_UMA_AGR,StoredProcedure,Vigente sin invocador conocido,32,si,0,0,20240810,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SP_SND_POLIZA_DIARIA,StoredProcedure,Vigente sin invocador conocido,215,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SYS_SP_ACTUALIZA_ESTADO_POLIZA,StoredProcedure,Vigente sin invocador conocido,16,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SYS_SP_CATALOGO_CONCEPTOS,StoredProcedure,Vigente sin invocador conocido,552,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SYS_SP_CUENTA_AGR,StoredProcedure,Vigente sin invocador conocido,106,si,0,0,20240405,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SYS_SP_CUENTA_BUSCAR,StoredProcedure,Vigente sin invocador conocido,28,si,0,0,20240625,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SYS_SP_CUENTA_ELI,StoredProcedure,Vigente sin invocador conocido,32,si,0,0,20240603,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SYS_SP_LISTA_EXCEPCIONES,StoredProcedure,Vigente sin invocador conocido,13,si,0,0,,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.SYS_SP_REGISTRO_AVALUO,StoredProcedure,Vigente sin invocador conocido,50,si,0,0,,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+PO.VALIDAR_ID_EXTERNO,StoredProcedure,Vigente sin invocador conocido,19,si,0,0,20240612,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+SAF.SP_TASAS_ALERTAS_DESACTIVA,StoredProcedure,Vigente sin invocador conocido,22,si,0,0,20260423,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+SAF.SP_TASAS_ALERTAS_DEST,StoredProcedure,Vigente sin invocador conocido,24,si,0,0,20260416,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+SAF.SP_TASAS_ALERTAS_DEST_SEL,StoredProcedure,Vigente sin invocador conocido,20,si,0,0,20260416,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+SAF.SP_TASAS_ALERTAS_ENVIO,StoredProcedure,Vigente sin invocador conocido,126,si,0,0,20260414,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+SAF.SP_TASAS_ALERTAS_ENVIO_DEST,StoredProcedure,Vigente sin invocador conocido,19,si,0,0,20260416,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+SAF.SP_TASAS_ALERTAS_IMPORTA,StoredProcedure,Vigente sin invocador conocido,179,si,0,0,20260408,,si,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"
+SAF.SP_TASAS_ALERTAS_VALIDA,StoredProcedure,Vigente sin invocador conocido,68,si,0,0,20260408,,no,"existe en el export de BD_prod; nadie lo invoca dentro del repositorio, asi que su disparo tiene que estar fuera (job, CAS o ejecucion manual)"

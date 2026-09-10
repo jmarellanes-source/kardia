@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reclasificación de hallazgos con el alcance acordado &mdash; KARDIA / SAF</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+nav.docs{padding:10px 32px;background:#131b29;border-bottom:1px solid #2a3549;font-size:13px}
+nav.docs a{margin-right:16px;text-decoration:none}
+.wrap{padding:22px 32px 60px;max-width:1180px}
+h2{margin:34px 0 12px;font-size:18px;border-left:3px solid #4c8dff;padding-left:10px}
+h3{margin:22px 0 6px;font-size:15px}
+p.lead{color:#c9d6ee;font-size:15px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:140px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b}.kpi.a b{color:#ffa94d}.kpi.m b{color:#ffd43b}.kpi.b b{color:#74c0fc}
+.card{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:16px 20px;margin:12px 0}
+.card.rojo{border-left:3px solid #ff6b6b}
+.card.ambar{border-left:3px solid #ffa94d}
+.card.azul{border-left:3px solid #4c8dff}
+.card.verde{border-left:3px solid #51cf66}
+.card h3{margin-top:0}
+.card .q{color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.num{white-space:nowrap;color:#93a1bb}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#c9d6ee}
+pre{margin:8px 0 0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:12px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
+.pill.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.pill.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.pill.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.pill.ok{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.info{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+ul{margin:6px 0;padding-left:20px}li{margin:4px 0}
+.ola{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 20px;margin:12px 0}
+.ola h3{margin:0 0 2px}
+.ola .obj{color:#93a1bb;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.tag{font-size:11px;color:#93a1bb;border:1px solid #35415a;border-radius:5px;padding:2px 7px;margin-right:6px}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px solid #35415a;color:#c9d6ee}
+</style></head><body>
+<header class="top"><h1>Reclasificación de hallazgos con el alcance acordado</h1><p>CIERRE · SAF · PO · dbo.REPORTE_COBRANZA_INTEGRACION — releídos con las respuestas del cliente y los catálogos reales</p></header>
+<nav class="docs">
+<a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
+<a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
+<a href="09_demo_portal.html">Demo del portal</a>
+<a href="14_demo_portal_banderas.html">Demo de banderas</a>
+<a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
+<a href="12_preguntas_negocio.html">Confirmaciones con negocio</a>
+<a href="15_respuestas_cliente.html">Respuestas del cliente</a>
+<a href="16_reclasificacion.html">Reclasificación de hallazgos</a>
+<a href="17_objetos_vigentes.html">Objetos vigentes</a>
+<a href="18_version_sept10.html">Versión SPs_Sept10</a>
+<a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a>
+<a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
+</nav>
+<div class="wrap">
+<p class="lead">Los 117 hallazgos de la auditoría releídos con dos cosas que antes no teníamos: el alcance acordado (CIERRE, SAF, PO y <span class="mono">dbo.REPORTE_COBRANZA_INTEGRACION</span>) y las respuestas del cliente, incluidos los tres catálogos reales de <span class="mono">Quiero_Confianza</span>. Nada se borra: lo que sale del alcance queda registrado con su evidencia por si alguien lo retoma.</p>
+<div class="kpis"><div class="kpi"><b>117</b><span>hallazgos originales</span></div><div class="kpi ok"><b>12</b><span>cerrados por respuesta</span></div><div class="kpi"><b>14</b><span>fuera del alcance</span></div><div class="kpi c"><b>6</b><span>nuevos por los catálogos</span></div><div class="kpi a"><b>97</b><span>vigentes en foco</span></div></div>
+<h2>Cómo queda el semáforo</h2>
+<table><thead><tr><th>Severidad</th><th>Antes</th><th>Después</th><th>Qué lo movió</th></tr></thead><tbody>
+<tr><td><span class="pill c">Critico</span></td><td class="num">22</td><td class="num">16</td><td>Se cierran 5 hallazgos de SP_IND_GEN_MES_MOD y de los cuatro PO.SYS_SP_* que serán borrados, y suben dos por evidencia de catálogo (OPI VALOR y las listas de COD_ORIGEN)</td></tr>
+<tr><td><span class="pill a">Alto</span></td><td class="num">51</td><td class="num">37</td><td>Bajan los tres hallazgos de NOLOCK y los dos de objetos sin invocador; entran cuatro nuevos de catálogo</td></tr>
+<tr><td><span class="pill m">Medio</span></td><td class="num">35</td><td class="num">36</td><td>Reciben los que bajaron de alto</td></tr>
+<tr><td><span class="pill info">Bajo</span></td><td class="num">9</td><td class="num">8</td><td>Sin cambios</td></tr>
+</tbody></table>
+<h2>Hallazgos nuevos que salen de los catálogos reales</h2>
+<div class="card rojo"><h3><span class="pill c">Critico</span> <span class="mono">R-001</span> &middot; El literal OPI VALOR no existe en PR.PR_RUBRO: el filtro nunca casa</h3><p class="q">Objetos</p><p class="mono">CIERRE.SP_SAF_SALDOS, CIERRE.SP_CAS_CIERRE_RPT y los reportes que leen CIERRE.SAF_SALDOS</p><p class="q">Evidencia</p><p>El origen solo tiene OPI_VALOR (con guion bajo). Todo filtro escrito como OPI VALOR devuelve vacío, así que el importe de opinión de valor no llega a ninguna póliza. Es medible: basta comparar el importe del rubro en el origen contra lo publicado.</p><p class="q">Remediación</p><p>Corregir el literal en los objetos vigentes y, en la versión paramétrica, validar cada literal contra el catálogo antes de liberar.</p></div>
+<div class="card rojo"><h3><span class="pill a">Alto</span> <span class="mono">R-002</span> &middot; El origen trae pares de rubros con el mismo significado y dos marcados como &quot;no usar&quot;</h3><p class="q">Objetos</p><p class="mono">PR.PR_RUBRO (origen) y los 45 rubros que consume el cierre</p><p class="q">Evidencia</p><p>SEGURO tiene descripción SEGURO_DANOS y convive con SEGURO_DANOS; CARGO BALLON convive con CARGO_BALLON; PRINC_DIFERIDO y PRINCIPAL_DIFERIDO están descritos como &quot;no usar&quot; y siguen existiendo. Si el cierre suma uno y no el otro, el importe cambia sin que nadie lo note.</p><p class="q">Remediación</p><p>Definir con contabilidad el rubro sobreviviente de cada par y marcar el resto como no contabilizable en el catálogo del portal.</p></div>
+<div class="card rojo"><h3><span class="pill a">Alto</span> <span class="mono">R-003</span> &middot; La regla de cartera no restringida está escrita de tres formas que no significan lo mismo</h3><p class="q">Objetos</p><p class="mono">PR.PR_ORIGEN_FONDOS frente a las tres listas del código</p><p class="q">Evidencia</p><p>IN (&#x27;008&#x27;,&#x27;031&#x27;) en 28 archivos, IN (&#x27;008&#x27;,&#x27;031&#x27;,&#x27;046&#x27;) en 1 y NOT IN (22,23,28,35) en 19. Con el catálogo real: 008 es CAPITAL (RECURSOS PROPIOS), 031 OBLIGACIONES, 046 CARTERA_CASTIGADA, y la tercera lista son los cuatro sindicados SHF comparados como números contra códigos char(3).</p><p class="q">Remediación</p><p>Una sola bandera por COD_ORIGEN en el catálogo (no_restringido, excluido_de_castigo) y reemplazo de las tres listas por join.</p></div>
+<div class="card rojo"><h3><span class="pill a">Alto</span> <span class="mono">R-004</span> &middot; La clasificación de cartera y administrador no existe en el origen: hoy vive en el código</h3><p class="q">Objetos</p><p class="mono">PR.PR_DESC_TIPOS_CREDITO frente al uso en CIERRE/SAF/PO</p><p class="q">Evidencia</p><p>El origen publica solo num_desc_tipo_credito y desc_tipo_credito. Cartera y administrador, que es lo que usan las reglas del cierre, no están en ninguna tabla: están implícitos en las listas IN(...). Seis de los 30 tipos no tienen clasificación asignada en ningún lado.</p><p class="q">Remediación</p><p>Publicar la clasificación como catálogo local con banderas, vigencia y cuatro ojos, y pedir al negocio la definición de los seis tipos sin clasificar.</p></div>
+<div class="card rojo"><h3><span class="pill m">Medio</span> <span class="mono">R-005</span> &middot; La copia local del catálogo de tipos está desalineada del origen</h3><p class="q">Objetos</p><p class="mono">PO.SAF_CAT_DESC_TIPO frente a PR.PR_DESC_TIPOS_CREDITO</p><p class="q">Evidencia</p><p>El tipo 5 es DCM en el origen y OPCION MEZZANINE en la copia; el 26 es CASTIGADO_INDIVIDUAL y en la copia CARTERA_CASTIGADA; el 20 también difiere en la descripción. El cierre opera con la copia.</p><p class="q">Remediación</p><p>Sincronizacion programada desde el origen con reporte de diferencias, en lugar de copia manual.</p></div>
+<div class="card rojo"><h3><span class="pill a">Alto</span> <span class="mono">R-006</span> &middot; La marca COVID se decide con un umbral hardcodeado en 62 objetos y con la columna del origen en 10</h3><p class="q">Objetos</p><p class="mono">62 objetos productivos que usan dbo.FN_ES_COVID</p><p class="q">Evidencia</p><p>El cliente fijó como correcta la lectura de la columna COVID del origen (PO.SP_SND_COBRANZA línea 47). Los otros 62 objetos la derivan de NUM_CREDITO &lt; 6051 en dbo.FN_ES_COVID, umbral que ademas difiere entre ambientes (6086 en el export de desarrollo).</p><p class="q">Remediación</p><p>Homologar contra el patrón de referencia y retirar la función cuando ningún objeto vigente la use.</p></div>
+<h2>Hallazgos que se cierran con las respuestas</h2>
+<p>Se cierran porque el objeto que los origina no está en uso, no porque el defecto se haya corregido. La condición para cerrarlos de verdad es el <span class="mono">DROP</span> de esos objetos: mientras sigan en la base, alguien puede ejecutarlos.</p>
+<table><thead><tr><th>ID</th><th>Severidad original</th><th>Hallazgo</th><th>Por qué se cierra</th></tr></thead><tbody>
+<tr><td class="mono">L1-002</td><td><span class="pill c">Critico</span></td><td>Precedencia OR/AND anula el filtro de periodo en el UPDATE de etapa de riesgo</td><td>SP_IND_GEN_MES_MOD no está en uso (respuesta a Q01). Se cierra al confirmar el DROP del objeto.</td></tr>
+<tr><td class="mono">L1-003</td><td><span class="pill c">Critico</span></td><td>Transacción sin TRY/CATCH en el cierre mensual individual: queda abierta ante error</td><td>Mismo objeto declarado sin uso. El patrón transaccional sigue vivo en los SPs que si corren (L10-011).</td></tr>
+<tr><td class="mono">L1-006</td><td><span class="pill c">Critico</span></td><td>El cierre no acota el periodo ni registra que ya lo proceso: un segundo pase vuelve a acumular</td><td>Mismo objeto declarado sin uso; la falta de marca de corrida se mantiene como riesgo general en L1-035.</td></tr>
+<tr><td class="mono">L1-007</td><td><span class="pill c">Critico</span></td><td>Código de PRODUCCION consulta una base de datos de QA</td><td>Los cuatro PO.SYS_SP_* que leen Quiero_Confianza_CreditoPuente_QA son la primera versión de la póliza y serán borrados (respuesta a Q28). Queda como acción de limpieza, no como hallazgo.</td></tr>
+<tr><td class="mono">L1-009</td><td><span class="pill a">Alto</span></td><td>Asignación nula @ID_SECUENCIA = @ID_SECUENCIA en el bucle de movimientos</td><td>Objeto de la primera versión de la póliza, pendiente de borrado.</td></tr>
+<tr><td class="mono">L1-010</td><td><span class="pill a">Alto</span></td><td>Rango de fechas invertido en el INSERT dinámico de separación balance/orden</td><td>Objeto de la primera versión de la póliza, pendiente de borrado.</td></tr>
+<tr><td class="mono">L1-020</td><td><span class="pill a">Alto</span></td><td>Umbral de avalúo para clasificar vivienda, con vigencia expresada en el código</td><td>Objeto de la primera versión de la póliza, pendiente de borrado. Si el umbral de avalúo se sigue usando en otro objeto vigente, vuelve a abrirse.</td></tr>
+<tr><td class="mono">L2-003</td><td><span class="pill c">Critico</span></td><td>PO.SYS_SP_MOV_CARGO borra los cargos de PRINCIPAL de todas las pólizas del rango</td><td>PO.SYS_SP_MOV_CARGO es de la primera versión de la póliza (Q28); el borrado masivo de cargos deja de estar en el camino contable.</td></tr>
+<tr><td class="mono">L2-020</td><td><span class="pill m">Medio</span></td><td>PO.SYS_SP_MOV_CARGO también lee la base de QA</td><td>Mismo objeto: la lectura a QA se resuelve con el borrado.</td></tr>
+<tr><td class="mono">L6-007</td><td><span class="pill a">Alto</span></td><td>El reporte a Afirme deja siempre en cero la comisión de administración por un rubro mal escrito</td><td>El reporte a Afirme no se utiliza (respuesta a Q15) y dbo.REPORTEAFIRME queda fuera del alcance CIERRE/SAF/PO/cobranza.</td></tr>
+<tr><td class="mono">L10-001</td><td><span class="pill c">Critico</span></td><td>SP_IND_GEN_MES_MOD suma intereses, comisiones y moratorios al capital (PRINCIPAL_FINAL) en el UPDATE etiquetado como MONTOEXIGIBLECOM</td><td>La columna destino del ajuste ballon deja de ser un riesgo contable vivo: el ejemplo vigente es CIERRE.SP_SAF_SALDOS línea 90 (respuesta a Q01).</td></tr>
+<tr><td class="mono">L10-002</td><td><span class="pill c">Critico</span></td><td>SP_IND_GEN_MES_MOD abre transacción con 12 UPDATE y hace COMMIT sin TRY/CATCH, XACT_ABORT ni validación de estado</td><td>Mismo objeto declarado sin uso.</td></tr>
+</tbody></table>
+<h2>Hallazgos que cambian de severidad o de lectura</h2>
+<table><thead><tr><th>ID</th><th>Antes</th><th>Ahora</th><th>Hallazgo</th><th>Qué cambió</th></tr></thead><tbody>
+<tr><td class="mono">L10-004</td><td><span class="pill c">Critico</span></td><td><span class="pill c">Critico</span> <span class="tag">Reencuadrado</span></td><td>17 de 27 objetos de cierre nombran la base externa en el código y SP_CMR_GEN_MES mezcla dos bases distintas en el mismo procedimiento</td><td>Mismo reencuadre; lo que si queda abierto es SP_CMR_GEN_MES mezclando dos bases distintas en el mismo procedimiento.</td></tr>
+<tr><td class="mono">L10-007</td><td><span class="pill a">Alto</span></td><td><span class="pill c">Critico</span> <span class="tag">Sube</span></td><td>El generador de CIERRE.SAF_SALDOS materializa rubros por lista negra y los reportes los consumen por lista blanca, sin catálogo que garantice el contrato</td><td>Confirmado contra PR.PR_RUBRO: el literal OPI VALOR (con espacio) no existe en el origen, solo OPI_VALOR. El filtro nunca casa, así que ese importe no entra en ninguna póliza. Deja de ser un riesgo de contrato y pasa a ser un defecto con importe.</td></tr>
+<tr><td class="mono">L10-008</td><td><span class="pill a">Alto</span></td><td><span class="pill c">Critico</span> <span class="tag">Sube</span></td><td>La definición de cartera sin restricción difiere entre los reportes de cierre: dos listas distintas de COD_ORIGEN</td><td>Con PR.PR_ORIGEN_FONDOS a la vista, las dos listas no son equivalentes en significado: 046 es CARTERA_CASTIGADA y 008/031 son CAPITAL (RECURSOS PROPIOS) y OBLIGACIONES, y la tercera variante compara códigos char(3) como números. Dos reportes de cierre pueden clasificar la misma cartera de forma distinta.</td></tr>
+<tr><td class="mono">L2-001</td><td><span class="pill c">Critico</span></td><td><span class="pill c">Critico</span> <span class="tag">Reencuadrado</span></td><td>La participación Afirme está partida en dos constantes complementarias (0.10 y 0.90) repartidas en 28 SPs</td><td>La participación debe colgar de COD_ORIGEN y no de un nombre: Afirme son tres orígenes distintos (012, 027, 030) en PR.PR_ORIGEN_FONDOS, y el 0.10/0.90 está escrito en 28 SPs sin distinguirlos.</td></tr>
+<tr><td class="mono">L6-003</td><td><span class="pill c">Critico</span></td><td><span class="pill c">Critico</span> <span class="tag">Reencuadrado</span></td><td>El tratamiento COVID de una cuota se decide con el umbral NUM_CREDITO &lt; 6051, usado por 66 SPs</td><td>Se mantiene crítico y ahora tiene patrón de salida: 62 objetos productivos deciden COVID con dbo.FN_ES_COVID (NUM_CREDITO &lt; 6051, distinto entre ambientes) mientras 10 leen la columna del origen, que es la forma correcta.</td></tr>
+<tr><td class="mono">L6-004</td><td><span class="pill c">Critico</span></td><td><span class="pill c">Critico</span> <span class="tag">Reencuadrado</span></td><td>Los nombres de base externa son distintos en dev y prod dentro del mismo código: 7 objetos comunes divergen (shadow vs real)</td><td>Mismo reencuadre: shadow es el nombre de la replica en QA, no una base ajena.</td></tr>
+<tr><td class="mono">L1-008</td><td><span class="pill a">Alto</span></td><td><span class="pill a">Alto</span> <span class="tag">Reencuadrado</span></td><td>SQL dinámico con concatenación de parámetros (inyección y planes no reutilizables)</td><td>Alcance reducido: dos de los cinco objetos son de la primera versión de la póliza. Siguen vivos PO.SYS_SP_ACCOUNT_BALANCE_ORDEN, PO.SYS_SP_BALANCE_DETAIL_SQL y PO.SYS_SP_ACTUALIZA_ESTADO_POLIZA.</td></tr>
+<tr><td class="mono">L1-013</td><td><span class="pill a">Alto</span></td><td><span class="pill a">Alto</span> <span class="tag">Reencuadrado</span></td><td>Procesamiento fila a fila (RBAR) dentro de la transacción contable</td><td>Alcance reducido: el RBAR de PO.SYS_SP_MOV_ABONO sale con el objeto; se mantiene en PO.SP_IND_COBRANZA, PO.SP_COM_COBRANZA_CASTIGOS y la familia SND.</td></tr>
+<tr><td class="mono">L1-016</td><td><span class="pill a">Alto</span></td><td><span class="pill a">Alto</span> <span class="tag">Reencuadrado</span></td><td>Nombre de base externa embebido 6.480 veces (principal diferenciador entre BD y BD_prod)</td><td>El nombre embebido es Quiero_Confianza_shadow en QA y Quiero_Confianza en producción: es drift por ambiente, y se absorbe con los 38 sinónimos de la Fase 1.</td></tr>
+<tr><td class="mono">L1-019</td><td><span class="pill a">Alto</span></td><td><span class="pill a">Alto</span> <span class="tag">Reencuadrado</span></td><td>IVA 16% embebido en cálculos de devengo y de IVA de intereses/moratorios</td><td>Alcance reducido a CIERRE.SP_CMR_GEN_MES (6 usos) y PO.SP_IND_COBRANZA (7): el 0.16 de PO.SYS_SP_AVALUO_AND_UPDATE sale con el objeto. El IVA por rubro, en cambio, ya viene del origen (ind_iva), así que el portal lo lee y no lo administra.</td></tr>
+<tr><td class="mono">L1-022</td><td><span class="pill a">Alto</span></td><td><span class="pill a">Alto</span> <span class="tag">Reencuadrado</span></td><td>Cuentas contables y mascaras escritas como literales en el código</td><td>Alcance reducido a PO.SP_IND_COBRANZA; las cuentas de los dos SYS_SP_* salen con los objetos.</td></tr>
+<tr><td class="mono">L10-006</td><td><span class="pill a">Alto</span></td><td><span class="pill a">Alto</span> <span class="tag">Reencuadrado</span></td><td>19 de los 27 objetos de cierre no existen en BD_prod y SP_SAF_SALDOS está desplegado con menos de la mitad de su lógica</td><td>Mismo reencuadre: es una pregunta de metadatos de producción (Fase 0) y es justamente lo que la lista limpia de objetos vigentes debe cerrar.</td></tr>
+<tr><td class="mono">L2-007</td><td><span class="pill a">Alto</span></td><td><span class="pill a">Alto</span> <span class="tag">Reencuadrado</span></td><td>La familia sindicada (SND) no aplica el tratamiento COVID ni la separación balance/orden de etapa 3</td><td>El cliente fijó la implementación de referencia: COVID en columna propia del origen y separación balance/orden por la leyenda CUENTAS DE ORDEN en OBSERVACION (PO.SP_SND_COBRANZA línea 47). El hallazgo pasa de &quot;la familia SND no aplica la regla&quot; a &quot;62 objetos deciden COVID con el umbral hardcodeado y solo 10 leen la columna del origen&quot;.</td></tr>
+<tr><td class="mono">L6-015</td><td><span class="pill a">Alto</span></td><td><span class="pill a">Alto</span> <span class="tag">Reencuadrado</span></td><td>La clasificación de cartera por tipo de crédito está replicada con 37 listas distintas en 104 archivos</td><td>PR.PR_DESC_TIPOS_CREDITO existe y publica los 30 tipos, así que la remediación es join al catálogo y no un catálogo nuevo. Lo que no publica el origen es cartera ni administrador: esa clasificación es local y es la que administra el portal.</td></tr>
+<tr><td class="mono">L1-014</td><td><span class="pill a">Alto</span></td><td><span class="pill m">Medio</span> <span class="tag">Baja</span></td><td>NOLOCK generalizado en las lecturas que alimentan la póliza contable</td><td>Quiero_Confianza es replica de lectura y el cierre corre después del cierre de SAF: el NOLOCK no amenaza al core. Queda como riesgo de reproducibilidad de la cifra.</td></tr>
+<tr><td class="mono">L1-024</td><td><span class="pill m">Medio</span></td><td><span class="pill m">Medio</span> <span class="tag">Reencuadrado</span></td><td>Conceptos y leyendas de póliza construidos con literales en el código</td><td>Alcance reducido, pero el fondo no cambia: los conceptos de póliza siguen escritos como literales en los SPs vigentes.</td></tr>
+<tr><td class="mono">L10-016</td><td><span class="pill a">Alto</span></td><td><span class="pill m">Medio</span> <span class="tag">Baja</span></td><td>287 hints NOLOCK en 15 de los 27 objetos de cierre, incluidos los que producen cifras contables</td><td>Mismo reencuadre que L1-014, sobre la familia de cierre.</td></tr>
+<tr><td class="mono">L12-001</td><td><span class="pill a">Alto</span></td><td><span class="pill m">Medio</span> <span class="tag">Baja</span></td><td>110 de los 245 objetos programables no son invocados por ningún otro objeto del repositorio ni por los 30 reportes</td><td>Ya no es una lista abierta: de los 198 objetos en foco, 174 están en el export productivo y la clasificación por evidencia deja 16 candidatos a baja y 5 declarados sin uso (ver la lista limpia).</td></tr>
+<tr><td class="mono">L12-002</td><td><span class="pill a">Alto</span></td><td><span class="pill m">Medio</span> <span class="tag">Baja</span></td><td>187 de las 251 tablas no son referenciadas por ningún procedimiento ni función del repositorio, y son esquemas completos</td><td>La mayoría de las 187 tablas sin referencia pertenece a esquemas fuera del alcance (juicios, cierre_puente, ori, edc); dentro del foco quedan 9 tablas de PO.</td></tr>
+<tr><td class="mono">L2-009</td><td><span class="pill a">Alto</span></td><td><span class="pill m">Medio</span> <span class="tag">Baja</span></td><td>761 lecturas con NOLOCK adicionales en los procesos de castigo, condonación y venta de cartera</td><td>Mismo reencuadre que L1-014.</td></tr>
+<tr><td class="mono">L2-018</td><td><span class="pill m">Medio</span></td><td><span class="pill m">Medio</span> <span class="tag">Reencuadrado</span></td><td>Listas de tipo de crédito repetidas y divergentes entre procesos</td><td>Sigue siendo el hardcodeo de mayor retorno y ahora tiene catálogo de origen (30 tipos) y matriz de banderas ya prototipada en la demo.</td></tr>
+<tr><td class="mono">L2-019</td><td><span class="pill m">Medio</span></td><td><span class="pill m">Medio</span> <span class="tag">Reencuadrado</span></td><td>Dos objetos del cierre existen solo en desarrollo</td><td>La ausencia en el export no prueba ausencia en producción: el export puede ser parcial. Se resuelve con la consulta de metadatos de la Fase 0, no con código.</td></tr>
+<tr><td class="mono">L6-017</td><td><span class="pill m">Medio</span></td><td><span class="pill m">Medio</span> <span class="tag">Reencuadrado</span></td><td>251 tablas con datos personales y bancarios sin enmascaramiento ni cifrado, y solo 30 con rastro de auditoría</td><td>Dentro del alcance quedan las 53 tablas de PO y las de CIERRE; los esquemas juicios, ori, edc y cierre_puente salen.</td></tr>
+</tbody></table>
+<h2>Hallazgos fuera del alcance acordado</h2>
+<p>Quedan documentados y sin dueño. Dos merecen una decisión explícita aunque no los trabajemos: <span class="mono">edc.SP_Genera_Ordenes_Dummy</span> inserta montos aleatorios en tablas de CFDI contra créditos reales, y <span class="mono">PAG.SP_OBTENER_NUC_DINAMICO</span> empareja pagos con un LIKE invertido.</p>
+<table><thead><tr><th>ID</th><th>Severidad</th><th>Hallazgo</th><th>Motivo</th></tr></thead><tbody>
+<tr><td class="mono">L6-001</td><td><span class="pill c">Critico</span></td><td>edc.SP_Genera_Ordenes_Dummy inserta montos aleatorios en las tablas de facturación (CFDI) contra créditos reales</td><td>edc.* fuera del alcance. Se deja registrado: inserta montos aleatorios en tablas de CFDI contra créditos reales, conviene que alguien lo asuma.</td></tr>
+<tr><td class="mono">L6-002</td><td><span class="pill c">Critico</span></td><td>El identificador de pagos empareja el crédito con un LIKE invertido y se queda con el número de crédito más bajo</td><td>PAG.* fuera del alcance.</td></tr>
+<tr><td class="mono">L6-006</td><td><span class="pill a">Alto</span></td><td>Los estados de cuenta se pueblan con tres listas distintas de tipo de crédito, y una lleva un pendiente escrito en el código</td><td>edc.* fuera del alcance; la remediación por catálogo de tipos lo cubriría después sin costo extra.</td></tr>
+<tr><td class="mono">L6-008</td><td><span class="pill a">Alto</span></td><td>El proceso de estado de cuenta escribe en el documento del cliente las leyendas &#x27;ERROR&#x27; y &#x27;0.00&#x27; cuando no reconoce el movimiento</td><td>edc.* fuera del alcance.</td></tr>
+<tr><td class="mono">L6-009</td><td><span class="pill a">Alto</span></td><td>Un correo de prueba queda como segundo destinatario de todos los clientes del estado de cuenta</td><td>edc.spUpsertCClienteDaily queda fuera del alcance (respuesta a Q29).</td></tr>
+<tr><td class="mono">L6-010</td><td><span class="pill a">Alto</span></td><td>El domicilio del cliente se arma con MAX() columna por columna: puede mezclar dos domicilios distintos</td><td>edc.* fuera del alcance.</td></tr>
+<tr><td class="mono">L6-011</td><td><span class="pill a">Alto</span></td><td>La validación de cuenta bancaria acepta cualquier cadena de 19 posiciones numéricas y omite el dígito de control</td><td>La validación de cuenta se usa desde PAG.*, fuera del alcance.</td></tr>
+<tr><td class="mono">L6-013</td><td><span class="pill a">Alto</span></td><td>El nocturno de pagos no identificados une cuentas con LIKE, con riesgo de duplicar importes</td><td>PAG.* fuera del alcance.</td></tr>
+<tr><td class="mono">L6-014</td><td><span class="pill a">Alto</span></td><td>Los tres procesos de estado de cuenta no son idempotentes y su bitácora está comentada</td><td>edc.* fuera del alcance.</td></tr>
+<tr><td class="mono">L6-019</td><td><span class="pill m">Medio</span></td><td>El corte de estado de cuenta depende de DATEFIRST de la sesión y usa BETWEEN sobre fechas con hora</td><td>edc.* fuera del alcance.</td></tr>
+<tr><td class="mono">L6-021</td><td><span class="pill m">Medio</span></td><td>Los bancos del tablero de conciliación son columnas fijas del SP</td><td>PAG.* fuera del alcance.</td></tr>
+<tr><td class="mono">L6-022</td><td><span class="pill m">Medio</span></td><td>El estado de cuenta reporta como número de recibos vencidos el máximo número de secuencia</td><td>edc.* fuera del alcance.</td></tr>
+<tr><td class="mono">L6-024</td><td><span class="pill info">Bajo</span></td><td>12 tablas de respaldo y trabajo conviven con el modelo, tres de ellas versionadas a mano</td><td>Las tablas de respaldo están en cierre_puente y edcc, fuera del alcance.</td></tr>
+<tr><td class="mono">L10-023</td><td><span class="pill m">Medio</span></td><td>RPT.CASTIGO_REEST_SALDOS reconstruye el ultimo movimiento con MAX(fecha) sin desempate, con NOLOCK y con tipo de parámetro distinto al resto</td><td>RPT.CASTIGO_REEST_SALDOS queda fuera del alcance CIERRE/SAF/PO/cobranza; se reabre si contabilidad lo usa como fuente.</td></tr>
+</tbody></table>
+<h2>Hallazgos vigentes sin cambio</h2>
+<p>Siguen tal cual: ni el alcance ni las respuestas los tocan.</p>
+<table><thead><tr><th>ID</th><th>Severidad</th><th>Categoria</th><th>Hallazgo</th></tr></thead><tbody>
+<tr><td class="mono">L1-001</td><td><span class="pill c">Critico</span></td><td>Corrección funcional</td><td>Cierre mensual comercial lee &#x27;otras comisiones&#x27; de una fecha fija (&#x27;20260123&#x27;)</td></tr>
+<tr><td class="mono">L1-004</td><td><span class="pill c">Critico</span></td><td>Transaccional</td><td>Los CATCH hacen ROLLBACK y se tragan el error: el proceso reporta éxito tras revertir</td></tr>
+<tr><td class="mono">L1-005</td><td><span class="pill c">Critico</span></td><td>Transaccional</td><td>ROLLBACK incondicional en CATCH puede enmascarar el error original (error 3903)</td></tr>
+<tr><td class="mono">L10-003</td><td><span class="pill c">Critico</span></td><td>Observabilidad</td><td>Los cinco SPs de cierre registran sus errores con nombres de procedimiento que no existen y tres comparten la misma etiqueta</td></tr>
+<tr><td class="mono">L10-005</td><td><span class="pill c">Critico</span></td><td>Integridad contable</td><td>SP_SAF_SALDOS usa criterios de cancelación contradictorios entre el universo de créditos activos y los universos de saldos en orden</td></tr>
+<tr><td class="mono">L12-004</td><td><span class="pill c">Critico</span></td><td>Observabilidad</td><td>102 objetos escriben en la bitácora de errores de póliza y solo 6 la leen; ninguno vigila el resultado</td></tr>
+<tr><td class="mono">L12-005</td><td><span class="pill c">Critico</span></td><td>Capa de reportes</td><td>Dos variantes del mismo reporte de póliza contable ejecutan el mismo procedimiento con filtros fijos distintos</td></tr>
+<tr><td class="mono">L2-002</td><td><span class="pill c">Critico</span></td><td>Corrección funcional</td><td>El filtro de la regla Afirme no es el mismo en todos los SPs (falta CONCEPTO NOT LIKE &#x27;TRS %&#x27;)</td></tr>
+<tr><td class="mono">L2-004</td><td><span class="pill c">Critico</span></td><td>Transaccional</td><td>El patrón de error defectuoso es universal: 78 de 80 SPs revierten y reportan éxito</td></tr>
+<tr><td class="mono">L1-011</td><td><span class="pill a">Alto</span></td><td>Proceso</td><td>Las alertas de tasas se marcan como enviadas antes de construir el envío</td></tr>
+<tr><td class="mono">L1-012</td><td><span class="pill a">Alto</span></td><td>Concurrencia</td><td>Cursores globales (no LOCAL) con workaround CursorCloseDeallocate</td></tr>
+<tr><td class="mono">L1-015</td><td><span class="pill a">Alto</span></td><td>Parametrización</td><td>Regla de negocio COVID con corte de crédito hardcodeado y distinto entre ambientes</td></tr>
+<tr><td class="mono">L1-017</td><td><span class="pill a">Alto</span></td><td>Parametrización</td><td>Linked server y servidor de pólizas hardcodeados (y apuntando a QA en BD)</td></tr>
+<tr><td class="mono">L1-018</td><td><span class="pill a">Alto</span></td><td>Parametrización</td><td>Factor del 10% (&#x27;porcentaje Afirme&#x27;) aplicado a montos contables como literal</td></tr>
+<tr><td class="mono">L1-021</td><td><span class="pill a">Alto</span></td><td>Parametrización</td><td>Identificadores de póliza (ID_POLIZA) hardcodeados uno por SP</td></tr>
+<tr><td class="mono">L10-009</td><td><span class="pill a">Alto</span></td><td>Consistencia de reglas</td><td>Seis variantes de la lista de cuentas excluidas de los reportes, con comparaciones de texto y numéricas mezcladas</td></tr>
+<tr><td class="mono">L10-010</td><td><span class="pill a">Alto</span></td><td>Corrección funcional</td><td>SP_CMR_DIA y SP_CMR_GEN_DIA son clones con filtros divergentes que alimentan dos tablas de cierre distintas</td></tr>
+<tr><td class="mono">L10-011</td><td><span class="pill a">Alto</span></td><td>Transaccional</td><td>Los seis procesos transaccionales del cierre operan sin XACT_ABORT, sin XACT_STATE y sin propagación de errores</td></tr>
+<tr><td class="mono">L10-012</td><td><span class="pill a">Alto</span></td><td>Rendimiento</td><td>SP_IND_GEN_MES resuelve el cierre individual con 378 subconsultas correlacionadas y tres copias del mismo bloque de 400 líneas</td></tr>
+<tr><td class="mono">L10-013</td><td><span class="pill a">Alto</span></td><td>Concurrencia</td><td>SP_SAF_SALDOS calcula los saldos en orden con dos cursores fila a fila y cursores de alcance global</td></tr>
+<tr><td class="mono">L10-014</td><td><span class="pill a">Alto</span></td><td>Integridad de datos</td><td>CIERRE.IND_REP no tiene llave natural única y las cuatro tablas de cierre usan uniqueidentifier aleatorio como clave agrupada</td></tr>
+<tr><td class="mono">L10-015</td><td><span class="pill a">Alto</span></td><td>Corrección funcional</td><td>Filtro de fecha comentado en el bloque de moratorios de SP_SAF_SALDOS, a diferencia de los rubros hermanos</td></tr>
+<tr><td class="mono">L12-003</td><td><span class="pill a">Alto</span></td><td>Riesgo concentrado</td><td>El riesgo está concentrado en siete objetos: un procedimiento con 92 llamadores y seis funciones escalares entre 31 y 78</td></tr>
+<tr><td class="mono">L12-006</td><td><span class="pill a">Alto</span></td><td>Control de ambientes</td><td>Los 30 archivos .rdl son 18 reportes lógicos duplicados por ambiente, con la cadena de conexión embebida y sin origen de datos compartido</td></tr>
+<tr><td class="mono">L12-007</td><td><span class="pill a">Alto</span></td><td>Control de ambientes</td><td>Las variantes QA apuntan a un esquema que no existe en el repositorio y a otro catálogo, y conviven en la misma carpeta que las de producción</td></tr>
+<tr><td class="mono">L2-005</td><td><span class="pill a">Alto</span></td><td>Corrección funcional</td><td>El IVA se recalcula con 16% fijó en lugar de usar la tasa registrada por crédito</td></tr>
+<tr><td class="mono">L2-006</td><td><span class="pill a">Alto</span></td><td>Corrección funcional</td><td>La homologación de rubro contable existe como función pero solo la usan los SPs COM</td></tr>
+<tr><td class="mono">L2-008</td><td><span class="pill a">Alto</span></td><td>Corrección funcional</td><td>Divergencia sistemática entre SPs hermanos COM vs IND en la misma operación</td></tr>
+<tr><td class="mono">L2-010</td><td><span class="pill a">Alto</span></td><td>Concurrencia</td><td>52 SPs más con cursores globales y 64 llamadas al workaround CursorCloseDeallocate</td></tr>
+<tr><td class="mono">L2-011</td><td><span class="pill a">Alto</span></td><td>Parametrización</td><td>Cuenta bancaria (CLABE STP) embebida en la clasificación contable</td></tr>
+<tr><td class="mono">L2-012</td><td><span class="pill a">Alto</span></td><td>Parametrización</td><td>74 números de póliza distintos hardcodeados, uno por SP, con un valor reutilizado</td></tr>
+<tr><td class="mono">L2-013</td><td><span class="pill a">Alto</span></td><td>Integridad de datos</td><td>Importes en tipo MONEY y redondeos a decimal(16,2) en la construcción de la póliza</td></tr>
+<tr><td class="mono">L6-005</td><td><span class="pill a">Alto</span></td><td>Rendimiento</td><td>Cinco funciones escalares con acceso a datos se invocan desde 78, 69, 66, 44 y 43 SPs: ejecución fila por fila contra la base core</td></tr>
+<tr><td class="mono">L6-012</td><td><span class="pill a">Alto</span></td><td>Corrección funcional</td><td>La alerta de tasas se marca como enviada antes de enviarse, y sobre una ventana distinta a la que se notifica</td></tr>
+<tr><td class="mono">L1-023</td><td><span class="pill m">Medio</span></td><td>Parametrización</td><td>Códigos de producto, tipo de crédito y tipo de transacción como números mágicos</td></tr>
+<tr><td class="mono">L1-025</td><td><span class="pill m">Medio</span></td><td>Observabilidad</td><td>Fecha centinela &#x27;00010101&#x27; en el registro de errores</td></tr>
+<tr><td class="mono">L1-026</td><td><span class="pill m">Medio</span></td><td>Rendimiento</td><td>121 SELECT ... INTO #temp dentro de transacciones y DDL en caliente</td></tr>
+<tr><td class="mono">L1-027</td><td><span class="pill m">Medio</span></td><td>Rendimiento</td><td>Predicados no SARGables y conversiones implícitas en los joins entre bases</td></tr>
+<tr><td class="mono">L1-028</td><td><span class="pill m">Medio</span></td><td>Transaccional</td><td>Ningún SP del lote usa SET XACT_ABORT ON</td></tr>
+<tr><td class="mono">L1-029</td><td><span class="pill m">Medio</span></td><td>Mantenibilidad</td><td>Familias de SPs clonados: la misma lógica repetida con variaciones mínimas</td></tr>
+<tr><td class="mono">L1-030</td><td><span class="pill m">Medio</span></td><td>Corrección funcional</td><td>Versión productiva de PO.SYS_SP_BALANCE_DETAIL_SQL con token @TABLA sin resolver</td></tr>
+<tr><td class="mono">L1-031</td><td><span class="pill m">Medio</span></td><td>Corrección funcional</td><td>Producción atrasada en tres objetos del cierre y de devoluciones</td></tr>
+<tr><td class="mono">L1-032</td><td><span class="pill m">Medio</span></td><td>Codificación</td><td>Comentarios con doble codificación (mojibake) y mezcla de encodings en BD/</td></tr>
+<tr><td class="mono">L10-017</td><td><span class="pill m">Medio</span></td><td>Contrato de salida</td><td>Tres reportes por área publican columnas con el mismo alias repetido en el mismo resultado</td></tr>
+<tr><td class="mono">L10-018</td><td><span class="pill m">Medio</span></td><td>Corrección funcional</td><td>SP_CMR_GEN_DIA_RIESGOS_VIS agrupa por folio pero publica una llave que incluye la sección, y colapsa atributos descriptivos con MIN/MAX</td></tr>
+<tr><td class="mono">L10-019</td><td><span class="pill m">Medio</span></td><td>Corrección funcional</td><td>Rangos de periodo construidos con BETWEEN sobre columnas de fecha y hora, junto al patrón correcto en el mismo procedimiento</td></tr>
+<tr><td class="mono">L10-020</td><td><span class="pill m">Medio</span></td><td>Validación de entradas</td><td>Ninguno de los 20 procedimientos de reporte valida sus parámetros de fecha ni acota el rango consultado</td></tr>
+<tr><td class="mono">L10-021</td><td><span class="pill m">Medio</span></td><td>Robustez</td><td>MONTO_BASE_INTERES divide por una expresión que puede ser cero o NULL y aborta el cierre completo</td></tr>
+<tr><td class="mono">L10-022</td><td><span class="pill m">Medio</span></td><td>Mantenibilidad</td><td>Código muerto y listas de tipos de crédito inconsistentes dentro del mismo procedimiento de cierre</td></tr>
+<tr><td class="mono">L12-008</td><td><span class="pill m">Medio</span></td><td>Mantenibilidad</td><td>Dos reportes con nombres distintos ejecutan el mismo dataset: el nombre del archivo no describe su contenido</td></tr>
+<tr><td class="mono">L12-009</td><td><span class="pill m">Medio</span></td><td>Trazabilidad</td><td>Solo 18 de los 245 objetos programables alimentan reportes versionados: el resto de la entrega de información no es visible</td></tr>
+<tr><td class="mono">L12-010</td><td><span class="pill m">Medio</span></td><td>Capa de reportes</td><td>Consultas SQL escritas dentro de los artefactos de reporte</td></tr>
+<tr><td class="mono">L2-014</td><td><span class="pill m">Medio</span></td><td>Observabilidad</td><td>La fecha centinela &#x27;00010101&#x27; en el log de errores aparece en 14 SPs más</td></tr>
+<tr><td class="mono">L2-015</td><td><span class="pill m">Medio</span></td><td>Integridad de datos</td><td>Borrado por fecha completa sin acotar proceso en tablas de histórico y saldos</td></tr>
+<tr><td class="mono">L2-016</td><td><span class="pill m">Medio</span></td><td>Mantenibilidad</td><td>Clonación masiva confirmada: 41.596 líneas con solo 62 variantes reales y familias de hasta 5 copias casi idénticas</td></tr>
+<tr><td class="mono">L2-017</td><td><span class="pill m">Medio</span></td><td>Parametrización</td><td>1.305 literales de rubro y 935 de concepto en los 80 objetos</td></tr>
+<tr><td class="mono">L2-021</td><td><span class="pill m">Medio</span></td><td>Rendimiento</td><td>22 SPs hacen TRUNCATE de temporales dentro de la transacción y 79 reconstruyen el día completo</td></tr>
+<tr><td class="mono">L6-016</td><td><span class="pill m">Medio</span></td><td>Seguridad</td><td>La carga de alertas de tasas parsea el archivo completo en un ciclo, sin control de errores y descartando líneas en silencio</td></tr>
+<tr><td class="mono">L6-018</td><td><span class="pill m">Medio</span></td><td>Estándares SQL</td><td>El export de base de datos no contiene ningún índice no agrupado, y 24 tablas no declaran llave primaria</td></tr>
+<tr><td class="mono">L6-020</td><td><span class="pill m">Medio</span></td><td>Mantenibilidad</td><td>La validación de una alerta de tasa está implementada dos veces con reglas distintas</td></tr>
+<tr><td class="mono">L1-033</td><td><span class="pill info">Bajo</span></td><td>Mantenibilidad</td><td>Código muerto, bloques comentados y lógica pendiente marcada en el código</td></tr>
+<tr><td class="mono">L1-034</td><td><span class="pill info">Bajo</span></td><td>Estándares</td><td>varchar sin longitud, EXEC sin esquema y falta de encabezado estándar</td></tr>
+<tr><td class="mono">L1-035</td><td><span class="pill info">Bajo</span></td><td>Observabilidad</td><td>Sin trazabilidad de ejecución: no hay bitácora de inicio/fin ni id de corrida</td></tr>
+<tr><td class="mono">L10-024</td><td><span class="pill info">Bajo</span></td><td>Mantenibilidad</td><td>Nombres y metadatos de encabezado inconsistentes en la familia de cierre</td></tr>
+<tr><td class="mono">L10-025</td><td><span class="pill info">Bajo</span></td><td>Hardcodes</td><td>Centinelas y literales de programa embebidos en la lógica de cierre</td></tr>
+<tr><td class="mono">L2-022</td><td><span class="pill info">Bajo</span></td><td>Estándares</td><td>Inconsistencias de estilo que dificultan el control automático</td></tr>
+<tr><td class="mono">L6-023</td><td><span class="pill info">Bajo</span></td><td>Seguridad</td><td>El utilitario de cierre de cursores concatena el nombre recibido en SQL dinámico</td></tr>
+<tr><td class="mono">L6-025</td><td><span class="pill info">Bajo</span></td><td>Estándares SQL</td><td>Funciones de formato con truncamiento silencioso y conversiones sin protección</td></tr>
+</tbody></table>
+<h2>Lo que sigue abierto con el negocio</h2><div class="card ambar"><ul><li>El umbral COVID: se homologa contra la columna del origen, pero hay que decidir que pasa con las cifras ya publicadas por los 62 objetos que usaron el umbral.</li><li>La regla única de cartera no restringida por <span class="mono">COD_ORIGEN</span>, incluido si 046 (CARTERA_CASTIGADA) pertenece a la misma bolsa que 008 y 031.</li><li>El rubro sobreviviente de cada par duplicado del origen y el destino de los dos marcados "no usar".</li><li>Si <span class="mono">PRINCIPAL_VENCIDO</span> e <span class="mono">INTERES_NO_EXIGIBLES</span> son literales obsoletos o rubros de otra fuente.</li><li>La clasificación de cartera y administrador de los seis tipos sin definir.</li><li>La participación por origen de Afirme (012, 027, 030) y la del sindicado, hoy sin valor.</li></ul></div>
+</div>
+<footer>Auditoría de código SQL KARDIA / SAF &middot; análisis estático del repositorio (BD, BD_prod y reportes).
+No se ejecutó ningún objeto contra una instancia de SQL Server ni se leyeron datos productivos:
+los hallazgos que dependen de datos, de plan de ejecución o de reglas contables se marcan como pendientes de validación.</footer>
+</body></html>

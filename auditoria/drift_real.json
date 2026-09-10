@@ -1,0 +1,9 @@
+[
+ "CIERRE.SP_SAF_SALDOS.StoredProcedure.sql",
+ "PO.CONTROL_HISTORICO_TRASPASOS.Table.sql",
+ "PO.SP_IND_DEVOLUCIONES.StoredProcedure.sql",
+ "PO.SP_SAF_POLIZA_ENVIO_1P_CON.StoredProcedure.sql",
+ "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql",
+ "PO.SYS_SP_CONTROL_HISTORICO_TRASPASOS.StoredProcedure.sql",
+ "dbo.FN_ES_COVID.UserDefinedFunction.sql"
+]

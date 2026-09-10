@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La versión SPs_Sept10 frente a lo auditado &mdash; KARDIA / SAF</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+nav.docs{padding:10px 32px;background:#131b29;border-bottom:1px solid #2a3549;font-size:13px}
+nav.docs a{margin-right:16px;text-decoration:none}
+.wrap{padding:22px 32px 60px;max-width:1180px}
+h2{margin:34px 0 12px;font-size:18px;border-left:3px solid #4c8dff;padding-left:10px}
+h3{margin:22px 0 6px;font-size:15px}
+p.lead{color:#c9d6ee;font-size:15px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:140px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b}.kpi.a b{color:#ffa94d}.kpi.m b{color:#ffd43b}.kpi.b b{color:#74c0fc}
+.card{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:16px 20px;margin:12px 0}
+.card.rojo{border-left:3px solid #ff6b6b}
+.card.ambar{border-left:3px solid #ffa94d}
+.card.azul{border-left:3px solid #4c8dff}
+.card.verde{border-left:3px solid #51cf66}
+.card h3{margin-top:0}
+.card .q{color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.num{white-space:nowrap;color:#93a1bb}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#c9d6ee}
+pre{margin:8px 0 0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:12px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
+.pill.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.pill.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.pill.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.pill.ok{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.info{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+ul{margin:6px 0;padding-left:20px}li{margin:4px 0}
+.ola{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 20px;margin:12px 0}
+.ola h3{margin:0 0 2px}
+.ola .obj{color:#93a1bb;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.tag{font-size:11px;color:#93a1bb;border:1px solid #35415a;border-radius:5px;padding:2px 7px;margin-right:6px}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px solid #35415a;color:#c9d6ee}
+</style></head><body>
+<header class="top"><h1>La versión SPs_Sept10 frente a lo auditado</h1><p>Qué cambió, qué pendientes cierra y qué sigue abierto — CIERRE, SAF, PO y dbo.REPORTE_COBRANZA_INTEGRACION</p></header>
+<nav class="docs">
+<a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
+<a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
+<a href="09_demo_portal.html">Demo del portal</a>
+<a href="14_demo_portal_banderas.html">Demo de banderas</a>
+<a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
+<a href="12_preguntas_negocio.html">Confirmaciones con negocio</a>
+<a href="15_respuestas_cliente.html">Respuestas del cliente</a>
+<a href="16_reclasificacion.html">Reclasificación de hallazgos</a>
+<a href="17_objetos_vigentes.html">Objetos vigentes</a>
+<a href="18_version_sept10.html">Versión SPs_Sept10</a>
+<a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a>
+<a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
+</nav>
+<div class="wrap">
+
+<p class="lead">Comparación línea por línea de la versión <code>SPs_Sept10</code> entregada por el equipo contra la copia
+que se auditó. La comparación normaliza codificación y fin de línea (la entrega viene en UTF-16 con CRLF, el repositorio
+auditado en UTF-8), y descarta cambios que sólo son comentarios o espacios, para que el conteo sea de cambio real de
+lógica. No se ejecutó nada contra SQL Server.</p>
+
+<div class="kpis">
+<div class="kpi"><b>37</b><span>objetos con cambio de lógica</span></div>
+<div class="kpi"><b>20</b><span>objetos nuevos</span></div>
+<div class="kpi"><b>0</b><span>objetos eliminados</span></div>
+<div class="kpi c"><b>0</b><span>hallazgos que cierra</span></div>
+<div class="kpi m"><b>2</b><span>controles nuevos parciales</span></div>
+<div class="kpi c"><b>13</b><span>indicadores medidos, ninguno a la baja</span></div>
+</div>
+
+<h2>Respuesta corta</h2>
+<div class="card rojo"><h3>Ningún hallazgo se cierra con esta versión, y el hardcodeo crece</h3>
+<p>Los trece indicadores que sostienen los hallazgos abiertos se midieron en las dos copias del código y ninguno bajó:
+tres suben porque los dos objetos nuevos repiten los mismos patrones. La entrega sí trae dos controles que la auditoría
+había pedido (guarda de reproceso y bitácora de duración), pero acotados a la familia sindicada.</p></div>
+
+<h2>Los indicadores, medidos en las dos versiones</h2>
+<p>Conteo sobre <code>BD_prod</code> (la copia de producción del paquete), en objetos y ocurrencias, descartando comentarios.</p>
+<table><thead><tr><th>Señal medida en el código de producción</th><th>Auditado</th><th>SPs_Sept10</th><th>Estado</th><th>Lectura</th></tr></thead><tbody><tr><td>Literal <code>OPI VALOR</code> con espacio, inexistente en <code>PR.PR_RUBRO</code></td><td class="num">4 objetos / 16 usos</td><td class="num">4 objetos / 16 usos</td><td><span class="pill c">no cierra</span></td><td>R-001 sigue vigente: el filtro sigue escrito con espacio</td></tr><tr><td>Literal <code>PRINCIPAL_VENCIDO</code> (no aparece en el catálogo entregado)</td><td class="num">3 / 5</td><td class="num">3 / 5</td><td><span class="pill c">no cierra</span></td><td>pendiente de confirmar con contabilidad</td></tr><tr><td>Literal <code>INTERES_NO_EXIGIBLES</code> (no aparece en el catálogo entregado)</td><td class="num">6 / 20</td><td class="num">6 / 20</td><td><span class="pill c">no cierra</span></td><td>pendiente de confirmar con contabilidad</td></tr><tr><td>Objetos que leen <code>Quiero_Confianza_CreditoPuente_QA</code></td><td class="num">4 / 41</td><td class="num">4 / 41</td><td><span class="pill c">no cierra</span></td><td>los cuatro <code>PO.SYS_SP_*</code> declarados «para borrar» siguen en el paquete</td></tr><tr><td>Marca COVID por función con umbral (<code>dbo.FN_ES_COVID</code>)</td><td class="num">63 / 225</td><td class="num">65 / 227</td><td><span class="pill c">no cierra</span></td><td>sube: los dos SPs nuevos de sindicado también la usan</td></tr><tr><td>Marca COVID por columna del origen (<code>IND_COVID</code>)</td><td class="num">100 / 714</td><td class="num">102 / 728</td><td><span class="pill c">no cierra</span></td><td>siguen conviviendo las dos formas (R-006)</td></tr><tr><td>Umbral <code>6086</code> en producción y <code>6051</code> en la copia de desarrollo</td><td class="num">1 / 1</td><td class="num">1 / 1</td><td><span class="pill c">no cierra</span></td><td>la divergencia entre ambientes no se tocó</td></tr><tr><td>Regla de cartera no restringida escrita como <code>IN ('008','031')</code></td><td class="num">7 / 8</td><td class="num">7 / 8</td><td><span class="pill c">no cierra</span></td><td>R-003 sigue vigente</td></tr><tr><td>Misma regla escrita como <code>NOT IN (22,23,28,35)</code> comparando el código como número</td><td class="num">9 / 13</td><td class="num">9 / 13</td><td><span class="pill c">no cierra</span></td><td>R-003 sigue vigente</td></tr><tr><td><code>WITH (NOLOCK)</code></td><td class="num">76 / 895</td><td class="num">78 / 919</td><td><span class="pill c">no cierra</span></td><td>sube por los dos objetos nuevos</td></tr><tr><td>Cuentas de orden por <code>OBSERVACION LIKE '%CUENTAS DE ORDEN%'</code></td><td class="num">9 / 11</td><td class="num">9 / 11</td><td><span class="pill c">no cierra</span></td><td>el patrón de referencia sigue aplicado en 9 objetos, no en la familia completa</td></tr><tr><td>Filtros con <code>NUM_DESC_TIPO_CREDITO</code> hardcodeado</td><td class="num">90 / 314</td><td class="num">92 / 318</td><td><span class="pill c">no cierra</span></td><td>el hardcodeo crece: la versión nueva agrega listas, no las quita</td></tr><tr><td>Fecha fija <code>FECHA_SISTEMA='20260123'</code> en el cierre comercial (Q06)</td><td class="num">1 / 1</td><td class="num">1 / 1</td><td><span class="pill c">no cierra</span></td><td>sigue en la línea 461 de <code>CIERRE.SP_CMR_GEN_MES</code>, en las dos copias</td></tr></tbody></table>
+
+<h2>Qué cambió realmente</h2>
+<table><thead><tr><th>Archivo</th><th>Líneas sustantivas</th><th>Qué toca</th></tr></thead><tbody><tr><td class="mono">BD/PO.SP_COM_DEV_INTERES.StoredProcedure.sql</td><td class="num">+41 / -0</td><td>lista de tipos, base shadow, manejo de fechas</td></tr><tr><td class="mono">BD_prod/PO.SP_COM_DEV_INTERES.StoredProcedure.sql</td><td class="num">+41 / -0</td><td>lista de tipos, manejo de fechas</td></tr><tr><td class="mono">BD/PO.SP_SND_POLIZA_DIARIA.StoredProcedure.sql</td><td class="num">+24 / -5</td><td>manejo de fechas, bitácora de ejecución</td></tr><tr><td class="mono">BD_prod/PO.SP_SND_POLIZA_DIARIA.StoredProcedure.sql</td><td class="num">+24 / -5</td><td>manejo de fechas, bitácora de ejecución</td></tr><tr><td class="mono">BD/CIERRE.SP_RPT_COBRANZA_CARTERA_CMR_IND_VIS.StoredProcedure.sql</td><td class="num">+15 / -4</td><td>póliza sindicada</td></tr><tr><td class="mono">BD_prod/CIERRE.SP_RPT_COBRANZA_CARTERA_CMR_IND_VIS.StoredProcedure.sql</td><td class="num">+15 / -4</td><td>póliza sindicada</td></tr><tr><td class="mono">BD/dbo.REPORTE_COBRANZA_INTEGRACION.StoredProcedure.sql</td><td class="num">+14 / -3</td><td>póliza sindicada</td></tr><tr><td class="mono">BD_prod/dbo.REPORTE_COBRANZA_INTEGRACION.StoredProcedure.sql</td><td class="num">+14 / -3</td><td>póliza sindicada</td></tr><tr><td class="mono">BD/PO.SP_SAF_POLIZA_ENVIO_ESTADO_REP.StoredProcedure.sql</td><td class="num">+5 / -3</td><td>póliza sindicada, manejo de fechas</td></tr><tr><td class="mono">BD_prod/PO.SP_SAF_POLIZA_ENVIO_ESTADO_REP.StoredProcedure.sql</td><td class="num">+5 / -3</td><td>póliza sindicada, manejo de fechas</td></tr><tr><td class="mono">BD/PO.SP_COM_DEV_MORATORIO.StoredProcedure.sql</td><td class="num">+3 / -3</td><td>manejo de fechas</td></tr><tr><td class="mono">BD/ori.SOLICITUD_EMPRESARIAL.Table.sql</td><td class="num">+6 / -0</td><td>—</td></tr><tr><td class="mono">BD/PO.SP_SND_ADMINISTRADA.StoredProcedure.sql</td><td class="num">+2 / -3</td><td>lista de tipos</td></tr><tr><td class="mono">BD/PO.SP_SND_CAPITAL.StoredProcedure.sql</td><td class="num">+2 / -3</td><td>lista de tipos</td></tr><tr><td class="mono">BD_prod/PO.SP_SND_ADMINISTRADA.StoredProcedure.sql</td><td class="num">+2 / -3</td><td>lista de tipos</td></tr><tr><td class="mono">BD_prod/PO.SP_SND_CAPITAL.StoredProcedure.sql</td><td class="num">+2 / -3</td><td>lista de tipos</td></tr><tr><td class="mono">BD/PO.SP_SAF_POLIZA_FINALIZA.StoredProcedure.sql</td><td class="num">+4 / -0</td><td>manejo de fechas, guarda de reproceso</td></tr><tr><td class="mono">BD/PO.SP_SAF_POLIZA_MOVxDIA.StoredProcedure.sql</td><td class="num">+3 / -1</td><td>póliza sindicada</td></tr><tr><td class="mono">BD/cierre_puente.CREDITO_PUENTE_DOCUMENTO.Table.sql</td><td class="num">+2 / -2</td><td>—</td></tr><tr><td class="mono">BD_prod/PO.SP_SAF_POLIZA_FINALIZA.StoredProcedure.sql</td><td class="num">+4 / -0</td><td>manejo de fechas, guarda de reproceso</td></tr><tr><td class="mono">BD/PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql</td><td class="num">+2 / -1</td><td>póliza sindicada</td></tr><tr><td class="mono">BD/CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql</td><td class="num">+1 / -1</td><td>lista de tipos</td></tr><tr><td class="mono">BD/PO.SP_SAF_CIERRE_LIS.StoredProcedure.sql</td><td class="num">+1 / -1</td><td>póliza sindicada</td></tr><tr><td class="mono">BD/PO.SP_SAF_POLIZA_ENVIO_1P_LIS.StoredProcedure.sql</td><td class="num">+1 / -1</td><td>póliza sindicada</td></tr><tr><td class="mono">BD/PO.SP_SAF_POLIZA_ENVIO_CON.StoredProcedure.sql</td><td class="num">+1 / -1</td><td>póliza sindicada</td></tr><tr><td class="mono">BD/PO.SP_SAF_POLIZA_ENVIO_ESTADO_ACT.StoredProcedure.sql</td><td class="num">+1 / -1</td><td>póliza sindicada</td></tr><tr><td class="mono">BD/PO.SP_SAF_POLIZA_ENVIO_LIS.StoredProcedure.sql</td><td class="num">+1 / -1</td><td>póliza sindicada</td></tr><tr><td class="mono">BD/cierres.POSICION_MENSUAL.Table.sql</td><td class="num">+2 / -0</td><td>—</td></tr><tr><td class="mono">BD/ori.SOLICITUD_TYC.Table.sql</td><td class="num">+2 / -0</td><td>—</td></tr><tr><td class="mono">BD_prod/CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql</td><td class="num">+1 / -1</td><td>lista de tipos</td></tr><tr><td class="mono">BD_prod/PO.SP_SAF_CIERRE_LIS.StoredProcedure.sql</td><td class="num">+1 / -1</td><td>póliza sindicada</td></tr><tr><td class="mono">BD_prod/PO.SP_SAF_POLIZA_ENVIO_1P_LIS.StoredProcedure.sql</td><td class="num">+1 / -1</td><td>póliza sindicada</td></tr><tr><td class="mono">BD_prod/PO.SP_SAF_POLIZA_ENVIO_CON.StoredProcedure.sql</td><td class="num">+1 / -1</td><td>póliza sindicada</td></tr><tr><td class="mono">BD_prod/PO.SP_SAF_POLIZA_ENVIO_ESTADO_ACT.StoredProcedure.sql</td><td class="num">+1 / -1</td><td>póliza sindicada</td></tr><tr><td class="mono">BD_prod/PO.SP_SAF_POLIZA_ENVIO_LIS.StoredProcedure.sql</td><td class="num">+1 / -1</td><td>póliza sindicada</td></tr><tr><td class="mono">BD/cierre_puente.CHECKLIST_ITEM.Table.sql</td><td class="num">+1 / -0</td><td>—</td></tr><tr><td class="mono">BD/edcc.EDCC.Table.sql</td><td class="num">+1 / -0</td><td>—</td></tr></tbody></table>
+
+<h2>Lo que la entrega dice del problema de fondo</h2>
+<div class="card rojo"><h3>La póliza sindicada se agregó a mano en diez objetos</h3><p>El cambio funcional principal de esta versión es dar de alta la póliza sindicada (<code>ID_POLIZA</code> 77 y 88, sufijo <code>SND</code>). Para lograrlo hubo que editar diez objetos ya productivos y publicar dos nuevos: <code>PO.SP_SND_DESEMBOLSO</code> y <code>PO.SP_SND_REVERSO_DESEMBOLSO</code>. Es la demostración exacta del problema que el portal viene a resolver: un concepto nuevo no se configura, se libera.</p></div><div class="card ambar"><h3>Cada objeto recibió su propia copia del literal</h3><p>El mismo par de códigos quedó escrito en varias formas y lugares: la lista de pólizas del reporte de cobranza (<code>in (7, 35, 37, 40, 51, 77, 88)</code>), las etiquetas <code>when ID_POLIZA = 77 then 'COMERCIAL SINDICADA'</code>, el filtro por nombre <code>DESCRIPCION like '% SND'</code> en cinco objetos de envío y el nuevo <code>-3</code> como identificador de «TODO SINDICADA» en el balance. Ninguno de esos valores vive en un catálogo.</p></div><div class="card ambar"><h3>Se agregó una lista de tipos de crédito nueva, no se quitó ninguna</h3><p>En <code>PO.SP_COM_DEV_INTERES</code> el bloque nuevo de devengo trae <code>C.NUM_DESC_TIPO_CREDITO IN (12,13,14,15,28, 2,18,27)</code> y <code>A.COD_RUBRO IN ('INTERES_ORDINARIO_A')</code>. Es una lista más que administrar, sobre la base <code>Quiero_Confianza_shadow</code>.</p></div><div class="card ambar"><h3>El canal del cierre comercial ahora depende de un tipo específico</h3><p>En <code>CIERRE.SP_CMR_GEN_MES</code>: <code>CASE WHEN C.NUM_DESC_TIPO_CREDITO = 5 THEN 'COMERCIAL' ELSE dbo.FN_TIPO_CANAL(C.TIP_TASA) END</code>. Confirma la observación de la auditoría: el canal no se deriva de una sola regla y ahora tiene una excepción por tipo (el 5, <code>DCM</code>) incrustada en el SP.</p></div><div class="card rojo"><h3>La fecha fija de Q06 sigue exactamente igual, en un objeto que sí se editó</h3><p>En <code>CIERRE.SP_CMR_GEN_MES</code>, línea 461: <code>WHERE FECHA_SISTEMA='20260123' AND TIPO='N'</code>, idéntica en la copia de desarrollo y en la de producción de la entrega. En el mismo procedimiento hay 23 filtros que sí usan el parámetro de fecha (<code>FECHA_SISTEMA=@...</code>) y sólo ése usa un literal, lo que apunta a un valor de prueba que quedó publicado. Pesa doble porque es la misma consulta de «otras comisiones» que filtra <code>'OPI VALOR'</code> con espacio: el bloque toma un solo día del mes y, sobre ese día, un rubro que no existe en <code>PR.PR_RUBRO</code>. Y el objeto sí se tocó en esta entrega (se le agregó la excepción del tipo 5), así que no es un archivo olvidado.</p></div><div class="card verde"><h3>Aparecen dos controles que la auditoría había pedido</h3><p><code>PO.SP_SAF_POLIZA_FINALIZA</code> ahora sale sin hacer nada si la póliza del día ya está <code>ENVIADA</code>, que es una guarda de reproceso, y <code>PO.SP_SND_POLIZA_DIARIA</code> registra duración por paso en <code>PO.PR_EJECUCION_LOG</code>. Son parciales: aplican a la familia sindicada y a la finalización, no a todo el cierre, y no sustituyen la marca de corrida ni el sello de configuración.</p></div><div class="card ambar"><h3>La corrida diaria de sindicado ahora borra y recalcula desde la última fecha</h3><p><code>PO.SP_SND_POLIZA_DIARIA</code> calcula <code>@FECHA_ULT</code> y ejecuta <code>DELETE FROM PO.PR_DEVENGO_DET / PR_CAPITAL_DET / PR_COBRANZA_DET / PR_MINISTRACIONES_DET</code> para lo anterior a esa fecha. Es un borrado de detalle en el camino contable diario: hay que confirmar con contabilidad que no puede alcanzar días ya publicados.</p></div>
+
+<h2>Pendientes que se esperaba cerrar y siguen abiertos</h2>
+<div class="card ambar"><h3>CIERRE.SP_SAF_SALDOS truncado en producción</h3><p>No cierra: en <code>BD_prod</code> sigue teniendo 223 líneas contra 573 en la copia de desarrollo, y el archivo no cambió en esta entrega.</p></div><div class="card ambar"><h3>19 objetos de CIERRE ausentes del export de producción</h3><p>No cierra: la brecha es idéntica (24 objetos en foco presentes en desarrollo y ausentes del export, 19 de ellos de <code>CIERRE</code>, incluido <code>SP_IND_GEN_MES</code>). La Fase 0 contra los metadatos de la instancia sigue siendo necesaria.</p></div><div class="card ambar"><h3>CIERRE.SP_IND_GEN_MES_MOD declarado sin uso</h3><p>Se mantiene cerrado por declaración, no por código: el objeto sigue publicado en el paquete, con el mismo <code>UPDATE</code> observado. Conviene borrarlo para que la declaración y el repositorio coincidan.</p></div><div class="card ambar"><h3>Los cuatro PO.SYS_SP_* que leen la base QA serán borrados</h3><p>Sigue abierto en el repositorio: los cuatro objetos y sus 41 referencias a <code>Quiero_Confianza_CreditoPuente_QA</code> continúan en la entrega de septiembre.</p></div>
+
+<h2>Objetos nuevos en la entrega</h2>
+<p>Los <code>BAK_*</code> son respaldos de tablas con fecha en el nombre; conviene definir dónde viven y cuándo se
+purgan, porque hoy se publican como parte del código.</p>
+<table><thead><tr><th>Archivo nuevo en SPs_Sept10</th></tr></thead><tbody><tr><td class="mono">BD/PO.SP_SND_DESEMBOLSO.StoredProcedure.sql</td></tr><tr><td class="mono">BD/PO.SP_SND_REVERSO_DESEMBOLSO.StoredProcedure.sql</td></tr><tr><td class="mono">BD/cierre_puente.BAK_ACTA_APLICADO_20260818.Table.sql</td></tr><tr><td class="mono">BD/cierre_puente.BAK_ACTA_MONTO_20260818.Table.sql</td></tr><tr><td class="mono">BD/cierre_puente.BAK_DI_AREA_20260727.Table.sql</td></tr><tr><td class="mono">BD/cierre_puente.BAK_DI_CHECKITEM_20260727.Table.sql</td></tr><tr><td class="mono">BD/cierre_puente.BAK_DI_GRUPO_20260727.Table.sql</td></tr><tr><td class="mono">BD/cierre_puente.BAK_DI_ITEM_20260727.Table.sql</td></tr><tr><td class="mono">BD/cierre_puente.BAK_DOC_DUPLICADOS_20260902.Table.sql</td></tr><tr><td class="mono">BD/cierre_puente.BAK_DOC_PLANOS_FMT_20260819.Table.sql</td></tr><tr><td class="mono">BD/cierre_puente.BAK_DOC_PLANOS_REVERT_20260817.Table.sql</td></tr><tr><td class="mono">BD/cierre_puente.BAK_DOC_PLANOS_VARIANTE_20260817.Table.sql</td></tr><tr><td class="mono">BD/cierre_puente.BAK_ESTATUS_SAF_20260817.Table.sql</td></tr><tr><td class="mono">BD/cierre_puente.BAK_MONTO_20260824.Table.sql</td></tr><tr><td class="mono">BD/cierres.BAK_POS_SDOS_20260827.Table.sql</td></tr><tr><td class="mono">BD/cierres.DEVENGO_DIARIO.Table.sql</td></tr><tr><td class="mono">BD/cierres.MORA_MENSUAL.Table.sql</td></tr><tr><td class="mono">BD/ori.PERMISO_ROL.Table.sql</td></tr><tr><td class="mono">BD_prod/PO.SP_SND_DESEMBOLSO.StoredProcedure.sql</td></tr><tr><td class="mono">BD_prod/PO.SP_SND_REVERSO_DESEMBOLSO.StoredProcedure.sql</td></tr></tbody></table>
+
+<h2>Qué haría distinto la remediación con esta versión en la mano</h2>
+<div class="card azul"><h3>La póliza sindicada es el caso de prueba ideal para el portal</h3>
+<p>Ya existe el «antes» completo y fechado: diez objetos editados y dos publicados para dar de alta un concepto.
+Con el catálogo de banderas ese mismo alta sería una fila en <code>CAT_TIPO_POLIZA</code> más su marca en
+<code>CAT_TIPO_CREDITO_BANDERA</code>, sin tocar los diez objetos. Propongo usarlo como medición de esfuerzo real
+en la presentación, en lugar de un ejemplo hipotético.</p></div>
+<div class="card azul"><h3>La lista de pólizas del reporte de cobranza es el primer reemplazo a ejecutar</h3>
+<p><code>dbo.REPORTE_COBRANZA_INTEGRACION</code> y <code>CIERRE.SP_RPT_COBRANZA_CARTERA_CMR_IND_VIS</code> mantienen la
+misma lista duplicada en dos consultas cada uno; con 77 y 88 ya son cuatro lugares que hay que editar en conjunto.
+Es el cambio de menor riesgo y mayor visibilidad de la Ola 1.</p></div>
+<div class="card ambar"><h3>Dos preguntas nuevas para el equipo</h3>
+<p>¿El <code>DELETE</code> por <code>@FECHA_ULT</code> de <code>PO.SP_SND_POLIZA_DIARIA</code> puede alcanzar días ya
+publicados, o hay una garantía externa de que no? ¿La excepción del tipo 5 en el canal del cierre comercial es una
+regla de negocio permanente o un parche temporal?</p></div>
+
+</div>
+<footer>Auditoría de código SQL KARDIA / SAF &middot; análisis estático del repositorio (BD, BD_prod y reportes).
+No se ejecutó ningún objeto contra una instancia de SQL Server ni se leyeron datos productivos:
+los hallazgos que dependen de datos, de plan de ejecución o de reglas contables se marcan como pendientes de validación.</footer>
+</body></html>
