@@ -61,6 +61,8 @@ NAV = """<nav class="docs">
 <a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
 <a href="12_preguntas_negocio.html">Confirmaciones con negocio</a>
 <a href="15_respuestas_cliente.html">Respuestas del cliente</a>
+<a href="16_reclasificacion.html">Reclasificación de hallazgos</a>
+<a href="17_objetos_vigentes.html">Objetos vigentes</a>
 <a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a>
 <a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
 </nav>"""
