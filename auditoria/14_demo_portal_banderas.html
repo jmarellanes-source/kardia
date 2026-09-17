@@ -204,7 +204,7 @@ de configuración por corrida del cierre.
   <div class="right">
     <label>Ambiente
       <select id="env" onchange="setEnv()">
-        <option value="QA">QA (CUA)</option>
+        <option value="QA">QA nuevo (línea base restaurada)</option>
         <option value="PROD">Producción</option>
       </select>
     </label>
@@ -227,6 +227,11 @@ de configuración por corrida del cierre.
   <!-- ============================================================ INICIO -->
   <section id="v-inicio">
     <div class="kpis" id="kpisIni"></div>
+    <div class="card">
+      <h3>Ambientes y línea base
+        <span class="der">De dónde salieron los datos de cada ambiente y desde cuándo son reproducibles</span></h3>
+      <div id="tableroEnv"></div>
+    </div>
     <div class="card">
       <h3>Salud de la configuración
         <span class="der">Se recalcula en cada cambio y bloquea la promoción a producción</span></h3>
@@ -501,7 +506,10 @@ de configuración por corrida del cierre.
           bloqueado. Hoy no queda registro de <b>con qué configuración</b> se resolvió cada día: si un rubro o
           una bandera cambian, la póliza de ayer ya no se puede explicar. El sello
           (<span class="mono">HASH_CONFIG</span>) es la versión de catálogos vigente al momento de la corrida;
-          se guarda junto a la póliza y permite reconstruir la configuración exacta de cualquier fecha.</div>
+          se guarda junto a la póliza y permite reconstruir la configuración exacta de cualquier fecha.
+          En el QA nuevo el sello se guarda junto con la <b>línea base de datos</b>
+          (<span class="mono">LINEA_BASE</span>, el respaldo restaurado y su fecha de corte): una corrida de
+          prueba solo prueba algo si se sabe con qué configuración <b>y</b> sobre qué datos corrió.</div>
         </div>
       </div>
       <div class="filtros">
@@ -803,22 +811,51 @@ let CONSTANTES = [
   hist:[['2025-01-01','20250101','Arranque del estado de cuenta']]}
 ];
 
+/* Ambientes. QA deja de ser el CUA actual: es un ambiente restaurado de un respaldo de producción a una
+   fecha de corte conocida, que es lo que lo vuelve utilizable como oráculo de la prueba de equivalencia. */
+const AMBIENTES = [
+ {k:'QA', nom:'QA nuevo (línea base restaurada)', instancia:'SRV-QA-KARDIA02\\KARDIA',
+  origen:'Respaldo completo de KARDIA y copia de solo lectura de Quiero_Confianza',
+  corte:'2026-08-31 23:59', lb:'LB-20260831-3f7a', objetos:'254 instalados (188 del alcance + 66 dependencias)',
+  sinonimos:'38 sinónimos por ambiente; 0 referencias literales a otra base',
+  vinculados:'ninguno · el pase entre instancias queda deshabilitado',
+  escritura:'Sí, con el portal', restaura:'Sí, a la línea base, en cualquier momento',
+  equiv:'Póliza del 2026-08-31 igual a la publicada en producción'},
+ {k:'PROD', nom:'Producción', instancia:'SRV-IONSQL\\KARDIA',
+  origen:'Sistema en operación', corte:'—', lb:'—',
+  objetos:'188 declarados en uso para la póliza; 19 no vienen en el export entregado',
+  sinonimos:'pendiente: las referencias a la base de origen siguen literales',
+  vinculados:'SRV-IONSQLAWS\\SAF · 3 procedimientos copian póliza y movimientos',
+  escritura:'No desde el portal · solo lectura', restaura:'No aplica',
+  equiv:'Es la referencia contra la que se compara'}
+];
+const CUA_ANTERIOR = {
+  nom:'CUA actual (queda como sandbox de desarrollo)',
+  motivos:['los datos no tienen fecha de corte documentada, así que no sirven de oráculo',
+           'tiene una base extra, Quiero_Confianza_CreditoPuente_QA, que no existe en producción',
+           'el umbral COVID vale 6086 y en producción 6051: el mismo proceso da cifras distintas',
+           'no está probado que no pueda escribir hacia otra instancia']
+};
+
 /* Corridas del cierre. El sello se empieza a guardar el 2026-09-01: antes de esa fecha no hay con qué
-   reconstruir la configuración, que es el hueco que D7 cierra. */
+   reconstruir la configuración, que es el hueco que D7 cierra. Desde el QA nuevo, el sello además
+   referencia la línea base de datos: sin ella, la misma configuración puede dar otra cifra. */
 const PROCESOS = ['CIERRE.SP_IND_GEN_MES','CIERRE.SP_CMR_GEN_MES','CIERRE.SP_SAF_SALDOS',
                   'dbo.REPORTE_COBRANZA_INTEGRACION'];
 const CORRIDAS = [
- ['2026-09-07','CIERRE.SP_IND_GEN_MES','CFG-0007-a41f','Publicada',184532,'2026-09-07 23:41'],
- ['2026-09-07','CIERRE.SP_CMR_GEN_MES','CFG-0007-a41f','Publicada',21874,'2026-09-07 23:48'],
- ['2026-09-07','dbo.REPORTE_COBRANZA_INTEGRACION','CFG-0007-a41f','Publicada',9310,'2026-09-08 00:02'],
- ['2026-09-04','CIERRE.SP_IND_GEN_MES','CFG-0004-a41f','Publicada',183990,'2026-09-04 23:39'],
- ['2026-09-04','CIERRE.SP_SAF_SALDOS','CFG-0004-a41f','Publicada',47120,'2026-09-04 23:52'],
- ['2026-09-02','CIERRE.SP_IND_GEN_MES','CFG-0002-7c03','Publicada con ajuste',183744,'2026-09-02 23:44'],
- ['2026-09-01','CIERRE.SP_IND_GEN_MES','CFG-0001-7c03','Reproceso controlado',183702,'2026-09-01 07:15'],
- ['2026-08-31','CIERRE.SP_IND_GEN_MES','','Publicada',183120,'2026-08-31 23:40'],
- ['2026-08-31','CIERRE.SP_CMR_GEN_MES','','Publicada',21690,'2026-08-31 23:47'],
- ['2026-08-28','CIERRE.SP_IND_GEN_MES','','Publicada',182871,'2026-08-28 23:38']
-].map(c => ({fecha:c[0], proc:c[1], cfg:c[2], estado:c[3], filas:c[4], fin:c[5]}));
+ ['2026-09-08','CIERRE.SP_IND_GEN_MES','CFG-0007-a41f','Equivalencia',183120,'2026-09-08 09:12','QA','LB-20260831-3f7a'],
+ ['2026-09-08','CIERRE.SP_CMR_GEN_MES','CFG-0007-a41f','Equivalencia',21690,'2026-09-08 09:20','QA','LB-20260831-3f7a'],
+ ['2026-09-07','CIERRE.SP_IND_GEN_MES','CFG-0007-a41f','Publicada',184532,'2026-09-07 23:41','PROD',''],
+ ['2026-09-07','CIERRE.SP_CMR_GEN_MES','CFG-0007-a41f','Publicada',21874,'2026-09-07 23:48','PROD',''],
+ ['2026-09-07','dbo.REPORTE_COBRANZA_INTEGRACION','CFG-0007-a41f','Publicada',9310,'2026-09-08 00:02','PROD',''],
+ ['2026-09-04','CIERRE.SP_IND_GEN_MES','CFG-0004-a41f','Publicada',183990,'2026-09-04 23:39','PROD',''],
+ ['2026-09-04','CIERRE.SP_SAF_SALDOS','CFG-0004-a41f','Publicada',47120,'2026-09-04 23:52','PROD',''],
+ ['2026-09-02','CIERRE.SP_IND_GEN_MES','CFG-0002-7c03','Publicada con ajuste',183744,'2026-09-02 23:44','PROD',''],
+ ['2026-09-01','CIERRE.SP_IND_GEN_MES','CFG-0001-7c03','Reproceso controlado',183702,'2026-09-01 07:15','PROD',''],
+ ['2026-08-31','CIERRE.SP_IND_GEN_MES','','Publicada',183120,'2026-08-31 23:40','PROD',''],
+ ['2026-08-31','CIERRE.SP_CMR_GEN_MES','','Publicada',21690,'2026-08-31 23:47','PROD',''],
+ ['2026-08-28','CIERRE.SP_IND_GEN_MES','','Publicada',182871,'2026-08-28 23:38','PROD','']
+].map(c => ({fecha:c[0], proc:c[1], cfg:c[2], estado:c[3], filas:c[4], fin:c[5], amb:c[6], lb:c[7]}));
 
 /* Solicitudes de cambio (cuatro ojos) */
 let SOLS = [
@@ -913,14 +950,18 @@ function render(){
     return `<button data-v="${k}" class="${VISTA === k ? 'on' : ''}" onclick="ir('${k}')">${n}${c}</button>`;
   }).join('');
 
+  const amb = AMBIENTES.find(a => a.k === ENV);
   $('avisoEnv').innerHTML = ENV === 'PROD'
     ? `<div class="aviso bad"><div><b>Producción es de solo lectura desde el portal.</b> Los cambios se hacen
-       en QA (CUA), pasan la prueba de equivalencia y se promueven con el despliegue autorizado. Esta vista
-       muestra la configuración vigente en producción.</div></div>`
+       en el QA nuevo, pasan la prueba de equivalencia contra la póliza publicada de la fecha de corte y se
+       promueven con el despliegue autorizado. Esta vista muestra la configuración vigente en producción.</div></div>`
     : ROL === 'Lectura'
       ? `<div class="aviso info"><div>Rol de solo lectura: puedes consultar la configuración y su historial,
          pero no crear solicitudes.</div></div>`
-      : '';
+      : `<div class="aviso info"><div>Estás en el <b>QA nuevo</b>, restaurado de un respaldo de producción al
+         <b>${amb.corte}</b> (línea base <span class="mono">${amb.lb}</span>). Cada corrida de prueba queda
+         sellada con esa línea base: por eso un resultado distinto se explica por la configuración y no por
+         los datos.</div></div>`;
 
   llenaSelect('fBarea', [...new Set(BANDERAS.map(b => b.area))]);
   llenaSelect('fMarea', [...new Set(BANDERAS.map(b => b.area))]);
@@ -930,7 +971,7 @@ function render(){
   llenaSelect('fRgru', [...new Set(RUBROS.map(r => r.grupo).filter(Boolean))]);
   llenaSelect('fCproc', PROCESOS);
 
-  if (VISTA === 'inicio') renderInicio();
+  if (VISTA === 'inicio'){ renderTablero(); renderInicio(); }
   if (VISTA === 'banderas') renderBanderas();
   if (VISTA === 'bandera') renderDetalle();
   if (VISTA === 'tipos') renderTipos();
@@ -979,6 +1020,29 @@ function participacionInvalida(){
 function constantesDivergentes(){ return CONSTANTES.filter(c => c.val !== c.prod).map(c => c.k); }
 function sinUso(){ return TIPOS.filter(t => t.enCatalogo && !EN_CODIGO.has(t.num)).map(t => t.num); }
 function nCambios(){ return Object.keys(BORRADOR).length; }
+
+/* ------------------------------------------------------------ tablero de ambientes */
+function renderTablero(){
+  const filas = [
+   ['Instancia', 'instancia'], ['Origen de los datos', 'origen'], ['Fecha de corte', 'corte'],
+   ['Línea base', 'lb'], ['Objetos del alcance instalados', 'objetos'],
+   ['Referencias a la base de origen', 'sinonimos'], ['Servidores vinculados', 'vinculados'],
+   ['¿Se escribe desde el portal?', 'escritura'], ['¿Se puede restaurar a voluntad?', 'restaura'],
+   ['Prueba de equivalencia', 'equiv']
+  ];
+  $('tableroEnv').innerHTML = `<table><thead><tr><th class="nosort"></th>`
+   + AMBIENTES.map(a => `<th class="nosort">${esc(a.nom)}${a.k === ENV
+       ? ' <span class="pill ok">estás aquí</span>' : ''}</th>`).join('')
+   + `</tr></thead><tbody>`
+   + filas.map(([t,c]) => `<tr><td style="color:var(--tx2)">${esc(t)}</td>`
+       + AMBIENTES.map(a => `<td class="${c === 'lb' ? 'mono' : ''}">${esc(a[c])}</td>`).join('') + '</tr>').join('')
+   + '</tbody></table>'
+   + `<div class="aviso warn"><div><b>${esc(CUA_ANTERIOR.nom)}.</b> No se usa como ambiente de configuración
+      porque no sirve de oráculo: <ul>`
+   + CUA_ANTERIOR.motivos.map(m => `<li>${esc(m)}</li>`).join('')
+   + `</ul>El QA nuevo se restaura de producción a una fecha de corte conocida, y esa línea base es la que
+      firma cada corrida de prueba.</div></div>`;
+}
 
 /* -------------------------------------------------------------------- inicio */
 function renderInicio(){
@@ -1466,27 +1530,35 @@ function renderCorridas(){
   const fs = CORRIDAS.filter(c => (!f || c.fecha <= f) && (!pr || c.proc === pr) && (!sinS || !c.cfg));
   $('tblC').innerHTML = `<table><thead><tr>
     <th class="nosort">Fecha de negocio</th><th class="nosort">Proceso</th>
-    <th class="nosort">Sello de configuración</th><th class="nosort">Filas</th>
+    <th class="nosort">Ambiente</th>
+    <th class="nosort">Sello de configuración</th><th class="nosort">Línea base de datos</th>
+    <th class="nosort">Filas</th>
     <th class="nosort">Terminó</th><th class="nosort">Estado</th><th class="nosort"></th>
     </tr></thead><tbody>`
    + fs.map(c => `<tr>
       <td class="num">${c.fecha}</td><td class="mono">${esc(c.proc)}</td>
+      <td>${c.amb === 'QA' ? 'QA nuevo' : 'Producción'}</td>
       <td>${c.cfg ? `<span class="pill ok mono">${c.cfg}</span>`
                   : '<span class="pill bad">sin sello</span>'}</td>
+      <td>${c.lb ? `<span class="pill ok mono">${c.lb}</span>`
+                 : '<span class="pill neu">producción en operación</span>'}</td>
       <td class="num">${c.filas.toLocaleString('es-MX')}</td>
       <td class="num">${c.fin}</td>
       <td><span class="pill ${c.estado === 'Publicada' ? 'ok'
-            : c.estado === 'Reproceso controlado' ? 'warn' : 'neu'}">${esc(c.estado)}</span></td>
-      <td><button class="btn mini" onclick="verConfig('${c.fecha}','${c.cfg}')">Ver configuración</button></td>
+            : c.estado === 'Reproceso controlado' ? 'warn'
+            : c.estado === 'Equivalencia' ? 'info' : 'neu'}">${esc(c.estado)}</span></td>
+      <td><button class="btn mini" onclick="verConfig('${c.fecha}','${c.cfg}','${c.lb}')">Ver configuración</button></td>
      </tr>`).join('')
-   + (fs.length ? '' : sinFilas(7))
+   + (fs.length ? '' : sinFilas(9))
    + '</tbody></table>';
 }
-function verConfig(fecha, cfg){
+function verConfig(fecha, cfg, lb){
   const aprob = SOLS.filter(s => s.estado === 'Aprobada');
   modal(`Configuración usada el ${fecha}`, `
     <dl class="dl">
       <dt>Sello</dt><dd class="mono">${cfg || 'sin sello — no se puede reconstruir'}</dd>
+      <dt>Línea base de datos</dt><dd class="mono">${lb
+        || 'no aplica — corrida sobre producción en operación'}</dd>
       <dt>Tipos de cartera con al menos una bandera</dt>
       <dd>${TIPOS.filter(t => Object.keys(MATRIZ).some(b => MATRIZ[b].has(t.num))).length}
           de ${TIPOS.length}</dd>
@@ -1499,7 +1571,9 @@ function verConfig(fecha, cfg){
     </dl>
     <div class="aviso ${cfg ? 'info' : 'bad'}"><div>${cfg
       ? `Con el sello, la póliza de esa fecha se explica sin depender de la memoria de nadie: el portal
-         reconstruye la matriz y los conceptos tal como estaban. En la maqueta el detalle es ilustrativo.`
+         reconstruye la matriz y los conceptos tal como estaban. En la maqueta el detalle es ilustrativo.${lb
+         ? ` Al ser una corrida del QA nuevo, el sello viene con la línea base <span class="mono">${esc(lb)}</span>:
+            comparar contra la póliza publicada mide el efecto de la configuración y no el de los datos.` : ''}`
       : `Esta corrida es anterior al sello. Hoy sólo se puede inferir la configuración leyendo el código que
          estaba liberado ese día, y por eso una diferencia contra el mes anterior no se puede justificar.`}
     </div></div>`,
@@ -1668,7 +1742,7 @@ function renderAprob(){
   $('quienAprueba').textContent = puedeAprobar()
     ? 'Puedes resolver solicitudes que no hayas creado'
     : ENV !== 'QA'
-      ? 'Las solicitudes se resuelven en QA (CUA); producción es de solo lectura'
+      ? 'Las solicitudes se resuelven en el QA nuevo; producción es de solo lectura'
       : 'Cambia el rol a «Cartera» para resolver';
   const fs = SOLS.filter(s => !es || s.estado === es);
   $('tblA').innerHTML = `<table><thead><tr>
