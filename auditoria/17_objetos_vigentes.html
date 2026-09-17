@@ -63,11 +63,15 @@ blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px so
 <a href="16_reclasificacion.html">Reclasificación de hallazgos</a>
 <a href="17_objetos_vigentes.html">Objetos vigentes</a>
 <a href="18_version_sept10.html">Versión SPs_Sept10</a>
+<a href="19_alcance_produccion.html">Alcance productivo</a>
+<a href="20_qa_confiable.html">QA confiable</a>
+<a href="21_preguntas_alcance.html">Preguntas acotadas</a>
 <a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a>
 <a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
 </nav>
 <div class="wrap">
 <p class="lead">Insumo para la lista limpia que pedimos al cliente. No es una respuesta: es la evidencia que el repositorio puede dar por si solo sobre cada objeto de CIERRE, SAF, PO y el reporte de cobranza, para que la conversación sea sobre una tabla y no sobre memoria. La confirmación definitiva necesita metadatos de la instancia productiva, que no hemos consultado.</p>
+<div class="card rojo"><h3>Esta lista quedó superada por la del cliente</h3><p>El cliente entregó la lista de los 188 objetos que hoy participan en la póliza contable, y da la respuesta <b>al revés de lo que suponíamos</b>: 19 de esos objetos declarados en uso <b>no están en el export de <span class="mono">BD_prod</span></b>, entre ellos <span class="mono">CIERRE.SP_IND_GEN_MES</span>. Estar o no en el export deja de ser indicio de baja: lo que estaba incompleto era el export.</p><p>Por lo tanto los objetos marcados aquí como <i>candidato a baja</i> y como <i>vigente sin invocador conocido</i> deben leerse solo como “sin evidencia en el repositorio”, no como candidatos a borrarse. La lista vigente para instalar un ambiente es la del cliente más sus dependencias: <a href="19_alcance_produccion.html">alcance productivo</a>.</p></div>
 <div class="kpis"><div class="kpi"><b>198</b><span>objetos en foco</span></div><div class="kpi ok"><b>174</b><span>en el export de producción</span></div><div class="kpi a"><b>65</b><span>sin invocador conocido</span></div><div class="kpi m"><b>3</b><span>candidatos a baja</span></div><div class="kpi c"><b>129</b><span>sin fecha en el encabezado</span></div></div>
 <h2>Cómo se clasificó</h2><div class="card azul"><p>Solo con lo que el repositorio permite verificar, sin tocar SQL Server:</p><ul><li>presencia en el export de <span class="mono">BD_prod</span>;</li><li>quién lo invoca, resolviendo el grafo de llamadas de los 245 objetos programables;</li><li>si algún archivo <span class="mono">.rdl</span> lo ejecuta;</li><li>fechas de creación y modificación declaradas en el encabezado del script (69 de 198 las traen);</li><li>si escribe o solo lee, y si convive con hermanos por nombre;</li><li>las declaraciones del cliente sobre objetos sin uso.</li></ul><p>Ninguna de estas señales prueba ejecución. Por eso la columna de estado es una hipótesis con su motivo, y la lista se cierra con la consulta de la Fase 0.</p></div>
 <h2>Resumen</h2><table><thead><tr><th>Estado</th><th>Objetos</th><th>Qué significa</th></tr></thead><tbody>

@@ -63,11 +63,15 @@ blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px so
 <a href="16_reclasificacion.html">Reclasificación de hallazgos</a>
 <a href="17_objetos_vigentes.html">Objetos vigentes</a>
 <a href="18_version_sept10.html">Versión SPs_Sept10</a>
+<a href="19_alcance_produccion.html">Alcance productivo</a>
+<a href="20_qa_confiable.html">QA confiable</a>
+<a href="21_preguntas_alcance.html">Preguntas acotadas</a>
 <a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a>
 <a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
 </nav>
 <div class="wrap">
 <p class="lead">Los 117 hallazgos de la auditoría releídos con dos cosas que antes no teníamos: el alcance acordado (CIERRE, SAF, PO y <span class="mono">dbo.REPORTE_COBRANZA_INTEGRACION</span>) y las respuestas del cliente, incluidos los tres catálogos reales de <span class="mono">Quiero_Confianza</span>. Nada se borra: lo que sale del alcance queda registrado con su evidencia por si alguien lo retoma.</p>
+<div class="card ambar"><h3>Actualización con la lista de objetos en uso</h3><p>El cliente entregó después la lista de los 188 objetos que hoy participan en la póliza contable (<span class="mono">insumos/sp_relacionados_a_poliza.txt</span>), y eso corrige tres puntos del reordenamiento anterior:</p><ul><li><b>El cierre por “objeto no usado” deja de ser válido para <span class="mono">SP_IND_GEN_MES_MOD</span></b>: aparece en la lista de objetos en uso, así que sus hallazgos vuelven a quedar abiertos hasta que se resuelva la contradicción (Q34).</li><li><b>Se confirma que L1-007 sale del alcance de la póliza</b>: ninguno de los objetos de la lista lee <span class="mono">Quiero_Confianza_CreditoPuente_QA</span>. No desaparece: pasa a ser hallazgo de ambientes y sostiene la recomendación de construir un QA nuevo.</li><li><b>Aparece un hallazgo de control que no era de código</b>: tres procedimientos copian póliza y movimientos entre instancias por servidor vinculado, uno de ellos con <span class="mono">DELETE</span> e <span class="mono">INSERT</span> sobre el destino (Q32).</li></ul><p>El detalle está en <a href="19_alcance_produccion.html">alcance productivo</a> y en <a href="21_preguntas_alcance.html">preguntas acotadas</a>.</p></div>
 <div class="kpis"><div class="kpi"><b>117</b><span>hallazgos originales</span></div><div class="kpi ok"><b>12</b><span>cerrados por respuesta</span></div><div class="kpi"><b>14</b><span>fuera del alcance</span></div><div class="kpi c"><b>6</b><span>nuevos por los catálogos</span></div><div class="kpi a"><b>97</b><span>vigentes en foco</span></div></div>
 <h2>Cómo queda el semáforo</h2>
 <table><thead><tr><th>Severidad</th><th>Antes</th><th>Después</th><th>Qué lo movió</th></tr></thead><tbody>

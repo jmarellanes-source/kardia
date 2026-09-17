@@ -1,0 +1,3055 @@
+{
+ "total_lista": 188,
+ "unicos": 188,
+ "por_esquema": {
+  "CIERRE": 25,
+  "PO": 152,
+  "SAF": 7,
+  "dbo": 3,
+  "RPT": 1
+ },
+ "clases": {
+  "ausente_prod": 19,
+  "solo_base": 110,
+  "identico": 52,
+  "real": 7
+ },
+ "dependencias_de_la_lista": [
+  {
+   "objeto": "CIERRE.CMR_DIA_REP",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "CIERRE.CMR_REP",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "CIERRE.IND_REP",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "CIERRE.SAF_SALDOS",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.CAT_TIPO_POLIZA",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.CONTROL_HISTORICO_TRASPASOS",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.DE_DESEMBOLSO",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.DE_MOVIMIENTO",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.FECHA_CASTIGO",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_BALLON_APLI",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_BALLON_DET",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_CAPITAL_DET",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_CAPITAL_ENC",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_CAT_PRODUCTO",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_COBRANZA_DET",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_COBRANZA_ENC",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_CREDITO_EXTRA",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_CREDITO_EXTRA_HIST",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_CREDITO_PRODUCTO",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_CREDITO_PRODUCTO_REL",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_DEVENGO_DET",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_DEVENGO_ENC",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_EJECUCION_LOG",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_MINISTRACIONES_DET",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_MINISTRACIONES_ENC",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_REEST_CAST_APLI",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.PR_REEST_CAST_DET",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_CATALOGO_CONCEPTOS",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_CAT_CONTABLE",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_CAT_DESC_TIPO",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_CONTROL_PAGOS_NO_IDENTIFICADOS",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_MORA_EMPR_HIST",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_MOV_ABONO",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_MOV_CARGO",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_MOV_DEVOLUCIONES",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_MOV_INTERES",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_MOV_MORATORIO",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_MOV_TRASPASO",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_MOV_X_IDENTIFICAR",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_POLIZA_ERRORES",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_POLIZA_ERRORES_HIST",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_POLIZA_HISTORICO_DET",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_POLIZA_HISTORICO_ENC",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_RUBRO_HIST",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_SIN_IDENTIFICAR",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_UMA_CAT",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "SAF.TASAS_ALERTAS",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "SAF.TASAS_ALERTAS_DESTINATARIOS",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "dbo.FECHAS_POLIZA_TIPO",
+   "tipo": "UserDefinedTableType"
+  },
+  {
+   "objeto": "dbo.FECHA_IMPAGO",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_CARTERA_CREDITO",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_CREDITO_PREVIO",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_CREDITO_PREVIO_ID",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_CUENTA_NO_VALIDA",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_CUENTA_OBTENER",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_ES_COVID",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_ES_LINEA_CANCELADA",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_FIRMA_MONTO",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_FORMA_MONEDA",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_FORMA_NOMBRE",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_ORIGEN_FONDOS",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_RUBRO_POL",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_SECUENCIA_ORIGEN",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_SOLO_NUMEROS",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.FN_TIPO_CANAL",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.INFO_EXTRA_EXTRAER",
+   "tipo": "UserDefinedFunction"
+  }
+ ],
+ "fuera_de_lista_sin_uso": [
+  {
+   "objeto": "CIERRE.SP_CMR_GEN_DIA",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.CALC_BALANCE_ORDEN",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.CAT_FONDEOS",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.CAT_GARANTIAS",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.CAT_PRODUCTOS",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.CAT_RUBROS",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.CAT_TRANSACCIONES",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.CONCEPTOS_TEMP",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.POLIZA_CAMPOS",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.REGLA_CONTABLE_INDIVIDUAL",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_HIS_SALDOS_ADM",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SAF_RUBRO_PREV",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "PO.SP_IND_ADMINISTRADA_POL",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.SP_IND_COBRANZA_POL",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_PASE_CLASIF_PROD_QA",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_PASE_EXT_PROD_QA_E",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_PASE_EXT_QA_PROD",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_RUBRO_HISTORICO",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.SYS_SP_ACCOUNT_BALANCE_ORDEN",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.SYS_SP_ACTUALIZA_ESTADO_POLIZA",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.SYS_SP_AVALUO_AND_UPDATE",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.SYS_SP_CATALOGO_CONCEPTOS",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.SYS_SP_LISTA_EXCEPCIONES",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.SYS_SP_MOV_ABONO",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.SYS_SP_MOV_CARGO",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "PO.SYS_SP_MOV_INTERES",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "dbo.AspNetRoleClaims",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "dbo.AspNetRoles",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "dbo.AspNetUserClaims",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "dbo.AspNetUserLogins",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "dbo.AspNetUserRoles",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "dbo.AspNetUserTokens",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "dbo.AspNetUsers",
+   "tipo": "Table"
+  },
+  {
+   "objeto": "dbo.FN_TIPO_CREDITO",
+   "tipo": "UserDefinedFunction"
+  },
+  {
+   "objeto": "dbo.REPORTE",
+   "tipo": "StoredProcedure"
+  },
+  {
+   "objeto": "dbo.REPORTEAFIRME",
+   "tipo": "StoredProcedure"
+  }
+ ],
+ "patrones": {
+  "opi_valor_espacio": {
+   "dentro_obj": 6,
+   "dentro": 22,
+   "fuera_obj": 0,
+   "fuera": 0
+  },
+  "principal_vencido": {
+   "dentro_obj": 3,
+   "dentro": 5,
+   "fuera_obj": 0,
+   "fuera": 0
+  },
+  "interes_no_exigibles": {
+   "dentro_obj": 10,
+   "dentro": 27,
+   "fuera_obj": 1,
+   "fuera": 1
+  },
+  "base_qa": {
+   "dentro_obj": 0,
+   "dentro": 0,
+   "fuera_obj": 4,
+   "fuera": 41
+  },
+  "base_shadow": {
+   "dentro_obj": 124,
+   "dentro": 3356,
+   "fuera_obj": 11,
+   "fuera": 71
+  },
+  "fn_es_covid": {
+   "dentro_obj": 67,
+   "dentro": 230,
+   "fuera_obj": 2,
+   "fuera": 3
+  },
+  "ind_covid": {
+   "dentro_obj": 95,
+   "dentro": 721,
+   "fuera_obj": 11,
+   "fuera": 36
+  },
+  "origen_008_031": {
+   "dentro_obj": 5,
+   "dentro": 7,
+   "fuera_obj": 3,
+   "fuera": 4
+  },
+  "origen_not_in_shf": {
+   "dentro_obj": 10,
+   "dentro": 15,
+   "fuera_obj": 0,
+   "fuera": 0
+  },
+  "nolock": {
+   "dentro_obj": 83,
+   "dentro": 1042,
+   "fuera_obj": 6,
+   "fuera": 73
+  },
+  "cuentas_orden": {
+   "dentro_obj": 9,
+   "dentro": 11,
+   "fuera_obj": 0,
+   "fuera": 0
+  },
+  "tipo_credito_filtro": {
+   "dentro_obj": 96,
+   "dentro": 400,
+   "fuera_obj": 7,
+   "fuera": 30
+  },
+  "getdate": {
+   "dentro_obj": 120,
+   "dentro": 225,
+   "fuera_obj": 35,
+   "fuera": 35
+  },
+  "fecha_literal": {
+   "dentro_obj": 2,
+   "dentro": 91,
+   "fuera_obj": 0,
+   "fuera": 0
+  },
+  "copia_catalogo": {
+   "dentro_obj": 32,
+   "dentro": 64,
+   "fuera_obj": 4,
+   "fuera": 8
+  },
+  "cat_tipo_autoritativo": {
+   "dentro_obj": 7,
+   "dentro": 13,
+   "fuera_obj": 1,
+   "fuera": 1
+  },
+  "cat_rubro_autoritativo": {
+   "dentro_obj": 0,
+   "dentro": 0,
+   "fuera_obj": 1,
+   "fuera": 1
+  },
+  "cat_origen_autoritativo": {
+   "dentro_obj": 3,
+   "dentro": 5,
+   "fuera_obj": 2,
+   "fuera": 2
+  },
+  "tabla_rubro_x_credito": {
+   "dentro_obj": 78,
+   "dentro": 771,
+   "fuera_obj": 6,
+   "fuera": 17
+  },
+  "servidor_vinculado": {
+   "dentro_obj": 0,
+   "dentro": 0,
+   "fuera_obj": 3,
+   "fuera": 24
+  }
+ },
+ "listas_tipo_credito": [
+  [
+   "SELECT NUM_DESC_TIPO_CREDITO FROM #TIPO_CREDITOS",
+   39
+  ],
+  [
+   "10,11,9",
+   31
+  ],
+  [
+   "1,10,11,16,17,3,4,9",
+   26
+  ],
+  [
+   "12,13,14,15,18,2,27,28",
+   24
+  ],
+  [
+   "7",
+   18
+  ],
+  [
+   "12,13,14,15,18,2,27,28,5",
+   18
+  ],
+  [
+   "25,29",
+   16
+  ],
+  [
+   "26",
+   12
+  ],
+  [
+   "1,10,11,16,17,20,23,3,4,9",
+   7
+  ],
+  [
+   "1,10,11,16,17,20,23,3,9",
+   5
+  ],
+  [
+   "1,10,11,12,13,14,15,16,17,18,2,27,28,3,4,7,9",
+   4
+  ],
+  [
+   "25,26,29",
+   3
+  ],
+  [
+   "12,13,14,15,18,19,2,21,22,24,25,27,28,5,6,7",
+   3
+  ],
+  [
+   "19,21,22,24,6",
+   3
+  ],
+  [
+   "25",
+   2
+  ],
+  [
+   "SELECT * FROM #ADM",
+   2
+  ],
+  [
+   "20,23,4",
+   2
+  ],
+  [
+   "12,13,14,15,18,19,2,21,22,24,25,27,28,5,6",
+   1
+  ],
+  [
+   "12,13,14,15,18,19,2,21,22,24,27,28,5,6",
+   1
+  ],
+  [
+   "1,10,11,12,13,14,15,16,17,2,28,3,4,9",
+   1
+  ],
+  [
+   "1,10,11,16,17,3,9",
+   1
+  ],
+  [
+   "12,13,14,15,18,2,27,28,7",
+   1
+  ],
+  [
+   "1,10,11,16,17,20,23,26,3,4,9",
+   1
+  ],
+  [
+   "12,13,14,15,18,19,2,7",
+   1
+  ],
+  [
+   "20,23",
+   1
+  ]
+ ],
+ "objetos": [
+  {
+   "objeto": "CIERRE.SP_CASTIGO_INI_RPT",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {
+    "opi_valor_espacio": 3,
+    "base_shadow": 2,
+    "nolock": 8
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_CAS_CIERRE_RPT",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {
+    "interes_no_exigibles": 2,
+    "base_shadow": 3,
+    "nolock": 4,
+    "tipo_credito_filtro": 1
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_CMR_DIA",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {
+    "interes_no_exigibles": 1,
+    "base_shadow": 50,
+    "fn_es_covid": 2,
+    "nolock": 46,
+    "tipo_credito_filtro": 16,
+    "getdate": 1,
+    "cat_tipo_autoritativo": 1,
+    "cat_origen_autoritativo": 1,
+    "tabla_rubro_x_credito": 7
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_CMR_DIA_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "CIERRE.SP_CMR_GEN_DIA_CARTERA_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "CIERRE.SP_CMR_GEN_DIA_CONTABILIDAD_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "CIERRE.SP_CMR_GEN_DIA_CONTROL_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "CIERRE.SP_CMR_GEN_DIA_FINANZAS_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "CIERRE.SP_CMR_GEN_DIA_RIESGOS_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "CIERRE.SP_CMR_GEN_MES",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 174,
+   "patrones": {
+    "opi_valor_espacio": 1,
+    "principal_vencido": 1,
+    "interes_no_exigibles": 1,
+    "base_shadow": 87,
+    "fn_es_covid": 4,
+    "origen_008_031": 1,
+    "nolock": 72,
+    "tipo_credito_filtro": 46,
+    "getdate": 1,
+    "fecha_literal": 1,
+    "cat_tipo_autoritativo": 1,
+    "cat_origen_autoritativo": 1,
+    "tabla_rubro_x_credito": 15
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_CMR_MES_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "CIERRE.SP_CMR_RPT_CIERRE_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {
+    "interes_no_exigibles": 2
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_CMR_RPT_DESEMBOLSOS_CARTERA_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 10,
+   "patrones": {
+    "base_shadow": 5,
+    "origen_008_031": 1,
+    "nolock": 8,
+    "tipo_credito_filtro": 1
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {
+    "base_shadow": 32,
+    "fn_es_covid": 1,
+    "ind_covid": 7,
+    "nolock": 37,
+    "tipo_credito_filtro": 2,
+    "cat_tipo_autoritativo": 1,
+    "tabla_rubro_x_credito": 4
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_IND_GEN_MES",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {
+    "base_shadow": 423,
+    "origen_008_031": 3,
+    "tipo_credito_filtro": 41,
+    "getdate": 1,
+    "fecha_literal": 90,
+    "cat_tipo_autoritativo": 3,
+    "cat_origen_autoritativo": 3,
+    "tabla_rubro_x_credito": 192
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_IND_GEN_MES_MOD",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {
+    "tipo_credito_filtro": 2
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_IND_RPT_CIERRE_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {
+    "interes_no_exigibles": 1,
+    "base_shadow": 6,
+    "nolock": 1,
+    "tipo_credito_filtro": 3
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_IND_RPT_DESEMBOLSOS_CARTERA_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 6,
+   "patrones": {
+    "base_shadow": 3,
+    "origen_008_031": 1,
+    "nolock": 4,
+    "tipo_credito_filtro": 3
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_IND_RPT_INTERESES_DEVENGADOS_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {
+    "base_shadow": 30,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "nolock": 40,
+    "tipo_credito_filtro": 20,
+    "cat_tipo_autoritativo": 1,
+    "tabla_rubro_x_credito": 3
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_RPT_CASTIGOS_CARTERA_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {
+    "opi_valor_espacio": 9,
+    "base_shadow": 2,
+    "nolock": 4
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_RPT_COBRANZA_CARTERA_CMR_IND_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "opi_valor_espacio": 3,
+    "ind_covid": 6
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_RPT_QUITAS_Y_CONDINACIONES_CARTERA_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {
+    "base_shadow": 1,
+    "nolock": 4
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_RPT_VENTAS_DE_CARTERA_VIS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 4,
+   "patrones": {
+    "opi_valor_espacio": 3,
+    "base_shadow": 2,
+    "nolock": 8
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_SAF_SALDOS",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "real",
+   "lineas_dif": 310,
+   "patrones": {
+    "principal_vencido": 1,
+    "interes_no_exigibles": 3,
+    "base_shadow": 45,
+    "fn_es_covid": 3,
+    "origen_not_in_shf": 2,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 34
+   }
+  },
+  {
+   "objeto": "CIERRE.SP_SAF_SALDOS_SND",
+   "esquema": "CIERRE",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {
+    "base_shadow": 2,
+    "nolock": 1,
+    "tipo_credito_filtro": 1,
+    "getdate": 8
+   }
+  },
+  {
+   "objeto": "PO.DE_SP_DELETE_MOVIMIENTO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.DE_SP_INSERT_DESEMBOLSO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 2,
+   "patrones": {
+    "base_shadow": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.DE_SP_INSERT_MOVIMIENTO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 2,
+   "patrones": {
+    "base_shadow": 1,
+    "getdate": 2
+   }
+  },
+  {
+   "objeto": "PO.DE_SP_SELECT_DESEMBOLSO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 6,
+   "patrones": {
+    "base_shadow": 3
+   }
+  },
+  {
+   "objeto": "PO.DE_SP_SELECT_MOVIMIENTO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_CAP_IMPORTA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "ausente_prod",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_COM_ADMINISTRADA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 4,
+   "patrones": {
+    "interes_no_exigibles": 6,
+    "base_shadow": 2,
+    "tipo_credito_filtro": 3,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_CANCELACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 34,
+   "patrones": {
+    "base_shadow": 17,
+    "ind_covid": 2,
+    "nolock": 8,
+    "tipo_credito_filtro": 2,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_CASTIGOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 92,
+   "patrones": {
+    "base_shadow": 46,
+    "fn_es_covid": 30,
+    "ind_covid": 17,
+    "tipo_credito_filtro": 2,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 36
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_CASTIGOS_CONDONACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 126,
+   "patrones": {
+    "base_shadow": 63,
+    "fn_es_covid": 1,
+    "ind_covid": 4,
+    "origen_not_in_shf": 1,
+    "nolock": 16,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_CASTIGOS_DAC_ADJ",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 120,
+   "patrones": {
+    "base_shadow": 60,
+    "fn_es_covid": 1,
+    "ind_covid": 4,
+    "origen_not_in_shf": 1,
+    "nolock": 13,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_CASTIGOS_REVERSO_COMISIONES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 130,
+   "patrones": {
+    "base_shadow": 65,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "origen_not_in_shf": 2,
+    "nolock": 19,
+    "tipo_credito_filtro": 2,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_CASTIGOS_REVERSO_CONDONACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 126,
+   "patrones": {
+    "base_shadow": 63,
+    "fn_es_covid": 1,
+    "ind_covid": 4,
+    "origen_not_in_shf": 1,
+    "nolock": 16,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_CASTIGOS_REVERSO_DAC_ADJ",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 120,
+   "patrones": {
+    "base_shadow": 60,
+    "fn_es_covid": 1,
+    "ind_covid": 4,
+    "origen_not_in_shf": 1,
+    "nolock": 13,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_CASTIGOS_REVERSO_INTERESES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 128,
+   "patrones": {
+    "base_shadow": 64,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "origen_not_in_shf": 2,
+    "nolock": 18,
+    "tipo_credito_filtro": 2,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 140,
+   "patrones": {
+    "base_shadow": 70,
+    "fn_es_covid": 2,
+    "ind_covid": 5,
+    "origen_not_in_shf": 3,
+    "nolock": 24,
+    "tipo_credito_filtro": 3,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 12
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_COBRANZA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 60,
+   "patrones": {
+    "base_shadow": 30,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "nolock": 8,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_COBRANZA_CASTIGOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 120,
+   "patrones": {
+    "base_shadow": 60,
+    "fn_es_covid": 1,
+    "ind_covid": 4,
+    "origen_not_in_shf": 1,
+    "nolock": 13,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_CONDONACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 60,
+   "patrones": {
+    "base_shadow": 30,
+    "fn_es_covid": 1,
+    "ind_covid": 4,
+    "nolock": 11,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_DACION_ADJUDICACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 58,
+   "patrones": {
+    "base_shadow": 27,
+    "fn_es_covid": 1,
+    "ind_covid": 4,
+    "nolock": 8,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_DESEMBOLSO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 32,
+   "patrones": {
+    "base_shadow": 16,
+    "fn_es_covid": 1,
+    "ind_covid": 7,
+    "nolock": 9,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_DEV_ACCESORIOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 22,
+   "patrones": {
+    "base_shadow": 11,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "nolock": 12,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "copia_catalogo": 2,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_DEV_COMISIONES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 22,
+   "patrones": {
+    "base_shadow": 11,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "nolock": 12,
+    "tipo_credito_filtro": 2,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_DEV_INTERES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 44,
+   "patrones": {
+    "base_shadow": 22,
+    "ind_covid": 5,
+    "nolock": 23,
+    "tipo_credito_filtro": 3,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 4
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_DEV_MORATORIO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "real",
+   "lineas_dif": 6,
+   "patrones": {
+    "base_shadow": 23,
+    "ind_covid": 5,
+    "nolock": 24,
+    "tipo_credito_filtro": 4,
+    "getdate": 2,
+    "tabla_rubro_x_credito": 2
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_FIRMA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 30,
+   "patrones": {
+    "base_shadow": 15,
+    "ind_covid": 2,
+    "nolock": 8,
+    "tipo_credito_filtro": 2,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_OPERACIONES_PENDIENTES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 10,
+   "patrones": {
+    "base_shadow": 5,
+    "ind_covid": 2,
+    "nolock": 5,
+    "tipo_credito_filtro": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_REESTRCTURA_CAP",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 72,
+   "patrones": {
+    "base_shadow": 36,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "nolock": 8,
+    "tipo_credito_filtro": 2,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_REESTRCTURA_SN_CAP",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 80,
+   "patrones": {
+    "principal_vencido": 3,
+    "interes_no_exigibles": 4,
+    "base_shadow": 40,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "nolock": 12,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_REVERSO_COBRANZA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 84,
+   "patrones": {
+    "base_shadow": 36,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "nolock": 8,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_REVERSO_COBRANZA_CASTIGOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 120,
+   "patrones": {
+    "base_shadow": 60,
+    "fn_es_covid": 1,
+    "ind_covid": 4,
+    "origen_not_in_shf": 1,
+    "nolock": 13,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_REVERSO_COMISION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 36,
+   "patrones": {
+    "base_shadow": 18,
+    "fn_es_covid": 1,
+    "ind_covid": 8,
+    "nolock": 18,
+    "tipo_credito_filtro": 2,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 3
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_REVERSO_CONDONACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 60,
+   "patrones": {
+    "base_shadow": 30,
+    "fn_es_covid": 1,
+    "ind_covid": 4,
+    "nolock": 11,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_REVERSO_DACION_ADJUDICACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 58,
+   "patrones": {
+    "base_shadow": 27,
+    "fn_es_covid": 1,
+    "ind_covid": 4,
+    "nolock": 8,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_REVERSO_DESEMBOLSO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 32,
+   "patrones": {
+    "base_shadow": 16,
+    "fn_es_covid": 1,
+    "ind_covid": 7,
+    "nolock": 9,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_REVERSO_INTERES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 36,
+   "patrones": {
+    "base_shadow": 18,
+    "fn_es_covid": 1,
+    "ind_covid": 8,
+    "nolock": 19,
+    "tipo_credito_filtro": 3,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 2
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_REVERSO_MORATORIO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 34,
+   "patrones": {
+    "base_shadow": 17,
+    "fn_es_covid": 2,
+    "ind_covid": 5,
+    "nolock": 18,
+    "tipo_credito_filtro": 3,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 2
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_TRASPASO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 18,
+   "patrones": {
+    "base_shadow": 9,
+    "ind_covid": 8,
+    "tipo_credito_filtro": 3,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_TRASPASO_INSERT",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 36,
+   "patrones": {
+    "base_shadow": 16,
+    "fn_es_covid": 13,
+    "ind_covid": 4,
+    "tabla_rubro_x_credito": 13
+   }
+  },
+  {
+   "objeto": "PO.SP_COM_VENTA_CARTERA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 76,
+   "patrones": {
+    "base_shadow": 38,
+    "fn_es_covid": 26,
+    "ind_covid": 12,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "cat_tipo_autoritativo": 3,
+    "tabla_rubro_x_credito": 24
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_ADMINISTRADA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 4,
+   "patrones": {
+    "interes_no_exigibles": 6,
+    "base_shadow": 2,
+    "tipo_credito_filtro": 3,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_BALLON_APLI",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 4,
+   "patrones": {
+    "base_shadow": 2,
+    "getdate": 4
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_CASTIGOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 92,
+   "patrones": {
+    "base_shadow": 46,
+    "fn_es_covid": 30,
+    "ind_covid": 17,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "copia_catalogo": 1,
+    "tabla_rubro_x_credito": 36
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_CASTIGOS_CONDONACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 144,
+   "patrones": {
+    "base_shadow": 72,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 18,
+    "tipo_credito_filtro": 6,
+    "getdate": 1,
+    "copia_catalogo": 3,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_CASTIGOS_DAC_ADJ",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 138,
+   "patrones": {
+    "base_shadow": 69,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 15,
+    "tipo_credito_filtro": 6,
+    "getdate": 1,
+    "copia_catalogo": 3,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_CASTIGOS_REVERSO_COMISIONES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 138,
+   "patrones": {
+    "base_shadow": 69,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 15,
+    "tipo_credito_filtro": 6,
+    "getdate": 1,
+    "copia_catalogo": 3,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_CASTIGOS_REVERSO_CONDONACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 144,
+   "patrones": {
+    "base_shadow": 72,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 18,
+    "tipo_credito_filtro": 6,
+    "getdate": 1,
+    "copia_catalogo": 3,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_CASTIGOS_REVERSO_DAC_ADJ",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 138,
+   "patrones": {
+    "base_shadow": 69,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 15,
+    "tipo_credito_filtro": 6,
+    "getdate": 1,
+    "copia_catalogo": 3,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_CASTIGOS_REVERSO_INTERESES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 138,
+   "patrones": {
+    "base_shadow": 69,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 15,
+    "tipo_credito_filtro": 6,
+    "getdate": 1,
+    "copia_catalogo": 3,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_CASTIGOS_REVERSO_MORATORIOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 138,
+   "patrones": {
+    "base_shadow": 69,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 15,
+    "tipo_credito_filtro": 6,
+    "getdate": 1,
+    "copia_catalogo": 3,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_COBRANZA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 92,
+   "patrones": {
+    "base_shadow": 46,
+    "fn_es_covid": 1,
+    "ind_covid": 9,
+    "nolock": 14,
+    "tipo_credito_filtro": 7,
+    "getdate": 1,
+    "copia_catalogo": 3,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_COBRANZA_CASTIGOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 138,
+   "patrones": {
+    "base_shadow": 69,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 15,
+    "tipo_credito_filtro": 6,
+    "getdate": 1,
+    "copia_catalogo": 3,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_CONDONACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 76,
+   "patrones": {
+    "base_shadow": 38,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 14,
+    "tipo_credito_filtro": 5,
+    "getdate": 1,
+    "copia_catalogo": 2,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_DACION_ADJUDICACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 70,
+   "patrones": {
+    "base_shadow": 35,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 11,
+    "tipo_credito_filtro": 5,
+    "getdate": 1,
+    "copia_catalogo": 2,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_DESEMBOLSO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 34,
+   "patrones": {
+    "base_shadow": 17,
+    "fn_es_covid": 1,
+    "ind_covid": 3,
+    "nolock": 8,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "copia_catalogo": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_DEVOLUCIONES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "real",
+   "lineas_dif": 6,
+   "patrones": {
+    "base_shadow": 11,
+    "tipo_credito_filtro": 2,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_DEV_COMISIONES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 16,
+   "patrones": {
+    "base_shadow": 6,
+    "fn_es_covid": 1,
+    "ind_covid": 4,
+    "nolock": 4,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "copia_catalogo": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_DEV_INTERES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 20,
+   "patrones": {
+    "base_shadow": 10,
+    "ind_covid": 3,
+    "nolock": 8,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "copia_catalogo": 1,
+    "tabla_rubro_x_credito": 2
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_DEV_MORATORIO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 12,
+   "patrones": {
+    "base_shadow": 6,
+    "ind_covid": 3,
+    "nolock": 4,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "copia_catalogo": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_DEV_SEGUROS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 16,
+   "patrones": {
+    "base_shadow": 6,
+    "fn_es_covid": 1,
+    "ind_covid": 4,
+    "nolock": 4,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "copia_catalogo": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_FIRMA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 38,
+   "patrones": {
+    "base_shadow": 19,
+    "fn_es_covid": 1,
+    "ind_covid": 3,
+    "nolock": 10,
+    "tipo_credito_filtro": 6,
+    "getdate": 1,
+    "copia_catalogo": 2,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_OPERACIONES_PENDIENTES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 10,
+   "patrones": {
+    "base_shadow": 5,
+    "ind_covid": 2,
+    "nolock": 3,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "copia_catalogo": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_PAG_X_IDENTIFICAR",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 28,
+   "patrones": {
+    "base_shadow": 14,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_REESTRCTURA_CAP",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 92,
+   "patrones": {
+    "base_shadow": 46,
+    "fn_es_covid": 1,
+    "ind_covid": 7,
+    "nolock": 10,
+    "tipo_credito_filtro": 6,
+    "getdate": 1,
+    "copia_catalogo": 2,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_REESTRCTURA_SN_CAP",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 92,
+   "patrones": {
+    "base_shadow": 46,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 10,
+    "tipo_credito_filtro": 6,
+    "getdate": 1,
+    "copia_catalogo": 2,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_REVERSO_COBRANZA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 102,
+   "patrones": {
+    "base_shadow": 49,
+    "fn_es_covid": 1,
+    "ind_covid": 9,
+    "nolock": 14,
+    "tipo_credito_filtro": 7,
+    "getdate": 1,
+    "copia_catalogo": 3,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_REVERSO_COBRANZA_CASTIGOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 138,
+   "patrones": {
+    "base_shadow": 69,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 15,
+    "tipo_credito_filtro": 6,
+    "getdate": 1,
+    "copia_catalogo": 3,
+    "tabla_rubro_x_credito": 11
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_REVERSO_COMISION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 32,
+   "patrones": {
+    "base_shadow": 14,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "nolock": 11,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "copia_catalogo": 1,
+    "tabla_rubro_x_credito": 3
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_REVERSO_CONDONACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 76,
+   "patrones": {
+    "base_shadow": 38,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 14,
+    "tipo_credito_filtro": 5,
+    "getdate": 1,
+    "copia_catalogo": 2,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_REVERSO_DACION_ADJUDICACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 70,
+   "patrones": {
+    "base_shadow": 35,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 11,
+    "tipo_credito_filtro": 5,
+    "getdate": 1,
+    "copia_catalogo": 2,
+    "tabla_rubro_x_credito": 5
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_REVERSO_DESEMBOLSO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 34,
+   "patrones": {
+    "base_shadow": 17,
+    "fn_es_covid": 1,
+    "ind_covid": 5,
+    "nolock": 8,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "copia_catalogo": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_REVERSO_DEVOLUCIONES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 24,
+   "patrones": {
+    "base_shadow": 12,
+    "tipo_credito_filtro": 2,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_REVERSO_INTERES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 26,
+   "patrones": {
+    "base_shadow": 13,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "nolock": 11,
+    "tipo_credito_filtro": 6,
+    "getdate": 1,
+    "copia_catalogo": 2,
+    "tabla_rubro_x_credito": 2
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_REVERSO_MORATORIO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 16,
+   "patrones": {
+    "base_shadow": 8,
+    "fn_es_covid": 1,
+    "ind_covid": 3,
+    "nolock": 6,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "copia_catalogo": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_TRASPASO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 28,
+   "patrones": {
+    "base_shadow": 14,
+    "ind_covid": 8,
+    "nolock": 6,
+    "tipo_credito_filtro": 5,
+    "getdate": 1,
+    "copia_catalogo": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_TRASPASO_SALDO_FAVOR",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 20,
+   "patrones": {
+    "base_shadow": 10,
+    "tipo_credito_filtro": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_IND_VENTA_CARTERA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 72,
+   "patrones": {
+    "base_shadow": 36,
+    "fn_es_covid": 20,
+    "ind_covid": 10,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "cat_tipo_autoritativo": 3,
+    "tabla_rubro_x_credito": 22
+   }
+  },
+  {
+   "objeto": "PO.SP_PR_CAPITAL_ENC_AGR",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_PR_CAPITAL_EST_ACT",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_PR_CAPITAL_IMPORTA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_PR_COBRANZA_ENC_AGR",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_PR_COBRANZA_ENC_LST",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_PR_COBRANZA_ENC_SEL",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_PR_COBRANZA_EST_ACT",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_PR_COBRANZA_IMPORTA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_PR_DEVENGO_ENC_AGR",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_PR_DEVENGO_ENC_LST",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_PR_DEVENGO_ENC_SEL",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_PR_DEVENGO_EST_ACT",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_PR_DEVENGO_IMPORTA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_PR_MINISTRACION_ENC_AGR",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_PR_MINISTRACION_ENC_LST",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_PR_MINISTRACION_ENC_SEL",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_PR_MINISTRACION_EST_ACT",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_PR_MINISTRACION_IMPORTA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_SAF_CASTIGO_AGR",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_SAF_CIERRE_LIS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_SAF_CREDITO_TIPO_FALTANTE",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 4,
+   "patrones": {
+    "base_shadow": 2,
+    "tipo_credito_filtro": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SAF_IMPAGO_AGR",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 6,
+   "patrones": {
+    "base_shadow": 3
+   }
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_CUENTAS_DYN_VAL",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_CUENTAS_VAL",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 6,
+   "patrones": {
+    "base_shadow": 3
+   }
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_DIARIA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 2,
+   "patrones": {
+    "base_shadow": 1,
+    "getdate": 61
+   }
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_ENVIO_1P_CON",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "real",
+   "lineas_dif": 2,
+   "patrones": {
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_ENVIO_1P_ERR_LIS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_ENVIO_1P_ESTADO_ACT",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_ENVIO_1P_ESTADO_REP",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_ENVIO_1P_LIS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_ENVIO_CON",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_ENVIO_ESTADO_ACT",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_ENVIO_ESTADO_REP",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "getdate": 2
+   }
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_ENVIO_LIS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_FINALIZA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_MOVxDIA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "real",
+   "lineas_dif": 4,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_REEST_CAST",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 86,
+   "patrones": {
+    "base_shadow": 43,
+    "ind_covid": 3,
+    "nolock": 4,
+    "tipo_credito_filtro": 2,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 10
+   }
+  },
+  {
+   "objeto": "PO.SP_SAF_POLIZA_REEST_CAST_APLI",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 6,
+   "patrones": {
+    "base_shadow": 3,
+    "getdate": 4
+   }
+  },
+  {
+   "objeto": "PO.SP_SAF_UMA_AGR",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SP_SND_ADMINISTRADA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 18,
+   "patrones": {
+    "base_shadow": 9,
+    "ind_covid": 16,
+    "nolock": 10,
+    "tipo_credito_filtro": 2,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_CAPITAL",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 8,
+   "patrones": {
+    "base_shadow": 4,
+    "ind_covid": 2,
+    "nolock": 5,
+    "tipo_credito_filtro": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_CASTIGOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 92,
+   "patrones": {
+    "base_shadow": 46,
+    "fn_es_covid": 30,
+    "ind_covid": 17,
+    "tipo_credito_filtro": 2,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 36
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_COBRANZA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 16,
+   "patrones": {
+    "base_shadow": 8,
+    "ind_covid": 33,
+    "cuentas_orden": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_COBRANZA_CASTIGOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 16,
+   "patrones": {
+    "base_shadow": 8,
+    "ind_covid": 28,
+    "cuentas_orden": 2,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_CONDONACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 14,
+   "patrones": {
+    "base_shadow": 7,
+    "ind_covid": 22,
+    "cuentas_orden": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_DACION_ADJUDICACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 14,
+   "patrones": {
+    "base_shadow": 7,
+    "ind_covid": 22,
+    "cuentas_orden": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_DESEMBOLSO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 32,
+   "patrones": {
+    "base_shadow": 16,
+    "fn_es_covid": 1,
+    "ind_covid": 7,
+    "nolock": 9,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_DEV_ACCESORIOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 22,
+   "patrones": {
+    "base_shadow": 11,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "nolock": 12,
+    "tipo_credito_filtro": 4,
+    "getdate": 1,
+    "copia_catalogo": 2,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_DEV_COMISIONES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 22,
+   "patrones": {
+    "base_shadow": 11,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "nolock": 12,
+    "tipo_credito_filtro": 2,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_DEV_INTERES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "ind_covid": 3,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_DEV_MORATORIO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "ind_covid": 5,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_POLIZA_DIARIA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "getdate": 27
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_RECLASIFICACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 8,
+   "patrones": {
+    "base_shadow": 4,
+    "ind_covid": 3,
+    "nolock": 5,
+    "tipo_credito_filtro": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_REVERSO_ACCESORIOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 24,
+   "patrones": {
+    "base_shadow": 12,
+    "fn_es_covid": 1,
+    "ind_covid": 6,
+    "nolock": 13,
+    "tipo_credito_filtro": 2,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_REVERSO_COBRANZA",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 16,
+   "patrones": {
+    "base_shadow": 8,
+    "ind_covid": 31,
+    "cuentas_orden": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_REVERSO_COBRANZA_CASTIGOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 16,
+   "patrones": {
+    "base_shadow": 8,
+    "ind_covid": 28,
+    "cuentas_orden": 2,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_REVERSO_COMISION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 36,
+   "patrones": {
+    "base_shadow": 18,
+    "fn_es_covid": 1,
+    "ind_covid": 8,
+    "nolock": 18,
+    "tipo_credito_filtro": 2,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 3
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_REVERSO_CONDONACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 14,
+   "patrones": {
+    "base_shadow": 7,
+    "ind_covid": 22,
+    "cuentas_orden": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_REVERSO_DACION_ADJUDICACION",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 14,
+   "patrones": {
+    "base_shadow": 7,
+    "ind_covid": 22,
+    "cuentas_orden": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_REVERSO_DESEMBOLSO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 32,
+   "patrones": {
+    "base_shadow": 16,
+    "fn_es_covid": 1,
+    "ind_covid": 7,
+    "nolock": 9,
+    "tipo_credito_filtro": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_REVERSO_INTERES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "ind_covid": 3,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_REVERSO_MORATORIO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "ind_covid": 5,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_SECUENCIAS_MAN",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 2,
+   "patrones": {
+    "base_shadow": 1,
+    "ind_covid": 18,
+    "cuentas_orden": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_TRASPASO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 16,
+   "patrones": {
+    "base_shadow": 8,
+    "ind_covid": 8,
+    "tipo_credito_filtro": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "PO.SP_SND_TRASPASO_INSERT",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "interes_no_exigibles": 1,
+    "ind_covid": 4
+   }
+  },
+  {
+   "objeto": "PO.SYS_SP_BALANCE_ACCOUNT_SQL",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SYS_SP_BALANCE_DETAIL_SQL",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "real",
+   "lineas_dif": 9,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SYS_SP_CONTROL_HISTORICO_TRASPASOS",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "real",
+   "lineas_dif": 11,
+   "patrones": {
+    "base_shadow": 7,
+    "origen_008_031": 1,
+    "tipo_credito_filtro": 2,
+    "tabla_rubro_x_credito": 2
+   }
+  },
+  {
+   "objeto": "PO.SYS_SP_CUENTA_AGR",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "getdate": 4
+   }
+  },
+  {
+   "objeto": "PO.SYS_SP_CUENTA_BUSCAR",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SYS_SP_CUENTA_ELI",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.SYS_SP_INSERT_TRASPASO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 36,
+   "patrones": {
+    "base_shadow": 16,
+    "fn_es_covid": 13,
+    "ind_covid": 4,
+    "tabla_rubro_x_credito": 13
+   }
+  },
+  {
+   "objeto": "PO.SYS_SP_REGISTRO_AVALUO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "PO.VALIDAR_ID_EXTERNO",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 2,
+   "patrones": {
+    "base_shadow": 1
+   }
+  },
+  {
+   "objeto": "PO.VERIFICAR_CREDITOS_FALTANTES",
+   "esquema": "PO",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 2,
+   "patrones": {
+    "base_shadow": 1,
+    "tipo_credito_filtro": 1,
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "RPT.CASTIGO_REEST_SALDOS",
+   "esquema": "RPT",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 2,
+   "patrones": {
+    "base_shadow": 1,
+    "nolock": 1
+   }
+  },
+  {
+   "objeto": "SAF.SP_TASAS_ALERTAS_DESACTIVA",
+   "esquema": "SAF",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "SAF.SP_TASAS_ALERTAS_DEST",
+   "esquema": "SAF",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "getdate": 1
+   }
+  },
+  {
+   "objeto": "SAF.SP_TASAS_ALERTAS_DEST_SEL",
+   "esquema": "SAF",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "SAF.SP_TASAS_ALERTAS_ENVIO",
+   "esquema": "SAF",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 2,
+   "patrones": {
+    "base_shadow": 1,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 1
+   }
+  },
+  {
+   "objeto": "SAF.SP_TASAS_ALERTAS_ENVIO_DEST",
+   "esquema": "SAF",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "SAF.SP_TASAS_ALERTAS_IMPORTA",
+   "esquema": "SAF",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 8,
+   "patrones": {
+    "base_shadow": 4,
+    "getdate": 1,
+    "tabla_rubro_x_credito": 2
+   }
+  },
+  {
+   "objeto": "SAF.SP_TASAS_ALERTAS_VALIDA",
+   "esquema": "SAF",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 8,
+   "patrones": {
+    "base_shadow": 4,
+    "tabla_rubro_x_credito": 2
+   }
+  },
+  {
+   "objeto": "dbo.CursorCloseDeallocate",
+   "esquema": "dbo",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {}
+  },
+  {
+   "objeto": "dbo.REPORTE_COBRANZA_INTEGRACION",
+   "esquema": "dbo",
+   "tipo": "StoredProcedure",
+   "clase": "identico",
+   "lineas_dif": 0,
+   "patrones": {
+    "opi_valor_espacio": 3,
+    "ind_covid": 6
+   }
+  },
+  {
+   "objeto": "dbo.REPORTE_NO_IDENTIFICADOS",
+   "esquema": "dbo",
+   "tipo": "StoredProcedure",
+   "clase": "solo_base",
+   "lineas_dif": 6,
+   "patrones": {
+    "base_shadow": 3,
+    "nolock": 1,
+    "tipo_credito_filtro": 4
+   }
+  }
+ ]
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Preguntas acotadas al alcance productivo &mdash; KARDIA / SAF</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+nav.docs{padding:10px 32px;background:#131b29;border-bottom:1px solid #2a3549;font-size:13px}
+nav.docs a{margin-right:16px;text-decoration:none}
+.wrap{padding:22px 32px 60px;max-width:1180px}
+h2{margin:34px 0 12px;font-size:18px;border-left:3px solid #4c8dff;padding-left:10px}
+h3{margin:22px 0 6px;font-size:15px}
+p.lead{color:#c9d6ee;font-size:15px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:140px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b}.kpi.a b{color:#ffa94d}.kpi.m b{color:#ffd43b}.kpi.b b{color:#74c0fc}
+.card{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:16px 20px;margin:12px 0}
+.card.rojo{border-left:3px solid #ff6b6b}
+.card.ambar{border-left:3px solid #ffa94d}
+.card.azul{border-left:3px solid #4c8dff}
+.card.verde{border-left:3px solid #51cf66}
+.card h3{margin-top:0}
+.card .q{color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.num{white-space:nowrap;color:#93a1bb}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#c9d6ee}
+pre{margin:8px 0 0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:12px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
+.pill.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.pill.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.pill.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.pill.ok{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.info{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+ul{margin:6px 0;padding-left:20px}li{margin:4px 0}
+.ola{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 20px;margin:12px 0}
+.ola h3{margin:0 0 2px}
+.ola .obj{color:#93a1bb;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.tag{font-size:11px;color:#93a1bb;border:1px solid #35415a;border-radius:5px;padding:2px 7px;margin-right:6px}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px solid #35415a;color:#c9d6ee}
+</style></head><body>
+<header class="top"><h1>Preguntas acotadas al alcance productivo</h1><p>Que cierra la lista de objetos en uso, que sigue bloqueando y que preguntas nuevas aparecen</p></header>
+<nav class="docs">
+<a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
+<a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
+<a href="09_demo_portal.html">Demo del portal</a>
+<a href="14_demo_portal_banderas.html">Demo de banderas</a>
+<a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
+<a href="12_preguntas_negocio.html">Confirmaciones con negocio</a>
+<a href="15_respuestas_cliente.html">Respuestas del cliente</a>
+<a href="16_reclasificacion.html">Reclasificación de hallazgos</a>
+<a href="17_objetos_vigentes.html">Objetos vigentes</a>
+<a href="18_version_sept10.html">Versión SPs_Sept10</a>
+<a href="19_alcance_produccion.html">Alcance productivo</a>
+<a href="20_qa_confiable.html">QA confiable</a>
+<a href="21_preguntas_alcance.html">Preguntas acotadas</a>
+<a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a>
+<a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
+</nav>
+<div class="wrap">
+<p class="lead">Reordenamiento de las 31 confirmaciones abiertas usando la lista de objetos en uso: lo que el acotamiento cierra, lo que sigue bloqueando y las preguntas nuevas que salen del cruce.</p>
+<div class="kpis"><div class="kpi b"><b>5</b><span>preguntas que cierra el acotamiento</span></div><div class="kpi a"><b>9</b><span>siguen vigentes dentro del alcance</span></div><div class="kpi c"><b>9</b><span>nuevas por el cruce con la lista</span></div><div class="kpi c"><b>6</b><span>nuevas que bloquean el QA nuevo</span></div></div>
+<h2>1. Lo que el acotamiento cierra o baja de prioridad</h2>
+<table class=""><thead><tr><th>Referencia</th><th>Pregunta</th><th>Por qué se cierra</th></tr></thead><tbody><tr><td><span class="tag">Q17-Q19</span></td><td>Existencia de los esquemas <code>PAG</code>, <code>edc</code>, <code>edcc</code>, <code>juicios</code>, <code>demandas</code>, <code>ori</code> y <code>cierre_puente</code></td><td>ninguno de esos esquemas está en la lista ni lo usa un objeto de la lista</td></tr><tr><td><span class="tag">L1-007</span></td><td>Objetos que leen <code>Quiero_Confianza_CreditoPuente_QA</code></td><td>los 4 objetos que la leen quedan fuera del alcance; pasa a ser hallazgo de ambientes (informe de QA) y no de la póliza</td></tr><tr><td><span class="tag">Q29</span></td><td>Reporte a Afirme y <code>dbo.REPORTE</code> / <code>dbo.REPORTEAFIRME</code></td><td>no están en la lista y nadie de la lista los invoca</td></tr><tr><td><span class="tag">Q24 (parcial)</span></td><td>Candidatos a baja del inventario de objetos vigentes</td><td>la lista resuelve la duda al revés: no eran bajas, el export estaba incompleto</td></tr><tr><td><span class="tag">Q20</span></td><td>Versión anterior del generador de póliza (<code>SP_IND_ADMINISTRADA_POL</code>, <code>SP_IND_COBRANZA_POL</code>)</td><td>fuera de la lista y sin invocador dentro de ella</td></tr></tbody></table>
+<div class="card ambar"><p>Cierran cinco de las 31, todas por alcance y no por respuesta. Conviene decirlo así en la reunión: el objeto sigue existiendo en la base, lo que cambia es que no participa en la póliza y por lo tanto no lo administra el portal ni se instala en el QA nuevo.</p></div>
+<h2>2. Lo que sigue bloqueando, dentro del alcance</h2>
+<table class=""><thead><tr><th>Ref.</th><th>Qué hay que confirmar</th><th>Extensión</th><th>Quién decide</th><th>Por qué bloquea</th></tr></thead><tbody><tr><td><span class="tag">Q01</span></td><td>El literal <code>'OPI VALOR'</code> con espacio no existe en <code>PR.PR_RUBRO</code></td><td>6 objetos del alcance</td><td><span class="pill info">Contabilidad</span></td><td>define si es alias, error de captura o rubro que debe crearse; si es error, hay importes que nunca entraron a la póliza</td></tr><tr><td><span class="tag">Q02</span></td><td><code>'PRINCIPAL_VENCIDO'</code> e <code>'INTERES_NO_EXIGIBLES'</code> no están en el catálogo</td><td>3 y 10 objetos</td><td><span class="pill info">Contabilidad</span></td><td>sin concepto contable no se pueden migrar a catálogo</td></tr><tr><td><span class="tag">Q10</span></td><td>Alcance del enmascaramiento de datos personales</td><td>todo el ambiente</td><td><span class="pill info">Legal / seguridad</span></td><td>bloquea la etapa E1 del QA nuevo</td></tr><tr><td><span class="tag">Q15</span></td><td>Regla única de origen "no restringido"</td><td>10 objetos con <code>NOT IN (22,23,28,35)</code> y 5 con <code>IN ('008','031'...)</code></td><td><span class="pill info">Tesorería / contabilidad</span></td><td>son dos reglas distintas escritas como si fueran la misma; hay que declarar cuál es la correcta</td></tr><tr><td><span class="tag">Q06</span></td><td>Fecha fija <code>FECHA_SISTEMA='20260123'</code> en el cierre comercial</td><td>CIERRE.SP_CMR_GEN_MES</td><td><span class="pill info">Operación / contabilidad</span></td><td>sigue en las dos copias del paquete de septiembre; el mismo SP tiene 23 filtros parametrizados</td></tr><tr><td><span class="tag">Q22</span></td><td>Balance vs. cuentas de orden decidido por el texto <code>'CUENTAS DE ORDEN'</code></td><td>9 objetos</td><td><span class="pill info">Contabilidad</span></td><td>debe salir de <code>ind_cont_orden</code>; hoy no lo lee ningún objeto del alcance</td></tr><tr><td><span class="tag">Q23</span></td><td>Umbral COVID y su vigencia (6051 vs 6086 según ambiente)</td><td>67 objetos por función y 95 por columna</td><td><span class="pill info">Riesgos</span></td><td>dos implementaciones de la misma regla, con distinto valor por ambiente</td></tr><tr><td><span class="tag">Q14 / Q31</span></td><td>Dueño del catálogo de tipos de cartera y de cada bandera</td><td>portal</td><td><span class="pill info">Gobierno</span></td><td>no bloquea el diseño, bloquea la operación del portal</td></tr><tr><td><span class="tag">Q28</span></td><td>Participación por convenio y su vigencia</td><td>sindicados y administradas</td><td><span class="pill info">Tesorería</span></td><td>el estado "no establecido" debe bloquear el cierre, no heredar el valor anterior</td></tr></tbody></table>
+<h2>3. Preguntas nuevas del cruce con la lista</h2>
+<table class=""><thead><tr><th>Ref.</th><th>Pregunta</th><th>Quién responde</th><th>Bloquea</th><th>Por qué importa</th></tr></thead><tbody><tr><td><span class="tag">Q32</span></td><td>&iquest;A qué instancia apunta el servidor vinculado <code>[SRV-IONSQLAWS\SAF]</code> y quién puede ejecutar <code>PO.SP_SAF_POLIZA_PASE_EXT_QA_PROD</code>?</td><td><span class="pill info">DBA / seguridad</span></td><td><span class="pill c">si</span></td><td>ese procedimiento borra e inserta póliza histórica en el destino; si el destino es producción, hay un camino por el que datos de prueba entran a la contabilidad</td></tr><tr><td><span class="tag">Q33</span></td><td>&iquest;Nos pueden entregar el DDL vigente de los 19 objetos declarados en uso que no vienen en el export de producción?</td><td><span class="pill info">DBA</span></td><td><span class="pill c">si</span></td><td>incluye <code>CIERRE.SP_IND_GEN_MES</code>, el cierre mensual individual: hoy auditamos su versión de desarrollo sin poder compararla con la productiva</td></tr><tr><td><span class="tag">Q34</span></td><td>&iquest;<code>CIERRE.SP_IND_GEN_MES_MOD</code> se usa o no?</td><td><span class="pill info">Operación</span></td><td><span class="pill c">si</span></td><td>en la ronda anterior nos dijeron que no; la lista de objetos en uso lo incluye</td></tr><tr><td><span class="tag">Q35</span></td><td>De los 7 objetos con lógica distinta entre las dos copias, &iquest;cuál versión es la productiva?</td><td><span class="pill info">Desarrollo / DBA</span></td><td><span class="pill c">si</span></td><td>destaca <code>CIERRE.SP_SAF_SALDOS</code> con 310 líneas de diferencia: es la base de saldos de todo el cierre</td></tr><tr><td><span class="tag">Q36</span></td><td>&iquest;<code>PO.REGLA_CONTABLE_INDIVIDUAL</code> y los catálogos <code>PO.CAT_RUBROS</code>, <code>CAT_PRODUCTOS</code>, <code>CAT_FONDEOS</code>, <code>CAT_TRANSACCIONES</code> y <code>CAT_GARANTIAS</code> están en uso?</td><td><span class="pill info">Desarrollo / contabilidad</span></td><td><span class="pill m">no</span></td><td>es una parametrización contable que ya existe y que ningún objeto del alcance usa; si está viva, el portal debe administrarla en vez de crear otra</td></tr><tr><td><span class="tag">Q37</span></td><td>&iquest;<code>dbo.FN_TIPO_CREDITO</code> quedó obsoleta a propósito?</td><td><span class="pill info">Desarrollo</span></td><td><span class="pill m">no</span></td><td>es la abstracción que hoy falta y nadie la usa; conviene saber por qué se abandonó antes de repetir el intento</td></tr><tr><td><span class="tag">Q38</span></td><td>&iquest;Cuál es la fecha de corte y la póliza publicada que vamos a usar como patrón de la prueba de equivalencia?</td><td><span class="pill info">Contabilidad / operación</span></td><td><span class="pill c">si</span></td><td>sin patrón no hay forma de certificar el ambiente nuevo</td></tr><tr><td><span class="tag">Q39</span></td><td>&iquest;Qué jobs disparan el cierre, con qué parámetros y en qué orden?</td><td><span class="pill info">Operación / DBA</span></td><td><span class="pill c">si</span></td><td>hace falta para reproducir el cierre en el ambiente nuevo y para saber qué objetos se ejecutan de verdad</td></tr><tr><td><span class="tag">Q40</span></td><td>&iquest;La lista de objetos en uso incluye los reportes <code>_VIS</code> porque se ejecutan en el cierre o porque los consulta un usuario?</td><td><span class="pill info">Operación</span></td><td><span class="pill m">no</span></td><td>cambia si entran al alcance de la prueba de equivalencia o solo al inventario</td></tr></tbody></table>
+<h2>4. Las cinco que valen la reunión</h2>
+<div class="card rojo"><ol><li><b>Q32</b> &mdash; a qué instancia escribe el procedimiento de pase. Es control interno, no diseño.</li><li><b>Q01</b> &mdash; el rubro <code>OPI VALOR</code> que no existe: define si hay importes fuera de la póliza.</li><li><b>Q15</b> &mdash; cuál es la regla verdadera de origen "no restringido".</li><li><b>Q33 / Q38</b> &mdash; el DDL faltante y la póliza patrón: sin eso no arranca el QA nuevo.</li><li><b>Q06</b> &mdash; la fecha fija del cierre comercial, que sigue viva en la entrega de septiembre.</li></ol></div>
+</div>
+<footer>Auditoría de código SQL KARDIA / SAF &middot; análisis estático del repositorio (BD, BD_prod y reportes).
+No se ejecutó ningún objeto contra una instancia de SQL Server ni se leyeron datos productivos:
+los hallazgos que dependen de datos, de plan de ejecución o de reglas contables se marcan como pendientes de validación.</footer>
+</body></html>
