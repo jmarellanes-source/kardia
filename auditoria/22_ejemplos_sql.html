@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ejemplos de SQL: origen de fondos y cuentas de orden &mdash; KARDIA / SAF</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+nav.docs{padding:10px 32px;background:#131b29;border-bottom:1px solid #2a3549;font-size:13px}
+nav.docs a{margin-right:16px;text-decoration:none}
+.wrap{padding:22px 32px 60px;max-width:1180px}
+h2{margin:34px 0 12px;font-size:18px;border-left:3px solid #4c8dff;padding-left:10px}
+h3{margin:22px 0 6px;font-size:15px}
+p.lead{color:#c9d6ee;font-size:15px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:140px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b}.kpi.a b{color:#ffa94d}.kpi.m b{color:#ffd43b}.kpi.b b{color:#74c0fc}
+.card{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:16px 20px;margin:12px 0}
+.card.rojo{border-left:3px solid #ff6b6b}
+.card.ambar{border-left:3px solid #ffa94d}
+.card.azul{border-left:3px solid #4c8dff}
+.card.verde{border-left:3px solid #51cf66}
+.card h3{margin-top:0}
+.card .q{color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.num{white-space:nowrap;color:#93a1bb}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#c9d6ee}
+pre{margin:8px 0 0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:12px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
+.pill.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.pill.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.pill.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.pill.ok{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.info{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+ul{margin:6px 0;padding-left:20px}li{margin:4px 0}
+.ola{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 20px;margin:12px 0}
+.ola h3{margin:0 0 2px}
+.ola .obj{color:#93a1bb;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.tag{font-size:11px;color:#93a1bb;border:1px solid #35415a;border-radius:5px;padding:2px 7px;margin-right:6px}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px solid #35415a;color:#c9d6ee}
+</style></head><body>
+<header class="top"><h1>Ejemplos de SQL del hardcodeo</h1>
+<p>Los dos casos que preguntaste: <code>NOT IN (22,23,28, 35)</code> como &laquo;no restringido&raquo; y el texto
+<code>'CUENTAS DE ORDEN'</code> como separador entre balance y cuentas de orden</p></header>
+<nav class="docs">
+<a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
+<a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
+<a href="09_demo_portal.html">Demo del portal</a>
+<a href="14_demo_portal_banderas.html">Demo de banderas</a>
+<a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
+<a href="12_preguntas_negocio.html">Confirmaciones con negocio</a>
+<a href="15_respuestas_cliente.html">Respuestas del cliente</a>
+<a href="16_reclasificacion.html">Reclasificación de hallazgos</a>
+<a href="17_objetos_vigentes.html">Objetos vigentes</a>
+<a href="18_version_sept10.html">Versión SPs_Sept10</a>
+<a href="19_alcance_produccion.html">Alcance productivo</a>
+<a href="20_qa_confiable.html">QA confiable</a>
+<a href="21_preguntas_alcance.html">Preguntas acotadas</a>
+<a href="22_ejemplos_sql.html">Ejemplos de SQL</a>
+<a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a>
+<a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
+</nav>
+<div class="wrap">
+<p class="lead">Todo lo que sigue est&aacute; copiado del c&oacute;digo del repositorio (copia <code>BD</code>), con archivo y l&iacute;nea,
+y los 19 objetos involucrados est&aacute;n dentro de la lista de 188 en uso.</p>
+
+<div class="kpis">
+<div class="kpi c"><b>10</b><span>objetos con NOT IN (22,23,28,35)</span></div>
+<div class="kpi c"><b>15</b><span>usos del predicado</span></div>
+<div class="kpi a"><b>9</b><span>objetos que deciden por texto</span></div>
+<div class="kpi a"><b>11</b><span>usos de LIKE '%CUENTAS DE ORDEN%'</span></div>
+<div class="kpi m"><b>8</b><span>objetos con IN ('008','031') activo</span></div>
+</div>
+
+<h2>1. Origen de fondos: <code>NOT IN (22,23,28, 35)</code></h2>
+<div class="card rojo">
+<h3>El fragmento tal cual</h3>
+<pre>-- PO.SP_COM_CASTIGOS_CONDONACION  (lineas 79-86 de la copia BD)
+            FROM Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO A WITH (NOLOCK)
+                 INNER JOIN ... PR_CREDITOS C WITH (NOLOCK) ON ...
+            WHERE C.IND_ESTADO IN ('C', 'D')
+              AND C.IND_LINEA = 'N'
+              AND C.NUM_DESC_TIPO_CREDITO IN (25,   29)
+              AND C.COD_ORIGEN NOT IN (22,23,28, 35)     -- &lt;= aqui se decide "no sindicado"
+              AND A.FEC_MOVIMIENTO = @FECHA_INICIO
+              AND A.Mon_movimiento &gt; 0</pre>
+<p>El mismo predicado, id&eacute;ntico hasta en los espacios, aparece en otro proceso:</p>
+<pre>-- PO.SP_COM_COBRANZA_CASTIGOS (lineas 97-100): mismo predicado, otro proceso
+            WHERE C.IND_ESTADO IN ('C', 'D')
+              AND C.IND_LINEA = 'N'
+              AND C.NUM_DESC_TIPO_CREDITO IN (25,   29)
+              AND C.COD_ORIGEN NOT IN (22,23,28, 35)</pre>
+</div>
+
+<div class="card ambar">
+<h3>Qu&eacute; tiene de malo</h3>
+<ul>
+<li><b>La regla no est&aacute; escrita, est&aacute; supuesta.</b> 22, 23, 28 y 35 son los cuatro sindicados SHF
+(<code>SHF-SIND 2662</code>, <code>2875</code>, <code>3226</code> y <code>5028</code>) seg&uacute;n
+<code>PR.PR_ORIGEN_FONDOS</code>. El SP no dice &laquo;excluye sindicados&raquo;: dice cuatro n&uacute;meros.</li>
+<li><b>Compara un c&oacute;digo de texto como n&uacute;mero.</b> En el cat&aacute;logo el c&oacute;digo es
+<code>'022'</code>, <code>'023'</code>, <code>'028'</code>, <code>'035'</code>; aqu&iacute; se compara contra
+<code>22</code>. Funciona por conversi&oacute;n impl&iacute;cita, y deja de funcionar el d&iacute;a que el
+c&oacute;digo traiga una letra.</li>
+<li><b>Un sindicado nuevo obliga a 10 ediciones.</b> Cada alta de fondeo sindicado se tiene que capturar
+en 15 lugares de 10 procedimientos, y si uno se olvida el importe entra por el lado contrario.</li>
+<li><b>Convive con otra redacci&oacute;n de la misma regla.</b> El criterio de &laquo;no restringido&raquo;
+tambi&eacute;n aparece como <code>IN ('008','031')</code> (secci&oacute;n 2).</li>
+</ul>
+</div>
+
+<h3>Los 10 objetos</h3>
+<table><thead><tr><th>Objeto</th><th>Usos</th><th>En la lista de 188</th></tr></thead><tbody><tr><td><code>CIERRE.SP_SAF_SALDOS</code></td><td class="num">2</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_COM_CASTIGOS_CONDONACION</code></td><td class="num">1</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_COM_CASTIGOS_DAC_ADJ</code></td><td class="num">1</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_COM_CASTIGOS_REVERSO_COMISIONES</code></td><td class="num">2</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_COM_CASTIGOS_REVERSO_CONDONACION</code></td><td class="num">1</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_COM_CASTIGOS_REVERSO_DAC_ADJ</code></td><td class="num">1</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_COM_CASTIGOS_REVERSO_INTERESES</code></td><td class="num">2</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS</code></td><td class="num">3</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_COM_COBRANZA_CASTIGOS</code></td><td class="num">1</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_COM_REVERSO_COBRANZA_CASTIGOS</code></td><td class="num">1</td><td><span class="pill ok">si</span></td></tr></tbody></table>
+
+<div class="card verde">
+<h3>C&oacute;mo queda con cat&aacute;logo y banderas</h3>
+<pre>-- DESPUES: la regla vive en el catalogo y el SP solo pregunta por la bandera
+            FROM ... PR_CREDITOS C
+                 INNER JOIN DUMMY.CAT_ORIGEN_FONDOS O
+                        ON O.COD_ORIGEN = RIGHT('000' + CAST(C.COD_ORIGEN AS VARCHAR(3)), 3)
+                 INNER JOIN DUMMY.CAT_ORIGEN_POR_BANDERA B
+                        ON B.COD_ORIGEN = O.COD_ORIGEN
+                       AND B.COD_BANDERA = 'ES_SINDICADO_SHF'
+                       AND @FECHA_INICIO BETWEEN B.FEC_DESDE AND B.FEC_HASTA
+            WHERE C.IND_ESTADO IN ('C','D')
+              AND C.IND_LINEA = 'N'
+              AND B.VALOR = 0                            -- "no sindicado", definido una sola vez</pre>
+<p>El alta de un sindicado pasa a ser una fila con vigencia en el portal, aprobada por cartera, y ning&uacute;n
+SP se vuelve a editar.</p>
+</div>
+
+<h2>2. La otra redacci&oacute;n de &laquo;no restringido&raquo;: <code>IN ('008','031')</code></h2>
+<div class="card rojo">
+<h3>El fragmento tal cual</h3>
+<pre>-- PO.SYS_SP_CONTROL_HISTORICO_TRASPASOS, linea 31: aqui se calcula y se guarda el fondeo
+    ,CASE WHEN C.COD_ORIGEN IN ('008','031') THEN 2 ELSE 1 END AS ID_FONDEO   -- 2 = no restringido
+
+-- PO.SP_IND_FIRMA (linea 32) y PO.SP_COM_CONDONACION (linea 39): la version literal
+-- quedo comentada y ahora se lee de esa tabla
+    ,CH.ID_FONDEO--CASE WHEN C.COD_ORIGEN IN ('008','031') THEN 2 ELSE 1 END AS ID_FONDEO
+
+-- CIERRE.SP_IND_GEN_MES, lineas 59, 477 y 892: el cierre mensual usa TRES codigos
+    (CASE WHEN A.COD_ORIGEN IN ('008', '031', '046') THEN 'SIN RESTRICCION'
+          ELSE 'RESTRINGIDOS' END) AS 'Sin Restriccion Restringidos', --OK
+
+-- ...y el concepto contable se arma con esa misma idea, ya como texto (SP_SND_COBRANZA, linea 324):
+                    ELSE IIF(ID_FONDEO = 2, 'NO ', '')
+                    ...
+                    ELSE 'RESTRINGIDO '</pre>
+</div>
+<div class="card ambar">
+<h3>Qu&eacute; tiene de malo</h3>
+<ul>
+<li><b>La misma regla est&aacute; escrita con dos listas distintas.</b> El fondeo que alimenta la p&oacute;liza
+se calcula con <code>IN ('008','031')</code>, y el cierre mensual clasifica con
+<code>IN ('008','031','046')</code>. El <code>'046'</code> es <code>CARTERA_CASTIGADA</code>: en un lado es
+no restringido y en el otro no.</li>
+<li><b>Ya migr&oacute; a tabla, pero sin cat&aacute;logo.</b> El valor vive en
+<code>PO.CONTROL_HISTORICO_TRASPASOS.ID_FONDEO</code> y los dem&aacute;s SPs lo leen
+(<code>CH.ID_FONDEO</code>), as&iacute; que la regla est&aacute; centralizada &mdash; en el cuerpo de un SP, no en
+una fila administrable. Cambiarla sigue siendo un pase a producci&oacute;n.</li>
+<li><b>El significado de <code>2</code> solo existe en un comentario.</b> Y el 2 termina
+escribi&eacute;ndose como la palabra <code>NO RESTRINGIDO</code> dentro del concepto contable, que es la llave
+con la que se arma la p&oacute;liza.</li>
+<li>En la copia <code>BD</code>: 8 objetos con la lista activa (11 usos) y 7 con la versi&oacute;n comentada
+(10 usos), m&aacute;s los 10 objetos de la secci&oacute;n 1 con la versi&oacute;n num&eacute;rica.</li>
+</ul>
+</div>
+<h2>3. Balance vs. cuentas de orden decidido por texto</h2>
+<div class="card rojo">
+<h3>El fragmento tal cual</h3>
+<pre>-- PO.SP_SND_COBRANZA, linea 64: el texto libre de la observacion del credito
+-- decide si el movimiento es de cuentas de orden
+    ,CASE WHEN C.OBSERVACION LIKE '%CUENTAS DE ORDEN%' THEN 'C.O.' ELSE '' END AS TIPO_VIVIENDA
+
+-- PO.SP_SND_COBRANZA_CASTIGOS, linea 50: variante con un segundo texto
+    ,CASE WHEN C.OBSERVACION LIKE '%CUENTAS DE ORDEN%' THEN 'C.O.'
+          WHEN C.OBSERVACION LIKE '%POSTERIOR%'       THEN 'POS.'
+          ELSE '' END AS TIPO_VIVIENDA</pre>
+<p>Esa marca no se queda ah&iacute;: viaja al concepto contable, que es lo que determina la cuenta del asiento.</p>
+<pre>-- PO.SP_SND_COBRANZA, lineas 296-337: la marca 'C.O.' entra al concepto contable
+        UPDATE PO.SAF_MOV_ABONO
+        SET CONCEPTO = ... CONCAT(
+                'CMR ',
+                CASE
+                  WHEN CONCEPTO = 'CANC PREPAGO' THEN 'CANC CXC '
+                  WHEN TIP_TRANSACCION = 4 THEN 'PAGO ' +
+                       CASE WHEN TIPO_VIVIENDA = 'C.O.' THEN 'CO ' ELSE '' END   -- &lt;= balance vs orden
+                  ELSE ''
+                END,
+                IIF(IND_COVID = 'S', 'COVID ', ''),
+                RUBRO, ' ', TIPO_CREDITO, ' ', CANAL, ' ',
+                IIF(ID_FONDEO = 2, 'NO ', ''), 'RESTRINGIDO ', CAST(IND_ETAPA AS VARCHAR(1)))
+        WHERE ... AND TABLA_ORIGEN = 'COBRANZA COM SND ION'</pre>
+</div>
+
+<div class="card ambar">
+<h3>Qu&eacute; tiene de malo</h3>
+<ul>
+<li><b>La clasificaci&oacute;n contable depende de un campo de captura libre.</b>
+<code>C.OBSERVACION</code> es la observaci&oacute;n del cr&eacute;dito: quien la escribe no sabe que est&aacute;
+decidiendo si el movimiento va a balance o a cuentas de orden.</li>
+<li><b>Un error de dedo no falla, cambia la p&oacute;liza en silencio.</b>
+&laquo;CTAS DE ORDEN&raquo;, &laquo;CUENTA DE ORDEN&raquo; o un acento y el <code>LIKE</code> ya no casa;
+el movimiento se registra como balance y nadie recibe un error.</li>
+<li><b>Viaja en una columna que significa otra cosa.</b> El valor <code>'C.O.'</code> se guarda en
+<code>TIPO_VIVIENDA</code>, que en el resto del modelo es el tipo de vivienda del cr&eacute;dito.</li>
+<li><b>El dato correcto ya existe.</b> <code>PR.PR_RUBRO</code> trae <code>ind_cont_orden</code>, que es
+justamente esta bandera, y ning&uacute;n objeto del alcance la lee.</li>
+</ul>
+</div>
+
+<div class="card ambar">
+<h3>Y en el canal comercial la misma decisi&oacute;n se toma de otra forma</h3>
+<pre>-- PO.SP_COM_COBRANZA, lineas 622 y 648: en el canal comercial la misma decision
+-- se toma por el prefijo de la cuenta y por un espacio dentro del concepto
+        SELECT CONCAT('CMR ', IIF(CONCEPTO LIKE '%DCM%', 'DCM PAGO ', 'PAGO '),
+                      IIF(CONCEPTO LIKE '% CO %','CO ',''),
+                      IIF(A.CUENTA_CARGO LIKE '7017-%','CCO ',''),        -- &lt;= cuentas de orden
+                      RUBRO,' ',A.TIPO_CREDITO,' ',A.CANAL,' ',
+                      IIF(A.ID_FONDEO=2,'NO RESTRINGIDO ','RESTRINGIDO '),A.IND_ETAPA)
+        FROM [PO].[SAF_MOV_ABONO] A
+        WHERE ... AND A.CUENTA_CARGO LIKE '7017-%'</pre>
+<p>Aqu&iacute; el separador es el prefijo de cuenta <code>7017-</code> / <code>7016-</code> y un
+<code>LIKE '% CO %'</code> que depende de los espacios del concepto. Son tres mecanismos distintos
+(texto de observaci&oacute;n, prefijo de cuenta y espacios en el concepto) para una sola regla contable.</p>
+</div>
+
+<h3>Los 9 objetos que deciden por el texto</h3>
+<table><thead><tr><th>Objeto</th><th>Usos</th><th>En la lista de 188</th></tr></thead><tbody><tr><td><code>PO.SP_SND_COBRANZA</code></td><td class="num">1</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_SND_COBRANZA_CASTIGOS</code></td><td class="num">2</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_SND_CONDONACION</code></td><td class="num">1</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_SND_DACION_ADJUDICACION</code></td><td class="num">1</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_SND_REVERSO_COBRANZA</code></td><td class="num">1</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_SND_REVERSO_COBRANZA_CASTIGOS</code></td><td class="num">2</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_SND_REVERSO_CONDONACION</code></td><td class="num">1</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_SND_REVERSO_DACION_ADJUDICACION</code></td><td class="num">1</td><td><span class="pill ok">si</span></td></tr><tr><td><code>PO.SP_SND_SECUENCIAS_MAN</code></td><td class="num">1</td><td><span class="pill ok">si</span></td></tr></tbody></table>
+
+<div class="card verde">
+<h3>C&oacute;mo queda con cat&aacute;logo y banderas</h3>
+<pre>-- DESPUES: la marca sale de una bandera del credito o del rubro, no de un texto
+    ,IIF(B.VALOR = 1, 'CO ', '') AS PREFIJO_ORDEN
+    FROM ... PR_CREDITOS C
+         LEFT JOIN DUMMY.CAT_RUBRO_POR_BANDERA B
+                ON B.COD_RUBRO   = D.COD_CONCEPTO
+               AND B.COD_BANDERA = 'IND_CONT_ORDEN'         -- ya existe en PR.PR_RUBRO
+               AND @FECHA_INICIO BETWEEN B.FEC_DESDE AND B.FEC_HASTA
+-- y la cuenta contable se resuelve por catalogo (concepto + bandera -&gt; cuenta),
+-- en lugar de deducirse del prefijo '7017-'</pre>
+<p>La pregunta &laquo;este rubro va a cuentas de orden&raquo; se responde una vez, con vigencia y aprobaci&oacute;n,
+y los nueve procedimientos leen la misma respuesta.</p>
+</div>
+
+<div class="card azul">
+<h3>Lo que hay que confirmar con contabilidad</h3>
+<ul>
+<li>Si <code>NOT IN (22,23,28, 35)</code> significa exactamente &laquo;no sindicado SHF&raquo;, o si el cuarto
+c&oacute;digo entr&oacute; por otra raz&oacute;n (L2-007 / Q24).</li>
+<li>Si la lista corta <code>IN ('008','031')</code> y la larga <code>IN ('008','031','046')</code> deben
+unificarse, sabiendo que la larga mete <code>CARTERA_CASTIGADA</code> en la misma bolsa que
+<code>CAPITAL (RECURSOS PROPIOS)</code> y <code>OBLIGACIONES</code>.</li>
+<li>Si la separaci&oacute;n balance / cuentas de orden debe salir de <code>ind_cont_orden</code> del rubro,
+de una bandera del cr&eacute;dito, o de las dos con una precedencia definida (Q22).</li>
+</ul>
+</div>
+</div></body></html>
