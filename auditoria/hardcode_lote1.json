@@ -1,0 +1,1746 @@
+{
+ "ID_POLIZA": {
+  "@ID_POLIZA int = 7": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:13"
+  ],
+  "@ID_POLIZA_COBRANZA_EMPLEADO int = 35": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:14"
+  ],
+  "@ID_POLIZA int = 40": [
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:13"
+  ],
+  "@ID_POLIZA int = 24": [
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:14"
+  ],
+  "@ID_POLIZA int = 51": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:13"
+  ],
+  "@ID_POLIZA int = 99": [
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:13"
+  ],
+  "@ID_POLIZA int = 23": [
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:14"
+  ],
+  "@ID_POLIZA int = 74": [
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:20"
+  ],
+  "id_poliza = 33": [
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:206"
+  ],
+  "@ID_POLIZA int = 73": [
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:20"
+  ],
+  "@ID_POLIZA int = 84": [
+   "PO.SP_SND_CAPITAL.StoredProcedure.sql:19"
+  ],
+  "@ID_POLIZA = 36": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:73"
+  ],
+  "@ID_POLIZA = 60": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:76"
+  ]
+ },
+ "Cuenta/mascara larga": {
+  "'140103009001'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:22",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:21",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:22",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:21",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:32",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:297",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:29",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:183",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:205"
+  ],
+  "'140103009002'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:23",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:22",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:23",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:22",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:33",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:297",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:30",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:183",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:205"
+  ],
+  "'140103009003'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:24",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:23",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:24",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:23",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:34",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:297",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:31"
+  ],
+  "'1401030090010000'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:25",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:24",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:25",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:24",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:83",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:83",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:35",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:344",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:32",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:225",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:310",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:350",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:406"
+  ],
+  "'1401030090020000'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:26",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:25",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:26",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:25",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:83",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:83",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:36",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:344",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:33",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:225",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:310",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:350",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:406"
+  ],
+  "'5050260901000300'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:27",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:26",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:27",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:26",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:37",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:314",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:34",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:183",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:205"
+  ],
+  "'1020010502130300'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:304",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:329",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:300",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:325",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:117",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:262"
+  ]
+ },
+ "Estado/indicador": {
+  "IND_FORMA_PAGO = '' THEN 0 ELSE A": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:60",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:59",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:57",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:59",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:42",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:44"
+  ],
+  "IND_ESTADO IN ('C', 'D')": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:91",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:145",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:94",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:87",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:141",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:96",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:80",
+   "PO.SP_SND_CAPITAL.StoredProcedure.sql:74",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:84",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:497"
+  ],
+  "IND_LINEA = 'N'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:92",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:146",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:95",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:88",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:142",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:97",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:77",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:133",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:81",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:77",
+   "PO.SP_SND_CAPITAL.StoredProcedure.sql:75",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:85",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:69",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:87",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:104",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:223",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:234",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:247",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:266",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:294",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:310",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:341",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:358",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:378",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:393",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:404",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:473",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:861",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:58",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:75",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:92",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:143",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:154",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:166",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:179",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:201",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:222",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:234",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:253",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:268",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:498",
+   "CIERRE.SP_IND_GEN_MES_MOD.StoredProcedure.sql:215",
+   "CIERRE.SP_IND_GEN_MES_MOD.StoredProcedure.sql:219",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:304",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:344",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:411",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:77",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:120",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:509",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:597"
+  ],
+  "IND_FORMA_PAGO = '' THEN 0 ELSE  A": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:119",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:116",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:48",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:57"
+  ],
+  "IND_FORMA_PAGO = '' THEN 0 ELSE  B": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:186",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:183"
+  ],
+  "IND_FORMA_PAGO = 5 THEN 'PAGO SALDO_FAVOR": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:293",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:319",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:289",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:315",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:107"
+  ],
+  "IND_COVID = 'S', 'COVID ', '')": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:305",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:330",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:162",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:301",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:326",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:146",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:129",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:118"
+  ],
+  "IND_FORMA_PAGO = 5 AND ID_PRODUCTO": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:343",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:344",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:217",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:218",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:339",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:340"
+  ],
+  "IND_FORMA_PAGO = 5 THEN ' DESCARGA FAVOR'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:345",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:219",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:341",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:253"
+  ],
+  "IND_ETAPA\t\t\tINT,": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:364",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:238",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:360",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:270",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:339",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:175"
+  ],
+  "IND_FORMA_PAGO\tINT,": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:366",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:240",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:362",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:272",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:341",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:177"
+  ],
+  "IND_ETAPA INT, IND_FORMA_PAGO INT, FE": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:391",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:266",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:387",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:298",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:367",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:200"
+  ],
+  "IND_ESTADO = IND_ESTADO,": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:423",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:303",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:419",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:334",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:403",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:230"
+  ],
+  "IND_ETAPA = IND_ETAPA,": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:423",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:303",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:419",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:334",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:403",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:230"
+  ],
+  "IND_FORMA_PAGO = IND_FORMA_PAGO,": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:423",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:303",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:419",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:334",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:403",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:230"
+  ],
+  "IND_ETAPA = 3": [
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:288",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:320",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:389"
+  ],
+  "IND_FORMA_PAGO = '' THEN 0 ELSE B": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:174",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:248"
+  ],
+  "IND_ESTADO IN ('C','D')": [
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:76",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:76",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:303",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:343",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:410"
+  ],
+  "IND_ESTADO = 'N'": [
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:137",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:153"
+  ],
+  "IND_ETAPA= 3 AND RUBRO NOT LIKE '": [
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:147"
+  ],
+  "IND_ETAPA = 1": [
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:35"
+  ],
+  "IND_ETAPA = 0 AND H": [
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:36"
+  ],
+  "IND_ETAPA INT,": [
+   "PO.SYS_SP_ACCOUNT_BALANCE_ORDEN.StoredProcedure.sql:12"
+  ],
+  "IND_ETAPA = 1,": [
+   "PO.SYS_SP_ACCOUNT_BALANCE_ORDEN.StoredProcedure.sql:28",
+   "PO.SYS_SP_ACCOUNT_BALANCE_ORDEN.StoredProcedure.sql:46"
+  ],
+  "Ind_Estado = 'P' AND NUM_CREDITO": [
+   "PO.SYS_SP_ACCOUNT_BALANCE_ORDEN.StoredProcedure.sql:30",
+   "PO.SYS_SP_ACCOUNT_BALANCE_ORDEN.StoredProcedure.sql:51"
+  ],
+  "Ind_Estado = 'A' AND NUM_CREDITO": [
+   "PO.SYS_SP_ACCOUNT_BALANCE_ORDEN.StoredProcedure.sql:48"
+  ],
+  "IND_ETAPA=',": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:33"
+  ],
+  "IND_ESTADO IN ('A','T','D')": [
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:60",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:121",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:132",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:144",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:156",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:174",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:188",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:201",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:214",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:407",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:531",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:863"
+  ],
+  "IND_ESTADO = 'C' AND": [
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:60",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:121",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:132",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:144",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:156",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:174",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:188",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:201",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:214",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:407",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:863"
+  ],
+  "IND_ESTADO = 'P'": [
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:360",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:236",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:91",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:102",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:465"
+  ],
+  "Ind_Estado = 'P'": [
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:395"
+  ],
+  "IND_LINEA = 'N' AND IND_ESTADO": [
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:415"
+  ],
+  "IND_ETAPA IN (1,2)": [
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:529",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:299"
+  ],
+  "IND_ESTADO = 'C' THEN 'LIQUIDADO'": [
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:532"
+  ],
+  "IND_ESTADO = 'D' AND C": [
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:533",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:303"
+  ],
+  "IND_ESTADO = 'D' THEN 'PERMANECE'": [
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:534",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:302"
+  ],
+  "IND_ETAPA = 0 then 1 else C": [
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:536"
+  ],
+  "IND_ESTADO = 'D' THEN 'NUEVO'": [
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:301"
+  ],
+  "IND_ESTADO = 'C' THEN 'LIQUIDADO' END A": [
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:304"
+  ],
+  "IND_ESTADO = 'D'": [
+   "CIERRE.SP_IND_GEN_MES_MOD.StoredProcedure.sql:214",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:111",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:119",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:128",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:149",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:163",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:174",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:567",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:591",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:599"
+  ],
+  "IND_ESTADO = 'C'": [
+   "CIERRE.SP_IND_GEN_MES_MOD.StoredProcedure.sql:217"
+  ],
+  "IND_COVID = 'S' THEN 'S\u00ed'": [
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:515"
+  ],
+  "IND_ESTADO IN ('D')": [
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:78",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:598"
+  ],
+  "IND_ESTADO =  'P'": [
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:175"
+  ],
+  "IND_ESTADO IN ('D','C')": [
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:510"
+  ],
+  "IND_LINEA ='N'": [
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:566",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:590"
+  ],
+  "ind_estado in ('P','A')": [
+   "SAF.SP_TASAS_ALERTAS_ENVIO.StoredProcedure.sql:86"
+  ]
+ },
+ "Base de datos externa": {
+  "Quiero_Confianza_Shadow": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:74",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:132",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:200",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:74",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:71",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:129",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:197",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:74",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:189",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:56",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:263"
+  ],
+  "Quiero_Confianza_shadow": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:81",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:82",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:83",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:84",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:85",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:86",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:88",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:139",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:140",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:141",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:142",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:143",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:160",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:161",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:199",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:207",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:209",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:210",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:211",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:212",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:234",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:241",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:248",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:479",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:480",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:481",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:490",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:503",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:504",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:505",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:513",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:526",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:527",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:528",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:538",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:539",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:540",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:682",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:683",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:684",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:694",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:695",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:696",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:81",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:83",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:84",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:85",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:86",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:87",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:92",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:93",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:110",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:351",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:352",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:353",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:362",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:375",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:376",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:377",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:385",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:398",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:399",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:400",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:410",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:411",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:412",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:558",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:559",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:560",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:570",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:571",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:572",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:78",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:79",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:80",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:81",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:82",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:84",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:136",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:137",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:138",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:139",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:157",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:158",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:196",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:205",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:206",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:207",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:208",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:230",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:237",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:244",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:469",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:474",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:483",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:487",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:498",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:503",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:511",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:516",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:533",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:534",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:535",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:545",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:559",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:560",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:561",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:569",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:582",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:583",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:584",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:594",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:595",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:596",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:739",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:740",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:741",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:751",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:752",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:753",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:81",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:83",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:84",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:85",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:87",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:89",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:94",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:95",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:112",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:137",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:143",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:188",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:196",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:199",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:200",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:201",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:205",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:206",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:378",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:379",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:380",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:389",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:402",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:403",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:404",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:412",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:425",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:426",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:427",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:437",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:438",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:439",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:541",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:542",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:543",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:552",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:553",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:554",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:565",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:624",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:625",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:626",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:635",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:636",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:637",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:648",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:709",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:710",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:711",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:729",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:730",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:731",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:842",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:843",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:844",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:854",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:855",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:856",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:63",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:65",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:66",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:67",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:68",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:69",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:74",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:75",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:125",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:126",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:127",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:128",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:129",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:169",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:170",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:171",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:175",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:176",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:186",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:211",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:217",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:262",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:270",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:273",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:274",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:275",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:279",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:280",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:447",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:448",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:449",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:458",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:471",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:472",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:473",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:481",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:494",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:495",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:496",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:506",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:507",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:508",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:610",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:611",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:612",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:621",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:622",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:623",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:634",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:693",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:694",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:695",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:704",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:705",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:706",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:717",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:778",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:779",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:780",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:798",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:799",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:800",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:911",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:912",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:913",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:923",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:924",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:925",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:23",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:24",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:69",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:70",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:71",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:72",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:73",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:77",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:78",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:93",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:212",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:213",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:214",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:223",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:224",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:225",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:65",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:66",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:67",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:68",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:71",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:72",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:73",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:116",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:117",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:118",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:119",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:120",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:164",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:165",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:166",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:171",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:172",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:186",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:54",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:55",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:56",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:57",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:60",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:61",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:99",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:100",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:101",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:102",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:103",
+   "PO.SP_SND_CAPITAL.StoredProcedure.sql:66",
+   "PO.SP_SND_CAPITAL.StoredProcedure.sql:68",
+   "PO.SP_SND_CAPITAL.StoredProcedure.sql:69",
+   "PO.SP_SND_CAPITAL.StoredProcedure.sql:70",
+   "PO.SYS_SP_ACCOUNT_BALANCE_ORDEN.StoredProcedure.sql:29",
+   "PO.SYS_SP_ACCOUNT_BALANCE_ORDEN.StoredProcedure.sql:47",
+   "PO.SYS_SP_ACCOUNT_BALANCE_ORDEN.StoredProcedure.sql:50",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:48",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:59",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:67",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:68",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:82",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:83",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:84",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:85",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:99",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:100",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:101",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:102",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:117",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:118",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:119",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:128",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:129",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:130",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:138",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:139",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:140",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:150",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:151",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:152",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:168",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:169",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:170",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:181",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:182",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:183",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:195",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:196",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:197",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:208",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:209",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:210",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:221",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:222",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:232",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:233",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:244",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:245",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:246",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:263",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:264",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:265",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:282",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:283",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:284",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:291",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:292",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:293",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:307",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:308",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:309",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:338",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:339",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:340",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:356",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:357",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:373",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:374",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:375",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:376",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:391",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:392",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:402",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:403",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:414",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:421",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:428",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:429",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:430",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:439",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:440",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:468",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:469",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:470",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:471",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:483",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:484",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:490",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:757",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:758",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:759",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:760",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:761",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:44",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:56",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:57",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:70",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:71",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:72",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:73",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:87",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:88",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:89",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:90",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:105",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:106",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:107",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:116",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:117",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:118",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:127",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:128",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:129",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:141",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:142",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:152",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:153",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:164",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:165",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:176",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:177",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:178",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:187",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:188",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:189",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:198",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:199",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:200",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:209",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:210",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:211",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:220",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:221",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:232",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:233",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:248",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:249",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:250",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:251",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:266",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:267",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:437",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:438",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:439",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:440",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:441",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:101",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:119",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:126",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:144",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:145",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:147",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:157",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:158",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:172",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:193",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:194",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:209",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:245",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:246",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:277",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:299",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:300",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:301",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:318",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:339",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:340",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:341",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:359",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:392",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:393",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:394",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:399",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:436",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:437",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:468",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:520",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:521",
+   "SAF.SP_TASAS_ALERTAS_ENVIO.StoredProcedure.sql:85"
+  ],
+  "Quiero_Confianza_CreditoPuente_QA": [
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:46",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:47",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:71",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:79",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:192",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:193",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:194",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:205",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:206",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:207",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:40",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:40",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:42",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:45",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:45",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:47",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:74",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:75",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:76",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:78",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:79",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:81"
+  ],
+  "Quiero_Confianza": [
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:450",
+   "CIERRE.SP_IND_GEN_MES_MOD.StoredProcedure.sql:213",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:75",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:86",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:87",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:97",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:98",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:108",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:109",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:117",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:125",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:126",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:136",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:137",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:146",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:147",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:157",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:158",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:159",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:170",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:171",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:182",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:183",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:436",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:437",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:439",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:441",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:446",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:452",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:453",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:462",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:463",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:479",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:480",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:482",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:484",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:485",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:487",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:494",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:495",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:503",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:504",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:506",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:543",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:544",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:545",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:546",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:547",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:549",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:550",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:551",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:552",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:553",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:554",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:555",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:557",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:558",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:559",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:560",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:561",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:563",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:575",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:576",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:577",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:578",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:579",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:588"
+  ]
+ },
+ "TIP_TRANSACCION": {
+  "TIP_TRANSACCION = 4": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:95",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:149",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:293",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:294",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:299",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:306",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:319",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:343",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:344",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:345",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:482",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:506",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:529",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:541",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:98",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:158",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:159",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:163",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:166",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:171",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:176",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:179",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:185",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:191",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:217",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:218",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:219",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:354",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:378",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:401",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:413",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:91",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:145",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:289",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:290",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:295",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:302",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:315",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:339",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:340",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:341",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:536",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:562",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:585",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:597",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:101",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:253",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:381",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:405",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:428",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:440",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:544",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:555",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:627",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:638",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:712",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:732",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:450",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:474",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:497",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:509",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:613",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:624",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:696",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:707",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:781",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:801",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:106",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:107",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:108",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:113",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:124",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:72",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:90",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:107",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:297",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:313",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:314",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:381",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:61",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:78",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:95",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:182",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:183",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:204",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:205",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:256"
+  ],
+  "TIP_TRANSACCION = 113)": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:294",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:158",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:290",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:108"
+  ],
+  "TIP_TRANSACCION = 113": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:306",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:163",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:166",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:171",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:176",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:179",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:185",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:191",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:302",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:124"
+  ],
+  "TIP_TRANSACCION IN (4,113)": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:324",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:320"
+  ],
+  "TIP_TRANSACCION =": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:420",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:300",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:416",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:331",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:400",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:227"
+  ],
+  "TIP_TRANSACCION = 3": [
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:25",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:86",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:95",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:100",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:101",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:102",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:162",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:248",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:278",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:368",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:225",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:236",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:145"
+  ],
+  "Tip_transaccion =": [
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:162",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:580"
+  ]
+ },
+ "ID_PRODUCTO": {
+  "ID_PRODUCTO = 50,": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:224",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:231",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:220",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:227",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:59",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:68"
+  ],
+  "ID_PRODUCTO = 51,": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:239",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:235",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:77"
+  ],
+  "ID_PRODUCTO= 50,": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:303",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:304",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:307",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:328",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:329",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:331",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:299",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:300",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:303",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:324",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:325",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:327",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:117",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:125",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:153"
+  ],
+  "ID_PRODUCTO= 51,": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:303",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:328",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:299",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:324"
+  ],
+  "ID_PRODUCTO=50": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:343",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:217",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:339"
+  ],
+  "ID_PRODUCTO=51": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:344",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:218",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:340"
+  ],
+  "ID_PRODUCTO =": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:419",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:91",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:299",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:415",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:93",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:204",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:330",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:73",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:131",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:174",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:278",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:399",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:76",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:70",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:123",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:59",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:106",
+   "PO.SP_SND_CAPITAL.StoredProcedure.sql:73",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:43",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:226",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:432",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:764",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:444",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:129",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:523",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:546"
+  ],
+  "ID_PRODUCTO IN(1, 2)": [
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:218"
+  ],
+  "ID_PRODUCTO IN(50, 51)": [
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:219"
+  ],
+  "ID_PRODUCTO= 50": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:100",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:110",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:148"
+  ],
+  "ID_PRODUCTO= 51": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:101",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:111",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:149"
+  ],
+  "ID_PRODUCTO = 50": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:261"
+  ],
+  "ID_PRODUCTO = 51": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:268"
+  ]
+ },
+ "Concepto/leyenda": {
+  "'PAGO SALDO_FAVOR '": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:293",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:319",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:289",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:315",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:107"
+  ],
+  "'IVA MORATORIOS'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:446",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:442",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:295"
+  ],
+  "'IVA INTERESES'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:446",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:500",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:372",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:442",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:556",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:399",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:614",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:468",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:683",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:295"
+  ],
+  "'IVA SEGURO_DANOS'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:446",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:442",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:295"
+  ],
+  "'IVA SEGURO_VIDA'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:446",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:442",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:295"
+  ],
+  "'IVA COMISION_ADMINISTRACION'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:446",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:442",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:210",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:295"
+  ],
+  "'IVA CARGO_PORCENTAJE'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:446",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:442"
+  ],
+  "'PAGO CO '": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:569",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:578",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:592",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:630",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:444",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:454",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:468",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:505",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:625",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:634",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:649",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:687",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:480",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:549"
+  ],
+  "'PAGO CCO '": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:630",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:505",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:687"
+  ],
+  "'CMR DCM'": [
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:202"
+  ],
+  "'CMR PAGO'": [
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:215",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:251"
+  ],
+  "'IVA COMISION_PREPAGO'": [
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:289",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:321",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:390",
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:210"
+  ],
+  "'REVERSO COBRANZA'": [
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:75",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:133",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:201",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:259",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:275",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:628",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:690"
+  ],
+  "'CMR CASTIGO ACCESORIOS'": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:217",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:219",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:291",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:293"
+  ],
+  "'CMR CASTIGO '": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:218",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:221",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:292",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:295"
+  ],
+  "'CMR PAGO DESCARGA FAVOR'": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:220",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:294",
+   "PO.SP_SND_CAPITAL.StoredProcedure.sql:84"
+  ],
+  "'CMR DCM PAGO CASTIGO ACCESORIOS'": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:230",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:232",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:304",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:306"
+  ],
+  "'CMR DCM PAGO CASTIGO '": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:231",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:234",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:305",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:308"
+  ],
+  "'CMR DCM PAGO DESCARGA FAVOR'": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:233",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:307"
+  ],
+  "'CASTIGO CO '": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:243",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:471",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:494",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:317",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:540",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:563"
+  ],
+  "'CASTIGO POSTERIOR CO '": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:244",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:318"
+  ],
+  "'CASTIGO POSTERIOR '": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:534",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:617",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:702",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:722",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:603",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:686",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:771",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:791"
+  ],
+  "'CMR CASTIGO CCO RECUPERACION'": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:777",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:777",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:846",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:846"
+  ],
+  "'CMR DCM CASTIGO CCO RECUPERACION'": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:791",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:791",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:860",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:860"
+  ],
+  "'DEV MORA COM EXT'": [
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:166"
+  ],
+  "'CMR CAS DEV REVERSO'": [
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:325"
+  ],
+  "'CMR CAS DEV REV '": [
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:947"
+  ],
+  "'DESEMBOLSO'": [
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:66"
+  ],
+  "'DESEMBOLSO FIRMA'": [
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:106",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:123",
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:174"
+  ],
+  "'CMR DESEMBOLSO IVA '": [
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:123"
+  ],
+  "'CMR DESEMBOLSO IVA COMISION_ANTICIPADA'": [
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:123"
+  ],
+  "'CMR DESEMBOLSO '": [
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:132"
+  ],
+  "'CMR FIRMA CANC '": [
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:142"
+  ],
+  "'DESEM CANC '": [
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:159"
+  ],
+  "'CMR DESEMBOLSO CXP '": [
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:172"
+  ],
+  "'CMR DESEMBOLSO CXP IVA COMISION_ANTICIPADA'": [
+   "PO.SP_COM_DESEMBOLSO.StoredProcedure.sql:172"
+  ],
+  "'CMR DEVENGO '": [
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:145",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:128"
+  ],
+  "'REVERSO COMISION COM'": [
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:203"
+  ],
+  "'IVA ASE_FINANCIERA'": [
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:211"
+  ],
+  "'IVA COM_PRORROGA'": [
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:211"
+  ],
+  "'IVA COM_REESTRUCTURA'": [
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:211"
+  ],
+  "'IVA OPI_VALOR'": [
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:211"
+  ],
+  "'IVA VISITA_EXTRA'": [
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:211"
+  ],
+  "'DEV COM COM SND'": [
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:50"
+  ],
+  "'DEV COM COM SND EXT'": [
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:94"
+  ],
+  "'PAGOS ADM '": [
+   "PO.SP_SND_CAPITAL.StoredProcedure.sql:86"
+  ],
+  "'CONSUMO DESEMBOLSO '": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:100",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:261"
+  ],
+  "'EMPLEADO DESEMBOLSO '": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:101"
+  ],
+  "'DESEMBOLSO '": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:102"
+  ],
+  "'PAGO QBILLETE '": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:103"
+  ],
+  "'PAGO SHCH '": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:104"
+  ],
+  "'PAGO CONSUMO '": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:110"
+  ],
+  "'PAGO EMPLEADO '": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:111"
+  ],
+  "'DEVENGO '": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:151"
+  ],
+  "'IVA COM '": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:157"
+  ],
+  "'IVA COMISION_ANTICIPADA'": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:162"
+  ],
+  "'EMPLEADO DESEMBOLSO CANC FIRMA PRINCIPAL '": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:268"
+  ],
+  "'DESEMBOLSO CANC FIRMA PRINCIPAL '": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:270"
+  ],
+  "'DESEM FIRMA '": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:275"
+  ],
+  "'REVERSO SECUENCIA R '": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:285"
+  ],
+  "'PAGO CO'": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:330",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:337",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:351"
+  ],
+  "'PAGO CTA ORDEN'": [
+   "PO.SYS_SP_ACCOUNT_BALANCE_ORDEN.StoredProcedure.sql:67"
+  ],
+  "'DEVOLUCION '": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:151"
+  ]
+ },
+ "ID_CUENTA": {
+  "ID_CUENTA = '2076'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:304",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:329",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:300",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:325",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:117",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:262"
+  ],
+  "ID_CUENTA = '1020010502130300'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:304",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:329",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:300",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:325",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:117",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:262"
+  ],
+  "ID_CUENTA = 2080": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:346",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:220",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:342",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:254"
+  ],
+  "ID_CUENTA = 2073": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:120"
+  ],
+  "ID_CUENTA = 2074": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:121"
+  ],
+  "ID_CUENTA = 2068": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:122"
+  ]
+ },
+ "ID_TIPO_CREDITO": {
+  "ID_TIPO_CREDITO =": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:421",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:301",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:417",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:332",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:401",
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:228"
+  ],
+  "ID_TIPO_CREDITO = 4": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:707",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:726",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:727",
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:758",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:764",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:784",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:785",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:812"
+  ],
+  "ID_TIPO_CREDITO = 5": [
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:210",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:512"
+  ],
+  "ID_TIPO_CREDITO = 25": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:224",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:782",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:298",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:851"
+  ],
+  "ID_TIPO_CREDITO = 29": [
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:237",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:796",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:311",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:865"
+  ],
+  "ID_TIPO_CREDITO IN(1, 3, 4, 9, 10, 11, 16, 17, 20, 23": [
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:62"
+  ],
+  "ID_TIPO_CREDITO = 20": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:103"
+  ],
+  "ID_TIPO_CREDITO = 23": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:104"
+  ],
+  "ID_TIPO_CREDITO = 26": [
+   "PO.SYS_SP_MOV_ABONO.StoredProcedure.sql:114"
+  ],
+  "ID_TIPO_CREDITO IN (0)": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:43",
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:44",
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:46"
+  ],
+  "ID_TIPO_CREDITO IN (12,13,14,15,28,   2,18,27)": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:45",
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:51"
+  ],
+  "ID_TIPO_CREDITO IN (2,7,12,13,14,15,18,28)": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:47"
+  ],
+  "ID_TIPO_CREDITO IN (4,20,23)": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:54",
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:74"
+  ],
+  "ID_TIPO_CREDITO IN (6,19,21,22,24)": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:57"
+  ],
+  "ID_TIPO_CREDITO IN (3, 16, 17, 4)": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:61"
+  ],
+  "ID_TIPO_CREDITO IN (1)": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:62"
+  ],
+  "ID_TIPO_CREDITO IN (3, 16, 17, 4, 1, 9, 10, 11)": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:63"
+  ],
+  "ID_TIPO_CREDITO IN (9, 10, 11)": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:64"
+  ],
+  "ID_TIPO_CREDITO IN (1, 3, 4, 9, 10, 11, 16, 17, 20, 23, 26)": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:65"
+  ],
+  "ID_TIPO_CREDITO IN (26)": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:70"
+  ],
+  "ID_TIPO_CREDITO IN (5,6,19,21,22,24)": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:77"
+  ],
+  "ID_TIPO_CREDITO IN (25)": [
+   "PO.SYS_SP_BALANCE_DETAIL_SQL.StoredProcedure.sql:82"
+  ],
+  "ID_TIPO_CREDITO = 6": [
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:494"
+  ],
+  "ID_TIPO_CREDITO = 19": [
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:495"
+  ],
+  "ID_TIPO_CREDITO = 21": [
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:496"
+  ],
+  "ID_TIPO_CREDITO = 22": [
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:497"
+  ],
+  "ID_TIPO_CREDITO = 24": [
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:498"
+  ]
+ },
+ "Tasa/porcentaje": {
+  "*0.16": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:512",
+   "PO.SP_COM_COBRANZA.StoredProcedure.sql:384",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:568",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:411",
+   "PO.SP_COM_COBRANZA_CASTIGOS.StoredProcedure.sql:647",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:480",
+   "PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS.StoredProcedure.sql:716"
+  ],
+  "* 0.10": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:756",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:810"
+  ],
+  "* 0.16": [
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:144",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:159",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:236"
+  ],
+  "0.16": [
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:115",
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:126",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:103",
+   "CIERRE.SP_CMR_GEN_DIA.StoredProcedure.sql:114",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:143",
+   "CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS.StoredProcedure.sql:427"
+  ]
+ },
+ "Cuenta contable": {
+  "'1020-0105-0205-0100'": [
+   "PO.SP_IND_COBRANZA.StoredProcedure.sql:705",
+   "PO.SP_IND_REVERSO_COBRANZA.StoredProcedure.sql:762"
+  ],
+  "'2020-0508-0203-0000'": [
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:218"
+  ],
+  "'2020-0508-0201-0000'": [
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:219"
+  ],
+  "'2401-9000-0003-0001'": [
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:226"
+  ]
+ },
+ "Fecha literal": {
+  "'00010101'": [
+   "PO.SP_SND_REVERSO_COMISION.StoredProcedure.sql:291",
+   "PO.SP_SND_DEV_COMISIONES.StoredProcedure.sql:204",
+   "PO.SP_SND_CAPITAL.StoredProcedure.sql:171"
+  ],
+  "'2024-01-01'": [
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:32"
+  ],
+  "'20260123'": [
+   "CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql:461"
+  ]
+ },
+ "Umbral monetario": {
+  "2648615.20": [
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:32",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:32"
+  ],
+  "2207161.60": [
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:32",
+   "PO.SYS_SP_AVALUO_AND_UPDATE.StoredProcedure.sql:32"
+  ]
+ },
+ "Linked server": {
+  "[KARDIA].[edc].[EDC]": [
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:192",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:518",
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:531"
+  ],
+  "[KARDIA].[edc].[C_CLIENTE]": [
+   "edc.sp_inserEdcCredito.StoredProcedure.sql:606"
+  ]
+ }
+}

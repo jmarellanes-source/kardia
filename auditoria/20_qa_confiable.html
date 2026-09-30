@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ambiente QA confiable: reconstruir desde cero &mdash; KARDIA / SAF</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+nav.docs{padding:10px 32px;background:#131b29;border-bottom:1px solid #2a3549;font-size:13px}
+nav.docs a{margin-right:16px;text-decoration:none}
+.wrap{padding:22px 32px 60px;max-width:1180px}
+h2{margin:34px 0 12px;font-size:18px;border-left:3px solid #4c8dff;padding-left:10px}
+h3{margin:22px 0 6px;font-size:15px}
+p.lead{color:#c9d6ee;font-size:15px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:140px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b}.kpi.a b{color:#ffa94d}.kpi.m b{color:#ffd43b}.kpi.b b{color:#74c0fc}
+.card{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:16px 20px;margin:12px 0}
+.card.rojo{border-left:3px solid #ff6b6b}
+.card.ambar{border-left:3px solid #ffa94d}
+.card.azul{border-left:3px solid #4c8dff}
+.card.verde{border-left:3px solid #51cf66}
+.card h3{margin-top:0}
+.card .q{color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.num{white-space:nowrap;color:#93a1bb}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#c9d6ee}
+pre{margin:8px 0 0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:12px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
+.pill.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.pill.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.pill.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.pill.ok{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.info{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+ul{margin:6px 0;padding-left:20px}li{margin:4px 0}
+.ola{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 20px;margin:12px 0}
+.ola h3{margin:0 0 2px}
+.ola .obj{color:#93a1bb;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.tag{font-size:11px;color:#93a1bb;border:1px solid #35415a;border-radius:5px;padding:2px 7px;margin-right:6px}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px solid #35415a;color:#c9d6ee}
+</style></head><body>
+<header class="top"><h1>Ambiente QA confiable: reconstruir desde cero</h1><p>Comparativa contra reparar el QA actual, plan por etapas y criterios de aceptación</p></header>
+<nav class="docs">
+<a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
+<a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
+<a href="09_demo_portal.html">Demo del portal</a>
+<a href="14_demo_portal_banderas.html">Demo de banderas</a>
+<a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
+<a href="12_preguntas_negocio.html">Confirmaciones con negocio</a>
+<a href="15_respuestas_cliente.html">Respuestas del cliente</a>
+<a href="16_reclasificacion.html">Reclasificación de hallazgos</a>
+<a href="17_objetos_vigentes.html">Objetos vigentes</a>
+<a href="18_version_sept10.html">Versión SPs_Sept10</a>
+<a href="19_alcance_produccion.html">Alcance productivo</a>
+<a href="20_qa_confiable.html">QA confiable</a>
+<a href="21_preguntas_alcance.html">Preguntas acotadas</a>
+<a href="22_ejemplos_sql.html">Ejemplos de SQL</a>
+<a href="23_version_sept30.html">Versión SPs_Sept30</a>
+<a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a>
+<a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
+</nav>
+<div class="wrap">
+<p class="lead">Recomendación: <b>construir un ambiente de QA nuevo a partir de un respaldo de producción</b> y no intentar reparar el actual. No por el código &mdash; el código casi no tiene drift &mdash; sino porque el QA actual no puede usarse como patrón de comparación ni demostrarse aislado.</p>
+<div class="kpis"><div class="kpi b"><b>254</b><span>objetos a instalar en el ambiente nuevo</span></div><div class="kpi a"><b>7</b><span>objetos que exigen decidir cuál versión es la buena</span></div><div class="kpi m"><b>110</b><span>objetos que resuelve un sinónimo</span></div><div class="kpi c"><b>24</b><span>usos de servidor vinculado a eliminar</span></div><div class="kpi b"><b>6</b><span>etapas del plan</span></div></div>
+<h2>1. Por qué reconstruir y no reparar</h2>
+<table class=""><thead><tr><th>Evidencia</th><th>Detalle</th><th>Peso</th></tr></thead><tbody><tr><td>Existe un camino de escritura entre instancias</td><td>Tres SPs copian póliza y movimientos por servidor vinculado, uno de ellos con <code>DELETE</code>/<code>INSERT</code> sobre el destino filtrando por fecha. Un ambiente que puede escribir en otro no es un ambiente de prueba.</td><td><span class="pill c">a favor de reconstruir</span></td></tr><tr><td>El QA actual tiene una base que producción no tiene</td><td>Cuatro objetos leen <code>Quiero_Confianza_CreditoPuente_QA</code>, que no aparece en ningún objeto del alcance productivo. El QA no es una copia del productivo: es otra topología.</td><td><span class="pill c">a favor de reconstruir</span></td></tr><tr><td>Las reglas difieren por ambiente</td><td>El umbral COVID es 6086 en una copia y 6051 en la otra. Si la regla difiere, el QA no puede usarse como oráculo de equivalencia.</td><td><span class="pill c">a favor de reconstruir</span></td></tr><tr><td>No hay línea base conocida de datos</td><td>No sabemos de qué fecha son los datos del QA ni por qué proceso llegaron: los SPs de pase copian por fecha y borran el destino. Sin fecha de corte conocida no hay día espejo contra producción.</td><td><span class="pill c">a favor de reconstruir</span></td></tr><tr><td>El export de código está incompleto</td><td>19 objetos declarados en uso no están en el export de producción, incluido el cierre mensual individual. Cualquier reconciliación partiría de un inventario incompleto.</td><td><span class="pill a">a favor de reconstruir</span></td></tr><tr><td>El drift de código, en cambio, es chico</td><td>110 objetos difieren solo por el nombre de la base y 7 por lógica. Reconstruir no cuesta más que reconciliar, porque el código casi no hay que reconciliarlo.</td><td><span class="pill ok">a favor de reparar</span></td></tr></tbody></table>
+<div class="card rojo"><h3>El argumento corto</h3><p>Un ambiente de prueba sirve para dos cosas: que puedas romperlo sin consecuencias y que puedas comparar su resultado contra el real. El QA actual no cumple ninguna de las dos: tiene un camino de escritura hacia otra instancia y no tiene una fecha de corte conocida contra la cual comparar. Repararlo cuesta lo mismo que reconstruirlo y termina en un ambiente que funciona pero no se puede demostrar.</p></div>
+<h2>2. Comparativa de las dos opciones</h2>
+<table class=""><thead><tr><th>Criterio</th><th>A. QA nuevo desde respaldo (recomendada)</th><th>B. Reparar el QA actual</th></tr></thead><tbody><tr><td>Punto de partida</td><td>respaldo de producción restaurado a una fecha de corte declarada</td><td>estado actual del QA, de origen y fecha desconocidos</td></tr><tr><td>Inventario</td><td>lo instalado es exactamente lo que se decidió instalar</td><td>hay que descubrirlo objeto por objeto y no tenemos el DDL de 19</td></tr><tr><td>Aislamiento</td><td>sin servidores vinculados; el código no nombra la base (sinónimos)</td><td>hay que localizar y desactivar los caminos existentes sin romper lo que dependa de ellos</td></tr><tr><td>Oráculo de equivalencia</td><td>día espejo contra producción desde el primer día</td><td>no hay, hasta reconciliar datos y reglas divergentes</td></tr><tr><td>Riesgo de tocar producción</td><td>nulo: ambiente nuevo, sin rutas de escritura</td><td>existe mientras vivan los SPs de pase y los servidores vinculados</td></tr><tr><td>Esfuerzo estimado</td><td>1 sesión de trabajo mía por etapa, 6 etapas, sin contar esperas de aprovisionamiento y respaldo</td><td>similar o mayor, con resultado no garantizado: si el inventario sale incompleto se termina reconstruyendo igual</td></tr><tr><td>Resultado</td><td>ambiente certificado, reproducible y documentado</td><td>ambiente probablemente utilizable, pero no demostrable</td></tr></tbody></table>
+<div class="card azul"><h3>Cuándo cambiaría de recomendación</h3><p>Si la etapa E0 muestra que el QA actual (a) tiene inventario completo y equivalente al alcance, (b) no tiene ningún servidor vinculado ni permiso de escritura hacia otra instancia, (c) tiene fecha de corte documentada y (d) puede restaurarse a voluntad, entonces repararlo es más corto y lo recomendaría. Las cuatro condiciones se verifican con consultas de solo lectura en un día; hasta entonces la recomendación es reconstruir.</p></div>
+<h2>3. Plan por etapas</h2>
+<div class="ola"><h3>E0. Inventario de la instancia (solo lectura)</h3><ul><li>Correr los scripts de <code>auditoria/fase0/</code> contra producción y contra el QA actual: <code>sys.objects</code>, <code>sys.sql_modules</code>, <code>sys.dm_exec_procedure_stats</code>, <code>msdb.dbo.sysjobs</code>, <code>sys.servers</code>, <code>sys.synonyms</code> y permisos.</li><li>Obtener el DDL vigente de los 19 objetos que faltan del export.</li><li>Mapear qué jobs disparan el cierre, con qué parámetros y en qué orden.</li><li>Documentar a qué instancia apunta <code>SRV-IONSQLAWS</code> y quién tiene permiso de usarlo.</li></ul><p class="q">criterio de aceptación</p><p>Inventario firmado de los objetos, jobs, permisos y rutas entre instancias; DDL completo de los 254 objetos del alcance.</p></div>
+<div class="ola"><h3>E1. Restauración y aislamiento</h3><ul><li>Restaurar <code>KARDIA</code> y una copia de <code>Quiero_Confianza</code> a una <b>misma fecha de corte declarada</b> en la instancia nueva.</li><li>Prohibir servidores vinculados en el ambiente: si un objeto los necesita, se sustituye por carga controlada de archivo.</li><li>Crear los sinónimos por ambiente y dejar el código sin ningún nombre de base literal (<code>auditoria/fase1/generar_sinonimos.py</code> ya genera el juego).</li><li>Enmascarar datos personales según el alcance que defina legal (Q10).</li></ul><p class="q">criterio de aceptación</p><p>Ambiente que corre sin salir de sí mismo, con fecha de corte conocida y sin ninguna ruta de escritura hacia producción.</p></div>
+<div class="ola"><h3>E2. Instalación del alcance</h3><ul><li>Instalar los 188 objetos de la lista más las 66 dependencias que arrastran.</li><li>Resolver los 7 objetos con divergencia real declarando cuál versión es la productiva (los otros los absorbe el sinónimo).</li><li>No instalar los procedimientos de pase entre instancias.</li><li>Dejar el juego de scripts en control de versiones: el ambiente se reconstruye desde el repositorio, no desde una copia manual.</li></ul><p class="q">criterio de aceptación</p><p>Ambiente reconstruible desde el repositorio en una corrida, con inventario que cuadra objeto por objeto.</p></div>
+<div class="ola"><h3>E3. Catálogos y configuración del portal</h3><ul><li>Cargar los catálogos autoritativos <code>PR.PR_DESC_TIPOS_CREDITO</code>, <code>PR.PR_RUBRO</code> y <code>PR.PR_ORIGEN_FONDOS</code> como origen único.</li><li>Crear las tablas de configuración del portal (banderas, vigencias, aprobaciones, bitácora) y sembrarlas con las reglas que hoy están hardcodeadas.</li><li>Publicar la configuración inicial con el flujo de cuatro ojos, para que el propio alta quede en bitácora.</li></ul><p class="q">criterio de aceptación</p><p>Configuración versionada y sellada, equivalente a lo que hoy dice el código.</p></div>
+<div class="ola"><h3>E4. Prueba de equivalencia (día espejo)</h3><ul><li>Correr el cierre del día de corte con el código actual y comparar la póliza contra la de producción de ese día: debe dar cero diferencias. Ese es el certificado del ambiente.</li><li>Repetir con el código parametrizado (leyendo catálogo en vez de listas): también cero diferencias.</li><li>Guardar las dos corridas con su sello de configuración.</li></ul><p class="q">criterio de aceptación</p><p>Evidencia de que el ambiente reproduce la contabilidad y de que la parametrización no la cambia.</p></div>
+<div class="ola"><h3>E5. Cierre simulado y gates</h3><ul><li>Simular un mes completo, incluyendo el alta de un concepto nuevo desde el portal sin liberar código: es la demostración de valor para el cliente.</li><li>Activar el gate de CI que rechaza código con nombre de base literal, con lista hardcodeada de tipos o con fecha literal (<code>auditoria/fase1/04_gate_ci.py</code>).</li><li>Definir la ventana y el procedimiento de promoción QA &rarr; producción, con producción en solo lectura para el portal.</li></ul><p class="q">criterio de aceptación</p><p>Proceso de cambio cerrado: nada entra a producción sin pasar por el ambiente certificado.</p></div>
+<h2>4. Reglas del ambiente nuevo</h2>
+<div class="grid2"><div class="card verde"><h3>Obligatorio</h3><ul><li>El código no nombra la base: siempre sinónimo.</li><li>Fecha de negocio como parámetro; nunca <code>getdate()</code> ni literal.</li><li>Toda regla de negocio sale de catálogo, no de una lista en el SP.</li><li>Cada corrida guarda el sello de la configuración que usó.</li><li>El ambiente se reconstruye desde el repositorio.</li></ul></div><div class="card rojo"><h3>Prohibido</h3><ul><li>Servidores vinculados y procedimientos de pase entre instancias.</li><li>Escrituras hacia cualquier instancia que no sea la propia.</li><li>Datos personales sin enmascarar.</li><li>Cambios de configuración sin aprobación de cuatro ojos.</li><li>Vigencias retroactivas.</li></ul></div></div>
+<h2>5. Qué necesitamos del cliente</h2>
+<table class=""><thead><tr><th>Insumo</th><th>Quién lo entrega</th><th>Nota</th></tr></thead><tbody><tr><td>Instancia nueva de SQL Server para QA</td><td>TI / infraestructura</td><td>misma versión y collation que producción</td></tr><tr><td>Respaldo de <code>KARDIA</code> y de la réplica de <code>Quiero_Confianza</code> a una fecha de corte</td><td>DBA</td><td>y el tamaño, para dimensionar el disco</td></tr><tr><td>DDL vigente de los 19 objetos ausentes del export</td><td>DBA</td><td>bloquea E0</td></tr><tr><td>Acceso de consulta de solo lectura a producción y al QA actual</td><td>DBA / seguridad</td><td>para el inventario; sin esto E0 no se puede cerrar</td></tr><tr><td>Definición del enmascaramiento de datos personales</td><td>Legal / seguridad</td><td>Q10, bloquea E1</td></tr><tr><td>Copia de la póliza publicada del día de corte</td><td>Contabilidad</td><td>es el patrón de la prueba de equivalencia</td></tr><tr><td>Confirmación de a qué instancia apunta el servidor vinculado</td><td>DBA</td><td>Q32, hallazgo de control</td></tr></tbody></table>
+<h2>6. Qué cambia respecto del plan anterior</h2>
+<table class=""><thead><tr><th>Plan anterior (Fase 0 / Fase 1)</th><th>Plan corregido</th></tr></thead><tbody><tr><td>Reconciliar los dos ambientes existentes objeto por objeto</td><td>reconciliar solo lo que hace falta para instalar el alcance en un ambiente nuevo: 7 objetos, no 35</td></tr><tr><td>Sustituir referencias de base por sinónimos en el ambiente actual</td><td>la sustitución sigue igual, pero se aplica al instalar en el ambiente nuevo, donde no hay riesgo</td></tr><tr><td>Probar equivalencia en el QA existente</td><td>probar equivalencia contra la póliza publicada de un día de corte, que es un patrón verificable</td></tr><tr><td>Alcance de instalación no definido</td><td>254 objetos, con inventario y dependencias medidos</td></tr><tr><td>El riesgo de ambientes se trataba como drift de nombres</td><td>se trata además como riesgo de control: hay un camino de escritura entre instancias (Q32)</td></tr></tbody></table>
+</div>
+<footer>Auditoría de código SQL KARDIA / SAF &middot; análisis estático del repositorio (BD, BD_prod y reportes).
+No se ejecutó ningún objeto contra una instancia de SQL Server ni se leyeron datos productivos:
+los hallazgos que dependen de datos, de plan de ejecución o de reglas contables se marcan como pendientes de validación.</footer>
+</body></html>

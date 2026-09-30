@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auditoría SQL KARDIA &mdash; Lote 1</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.55 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+.wrap{padding:22px 32px 60px;max-width:1500px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:132px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b} .kpi.a b{color:#ffa94d} .kpi.m b{color:#ffd43b} .kpi.b b{color:#74c0fc}
+h2{margin:34px 0 12px;font-size:17px;border-left:3px solid #4c8dff;padding-left:10px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#161e2e;border:1px solid #2a3549;
+ border-radius:10px;padding:12px 14px;position:sticky;top:0;z-index:5;
+ box-shadow:0 6px 14px rgba(8,12,20,.55)}
+.bar label{font-size:12px;color:#93a1bb;margin-right:4px}
+select,input[type=search]{background:#0e1420;color:#e8edf6;border:1px solid #35415a;border-radius:6px;padding:7px 9px;font:13px inherit}
+input[type=search]{min-width:230px}
+button.rst{background:#243149;color:#e8edf6;border:1px solid #35415a;border-radius:6px;padding:7px 12px;cursor:pointer}
+.count{margin-left:auto;color:#93a1bb;font-size:12px}
+.f{background:#161e2e;border:1px solid #2a3549;border-radius:9px;margin:9px 0;overflow:hidden}
+.f>header{display:flex;gap:12px;align-items:center;padding:11px 14px;cursor:pointer}
+.f>header:hover{background:#1d2739}
+.sev{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.sev.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.sev.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.sev.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.sev.b{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+.id{color:#93a1bb;font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.ti{font-weight:600;flex:1}
+.meta{color:#93a1bb;font-size:12px;white-space:nowrap}
+.chev{color:#93a1bb;transition:.15s}
+.f.open .chev{transform:rotate(180deg)}
+.body{display:none;padding:4px 16px 16px;border-top:1px solid #2a3549;background:#131b29}
+.f.open .body{display:block}
+.kv{display:grid;grid-template-columns:118px 1fr;gap:12px;padding:8px 0;border-bottom:1px dashed #263148}
+.kv:last-child{border:0}
+.kv b{color:#93a1bb;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.kv.rem span{color:#8ce99a}
+pre{margin:0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:10px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+table.hard{table-layout:fixed}
+table.hard th:nth-child(1),table.hard td:nth-child(1){width:19%;word-break:break-word}
+table.hard th:nth-child(2),table.hard td:nth-child(2){width:11%}
+table.hard th:nth-child(3),table.hard td:nth-child(3){width:16%;word-break:break-word;white-space:normal}
+table.hard td .pill{white-space:normal}
+table.hard th:nth-child(4),table.hard td:nth-child(4){width:14%}
+table.hard th:nth-child(5),table.hard td:nth-child(5){width:18%}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#c9d6ee;max-width:330px;word-break:break-word}
+td.num{white-space:nowrap;color:#93a1bb} td.nota{color:#93a1bb;max-width:300px}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;white-space:nowrap;display:inline-block}
+.pill.p1{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.p2{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+.pill.p3{background:#33270f;color:#ffd8a8;border:1px solid #6b4d1f}
+.pill.p4{background:#3d1420;color:#ffa8b6;border:1px solid #7d2038}
+.fase{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 18px;margin:10px 0}
+.fase h3{margin:0 0 4px;font-size:15px} .fase .obj{margin:0 0 8px;color:#93a1bb}
+.fase ul{margin:0 0 8px;padding-left:20px} .fase li{margin:3px 0}
+.fase .riesgo{margin:0;font-size:12px;color:#93a1bb}
+ul.va li{margin:6px 0}
+details.alc{background:#161e2e;border:1px solid #2a3549;border-radius:9px;padding:12px 16px}
+details.alc summary{cursor:pointer;color:#93a1bb}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+.hide{display:none!important}
+</style></head><body>
+<header class="top">
+  <h1>Auditoría de código SQL &mdash; KARDIA / SAF</h1>
+  <p>Lote 1 &middot; 20 objetos de mayor riesgo &middot; 9,313 líneas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (producción) &middot; 2026-08-19</p>
+</header>
+<div class="wrap">
+
+  <div class="kpis">
+    <div class="kpi c"><b>7</b><span>Críticos</span></div>
+    <div class="kpi a"><b>15</b><span>Altos</span></div>
+    <div class="kpi m"><b>10</b><span>Medios</span></div>
+    <div class="kpi b"><b>3</b><span>Bajos</span></div>
+    <div class="kpi"><b>20</b><span>Grupos de hardcodeo</span></div>
+    <div class="kpi"><b>12</b><span>Parametrizables en portal</span></div>
+  </div>
+
+  <details class="alc"><summary>Alcance y criterio de selección del lote</summary>
+    <p>20 objetos programables de mayor riesgo (score de riesgo automático: transaccionalidad, SQL dinámico, DDL/TRUNCATE, NOLOCK, cursores, movimientos de dinero)</p><ul><li>PO.SP_IND_COBRANZA</li><li>PO.SP_COM_COBRANZA</li><li>PO.SP_IND_REVERSO_COBRANZA</li><li>PO.SP_COM_COBRANZA_CASTIGOS</li><li>PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS</li><li>PO.SP_COM_DESEMBOLSO</li><li>PO.SP_SND_REVERSO_COMISION</li><li>PO.SP_SND_DEV_COMISIONES</li><li>PO.SP_SND_CAPITAL</li><li>PO.SYS_SP_AVALUO_AND_UPDATE</li><li>PO.SYS_SP_MOV_ABONO</li><li>PO.SYS_SP_ACCOUNT_BALANCE_ORDEN</li><li>PO.SYS_SP_BALANCE_DETAIL_SQL</li><li>PO.SYS_SP_ACTUALIZA_ESTADO_POLIZA</li><li>CIERRE.SP_CMR_GEN_MES</li><li>CIERRE.SP_CMR_GEN_DIA</li><li>CIERRE.SP_IND_GEN_MES_MOD</li><li>CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS</li><li>edc.sp_inserEdcCredito</li><li>SAF.SP_TASAS_ALERTAS_ENVIO</li></ul>
+    <p><b>Nota de codificación:</b> los archivos se decodifican por BOM (UTF-16LE en la mayoría, UTF-8 BOM en 30 archivos de BD/).
+    Los &quot;caracteres espaciados&quot; son los bytes 0x00 de UTF-16 leídos como ASCII: <b>no deben limpiarse</b>, se resuelven decodificando correctamente.</p>
+  </details>
+
+  <h2>Hallazgos</h2>
+  <div class="bar">
+    <label>Severidad</label><select id="fs"><option value="">Todas</option><option>Crítico</option><option>Alto</option><option>Medio</option><option>Bajo</option></select>
+    <label>Categoría</label><select id="fc"><option value="">Todas</option><option>Codificación</option><option>Concurrencia</option><option>Corrección funcional</option><option>Estándares</option><option>Integridad de datos</option><option>Mantenibilidad</option><option>Observabilidad</option><option>Parametrización</option><option>Proceso</option><option>Rendimiento</option><option>Seguridad</option><option>Transaccional</option></select>
+    <label>Entorno</label><select id="fe"><option value="">Ambos</option><option>BD</option><option>BD_prod</option></select>
+    
+    <input type="search" id="fq" placeholder="Buscar objeto, evidencia, texto...">
+    <button class="rst" onclick="reset()">Limpiar</button>
+    <span class="count" id="cnt"></span>
+  </div>
+  <div id="lista">
+    <article class="f" data-sev="Crítico" data-cat="Corrección funcional" data-env="BD"
+             data-lote=""
+             data-txt="l1-001 cierre mensual comercial lee &#x27;otras comisiones&#x27; de una fecha fija (&#x27;20260123&#x27;) cierre.sp_cmr_gen_mes from [cierre].[saf_saldos] where fecha_sistema=&#x27;20260123&#x27; and tipo=&#x27;n&#x27; and rubro in (&#x27;comision_prepago&#x27;,&#x27;visita_extra&#x27;,...)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Crítico</span>
+        <span class="id">L1-001</span>
+        <span class="ti">Cierre mensual comercial lee &#x27;otras comisiones&#x27; de una fecha fija (&#x27;20260123&#x27;)</span>
+        <span class="meta">Corrección funcional &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_CMR_GEN_MES</span></div>
+        <div class="kv"><b>Ubicación</b><span>línea 461</span></div>
+        <div class="kv"><b>Evidencia</b><pre>FROM [CIERRE].[SAF_SALDOS] WHERE FECHA_SISTEMA=&#x27;20260123&#x27; AND TIPO=&#x27;N&#x27; AND RUBRO IN (&#x27;COMISION_PREPAGO&#x27;,&#x27;VISITA_EXTRA&#x27;,...)</pre></div>
+        <div class="kv"><b>Impacto</b><span>El SP recibe @FechaIni/@FechaFin, pero este bloque ignora el periodo y siempre lee los saldos del 23-ene-2026. Cualquier cierre de otro mes reporta comisiones de esa fecha: las cifras de CMR_REP quedan mal para todos los periodos distintos. Parece un parche temporal que quedo en el código.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Sustituir por el parámetro de periodo (FECHA_SISTEMA = @FechaCorte, derivado de @FechaIni/@FechaFin) y agregar una prueba de regresión que ejecute dos meses distintos y compare que el bloque cambia de universo.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Crítico" data-cat="Corrección funcional" data-env="BD"
+             data-lote=""
+             data-txt="l1-002 precedencia or/and anula el filtro de periodo en el update de etapa de riesgo cierre.sp_ind_gen_mes_mod inner join ... on c.credito = a.num_credito and (cond_a) or (cond_b) and c.periodo = dateadd(day,-1,@fecha)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Crítico</span>
+        <span class="id">L1-002</span>
+        <span class="ti">Precedencia OR/AND anula el filtro de periodo en el UPDATE de etapa de riesgo</span>
+        <span class="meta">Corrección funcional &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_IND_GEN_MES_MOD</span></div>
+        <div class="kv"><b>Ubicación</b><span>líneas 210-222</span></div>
+        <div class="kv"><b>Evidencia</b><pre>INNER JOIN ... ON C.CREDITO = A.NUM_CREDITO AND (cond_A) OR (cond_B) AND C.PERIODO = DATEADD(DAY,-1,@FECHA)</pre></div>
+        <div class="kv"><b>Impacto</b><span>AND liga más fuerte que OR, por lo que la expresión equivale a (C.CREDITO=A.NUM_CREDITO AND cond_A) OR (cond_B AND C.PERIODO=...). La primera rama pierde el filtro de periodo y la condición de crédito de la segunda rama queda suelta: se actualiza ETAPA_RIESGO de filas de otros periodos.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Parentizar explícitamente: ON C.CREDITO = A.NUM_CREDITO AND ((cond_A) OR (cond_B)) y mover C.PERIODO al WHERE. Validar contra un periodo cerrado antes/después.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Crítico" data-cat="Transaccional" data-env="BD"
+             data-lote=""
+             data-txt="l1-003 transacción sin try/catch en el cierre mensual individual: queda abierta ante error cierre.sp_ind_gen_mes_mod begin transaction ... 4 update masivos sobre cierre.ind_rep ... commit transaction  (sin begin try/catch, sin set xact_abort on)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Crítico</span>
+        <span class="id">L1-003</span>
+        <span class="ti">Transacción sin TRY/CATCH en el cierre mensual individual: queda abierta ante error</span>
+        <span class="meta">Transaccional &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_IND_GEN_MES_MOD</span></div>
+        <div class="kv"><b>Ubicación</b><span>línea 13 (BEGIN TRANSACTION) y 224 (COMMIT)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>BEGIN TRANSACTION ... 4 UPDATE masivos sobre CIERRE.IND_REP ... COMMIT TRANSACTION  (sin BEGIN TRY/CATCH, sin SET XACT_ABORT ON)</pre></div>
+        <div class="kv"><b>Impacto</b><span>Si cualquiera de los UPDATE falla, la sesión se queda con transacción abierta bloqueando CIERRE.IND_REP; el resto del cierre se detiene por bloqueo y puede requerir KILL manual. No hay registro del error.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Envolver en SET XACT_ABORT ON + BEGIN TRY/CATCH con IF XACT_STATE() &lt;&gt; 0 ROLLBACK, registro en tabla de errores y THROW.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Crítico" data-cat="Transaccional" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-004 los catch hacen rollback y se tragan el error: el proceso reporta éxito tras revertir 11 de 20 sps del lote (po.sp_ind_cobranza, po.sp_com_cobranza, po.sp_com_desembolso, po.sp_snd_*, cierre.sp_cmr_gen_dia, cierre.sp_cmr_gen_mes, ...) begin catch rollback insert into po.saf_poliza_errores (...) values (getdate(), @fecha_inicio, @id_poliza, &#x27;linea:&#x27;+cast(error_line() as varchar)+&#x27;. &#x27;+error_message()) end catch">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Crítico</span>
+        <span class="id">L1-004</span>
+        <span class="ti">Los CATCH hacen ROLLBACK y se tragan el error: el proceso reporta éxito tras revertir</span>
+        <span class="meta">Transaccional &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>11 de 20 SPs del lote (PO.SP_IND_COBRANZA, PO.SP_COM_COBRANZA, PO.SP_COM_DESEMBOLSO, PO.SP_SND_*, CIERRE.SP_CMR_GEN_DIA, CIERRE.SP_CMR_GEN_MES, ...)</span></div>
+        <div class="kv"><b>Ubicación</b><span>bloque CATCH final de cada SP</span></div>
+        <div class="kv"><b>Evidencia</b><pre>BEGIN CATCH ROLLBACK INSERT INTO PO.SAF_POLIZA_ERRORES (...) VALUES (getdate(), @FECHA_INICIO, @ID_POLIZA, &#x27;Linea:&#x27;+cast(ERROR_LINE() as varchar)+&#x27;. &#x27;+ERROR_MESSAGE()) END CATCH</pre></div>
+        <div class="kv"><b>Impacto</b><span>Sin RAISERROR/THROW el SP termina con éxito: el orquestador (job/portal) continua con la siguiente póliza como si se hubiera generado. La única huella queda en una tabla que nadie consulta en línea. Es la causa más probable de pólizas faltantes silenciosas.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Patrón único: SET XACT_ABORT ON; IF XACT_STATE()&lt;&gt;0 ROLLBACK; INSERT en la tabla de errores; THROW. Complementar con un check post-proceso que compare pólizas esperadas vs generadas.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Crítico" data-cat="Transaccional" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-005 rollback incondicional en catch puede enmascarar el error original (error 3903) 12 sps del lote begin catch  rollback  ...">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Crítico</span>
+        <span class="id">L1-005</span>
+        <span class="ti">ROLLBACK incondicional en CATCH puede enmascarar el error original (error 3903)</span>
+        <span class="meta">Transaccional &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>12 SPs del lote</span></div>
+        <div class="kv"><b>Ubicación</b><span>primera sentencia del CATCH</span></div>
+        <div class="kv"><b>Evidencia</b><pre>BEGIN CATCH  ROLLBACK  ...</pre></div>
+        <div class="kv"><b>Impacto</b><span>Si el error ocurre antes del BEGIN TRANSACTION (o la transacción ya fue revertida por XACT_ABORT), el ROLLBACK lanza el error 3903 &#x27;ROLLBACK TRANSACTION request has no corresponding BEGIN&#x27; y se pierde el mensaje real. El diagnostico se vuelve imposible.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>IF XACT_STATE() &lt;&gt; 0 ROLLBACK TRANSACTION.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Crítico" data-cat="Integridad de datos" data-env="BD"
+             data-lote=""
+             data-txt="l1-006 el cierre no acota el periodo ni registra que ya lo proceso: un segundo pase vuelve a acumular cierre.sp_ind_gen_mes_mod update c set c.principal_final = c.principal_final + b.monto ... from kardia.po.pr_ballon_det where cod_concepto=&#x27;principal&#x27; and id_secuencia is null (sin filtro de fecha)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Crítico</span>
+        <span class="id">L1-006</span>
+        <span class="ti">El cierre no acota el periodo ni registra que ya lo proceso: un segundo pase vuelve a acumular</span>
+        <span class="meta">Integridad de datos &middot; BD &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_IND_GEN_MES_MOD</span></div>
+        <div class="kv"><b>Ubicación</b><span>líneas 14-60</span></div>
+        <div class="kv"><b>Evidencia</b><pre>UPDATE C SET C.PRINCIPAL_FINAL = C.PRINCIPAL_FINAL + B.MONTO ... FROM KARDIA.PO.PR_BALLON_DET WHERE COD_CONCEPTO=&#x27;PRINCIPAL&#x27; AND ID_SECUENCIA IS NULL (sin filtro de fecha)</pre></div>
+        <div class="kv"><b>Impacto</b><span>El acumulado se calcula sobre todo el histórico de PR_BALLON_DET y se suma al valor previo. Una segunda ejecución del mismo periodo (reproceso, reintento del job) duplica PRINCIPAL_FINAL y PRINCIPAL_COVID19. En un cierre contable esto es un error de reporte regulatorio. NOTA DE CONTEXTO (sesion con el equipo de desarrollo, 2026-08-31): el diseno declarado trata los ajustes de dias anteriores como adiciones acumuladas con bloqueo del historico, de modo que sumar sobre el valor previo es intencional en el cierre diario. El defecto no es la acumulacion, sino que el agregado se toma de todo el historico de PR_BALLON_DET sin filtro de periodo y que no existe marca de periodo procesado ni guarda que impida un segundo pase del mismo dia (reintento del job o ejecucion manual). Pendiente de validar con el equipo cual es el comportamiento esperado ante reintento.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Registrar la corrida (periodo, id de ejecucion, estado) y rechazar el segundo pase del mismo periodo salvo reproceso autorizado; acotar el agregado de PR_BALLON_DET al periodo procesado. Si el reproceso debe permitirse, hacerlo determinista (borrar-e-insertar el periodo o SET = base + agregado del periodo) en lugar de sumar sobre el valor acumulado.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Crítico" data-cat="Seguridad" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-007 código de produccion consulta una base de datos de qa po.sys_sp_mov_abono, po.sys_sp_mov_cargo, po.sys_sp_mov_interes, po.sys_sp_avaluo_and_update (idénticos en bd y bd_prod) from quiero_confianza_creditopuente_qa.pr.pr_encabezado_pago a with (nolock) ... join quiero_confianza_creditopuente_qa.cg.cg_catalogo_x_empresa">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Crítico</span>
+        <span class="id">L1-007</span>
+        <span class="ti">Código de PRODUCCION consulta una base de datos de QA</span>
+        <span class="meta">Seguridad &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SYS_SP_MOV_ABONO, PO.SYS_SP_MOV_CARGO, PO.SYS_SP_MOV_INTERES, PO.SYS_SP_AVALUO_AND_UPDATE (idénticos en BD y BD_prod)</span></div>
+        <div class="kv"><b>Ubicación</b><span>43 referencias en BD_prod (4 objetos)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>FROM Quiero_Confianza_CreditoPuente_QA.PR.PR_ENCABEZADO_PAGO A WITH (NOLOCK) ... JOIN Quiero_Confianza_CreditoPuente_QA.CG.CG_CATALOGO_X_EMPRESA</pre></div>
+        <div class="kv"><b>Impacto</b><span>Los extractores de movimientos de abono/cargo/interés de producción leen pagos, clientes y catálogo contable desde la base de QA. El resto de los SPs de BD_prod usan Quiero_Confianza (producción). Riesgo doble: cifras contables construidas con datos no productivos y exposición de datos de clientes entre ambientes. NOTA DE CONTEXTO (sesion con el equipo de desarrollo, 2026-08-31): el origen legitimo del proceso es Quiero_Confianza, replica de solo lectura del transaccional SAF/Sisde. Eso confirma la gravedad de este hallazgo: las variantes _CreditoPuente_QA y _shadow no son la replica productiva, por lo que estos objetos no leen del origen autorizado.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Reemplazar por sinónimos (CREATE SYNONYM) resueltos por ambiente y desplegar la versión productiva apuntando a Quiero_Confianza. Verificar de inmediato si las pólizas generadas en producción usaron datos de QA.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Seguridad" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-008 sql dinámico con concatenación de parámetros (inyección y planes no reutilizables) po.sys_sp_avaluo_and_update (11 exec), po.sys_sp_mov_abono, po.sys_sp_account_balance_orden, po.sys_sp_balance_detail_sql, po.sys_sp_actualiza_estado_poliza set @u_tipo_vivienda = concat(&#x27;update h set ... from po.saf_mov_&#x27;, @tabla, &#x27; h where ... between &#x27;&#x27;&#x27;,@fecha_inicio,&#x27;&#x27;&#x27; and &#x27;&#x27;&#x27;,@fecha_fin,&#x27;&#x27;&#x27;&#x27;)  exec(@u_tipo_vivienda)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-008</span>
+        <span class="ti">SQL dinámico con concatenación de parámetros (inyección y planes no reutilizables)</span>
+        <span class="meta">Seguridad &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SYS_SP_AVALUO_AND_UPDATE (11 EXEC), PO.SYS_SP_MOV_ABONO, PO.SYS_SP_ACCOUNT_BALANCE_ORDEN, PO.SYS_SP_BALANCE_DETAIL_SQL, PO.SYS_SP_ACTUALIZA_ESTADO_POLIZA</span></div>
+        <div class="kv"><b>Ubicación</b><span>AVALUO líneas 34-228; MOV_ABONO línea 325-335</span></div>
+        <div class="kv"><b>Evidencia</b><pre>SET @U_TIPO_VIVIENDA = CONCAT(&#x27;UPDATE H SET ... FROM PO.SAF_MOV_&#x27;, @TABLA, &#x27; H WHERE ... BETWEEN &#x27;&#x27;&#x27;,@FECHA_INICIO,&#x27;&#x27;&#x27; AND &#x27;&#x27;&#x27;,@FECHA_FIN,&#x27;&#x27;&#x27;&#x27;)  EXEC(@U_TIPO_VIVIENDA)</pre></div>
+        <div class="kv"><b>Impacto</b><span>@TABLA (varchar(35)) se concatena sin QUOTENAME: quien pueda ejecutar el SP puede inyectar DDL/DML arbitrario. Con EXEC() en lugar de sp_executesql no hay parametrización, se llena la cache de planes y se pierde la reutilización.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Validar @TABLA contra una lista blanca (catálogo de tablas permitidas), aplicar QUOTENAME y ejecutar con sp_executesql pasando fechas como parámetros tipados. En los casos con pocas variantes, sustituir el dinámico por ramas estáticas.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Corrección funcional" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-009 asignación nula @id_secuencia = @id_secuencia en el bucle de movimientos po.sys_sp_mov_abono @id_secuencia = @id_secuencia, @id_cuenta = id_cuenta, ...">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-009</span>
+        <span class="ti">Asignación nula @ID_SECUENCIA = @ID_SECUENCIA en el bucle de movimientos</span>
+        <span class="meta">Corrección funcional &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SYS_SP_MOV_ABONO</span></div>
+        <div class="kv"><b>Ubicación</b><span>línea 232</span></div>
+        <div class="kv"><b>Evidencia</b><pre>@ID_SECUENCIA = @ID_SECUENCIA, @ID_CUENTA = ID_CUENTA, ...</pre></div>
+        <div class="kv"><b>Impacto</b><span>Debería ser @ID_SECUENCIA = ID_SECUENCIA. La variable nunca toma el valor de la fila, queda NULL (o el valor de la iteración previa) y se propaga a los INSERT de cancelación de firma: los movimientos generados quedan sin ID_SECUENCIA, rompiendo la trazabilidad al pago origen.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Corregir la asignación y revisar históricamente los registros de PO.SAF_MOV_ABONO con ID_SECUENCIA nulo o repetido generados por este bloque.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Corrección funcional" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-010 rango de fechas invertido en el insert dinámico de separación balance/orden po.sys_sp_mov_abono ... and fecha_movimiento between &#x27;&#x27;&#x27;,@fecha_fin,&#x27;&#x27;&#x27; and &#x27;&#x27;&#x27;, @fecha_fin,&#x27;&#x27;&#x27;&#x27;">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-010</span>
+        <span class="ti">Rango de fechas invertido en el INSERT dinámico de separación balance/orden</span>
+        <span class="meta">Corrección funcional &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SYS_SP_MOV_ABONO</span></div>
+        <div class="kv"><b>Ubicación</b><span>línea 334</span></div>
+        <div class="kv"><b>Evidencia</b><pre>... AND FECHA_MOVIMIENTO BETWEEN &#x27;&#x27;&#x27;,@FECHA_FIN,&#x27;&#x27;&#x27; AND &#x27;&#x27;&#x27;, @FECHA_FIN,&#x27;&#x27;&#x27;&#x27;</pre></div>
+        <div class="kv"><b>Impacto</b><span>Usa @FECHA_FIN en ambos extremos del BETWEEN. Cuando el proceso corre con un rango de varios días, el movimiento en orden solo se crea para el ultimo día y se pierde la separación balance/orden de los días intermedios.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Usar @FECHA_INICIO y @FECHA_FIN (y parametrizar vía sp_executesql en lugar de concatenar).</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Proceso" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-011 las alertas de tasas se marcan como enviadas antes de construir el envío saf.sp_tasas_alertas_envio update saf.tasas_alertas set estado = &#x27;e&#x27; where estado=&#x27;p&#x27; and activo=1 and fecha &lt;= @fecha_hoy   -- antes del cursor que arma #alertas">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-011</span>
+        <span class="ti">Las alertas de tasas se marcan como enviadas antes de construir el envío</span>
+        <span class="meta">Proceso &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>SAF.SP_TASAS_ALERTAS_ENVIO</span></div>
+        <div class="kv"><b>Ubicación</b><span>líneas 37-40</span></div>
+        <div class="kv"><b>Evidencia</b><pre>UPDATE SAF.TASAS_ALERTAS SET ESTADO = &#x27;E&#x27; WHERE ESTADO=&#x27;P&#x27; AND ACTIVO=1 AND FECHA &lt;= @FECHA_HOY   -- antes del cursor que arma #ALERTAS</pre></div>
+        <div class="kv"><b>Impacto</b><span>El marcado &#x27;E&#x27; (enviado) ocurre fuera de transacción y antes de generar el resultado. Si el cursor o el consumidor del resultado falla, las alertas quedan como enviadas y nunca se notifican: perdida silenciosa de avisos de cambio de tasa al cliente.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Marcar &#x27;E&#x27; solo después de confirmar el envío (o dentro de la misma transacción que entrega el lote, con estado intermedio &#x27;EN_PROCESO&#x27;). Además el UPDATE usa FECHA &lt;= hoy mientras el cursor toma FECHA en los 5 días siguientes: son dos universos distintos, conviene unificar el criterio.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Concurrencia" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-012 cursores globales (no local) con workaround cursorclosedeallocate 9 sps del lote (po.sp_ind_cobranza, po.sp_com_cobranza*, po.sp_snd_*, saf.sp_tasas_alertas_envio) exec cursorclosedeallocate &#x27;db_cursor_com_snd_cap&#x27;  declare db_cursor_com_snd_cap cursor for ...">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-012</span>
+        <span class="ti">Cursores globales (no LOCAL) con workaround CursorCloseDeallocate</span>
+        <span class="meta">Concurrencia &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>9 SPs del lote (PO.SP_IND_COBRANZA, PO.SP_COM_COBRANZA*, PO.SP_SND_*, SAF.SP_TASAS_ALERTAS_ENVIO)</span></div>
+        <div class="kv"><b>Ubicación</b><span>exec CursorCloseDeallocate &#x27;db_cursor_...&#x27; antes de cada DECLARE CURSOR</span></div>
+        <div class="kv"><b>Evidencia</b><pre>exec CursorCloseDeallocate &#x27;db_cursor_COM_SND_CAP&#x27;  DECLARE db_cursor_COM_SND_CAP CURSOR FOR ...</pre></div>
+        <div class="kv"><b>Impacto</b><span>Los cursores se declaran globales a la conexión, por lo que el código necesita un SP auxiliar que cierre restos de ejecuciones anteriores. Dos ejecuciones concurrentes en la misma sesión (o un error previo) chocan por el nombre del cursor. Es un síntoma de fuga de cursores por errores no manejados.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Declarar DECLARE ... CURSOR LOCAL FAST_FORWARD y eliminar la dependencia de CursorCloseDeallocate; idealmente reescribir los bucles por operaciones de conjunto.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Rendimiento" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-013 procesamiento fila a fila (rbar) dentro de la transacción contable po.sys_sp_mov_abono (while sobre @movs), po.sp_ind_cobranza, po.sp_com_cobranza_castigos, po.sp_snd_* insert into @movs select row_number() ... from po.saf_mov_abono where fecha_movimiento between @fecha_inicio and @fecha_fin;  while @indice &lt; @max_indice ... select @... from @movs where id = @indice+1">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-013</span>
+        <span class="ti">Procesamiento fila a fila (RBAR) dentro de la transacción contable</span>
+        <span class="meta">Rendimiento &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SYS_SP_MOV_ABONO (WHILE sobre @MOVS), PO.SP_IND_COBRANZA, PO.SP_COM_COBRANZA_CASTIGOS, PO.SP_SND_*</span></div>
+        <div class="kv"><b>Ubicación</b><span>MOV_ABONO líneas 205-361</span></div>
+        <div class="kv"><b>Evidencia</b><pre>INSERT INTO @MOVS SELECT ROW_NUMBER() ... FROM PO.SAF_MOV_ABONO WHERE FECHA_MOVIMIENTO BETWEEN @FECHA_INICIO AND @FECHA_FIN;  WHILE @INDICE &lt; @MAX_INDICE ... SELECT @... FROM @MOVS WHERE ID = @INDICE+1</pre></div>
+        <div class="kv"><b>Impacto</b><span>Se recorre movimiento por movimiento (una consulta por fila, sobre una tabla variable sin índices) y todo dentro de una única transacción abierta. El tiempo crece linealmente con el volumen del día y los bloqueos sobre PO.SAF_MOV_ABONO duran todo el proceso; es el cuello de botella del cierre diario.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Reescribir la separación balance/orden con funciones de ventana (SUM() OVER, LAG) y UPDATE/INSERT por conjunto; si se conserva el bucle, usar tabla temporal con índice y acotar la transacción a bloques.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Integridad de datos" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-014 nolock generalizado en las lecturas que alimentan la póliza contable 14 de 20 sps del lote (347 ocurrencias); cierre.sp_cmr_gen_mes 72, edc.sp_inseredccredito 63, cierre.sp_cmr_rpt_intereses_devengados_vis 37 from quiero_confianza_shadow.pr.pr_creditos c with (nolock) inner join po.pr_capital_det a with (nolock) ...">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-014</span>
+        <span class="ti">NOLOCK generalizado en las lecturas que alimentan la póliza contable</span>
+        <span class="meta">Integridad de datos &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>14 de 20 SPs del lote (347 ocurrencias); CIERRE.SP_CMR_GEN_MES 72, edc.sp_inserEdcCredito 63, CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS 37</span></div>
+        <div class="kv"><b>Ubicación</b><span>clausulas WITH (NOLOCK) en joins a Quiero_Confianza*.PR.*</span></div>
+        <div class="kv"><b>Evidencia</b><pre>FROM Quiero_Confianza_shadow.PR.PR_CREDITOS C WITH (NOLOCK) INNER JOIN PO.PR_CAPITAL_DET A WITH (NOLOCK) ...</pre></div>
+        <div class="kv"><b>Impacto</b><span>READ UNCOMMITTED admite lecturas sucias, filas duplicadas y filas omitidas por movimiento de paginas. Aplicado al cálculo de saldos, devengos y pólizas contables significa que dos ejecuciones pueden dar cifras distintas y que un cierre puede incluir transacciones que luego se revirtieron. No es aceptable en un proceso contable auditable. NOTA DE CONTEXTO (sesion con el equipo de desarrollo, 2026-08-31): el origen es una replica de solo lectura, no la base transaccional viva, por lo que el NOLOCK no puede bloquear ni degradar el core productivo y el riesgo de lectura sucia de una transaccion en vuelo es menor. El riesgo que permanece es real: leer la replica mientras se le aplican cambios admite filas duplicadas u omitidas por movimiento de paginas y lecturas no repetibles, de modo que dos corridas del mismo periodo pueden arrojar cifras distintas sin que nada lo advierta.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Sobre la replica, leer con SNAPSHOT (o READ COMMITTED SNAPSHOT) y fijar el punto de lectura del cierre: una marca de sincronia de la replica por corrida, registrada junto al id de ejecucion, para que el resultado sea reproducible y auditable. Eliminar NOLOCK de todo lo que alimente cifras contables; conservarlo, si acaso, solo en consultas exploratorias.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Parametrización" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-015 regla de negocio covid con corte de crédito hardcodeado y distinto entre ambientes dbo.fn_es_covid bd:  ... and @num_credito &lt; 6051 then ...        bd_prod: ... and @num_credito &lt; 6086 then ...">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-015</span>
+        <span class="ti">Regla de negocio COVID con corte de crédito hardcodeado y distinto entre ambientes</span>
+        <span class="meta">Parametrización &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>dbo.FN_ES_COVID</span></div>
+        <div class="kv"><b>Ubicación</b><span>BD línea 12 / BD_prod línea 12</span></div>
+        <div class="kv"><b>Evidencia</b><pre>BD:  ... AND @NUM_CREDITO &lt; 6051 THEN ...        BD_prod: ... AND @NUM_CREDITO &lt; 6086 THEN ...</pre></div>
+        <div class="kv"><b>Impacto</b><span>La frontera del universo COVID es una constante embebida y ya divergió entre desarrollo y producción (6051 vs 6086). Las pruebas en QA no reproducen el universo real y cualquier ajuste requiere redeploy de la función. Esta función se usa dentro del cierre mensual (CIERRE.SP_CMR_GEN_MES línea 111).</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Mover el umbral a un catálogo paramétrico (PARAM.VALOR vigente por fecha) y dejar la función como lectura del catálogo; alinear inmediatamente el valor entre ambientes.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Parametrización" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-016 nombre de base externa embebido 6.480 veces (principal diferenciador entre bd y bd_prod) todo el lote; global: 3.613 referencias en bd, 2.867 en bd_prod bd usa quiero_confianza_shadow (3.201) y quiero_confianza_shadow con otra capitalizacion (250), mas 119 a quiero_confianza; bd_prod usa quiero_confianza (2.824); 4 sps usan quiero_confianza_creditopuente_qa en ambos (43 y 43). cierre.sp_cmr_gen_mes mezcla ambas en el mismo sp (90 shadow + 1 productiva)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-016</span>
+        <span class="ti">Nombre de base externa embebido 6.480 veces (principal diferenciador entre BD y BD_prod)</span>
+        <span class="meta">Parametrización &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>todo el lote; global: 3.613 referencias en BD, 2.867 en BD_prod</span></div>
+        <div class="kv"><b>Ubicación</b><span>3-part names Quiero_Confianza[_shadow|_CreditoPuente_QA].PR/CG/BA/CL.*</span></div>
+        <div class="kv"><b>Evidencia</b><pre>BD usa Quiero_Confianza_shadow (3.201) y Quiero_Confianza_Shadow con otra capitalizacion (250), mas 119 a Quiero_Confianza; BD_prod usa Quiero_Confianza (2.824); 4 SPs usan Quiero_Confianza_CreditoPuente_QA en ambos (43 y 43). CIERRE.SP_CMR_GEN_MES mezcla ambas en el mismo SP (90 shadow + 1 productiva)</pre></div>
+        <div class="kv"><b>Impacto</b><span>119 de los 126 objetos que difieren entre ambientes lo hacen UNICAMENTE por este nombre o por formato (solo 7 tienen drift funcional real): el &#x27;drift&#x27; entre ambientes es artificial y obliga a mantener dos copias del código, con el riesgo de promover la versión equivocada. La mezcla de capitalización falla si la instancia usa collation sensible a mayúsculas. NOTA DE CONTEXTO (sesion con el equipo de desarrollo, 2026-08-31): el nombre correcto del origen productivo es Quiero_Confianza (replica del core); shadow y _QA son variantes por ambiente. Confirma que la remediacion correcta es el sinonimo por ambiente y no editar el nombre en cada copia.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Sustituir los 3-part names por SYNONYMs por ambiente (o vistas de fachada en un esquema EXT). Con eso el código queda idéntico en BD y BD_prod y el despliegue se reduce a crear los sinónimos.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Parametrización" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-017 linked server y servidor de pólizas hardcodeados (y apuntando a qa en bd) po.sp_saf_poliza_envio_1p_con (drift real bd vs bd_prod), edc.sp_inseredccredito 4-part name con nombre de instancia embebido; edc usa [kardia].[edc].[edc]">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-017</span>
+        <span class="ti">Linked server y servidor de pólizas hardcodeados (y apuntando a QA en BD)</span>
+        <span class="meta">Parametrización &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SP_SAF_POLIZA_ENVIO_1P_CON (drift real BD vs BD_prod), edc.sp_inserEdcCredito</span></div>
+        <div class="kv"><b>Ubicación</b><span>BD: EXEC [SRV-IONDWHQA\GPQA].[ION02].[dbo].[AXTSP_POLIZAS] / BD_prod: EXEC [SRV-IONDYNA].[ION02].[dbo].[AXTSP_POLIZAS]</span></div>
+        <div class="kv"><b>Evidencia</b><pre>4-part name con nombre de instancia embebido; edc usa [KARDIA].[edc].[EDC]</pre></div>
+        <div class="kv"><b>Impacto</b><span>El envío de pólizas al ERP depende del nombre físico del servidor escrito en el código. Promover el objeto de un ambiente a otro rompe el envío o, peor, envía pólizas productivas al servidor de QA.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Encapsular la llamada en un SP fachada que resuelva el linked server desde configuración (o usar un nombre de linked server lógico idéntico en todos los ambientes, p.ej. LS_ERP, apuntando a distinto destino).</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Parametrización" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-018 factor del 10% (&#x27;porcentaje afirme&#x27;) aplicado a montos contables como literal po.sp_ind_cobranza update po.saf_mov_abono set monto = monto * 0.10 where fecha_movimiento=@fecha_inicio and id_poliza=@id_poliza and id_tipo_credito=4 and concepto not like &#x27;trs %&#x27;">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-018</span>
+        <span class="ti">Factor del 10% (&#x27;porcentaje Afirme&#x27;) aplicado a montos contables como literal</span>
+        <span class="meta">Parametrización &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SP_IND_COBRANZA</span></div>
+        <div class="kv"><b>Ubicación</b><span>líneas 755-759</span></div>
+        <div class="kv"><b>Evidencia</b><pre>UPDATE PO.SAF_MOV_ABONO SET MONTO = MONTO * 0.10 WHERE FECHA_MOVIMIENTO=@FECHA_INICIO AND ID_POLIZA=@ID_POLIZA AND ID_TIPO_CREDITO=4 AND CONCEPTO NOT LIKE &#x27;TRS %&#x27;</pre></div>
+        <div class="kv"><b>Impacto</b><span>Un acuerdo comercial (participación Afirme) está expresado como constante que reescribe montos ya registrados. Si el porcentaje cambia hay que modificar el SP; si el UPDATE se ejecuta dos veces, el monto queda al 1%. No hay rastro del monto original.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Catálogo de participaciones por convenio/tipo de crédito con vigencia, aplicado en el cálculo (no como reescritura posterior) y conservando el monto bruto en columna separada.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Parametrización" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-019 iva 16% embebido en cálculos de devengo y de iva de intereses/moratorios po.sys_sp_avaluo_and_update (monto*0.16 x2), cierre.sp_cmr_gen_mes (0.16 x6), po.sp_ind_cobranza (*0.16 x7) sum(case when x.ind_iva = &#x27;n&#x27; then 0 else 0.16 * a.mon_diario end) as iva">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-019</span>
+        <span class="ti">IVA 16% embebido en cálculos de devengo y de IVA de intereses/moratorios</span>
+        <span class="meta">Parametrización &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SYS_SP_AVALUO_AND_UPDATE (MONTO*0.16 x2), CIERRE.SP_CMR_GEN_MES (0.16 x6), PO.SP_IND_COBRANZA (*0.16 x7)</span></div>
+        <div class="kv"><b>Ubicación</b><span>AVALUO 144 y 159; CMR_GEN_MES 115</span></div>
+        <div class="kv"><b>Evidencia</b><pre>SUM(CASE WHEN X.IND_IVA = &#x27;N&#x27; THEN 0 ELSE 0.16 * A.MON_DIARIO END) AS IVA</pre></div>
+        <div class="kv"><b>Impacto</b><span>Una tasa fiscal (sujeta a cambio normativo y con tasa distinta en región frontera) está escrita en 15+ lugares. Un cambio de tasa implica localizar y modificar cada SP, con riesgo alto de inconsistencia entre reportes.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Catálogo de tasas de impuesto con vigencia (fecha_inicio, fecha_fin, zona) y función/lectura única; prohibir el literal por regla de revisión.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Parametrización" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-020 umbral de avalúo para clasificar vivienda, con vigencia expresada en el código po.sys_sp_avaluo_and_update declare @monto_avaluo numeric(11,2) = iif(@fecha_inicio &gt;= &#x27;2024-01-01&#x27;, 2648615.20, 2207161.60)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-020</span>
+        <span class="ti">Umbral de avalúo para clasificar vivienda, con vigencia expresada en el código</span>
+        <span class="meta">Parametrización &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SYS_SP_AVALUO_AND_UPDATE</span></div>
+        <div class="kv"><b>Ubicación</b><span>línea 32</span></div>
+        <div class="kv"><b>Evidencia</b><pre>DECLARE @MONTO_AVALUO NUMERIC(11,2) = IIF(@FECHA_INICIO &gt;= &#x27;2024-01-01&#x27;, 2648615.20, 2207161.60)</pre></div>
+        <div class="kv"><b>Impacto</b><span>El límite entre INTERES SOCIAL y MEDIA RESIDENCIAL (que define producto, cuenta contable y reporte regulatorio) es una constante con su propia vigencia hardcodeada. Cada actualización anual del valor obliga a modificar y desplegar el SP.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Tabla de umbrales con vigencia (VALOR, FECHA_INICIO, FECHA_FIN) consultada por fecha de movimiento. Es el caso típico de parámetro de portal.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Parametrización" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-021 identificadores de póliza (id_poliza) hardcodeados uno por sp 13 sps del lote @id_poliza int = 7 (ind_cobranza), 35 (cobranza empleado), 40 (com_cobranza), 24, 51, 99, 23, 74, 33, 73, 84 (snd_capital), 36 ...">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-021</span>
+        <span class="ti">Identificadores de póliza (ID_POLIZA) hardcodeados uno por SP</span>
+        <span class="meta">Parametrización &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>13 SPs del lote</span></div>
+        <div class="kv"><b>Ubicación</b><span>declaración inicial de cada SP</span></div>
+        <div class="kv"><b>Evidencia</b><pre>@ID_POLIZA int = 7 (IND_COBRANZA), 35 (cobranza empleado), 40 (COM_COBRANZA), 24, 51, 99, 23, 74, 33, 73, 84 (SND_CAPITAL), 36 ...</pre></div>
+        <div class="kv"><b>Impacto</b><span>La relación proceso-póliza vive en el código, no en un catálogo. Agregar una póliza o reasignar un número exige tocar SPs; el número se repite en filtros DELETE/UPDATE, por lo que un valor equivocado borra movimientos de otra póliza.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Catálogo PO.SAF_CAT_POLIZA (clave lógica -&gt; ID_POLIZA) y lectura por clave lógica al inicio del SP.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Parametrización" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-022 cuentas contables y mascaras escritas como literales en el código po.sp_ind_cobranza, po.sys_sp_avaluo_and_update, po.sys_sp_mov_abono set h.cuenta_cargo = &#x27;1020-0105-0205-0100&#x27; where h.id_cuenta in (2041,2039) ... / case when id_producto in(1,2) then &#x27;2020-0508-0203-0000&#x27; when id_producto in(50,51) then &#x27;2020-0508-0201-0000&#x27; ... where h.cuenta_cargo=&#x27;2401-9000-0003-0001&#x27;">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L1-022</span>
+        <span class="ti">Cuentas contables y mascaras escritas como literales en el código</span>
+        <span class="meta">Parametrización &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SP_IND_COBRANZA, PO.SYS_SP_AVALUO_AND_UPDATE, PO.SYS_SP_MOV_ABONO</span></div>
+        <div class="kv"><b>Ubicación</b><span>IND_COBRANZA 705; AVALUO 218-226; MOV_ABONO 117-122</span></div>
+        <div class="kv"><b>Evidencia</b><pre>SET H.CUENTA_CARGO = &#x27;1020-0105-0205-0100&#x27; WHERE H.ID_CUENTA IN (2041,2039) ... / CASE WHEN ID_PRODUCTO IN(1,2) THEN &#x27;2020-0508-0203-0000&#x27; WHEN ID_PRODUCTO IN(50,51) THEN &#x27;2020-0508-0201-0000&#x27; ... WHERE H.CUENTA_CARGO=&#x27;2401-9000-0003-0001&#x27;</pre></div>
+        <div class="kv"><b>Impacto</b><span>Convive con el catálogo PO.SAF_CAT_CONTABLE que sí está parametrizado: hay reglas de cuentas que el área contable no puede ver ni cambiar. Un cambio de catálogo contable deja estos casos desalineados sin aviso.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Migrar los casos especiales al catálogo contable con su criterio (producto, cuenta origen, tipo de crédito) y dejar el SP como aplicación del catálogo.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Parametrización" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-023 códigos de producto, tipo de crédito y tipo de transacción como números mágicos todo el lote id_producto in (50,51) &#x27;consumo&#x27;/&#x27;empleado&#x27;; id_tipo_credito in (1,3,4,9,10,11,16,17,20,23,26); tip_transaccion = 3/4/113; id_cuenta 2073 &#x27;dacion&#x27;, 2074 &#x27;adjudicacion&#x27;, 2068 &#x27;siniestro&#x27;, 2076/2080/2041/2039">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L1-023</span>
+        <span class="ti">Códigos de producto, tipo de crédito y tipo de transacción como números mágicos</span>
+        <span class="meta">Parametrización &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>todo el lote</span></div>
+        <div class="kv"><b>Ubicación</b><span>70 usos de ID_PRODUCTO, 50 de ID_TIPO_CREDITO, 124 de TIP_TRANSACCION solo en el lote</span></div>
+        <div class="kv"><b>Evidencia</b><pre>ID_PRODUCTO IN (50,51) &#x27;CONSUMO&#x27;/&#x27;EMPLEADO&#x27;; ID_TIPO_CREDITO IN (1,3,4,9,10,11,16,17,20,23,26); TIP_TRANSACCION = 3/4/113; ID_CUENTA 2073 &#x27;DACION&#x27;, 2074 &#x27;ADJUDICACION&#x27;, 2068 &#x27;SINIESTRO&#x27;, 2076/2080/2041/2039</pre></div>
+        <div class="kv"><b>Impacto</b><span>El significado del código está en el comentario o en la cabeza del desarrollador. Alta probabilidad de error al agregar un producto o tipo de crédito: hay que encontrar todas las listas IN(...) dispersas.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Catálogos con banderas de comportamiento (es_consumo, es_empleado, aplica_iva, es_castigo) y sustituir las listas IN(...) por joins al catálogo.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Parametrización" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-024 conceptos y leyendas de póliza construidos con literales en el código po.sys_sp_mov_abono, po.sp_ind_cobranza, po.sp_com_cobranza_castigos y resto de sps de póliza concat(case when id_producto=50 and tip_transaccion=3 then &#x27;consumo desembolso &#x27; ... end, iif(ind_covid=&#x27;s&#x27;,&#x27;covid &#x27;,&#x27;&#x27;), ..., &#x27;restringido &#x27;, ind_etapa)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L1-024</span>
+        <span class="ti">Conceptos y leyendas de póliza construidos con literales en el código</span>
+        <span class="meta">Parametrización &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SYS_SP_MOV_ABONO, PO.SP_IND_COBRANZA, PO.SP_COM_COBRANZA_CASTIGOS y resto de SPs de póliza</span></div>
+        <div class="kv"><b>Ubicación</b><span>MOV_ABONO 99-126 y 147-160; 63 literales distintos en el lote</span></div>
+        <div class="kv"><b>Evidencia</b><pre>CONCAT(CASE WHEN ID_PRODUCTO=50 AND TIP_TRANSACCION=3 THEN &#x27;CONSUMO DESEMBOLSO &#x27; ... END, IIF(IND_COVID=&#x27;S&#x27;,&#x27;COVID &#x27;,&#x27;&#x27;), ..., &#x27;RESTRINGIDO &#x27;, IND_ETAPA)</pre></div>
+        <div class="kv"><b>Impacto</b><span>El concepto resultante se usa como llave para buscar en PO.SAF_CATALOGO_CONCEPTOS y derivar cuentas. Cualquier diferencia de espacio o texto rompe el match y deja la cuenta nula: el catálogo depende de que el código escriba exactamente la misma cadena. Además CONCEPTO_FINAL se trunca a 30 caracteres con LEFT(), perdiendo información.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Construir el concepto desde el catálogo (plantillas con tokens) en lugar de armar cadenas en cada SP, y validar por FK/lookup obligatorio con error explícito cuando no exista el concepto.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Observabilidad" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-025 fecha centinela &#x27;00010101&#x27; en el registro de errores po.sp_snd_capital, po.sp_snd_dev_comisiones, po.sp_snd_reverso_comision insert into po.saf_poliza_errores (fecha_generacion, fecha_sistema, id_poliza, descripcion) values (getdate(), &#x27;00010101&#x27;, @id_poliza, ...)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L1-025</span>
+        <span class="ti">Fecha centinela &#x27;00010101&#x27; en el registro de errores</span>
+        <span class="meta">Observabilidad &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SP_SND_CAPITAL, PO.SP_SND_DEV_COMISIONES, PO.SP_SND_REVERSO_COMISION</span></div>
+        <div class="kv"><b>Ubicación</b><span>bloque CATCH</span></div>
+        <div class="kv"><b>Evidencia</b><pre>INSERT INTO PO.SAF_POLIZA_ERRORES (FECHA_GENERACION, FECHA_SISTEMA, ID_POLIZA, DESCRIPCION) VALUES (getdate(), &#x27;00010101&#x27;, @ID_POLIZA, ...)</pre></div>
+        <div class="kv"><b>Impacto</b><span>El error se registra sin la fecha de negocio afectada (estos SPs reciben un tipo tabla de fechas). Al investigar una póliza faltante no se puede saber que fecha fallo.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Registrar la fecha en proceso (o el rango completo) y agregar el nombre del SP y el ID de ejecución.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Rendimiento" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-026 121 select ... into #temp dentro de transacciones y ddl en caliente 14 sps del lote; cierre.sp_cmr_rpt_intereses_devengados_vis crea y elimina 8 tablas temporales create table #polizaf(...) dentro del begin transaction; drop table #iva_intereses; ... (lineas 481-487)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L1-026</span>
+        <span class="ti">121 SELECT ... INTO #temp dentro de transacciones y DDL en caliente</span>
+        <span class="meta">Rendimiento &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>14 SPs del lote; CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS crea y elimina 8 tablas temporales</span></div>
+        <div class="kv"><b>Ubicación</b><span>CREATE TABLE #POLIZAF / SELECT INTO #... / TRUNCATE TABLE #POLIZA</span></div>
+        <div class="kv"><b>Evidencia</b><pre>CREATE TABLE #POLIZAF(...) dentro del BEGIN TRANSACTION; DROP TABLE #IVA_INTERESES; ... (lineas 481-487)</pre></div>
+        <div class="kv"><b>Impacto</b><span>El DDL sobre tempdb dentro de la transacción toma bloqueos en las tablas de sistema de tempdb y alarga la transacción; en concurrencia produce contención de asignación (PFS/GAM). Además las temporales se crean sin índices y luego se usan en joins masivos.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Declarar las temporales al inicio con CREATE TABLE explícito e índices, mover el DDL fuera de la transacción y evaluar tablas variables/temporales indexadas según volumen.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Rendimiento" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-027 predicados no sargables y conversiones implícitas en los joins entre bases 14 sps del lote (75 cast en on/where) where cuenta_contable = cast(a.id_cuenta as varchar(25)) ... on cast(h.id_cuenta as varchar(50)) = d.cuenta_contable ... case when len(a.id_cuenta)=4 then ...">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L1-027</span>
+        <span class="ti">Predicados no SARGables y conversiones implícitas en los joins entre bases</span>
+        <span class="meta">Rendimiento &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>14 SPs del lote (75 CAST en ON/WHERE)</span></div>
+        <div class="kv"><b>Ubicación</b><span>PO.SYS_SP_MOV_ABONO 39-47; PO.SYS_SP_AVALUO_AND_UPDATE 194 y 207</span></div>
+        <div class="kv"><b>Evidencia</b><pre>WHERE CUENTA_CONTABLE = CAST(A.ID_CUENTA AS VARCHAR(25)) ... ON CAST(H.ID_CUENTA AS VARCHAR(50)) = D.CUENTA_CONTABLE ... CASE WHEN LEN(A.ID_CUENTA)=4 THEN ...</pre></div>
+        <div class="kv"><b>Impacto</b><span>El CAST sobre la columna impide el uso de índices y fuerza scans en tablas de catálogo y de pagos, además de riesgo de truncamiento. LEN() sobre la columna para decidir la lógica indica tipos inconsistentes entre bases (numérico vs varchar para la misma cuenta).</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Homologar el tipo de dato de ID_CUENTA/CUENTA_CONTABLE entre bases (o mantener una columna persistida y indexada con el tipo destino) y quitar los CAST de los predicados.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Transaccional" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-028 ningún sp del lote usa set xact_abort on 13 sps con transacción explícita ausencia de set xact_abort on antes de begin transaction">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L1-028</span>
+        <span class="ti">Ningún SP del lote usa SET XACT_ABORT ON</span>
+        <span class="meta">Transaccional &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>13 SPs con transacción explícita</span></div>
+        <div class="kv"><b>Ubicación</b><span>cabecera de cada SP</span></div>
+        <div class="kv"><b>Evidencia</b><pre>ausencia de SET XACT_ABORT ON antes de BEGIN TRANSACTION</pre></div>
+        <div class="kv"><b>Impacto</b><span>Sin XACT_ABORT, errores como violación de constraint o timeout de linked server no abortan el lote: la transacción sigue con parte del trabajo hecho y puede llegar al COMMIT con datos incompletos. Con llamadas a servidores vinculados es requisito.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Estándar: SET NOCOUNT, XACT_ABORT ON en la cabecera de todo SP transaccional (5 SPs del lote tampoco tienen SET NOCOUNT ON).</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Mantenibilidad" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-029 familias de sps clonados: la misma lógica repetida con variaciones mínimas po.sp_(com|ind)_castigos_* y cobranza_*: 24 sps de ~950 líneas con estructura identica mismo esqueleto (delete por poliza, insert extractor, updates de concepto/cuentas, doble cursor de poliza) cambiando el id_poliza y algunos rubros">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L1-029</span>
+        <span class="ti">Familias de SPs clonados: la misma lógica repetida con variaciones mínimas</span>
+        <span class="meta">Mantenibilidad &middot; BD+BD_prod &middot; esfuerzo L (&gt;3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SP_(COM|IND)_CASTIGOS_* y COBRANZA_*: 24 SPs de ~950 líneas con estructura identica</span></div>
+        <div class="kv"><b>Ubicación</b><span>PO.SP_COM_COBRANZA_CASTIGOS vs PO.SP_COM_CASTIGOS_REVERSO_MORATORIOS vs PO.SP_IND_CASTIGOS_*</span></div>
+        <div class="kv"><b>Evidencia</b><pre>mismo esqueleto (DELETE por poliza, INSERT extractor, updates de concepto/cuentas, doble cursor de poliza) cambiando el ID_POLIZA y algunos rubros</pre></div>
+        <div class="kv"><b>Impacto</b><span>Un fix (por ejemplo el manejo de error o el rango de fechas) hay que aplicarlo 24 veces; en la práctica se aplica en unos y no en otros, que es exactamente el patrón de divergencia que ya se observa entre SPs hermanos.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Extraer el núcleo común a un SP parametrizado por tipo de póliza/rubro (o generar el código desde plantilla) y dejar los SPs actuales como fachadas delgadas.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Corrección funcional" data-env="BD_prod"
+             data-lote=""
+             data-txt="l1-030 versión productiva de po.sys_sp_balance_detail_sql con token @tabla sin resolver po.sys_sp_balance_detail_sql bd_prod: from po.saf_mov_@tabla a ... replace(@query_traspaso,&#x27;@tabla&#x27;,&#x27;traspaso&#x27;)   /   bd: from po.saf_mov_traspaso a (directo) y filtro extra a.concepto&lt;&gt;&#x27;totales&#x27;">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L1-030</span>
+        <span class="ti">Versión productiva de PO.SYS_SP_BALANCE_DETAIL_SQL con token @TABLA sin resolver</span>
+        <span class="meta">Corrección funcional &middot; BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SYS_SP_BALANCE_DETAIL_SQL</span></div>
+        <div class="kv"><b>Ubicación</b><span>BD_prod, bloque de traspasos</span></div>
+        <div class="kv"><b>Evidencia</b><pre>BD_prod: FROM PO.SAF_MOV_@TABLA A ... REPLACE(@QUERY_TRASPASO,&#x27;@TABLA&#x27;,&#x27;TRASPASO&#x27;)   /   BD: FROM PO.SAF_MOV_TRASPASO A (directo) y filtro extra A.CONCEPTO&lt;&gt;&#x27;TOTALES&#x27;</pre></div>
+        <div class="kv"><b>Impacto</b><span>Producción arma el SQL con un token textual reemplazado por REPLACE, patrón frágil, y le falta el filtro CONCEPTO&lt;&gt;&#x27;TOTALES&#x27; que si esta en desarrollo: el detalle de balance de producción puede duplicar los renglones de totales.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Alinear ambas versiones (promover la de desarrollo) y eliminar el REPLACE de tokens.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Corrección funcional" data-env="BD_prod"
+             data-lote=""
+             data-txt="l1-031 producción atrasada en tres objetos del cierre y de devoluciones cierre.sp_saf_saldos, po.sp_ind_devoluciones, po.sys_sp_control_historico_traspasos, po.control_historico_traspasos prod no maneja el tipo de saldo &#x27;k:castigo&#x27; ni el update de saldos asociado; prod solo considera descripcion_transaccion=&#x27;devolucion cheque&#x27; (dev agrega &#x27;reversion&#x27; con monto negativo); prod no inserta cod_origen ni actualiza id_producto y la tabla no tiene esas columnas ni el indice unico (fecha_sistema, num_credito)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L1-031</span>
+        <span class="ti">Producción atrasada en tres objetos del cierre y de devoluciones</span>
+        <span class="meta">Corrección funcional &middot; BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_SAF_SALDOS, PO.SP_IND_DEVOLUCIONES, PO.SYS_SP_CONTROL_HISTORICO_TRASPASOS, PO.CONTROL_HISTORICO_TRASPASOS</span></div>
+        <div class="kv"><b>Ubicación</b><span>drift real BD vs BD_prod (7 objetos en total)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>prod no maneja el tipo de saldo &#x27;K:Castigo&#x27; ni el UPDATE de saldos asociado; prod solo considera DESCRIPCION_TRANSACCION=&#x27;Devolucion Cheque&#x27; (dev agrega &#x27;Reversion&#x27; con monto negativo); prod no inserta COD_ORIGEN ni actualiza ID_PRODUCTO y la tabla no tiene esas columnas ni el indice unico (FECHA_SISTEMA, NUM_CREDITO)</pre></div>
+        <div class="kv"><b>Impacto</b><span>Diferencias funcionales reales entre ambientes: los castigos no se reflejan en SAF_SALDOS de producción, las reversiones de devolución no se registran y la tabla de control admite duplicados por crédito/fecha al no tener el índice único.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Plan de alineación con script de migración de la tabla (agregar columnas + índice único previa depuración de duplicados) y promover los tres SPs en un mismo despliegue.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Codificación" data-env="BD"
+             data-lote=""
+             data-txt="l1-032 comentarios con doble codificación (mojibake) y mezcla de encodings en bd/ 30 archivos po.* en utf-8 bom frente a 473 en utf-16le; comentarios corrompidos -- declaraciatildeacirceuroldquon de variables (original: declaracion); -- validaciatilde...n caso de iva">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L1-032</span>
+        <span class="ti">Comentarios con doble codificación (mojibake) y mezcla de encodings en BD/</span>
+        <span class="meta">Codificación &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>30 archivos PO.* en UTF-8 BOM frente a 473 en UTF-16LE; comentarios corrompidos</span></div>
+        <div class="kv"><b>Ubicación</b><span>PO.SYS_SP_AVALUO_AND_UPDATE líneas 16 y 86</span></div>
+        <div class="kv"><b>Evidencia</b><pre>-- DECLARACIAtildeAcircEuroLdquoN DE VARIABLES (original: DECLARACION); -- VALIDACIAtilde...N CASO DE IVA</pre></div>
+        <div class="kv"><b>Impacto</b><span>Los archivos ya sufrieron un ciclo UTF-8 -&gt; UTF-16 mal interpretado: los acentos de los comentarios están destruidos. Si el mismo ciclo toca cadenas de datos (conceptos con acentos, &#x27;Devolución Cheque&#x27;), el código deja de coincidir con el catálogo. También impide diffs limpios entre BD y BD_prod.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Normalizar todo el repositorio a UTF-8 con BOM en un único commit dedicado (sin cambios de lógica), fijar .gitattributes (*.sql text working-tree-encoding=UTF-8 eol=CRLF) y estandarizar la exportación desde SSMS. Los espacios que aparecen entre caracteres NO deben limpiarse: son los bytes 0x00 de UTF-16, se resuelven decodificando por BOM.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Bajo" data-cat="Mantenibilidad" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-033 código muerto, bloques comentados y lógica pendiente marcada en el código po.sys_sp_avaluo_and_update (bloque iva completo comentado), po.sys_sp_mov_abono (subconsulta de secuencia comentada), po.sys_sp_account_balance_orden (exec comentado) concat(&#x27;reverso secuencia r &#x27;, &#x27;&#x27; /* (select top 1 id_secuencia ...) */ )">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev b">Bajo</span>
+        <span class="id">L1-033</span>
+        <span class="ti">Código muerto, bloques comentados y lógica pendiente marcada en el código</span>
+        <span class="meta">Mantenibilidad &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>PO.SYS_SP_AVALUO_AND_UPDATE (bloque IVA completo comentado), PO.SYS_SP_MOV_ABONO (subconsulta de secuencia comentada), PO.SYS_SP_ACCOUNT_BALANCE_ORDEN (EXEC comentado)</span></div>
+        <div class="kv"><b>Ubicación</b><span>AVALUO 87-105; MOV_ABONO 285-288; MOV_ABONO 131 (&#x27;## VALIDAR SI HACE FALTA AGREGAR UN FILTRO&#x27;)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>CONCAT(&#x27;REVERSO SECUENCIA R &#x27;, &#x27;&#x27; /* (SELECT TOP 1 ID_SECUENCIA ...) */ )</pre></div>
+        <div class="kv"><b>Impacto</b><span>El concepto de reverso queda literalmente sin la secuencia que debería referenciar. Los bloques comentados hacen que la versión vigente sea ambigua y los TODO en el código indican reglas sin cerrar en un proceso contable.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Eliminar el código muerto (el historial de Git lo conserva), convertir los TODO en tickets y cerrar la regla del concepto de reverso.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Bajo" data-cat="Estándares" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-034 varchar sin longitud, exec sin esquema y falta de encabezado estándar 12 sps con varchar sin longitud (161 casos), 9 con exec sin esquema (11 casos) &#x27;linea:&#x27;+cast(error_line() as varchar)+&#x27;. &#x27;+error_message()  /  exec cursorclosedeallocate &#x27;db_cursor_...&#x27;">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev b">Bajo</span>
+        <span class="id">L1-034</span>
+        <span class="ti">varchar sin longitud, EXEC sin esquema y falta de encabezado estándar</span>
+        <span class="meta">Estándares &middot; BD+BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>12 SPs con varchar sin longitud (161 casos), 9 con EXEC sin esquema (11 casos)</span></div>
+        <div class="kv"><b>Ubicación</b><span>cast(ERROR_LINE() as varchar); exec CursorCloseDeallocate ...</span></div>
+        <div class="kv"><b>Evidencia</b><pre>&#x27;Linea:&#x27;+cast(ERROR_LINE() as varchar)+&#x27;. &#x27;+ERROR_MESSAGE()  /  exec CursorCloseDeallocate &#x27;db_cursor_...&#x27;</pre></div>
+        <div class="kv"><b>Impacto</b><span>varchar sin longitud toma 30 caracteres en CAST (truncamiento silencioso de mensajes de error) y 1 en declaraciones. EXEC sin esquema fuerza resolución por esquema por defecto del usuario: cambia de comportamiento según quien ejecute y agrega búsqueda en cache.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Regla de linting: longitud explícita en todo varchar y nombre en dos partes en todo EXEC. Encabezado obligatorio (autor, fecha, propósito, parámetros) que hoy solo aparece en algunos objetos.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Bajo" data-cat="Observabilidad" data-env="BD BD_prod"
+             data-lote=""
+             data-txt="l1-035 sin trazabilidad de ejecución: no hay bitácora de inicio/fin ni id de corrida los 20 sps del lote solo existe po.saf_poliza_errores, poblada en el catch; no hay registro de ejecuciones exitosas, duracion, filas afectadas ni usuario">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev b">Bajo</span>
+        <span class="id">L1-035</span>
+        <span class="ti">Sin trazabilidad de ejecución: no hay bitácora de inicio/fin ni id de corrida</span>
+        <span class="meta">Observabilidad &middot; BD+BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>los 20 SPs del lote</span></div>
+        <div class="kv"><b>Ubicación</b><span>n/a</span></div>
+        <div class="kv"><b>Evidencia</b><pre>solo existe PO.SAF_POLIZA_ERRORES, poblada en el CATCH; no hay registro de ejecuciones exitosas, duracion, filas afectadas ni usuario</pre></div>
+        <div class="kv"><b>Impacto</b><span>No se puede reconstruir quien ejecuto un cierre, cuando, con que parámetros ni cuanto tardo. En un ambiente bancario es un requisito de auditoría y es indispensable para detectar reprocesos (ver hallazgo de idempotencia).</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Tabla de bitácora (ID_EJECUCION, SP, parámetros, usuario, inicio, fin, filas, estado) escrita al inicio/fin de cada SP y correlacionada con el ID_EJECUCION en la tabla de errores.</span></div>
+      </div>
+    </article></div>
+
+
+
+  <h2>Catálogo de valores hardcodeados y clasificación de parametrización</h2>
+  <div class="bar">
+    <label>Clasificación</label><select id="hc"><option value="">Todas</option><option>Catálogo en BD (no editable en portal)</option><option>Configuración de ambiente</option><option>No parametrizable: es un defecto</option><option>Parametrizable en portal</option><option>Parametrizable en portal (catálogo contable)</option><option>Parametrizable en portal (catálogo)</option><option>Parametrizable en portal (definición de universo)</option><option>Parametrizable en portal (plantillas)</option></select>
+    <input type="search" id="hq" placeholder="Buscar valor, tipo, destino...">
+    <button class="rst" onclick="resetHc()">Limpiar</button>
+    <span class="count" id="hcnt"></span>
+  </div>
+  <table class="hard"><thead><tr><th>Valor</th><th>Tipo</th><th>Ocurrencias</th><th>Clasificación</th><th>Destino propuesto</th><th>Nota</th></tr></thead>
+  <tbody id="hbody">
+      <tr data-clas="Configuración de ambiente"
+          data-txt="quiero_confianza_shadow / quiero_confianza / quiero_confianza_creditopuente_qa base de datos externa sinónimos por ambiente (no portal) único diferenciador en 119 de los 126 objetos con diferencias">
+        <td class="mono">Quiero_Confianza_shadow / Quiero_Confianza / Quiero_Confianza_CreditoPuente_QA</td><td>Base de datos externa</td><td class="num">3613 en BD / 2867 en BD_prod (571 en el lote)</td>
+        <td><span class="pill p3">Configuración de ambiente</span></td>
+        <td>Sinónimos por ambiente (no portal)</td><td class="nota">Único diferenciador en 119 de los 126 objetos con diferencias</td></tr>      <tr data-clas="Configuración de ambiente"
+          data-txt="[srv-iondwhqa\gpqa] / [srv-iondyna] linked server linked server lógico + secreto en key vault envío de pólizas al erp">
+        <td class="mono">[SRV-IONDWHQA\GPQA] / [SRV-IONDYNA]</td><td>Linked server</td><td class="num">1 SP (drift real)</td>
+        <td><span class="pill p3">Configuración de ambiente</span></td>
+        <td>Linked server lógico + secreto en Key Vault</td><td class="nota">Envío de pólizas al ERP</td></tr>      <tr data-clas="Configuración de ambiente"
+          data-txt="10.10.8.22\saf, 10.10.9.125\saf, srv-ionsqlaws\saf cadena de conexión shared datasource en el servidor de reportes ningún .rdl usa datasource compartido">
+        <td class="mono">10.10.8.22\SAF, 10.10.9.125\SAF, SRV-IONSQLAWS\SAF</td><td>Cadena de conexión</td><td class="num">30 archivos .rdl</td>
+        <td><span class="pill p3">Configuración de ambiente</span></td>
+        <td>Shared DataSource en el servidor de reportes</td><td class="nota">Ningún .rdl usa datasource compartido</td></tr>      <tr data-clas="Parametrizable en portal"
+          data-txt="2648615.20 / 2207161.60 (umbral de avalúo) con corte &#x27;2024-01-01&#x27; umbral monetario con vigencia param.umbral_avaluo (valor, vigencia) define interes social vs media residencial">
+        <td class="mono">2648615.20 / 2207161.60 (umbral de avalúo) con corte &#x27;2024-01-01&#x27;</td><td>Umbral monetario con vigencia</td><td class="num">2 (AVALUO_AND_UPDATE)</td>
+        <td><span class="pill p1">Parametrizable en portal</span></td>
+        <td>PARAM.UMBRAL_AVALUO (valor, vigencia)</td><td class="nota">Define INTERES SOCIAL vs MEDIA RESIDENCIAL</td></tr>      <tr data-clas="Parametrizable en portal"
+          data-txt="0.16 (iva) tasa impositiva param.tasa_impuesto (tasa, zona, vigencia) cambio normativo probable; tasa frontera distinta">
+        <td class="mono">0.16 (IVA)</td><td>Tasa impositiva</td><td class="num">15+ en el lote</td>
+        <td><span class="pill p1">Parametrizable en portal</span></td>
+        <td>PARAM.TASA_IMPUESTO (tasa, zona, vigencia)</td><td class="nota">Cambio normativo probable; tasa frontera distinta</td></tr>      <tr data-clas="Parametrizable en portal"
+          data-txt="0.10 (participación afirme) porcentaje comercial param.participacion_convenio (convenio, tipo_credito, vigencia) reescribe monto ya registrado">
+        <td class="mono">0.10 (participación Afirme)</td><td>Porcentaje comercial</td><td class="num">1 (SP_IND_COBRANZA)</td>
+        <td><span class="pill p1">Parametrizable en portal</span></td>
+        <td>PARAM.PARTICIPACION_CONVENIO (convenio, tipo_credito, vigencia)</td><td class="nota">Reescribe MONTO ya registrado</td></tr>      <tr data-clas="Parametrizable en portal"
+          data-txt="num_credito &lt; 6051 (bd) / &lt; 6086 (bd_prod) umbral de universo covid param.universo_covid (corte, vigencia) ya divergió entre ambientes">
+        <td class="mono">NUM_CREDITO &lt; 6051 (BD) / &lt; 6086 (BD_prod)</td><td>Umbral de universo COVID</td><td class="num">1 UDF usada por el cierre</td>
+        <td><span class="pill p1">Parametrizable en portal</span></td>
+        <td>PARAM.UNIVERSO_COVID (corte, vigencia)</td><td class="nota">Ya divergió entre ambientes</td></tr>      <tr data-clas="Parametrizable en portal (catálogo)"
+          data-txt="id_poliza = 7, 23, 24, 33, 35, 36, 40, 51, 73, 74, 84, 99 identificador de póliza po.saf_cat_poliza (clave_logica -&gt; id) se usa en delete/update: un valor erróneo borra otra póliza">
+        <td class="mono">ID_POLIZA = 7, 23, 24, 33, 35, 36, 40, 51, 73, 74, 84, 99</td><td>Identificador de póliza</td><td class="num">13 en el lote (uno por SP)</td>
+        <td><span class="pill p1">Parametrizable en portal (catálogo)</span></td>
+        <td>PO.SAF_CAT_POLIZA (clave_logica -&gt; id)</td><td class="nota">Se usa en DELETE/UPDATE: un valor erróneo borra otra póliza</td></tr>      <tr data-clas="Parametrizable en portal (catálogo contable)"
+          data-txt="&#x27;2020-0508-0203-0000&#x27;, &#x27;2020-0508-0201-0000&#x27;, &#x27;2401-9000-0003-0001&#x27;, &#x27;1020-0105-0205-0100&#x27; cuenta contable po.saf_cat_contable (ampliar criterios) conviven con el catálogo ya existente">
+        <td class="mono">&#x27;2020-0508-0203-0000&#x27;, &#x27;2020-0508-0201-0000&#x27;, &#x27;2401-9000-0003-0001&#x27;, &#x27;1020-0105-0205-0100&#x27;</td><td>Cuenta contable</td><td class="num">5 en el lote</td>
+        <td><span class="pill p1">Parametrizable en portal (catálogo contable)</span></td>
+        <td>PO.SAF_CAT_CONTABLE (ampliar criterios)</td><td class="nota">Conviven con el catálogo ya existente</td></tr>      <tr data-clas="Parametrizable en portal (catálogo contable)"
+          data-txt="&#x27;1401030090010000&#x27;, &#x27;1401030090020000&#x27;, &#x27;140103009001..3&#x27;, &#x27;5050260901000300&#x27;, &#x27;1020010502130300&#x27; mascara de cuenta po.saf_cat_contable / catálogo de mascaras concentradas en sp_ind_cobranza">
+        <td class="mono">&#x27;1401030090010000&#x27;, &#x27;1401030090020000&#x27;, &#x27;140103009001..3&#x27;, &#x27;5050260901000300&#x27;, &#x27;1020010502130300&#x27;</td><td>Mascara de cuenta</td><td class="num">66 en el lote</td>
+        <td><span class="pill p1">Parametrizable en portal (catálogo contable)</span></td>
+        <td>PO.SAF_CAT_CONTABLE / catálogo de mascaras</td><td class="nota">Concentradas en SP_IND_COBRANZA</td></tr>      <tr data-clas="Parametrizable en portal (catálogo)"
+          data-txt="id_cuenta 2073 (dación), 2074 (adjudicación), 2068 (siniestro), 2076, 2080, 2041, 2039 cuenta operativa con semántica catálogo de cuentas con banderas de comportamiento hoy el significado esta en comentarios">
+        <td class="mono">ID_CUENTA 2073 (dación), 2074 (adjudicación), 2068 (siniestro), 2076, 2080, 2041, 2039</td><td>Cuenta operativa con semántica</td><td class="num">19 en el lote</td>
+        <td><span class="pill p1">Parametrizable en portal (catálogo)</span></td>
+        <td>Catálogo de cuentas con banderas de comportamiento</td><td class="nota">Hoy el significado esta en comentarios</td></tr>      <tr data-clas="Catálogo en BD (no editable en portal)"
+          data-txt="id_producto 1, 2, 50 (consumo), 51 (empleado) código de producto po.pr_cat_producto con banderas sustituir listas in(...) por join a catálogo">
+        <td class="mono">ID_PRODUCTO 1, 2, 50 (consumo), 51 (empleado)</td><td>Código de producto</td><td class="num">70 en el lote</td>
+        <td><span class="pill p2">Catálogo en BD (no editable en portal)</span></td>
+        <td>PO.PR_CAT_PRODUCTO con banderas</td><td class="nota">Sustituir listas IN(...) por join a catálogo</td></tr>      <tr data-clas="Catálogo en BD (no editable en portal)"
+          data-txt="id_tipo_credito 1,3,4,5,9,10,11,12..29 (26=castigo, 20=qbillete, 23=shch) código de tipo de crédito po.saf_cat_desc_tipo con banderas listas in(...) duplicadas y divergentes entre sps">
+        <td class="mono">ID_TIPO_CREDITO 1,3,4,5,9,10,11,12..29 (26=castigo, 20=QBILLETE, 23=SHCH)</td><td>Código de tipo de crédito</td><td class="num">50 en el lote</td>
+        <td><span class="pill p2">Catálogo en BD (no editable en portal)</span></td>
+        <td>PO.SAF_CAT_DESC_TIPO con banderas</td><td class="nota">Listas IN(...) duplicadas y divergentes entre SPs</td></tr>      <tr data-clas="Catálogo en BD (no editable en portal)"
+          data-txt="tip_transaccion 3 (desembolso), 4 (pago), 113 (saldo a favor); subtip_transac 5 código de transacción catálogo de transacciones del core definido por el core saf, no por negocio">
+        <td class="mono">TIP_TRANSACCION 3 (desembolso), 4 (pago), 113 (saldo a favor); SUBTIP_TRANSAC 5</td><td>Código de transacción</td><td class="num">124 en el lote</td>
+        <td><span class="pill p2">Catálogo en BD (no editable en portal)</span></td>
+        <td>Catálogo de transacciones del core</td><td class="nota">Definido por el core SAF, no por negocio</td></tr>      <tr data-clas="Parametrizable en portal (plantillas)"
+          data-txt="63 literales de concepto (&#x27;pago co &#x27;, &#x27;cmr castigo &#x27;, &#x27;desem firma &#x27;, &#x27;reverso cobranza&#x27;, ...) concepto / leyenda de póliza po.saf_catalogo_conceptos con plantillas y tokens la cadena es la llave del catálogo: cualquier espacio de más rompe el match">
+        <td class="mono">63 literales de concepto (&#x27;PAGO CO &#x27;, &#x27;CMR CASTIGO &#x27;, &#x27;DESEM FIRMA &#x27;, &#x27;REVERSO COBRANZA&#x27;, ...)</td><td>Concepto / leyenda de póliza</td><td class="num">151 en el lote</td>
+        <td><span class="pill p1">Parametrizable en portal (plantillas)</span></td>
+        <td>PO.SAF_CATALOGO_CONCEPTOS con plantillas y tokens</td><td class="nota">La cadena es la llave del catálogo: cualquier espacio de más rompe el match</td></tr>      <tr data-clas="No parametrizable: es un defecto"
+          data-txt="&#x27;20260123&#x27; (fecha fija en cierre mensual) fecha de negocio usar el parámetro de periodo ver hallazgo l1-001">
+        <td class="mono">&#x27;20260123&#x27; (fecha fija en cierre mensual)</td><td>Fecha de negocio</td><td class="num">1</td>
+        <td><span class="pill p4">No parametrizable: es un defecto</span></td>
+        <td>Usar el parámetro de periodo</td><td class="nota">Ver hallazgo L1-001</td></tr>      <tr data-clas="No parametrizable: es un defecto"
+          data-txt="&#x27;00010101&#x27; (fecha centinela en log de errores) valor centinela registrar la fecha real en proceso ver hallazgo l1-025">
+        <td class="mono">&#x27;00010101&#x27; (fecha centinela en log de errores)</td><td>Valor centinela</td><td class="num">3</td>
+        <td><span class="pill p4">No parametrizable: es un defecto</span></td>
+        <td>Registrar la fecha real en proceso</td><td class="nota">Ver hallazgo L1-025</td></tr>      <tr data-clas="Parametrizable en portal"
+          data-txt="5 días de anticipación de alerta de tasa; fallback de 1 año parámetro de proceso param.dias_anticipacion_alerta hoy exige cambiar el sp para mover la ventana">
+        <td class="mono">5 días de anticipación de alerta de tasa; fallback de 1 año</td><td>Parámetro de proceso</td><td class="num">2 (SP_TASAS_ALERTAS_ENVIO)</td>
+        <td><span class="pill p1">Parametrizable en portal</span></td>
+        <td>PARAM.DIAS_ANTICIPACION_ALERTA</td><td class="nota">Hoy exige cambiar el SP para mover la ventana</td></tr>      <tr data-clas="Parametrizable en portal (definición de universo)"
+          data-txt="ind_estado in (&#x27;c&#x27;,&#x27;d&#x27;), ind_linea=&#x27;n&#x27;, ind_estado in (&#x27;a&#x27;,&#x27;t&#x27;,&#x27;d&#x27;), ind_covid=&#x27;s&#x27; filtro de universo vista/función única de universo elegible por proceso las variantes divergen entre sps hermanos: fuente de descuadres">
+        <td class="mono">IND_ESTADO IN (&#x27;C&#x27;,&#x27;D&#x27;), IND_LINEA=&#x27;N&#x27;, IND_ESTADO IN (&#x27;A&#x27;,&#x27;T&#x27;,&#x27;D&#x27;), IND_COVID=&#x27;S&#x27;</td><td>Filtro de universo</td><td class="num">212 en el lote (47 variantes)</td>
+        <td><span class="pill p1">Parametrizable en portal (definición de universo)</span></td>
+        <td>Vista/función única de universo elegible por proceso</td><td class="nota">Las variantes divergen entre SPs hermanos: fuente de descuadres</td></tr>      <tr data-clas="Parametrizable en portal (catálogo)"
+          data-txt="cod_origen in (&#x27;008&#x27;,&#x27;031&#x27;) -&gt; id_fondeo 2 &#x27;no restringido&#x27; regla de fondeo catálogo de origen de fondos determina restringido/no restringido en el concepto contable">
+        <td class="mono">COD_ORIGEN IN (&#x27;008&#x27;,&#x27;031&#x27;) -&gt; ID_FONDEO 2 &#x27;NO RESTRINGIDO&#x27;</td><td>Regla de fondeo</td><td class="num">varias</td>
+        <td><span class="pill p1">Parametrizable en portal (catálogo)</span></td>
+        <td>Catálogo de origen de fondos</td><td class="nota">Determina restringido/no restringido en el concepto contable</td></tr>
+  </tbody></table>
+
+  <h2>Plan de despliegue de la parametrización</h2>
+      <div class="fase"><h3>Fase 0 - Cimientos (1 sesión)</h3>
+        <p class="obj">Habilitar la parametrización sin cambiar comportamiento</p><ul><li>Crear esquema PARAM con PARAMETRO (clave, descripción, tipo_dato, ámbito, requiere_4_ojos), PARAMETRO_VALOR (valor, fecha_inicio, fecha_fin, usuario, motivo) y PARAMETRO_AUDITORIA (histórico completo, append-only)</li><li>Función PARAM.FN_VALOR(@clave, @fecha) y SP PARAM.SP_SET_VALOR con validación de tipo, vigencia y doble autorización</li><li>Normalizar el repositorio a UTF-8 con BOM y fijar .gitattributes (commit sin cambios de lógica)</li><li>Crear los SYNONYM por ambiente para las bases externas y el linked server lógico</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Bajo: solo agrega objetos</p></div>      <div class="fase"><h3>Fase 1 - Defectos críticos (1 sesión)</h3>
+        <p class="obj">Cerrar los hallazgos que ya producen cifras incorrectas</p><ul><li>L1-001 fecha fija del cierre mensual</li><li>L1-002 precedencia OR/AND</li><li>L1-003 transacción sin TRY/CATCH</li><li>L1-009 y L1-010 en SYS_SP_MOV_ABONO</li><li>L1-007 apuntar producción a la base productiva</li><li>Comparativa antes/después de un periodo cerrado como criterio de aceptación</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Medio: cambia cifras; requiere validación contable del periodo de control</p></div>      <div class="fase"><h3>Fase 2 - Patrón transaccional y trazabilidad (1-2 sesiones)</h3>
+        <p class="obj">Que ningún error quede silencioso</p><ul><li>Plantilla SET NOCOUNT/XACT_ABORT ON + TRY/CATCH con XACT_STATE + THROW aplicada a los SPs del lote y luego al resto</li><li>Tabla de bitácora de ejecución con ID_EJECUCION correlacionado a SAF_POLIZA_ERRORES</li><li>Cursores a LOCAL FAST_FORWARD y retiro de CursorCloseDeallocate</li><li>Monitor que alerte cuando un SP termina con error registrado</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Medio: cambia el contrato de error hacia el orquestador (antes éxito, ahora falla)</p></div>      <div class="fase"><h3>Fase 3 - Migración de parámetros por oleadas (2-3 sesiones)</h3>
+        <p class="obj">Sacar del código los valores de negocio</p><ul><li>Oleada A (valor único, bajo riesgo): IVA, umbral de avalúo, universo COVID, días de anticipación de alerta, participación de convenio</li><li>Oleada B (catálogos): ID_POLIZA, cuentas y mascaras contables, origen de fondos</li><li>Oleada C (semántica): plantillas de concepto y definición de universo elegible</li><li>Cada oleada: doble cálculo (valor del código vs valor del catálogo) en paralelo durante un cierre y comparación automática antes de retirar el literal</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Controlado por el doble cálculo</p></div>      <div class="fase"><h3>Fase 4 - Portal de parametrización (1-2 sesiones)</h3>
+        <p class="obj">Entregar la operación a negocio</p><ul><li>Alta/baja/cambio de valor con vigencia, sin escribir SQL</li><li>Flujo de aprobación de cuatro ojos (captura y autorización por usuarios distintos) y bitácora inmutable de quien cambio que y por que</li><li>Vista de impacto: que procesos usan el parámetro (derivada del catálogo de hardcodeos de esta auditoría)</li><li>Simulador: recalcular un periodo con el valor propuesto antes de publicarlo</li><li>Permisos por dominio: contable, comercial, riesgos</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Bajo si los parámetros ya están migrados</p></div>      <div class="fase"><h3>Fase 5 - Alineación de ambientes y CI (1 sesión)</h3>
+        <p class="obj">Que BD y BD_prod dejen de divergir</p><ul><li>Promover los 7 objetos con drift real (incluye migración de PO.CONTROL_HISTORICO_TRASPASOS con índice único previa depuración de duplicados)</li><li>Un único juego de fuentes: con sinónimos, BD y BD_prod quedan idénticos</li><li>Pipeline que valide en cada PR: encoding, literales prohibidos (tasas, cuentas, nombres de base), patrón de TRY/CATCH y diff dev-prod vacío</li><li>Prueba de regresión de cierre sobre un periodo congelado</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Bajo</p></div>
+
+  <h2>Valor agregado propuesto</h2>
+  <ul class="va"><li>Prueba de regresión contable: congelar un periodo (entradas y salidas) y ejecutarlo en cada cambio; hoy no existe forma objetiva de saber si un ajuste altero cifras históricas.</li><li>Tablero de descuadres: comparar CIERRE.CMR_REP/IND_REP contra la suma de PO.SAF_MOV_* por concepto y fecha, con alerta automática; detecta en horas lo que hoy se detecta en la conciliación mensual.</li><li>Detector de reprocesos: con el ID_EJECUCION de la bitácora, alertar cuando un mismo periodo se procesa dos veces (riesgo real por la falta de idempotencia).</li><li>Linter SQL en CI (tsqllint o reglas propias) que bloquee NOLOCK en procesos contables, literales de tasa/cuenta, EXEC() con concatenación y varchar sin longitud.</li><li>Catálogo de dependencias navegable (qué SP usa qué tabla, qué reporte usa qué SP) generado desde el mismo parser de esta auditoría: base para estimar el impacto de cada cambio.</li><li>Separación de lectura: replicar las bases origen a un área de staging para eliminar la necesidad de NOLOCK contra la base transaccional.</li><li>Definir el RPO/RTO del proceso de cierre y documentar el procedimiento de reproceso, hoy implícito en el conocimiento del equipo.</li></ul>
+</div>
+<footer>Generado por la auditoría automatizada + revisión manual del código. Los hallazgos se sustentan en el código fuente;
+los que dependen de datos o de plan de ejecución se marcan como tales en el impacto. Siguiente paso: validar los hallazgos y continuar con el siguiente lote.</footer>
+<script>
+const $=s=>document.querySelector(s), fs=$('#fs'),fc=$('#fc'),fe=$('#fe'),fq=$('#fq'),fl=$('#fl');
+function apply(){
+  let n=0, all=document.querySelectorAll('.f');
+  all.forEach(f=>{
+    const ok=(!fs.value||f.dataset.sev===fs.value)
+      &&(!fc.value||f.dataset.cat===fc.value)
+      &&(!fe.value||f.dataset.env.split(' ').includes(fe.value))
+      &&(!fl||!fl.value||f.dataset.lote===fl.value)
+      &&(!fq.value||f.dataset.txt.includes(fq.value.toLowerCase()));
+    f.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  $('#cnt').textContent=n+' de '+all.length+' hallazgos';
+}
+[fs,fc,fe,fl].forEach(x=>{if(x)x.onchange=apply;}); fq.oninput=apply;
+function reset(){fs.value=fc.value=fe.value='';if(fl)fl.value='';fq.value='';apply();}
+const cl=$('#cl'),cq=$('#cq');
+function applyCob(){
+  if(!cl)return; let n=0, rows=document.querySelectorAll('#cbody tr');
+  rows.forEach(r=>{
+    const ok=(!cl.value||r.dataset.lote===cl.value)&&(!cq.value||r.dataset.txt.includes(cq.value.toLowerCase()));
+    r.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  $('#ccnt').textContent=n+' de '+rows.length+' objetos';
+}
+if(cl){cl.onchange=applyCob; cq.oninput=applyCob;}
+function resetCob(){cl.value='';cq.value='';applyCob();}
+const hc=$('#hc'),hq=$('#hq');
+function applyHc(){
+  let n=0, rows=document.querySelectorAll('#hbody tr');
+  rows.forEach(r=>{
+    const ok=(!hc.value||r.dataset.clas===hc.value)&&(!hq.value||r.dataset.txt.includes(hq.value.toLowerCase()));
+    r.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  $('#hcnt').textContent=n+' de '+rows.length+' grupos';
+}
+hc.onchange=applyHc; hq.oninput=applyHc;
+function resetHc(){hc.value='';hq.value='';applyHc();}
+apply();applyHc();applyCob();
+</script>
+</body></html>

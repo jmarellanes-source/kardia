@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auditoría SQL KARDIA &mdash; Lote 10-11</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.55 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+.wrap{padding:22px 32px 60px;max-width:1500px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:132px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b} .kpi.a b{color:#ffa94d} .kpi.m b{color:#ffd43b} .kpi.b b{color:#74c0fc}
+h2{margin:34px 0 12px;font-size:17px;border-left:3px solid #4c8dff;padding-left:10px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#161e2e;border:1px solid #2a3549;
+ border-radius:10px;padding:12px 14px;position:sticky;top:0;z-index:5;
+ box-shadow:0 6px 14px rgba(8,12,20,.55)}
+.bar label{font-size:12px;color:#93a1bb;margin-right:4px}
+select,input[type=search]{background:#0e1420;color:#e8edf6;border:1px solid #35415a;border-radius:6px;padding:7px 9px;font:13px inherit}
+input[type=search]{min-width:230px}
+button.rst{background:#243149;color:#e8edf6;border:1px solid #35415a;border-radius:6px;padding:7px 12px;cursor:pointer}
+.count{margin-left:auto;color:#93a1bb;font-size:12px}
+.f{background:#161e2e;border:1px solid #2a3549;border-radius:9px;margin:9px 0;overflow:hidden}
+.f>header{display:flex;gap:12px;align-items:center;padding:11px 14px;cursor:pointer}
+.f>header:hover{background:#1d2739}
+.sev{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.sev.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.sev.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.sev.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.sev.b{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+.id{color:#93a1bb;font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.ti{font-weight:600;flex:1}
+.meta{color:#93a1bb;font-size:12px;white-space:nowrap}
+.chev{color:#93a1bb;transition:.15s}
+.f.open .chev{transform:rotate(180deg)}
+.body{display:none;padding:4px 16px 16px;border-top:1px solid #2a3549;background:#131b29}
+.f.open .body{display:block}
+.kv{display:grid;grid-template-columns:118px 1fr;gap:12px;padding:8px 0;border-bottom:1px dashed #263148}
+.kv:last-child{border:0}
+.kv b{color:#93a1bb;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.kv.rem span{color:#8ce99a}
+pre{margin:0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:10px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+table.hard{table-layout:fixed}
+table.hard th:nth-child(1),table.hard td:nth-child(1){width:19%;word-break:break-word}
+table.hard th:nth-child(2),table.hard td:nth-child(2){width:11%}
+table.hard th:nth-child(3),table.hard td:nth-child(3){width:16%;word-break:break-word;white-space:normal}
+table.hard td .pill{white-space:normal}
+table.hard th:nth-child(4),table.hard td:nth-child(4){width:14%}
+table.hard th:nth-child(5),table.hard td:nth-child(5){width:18%}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#c9d6ee;max-width:330px;word-break:break-word}
+td.num{white-space:nowrap;color:#93a1bb} td.nota{color:#93a1bb;max-width:300px}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;white-space:nowrap;display:inline-block}
+.pill.p1{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.p2{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+.pill.p3{background:#33270f;color:#ffd8a8;border:1px solid #6b4d1f}
+.pill.p4{background:#3d1420;color:#ffa8b6;border:1px solid #7d2038}
+.fase{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 18px;margin:10px 0}
+.fase h3{margin:0 0 4px;font-size:15px} .fase .obj{margin:0 0 8px;color:#93a1bb}
+.fase ul{margin:0 0 8px;padding-left:20px} .fase li{margin:3px 0}
+.fase .riesgo{margin:0;font-size:12px;color:#93a1bb}
+ul.va li{margin:6px 0}
+details.alc{background:#161e2e;border:1px solid #2a3549;border-radius:9px;padding:12px 16px}
+details.alc summary{cursor:pointer;color:#93a1bb}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+.hide{display:none!important}
+</style></head><body>
+<header class="top">
+  <h1>Auditoría de código SQL &mdash; KARDIA / SAF</h1>
+  <p>Lote 10-11 &middot; 27 objetos de mayor riesgo &middot; 8,114 líneas revisadas en <b>BD</b> (dev/QA) y <b>BD_prod</b> (producción) &middot; 2026-08-19</p>
+</header>
+<div class="wrap">
+
+  <div class="kpis">
+    <div class="kpi c"><b>5</b><span>Críticos</span></div>
+    <div class="kpi a"><b>11</b><span>Altos</span></div>
+    <div class="kpi m"><b>7</b><span>Medios</span></div>
+    <div class="kpi b"><b>2</b><span>Bajos</span></div>
+    <div class="kpi"><b>12</b><span>Grupos de hardcodeo</span></div>
+    <div class="kpi"><b>7</b><span>Parametrizables en portal</span></div>
+  </div>
+
+  <details class="alc"><summary>Alcance y criterio de selección del lote</summary>
+    <p>Familia completa de cierre: los 26 procedimientos del esquema CIERRE y el único del esquema RPT, auditados en BD (desarrollo) y en BD_prod (producción) con la comparación entre ambos como hallazgo. Seis de los 27 objetos ya se habían revisado en lotes anteriores (SP_CMR_GEN_MES, SP_IND_GEN_MES, SP_IND_GEN_MES_MOD, SP_SAF_SALDOS y SP_CMR_GEN_DIA en el lote 1; RPT.CASTIGO_REEST_SALDOS en el lote 6): en ellos esta fase busca defectos nuevos y no repite los ya reportados, que se referencian por su id. Se añade la revisión de las cuatro tablas del esquema CIERRE (IND_REP, CMR_REP, CMR_DIA_REP, SAF_SALDOS) porque la integridad del cierre depende de sus llaves. No se ejecutó ningún procedimiento contra una instancia de SQL Server: todo el análisis es estático sobre el código del repositorio, por lo que los hallazgos contables se marcan como pendientes de validación funcional.</p><ul><li>CIERRE.SP_CASTIGO_INI_RPT (273 líneas, ausente en BD_prod)</li><li>CIERRE.SP_CAS_CIERRE_RPT (157 líneas, ausente en BD_prod)</li><li>CIERRE.SP_CMR_DIA (393 líneas, ausente en BD_prod)</li><li>CIERRE.SP_CMR_DIA_VIS (75 líneas, ausente en BD_prod)</li><li>CIERRE.SP_CMR_GEN_DIA (515 líneas, ausente en BD_prod)</li><li>CIERRE.SP_CMR_GEN_DIA_CARTERA_VIS (123 líneas, ausente en BD_prod)</li><li>CIERRE.SP_CMR_GEN_DIA_CONTABILIDAD_VIS (135 líneas, ausente en BD_prod)</li><li>CIERRE.SP_CMR_GEN_DIA_CONTROL_VIS (112 líneas, ausente en BD_prod)</li><li>CIERRE.SP_CMR_GEN_DIA_FINANZAS_VIS (123 líneas, ausente en BD_prod)</li><li>CIERRE.SP_CMR_GEN_DIA_RIESGOS_VIS (140 líneas, ausente en BD_prod)</li><li>CIERRE.SP_CMR_GEN_MES (880 líneas, en BD_prod)</li><li>CIERRE.SP_CMR_MES_VIS (183 líneas, en BD_prod)</li><li>CIERRE.SP_CMR_RPT_CIERRE_VIS (102 líneas, ausente en BD_prod)</li><li>CIERRE.SP_CMR_RPT_DESEMBOLSOS_CARTERA_VIS (58 líneas, en BD_prod)</li><li>CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS (558 líneas, ausente en BD_prod)</li><li>CIERRE.SP_IND_GEN_MES (1303 líneas, ausente en BD_prod)</li><li>CIERRE.SP_IND_GEN_MES_MOD (227 líneas, ausente en BD_prod)</li><li>CIERRE.SP_IND_RPT_CIERRE_VIS (273 líneas, ausente en BD_prod)</li><li>CIERRE.SP_IND_RPT_DESEMBOLSOS_CARTERA_VIS (52 líneas, en BD_prod)</li><li>CIERRE.SP_IND_RPT_INTERESES_DEVENGADOS_VIS (385 líneas, ausente en BD_prod)</li><li>CIERRE.SP_RPT_CASTIGOS_CARTERA_VIS (366 líneas, ausente en BD_prod)</li><li>CIERRE.SP_RPT_COBRANZA_CARTERA_CMR_IND_VIS (286 líneas, en BD_prod)</li><li>CIERRE.SP_RPT_QUITAS_Y_CONDINACIONES_CARTERA_VIS (149 líneas, ausente en BD_prod)</li><li>CIERRE.SP_RPT_VENTAS_DE_CARTERA_VIS (273 líneas, en BD_prod)</li><li>CIERRE.SP_SAF_SALDOS (574 líneas, en BD_prod)</li><li>CIERRE.SP_SAF_SALDOS_SND (368 líneas, ausente en BD_prod)</li><li>RPT.CASTIGO_REEST_SALDOS (31 líneas, en BD_prod)</li></ul>
+    <p><b>Nota de codificación:</b> los archivos se decodifican por BOM (UTF-16LE en la mayoría, UTF-8 BOM en 30 archivos de BD/).
+    Los &quot;caracteres espaciados&quot; son los bytes 0x00 de UTF-16 leídos como ASCII: <b>no deben limpiarse</b>, se resuelven decodificando correctamente.</p>
+  </details>
+
+  <h2>Hallazgos</h2>
+  <div class="bar">
+    <label>Severidad</label><select id="fs"><option value="">Todas</option><option>Crítico</option><option>Alto</option><option>Medio</option><option>Bajo</option></select>
+    <label>Categoría</label><select id="fc"><option value="">Todas</option><option>Cobertura de despliegue</option><option>Concurrencia</option><option>Consistencia de reglas</option><option>Contrato de salida</option><option>Control de ambientes</option><option>Corrección funcional</option><option>Hardcodes</option><option>Integridad contable</option><option>Integridad de datos</option><option>Mantenibilidad</option><option>Observabilidad</option><option>Rendimiento</option><option>Robustez</option><option>Transaccional</option><option>Validación de entradas</option></select>
+    <label>Entorno</label><select id="fe"><option value="">Ambos</option><option>BD</option><option>BD_prod</option></select>
+    <label>Lote</label><select id="fl"><option value="">Todos</option><option>10</option><option>11</option></select>
+    <input type="search" id="fq" placeholder="Buscar objeto, evidencia, texto...">
+    <button class="rst" onclick="reset()">Limpiar</button>
+    <span class="count" id="cnt"></span>
+  </div>
+  <div id="lista">
+    <article class="f" data-sev="Crítico" data-cat="Integridad contable" data-env="BD"
+             data-lote="10"
+             data-txt="l10-001 sp_ind_gen_mes_mod suma intereses, comisiones y moratorios al capital (principal_final) en el update etiquetado como montoexigiblecom cierre.sp_ind_gen_mes_mod ---actualizacion de campo principal final
+update c set c.principal_final = c.principal_final + b.monto, c.principal_covid19 = c.principal_covid19 + b.monto
+  ... from kardia.po.pr_ballon_det where cod_concepto = &#x27;principal&#x27; ...
+
+---actualizacion de campo montoexigiblecom
+update c set c.principal_final = c.principal_final + b.monto
+  ... where cod_concepto in (&#x27;intereses&#x27;, &#x27;comision_administracion&#x27;, &#x27;interes_moratorio&#x27;) ...">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Crítico</span>
+        <span class="id">L10-001</span>
+        <span class="ti">SP_IND_GEN_MES_MOD suma intereses, comisiones y moratorios al capital (PRINCIPAL_FINAL) en el UPDATE etiquetado como MONTOEXIGIBLECOM</span>
+        <span class="meta">Integridad contable &middot; BD &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_IND_GEN_MES_MOD</span></div>
+        <div class="kv"><b>Ubicación</b><span>CIERRE.SP_IND_GEN_MES_MOD:33-46 (comparar con :14-31)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>---actualizacion de campo Principal Final
+UPDATE C SET C.PRINCIPAL_FINAL = C.PRINCIPAL_FINAL + B.MONTO, C.PRINCIPAL_COVID19 = C.PRINCIPAL_COVID19 + B.MONTO
+  ... FROM KARDIA.PO.PR_BALLON_DET WHERE COD_CONCEPTO = &#x27;PRINCIPAL&#x27; ...
+
+---actualizacion de campo MONTOEXIGIBLECOM
+UPDATE C SET C.PRINCIPAL_FINAL = C.PRINCIPAL_FINAL + B.MONTO
+  ... WHERE COD_CONCEPTO IN (&#x27;INTERESES&#x27;, &#x27;COMISION_ADMINISTRACION&#x27;, &#x27;INTERES_MORATORIO&#x27;) ...</pre></div>
+        <div class="kv"><b>Impacto</b><span>El comentario declara que el segundo UPDATE ajusta MONTOEXIGIBLECOM, pero la columna afectada es de nuevo PRINCIPAL_FINAL. El concepto existe y está documentado en otro objeto de la familia (SP_CMR_GEN_DIA_RIESGOS_VIS:77 lo describe como &#x27;Monto exigible por concepto de intereses y otros accesorios en el periodo&#x27;), lo que respalda que el destino esperado del bloque era ese campo y no el capital. Si el comentario refleja la intención, el saldo de capital del cierre individual queda inflado con accesorios (intereses, comisión de administración y moratorios) de los créditos con esquema ballon, y MONTOEXIGIBLECOM queda subvaluado. Ambos campos alimentan Responsabilidad y los reportes de cartera, por lo que el error se propaga a la clasificación de cartera y a la información regulatoria. Además los UPDATE son acumulativos (columna = columna + monto), así que cada reejecución del mes vuelve a sumar (mismo patrón de L1-006).</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Confirmar con contabilidad cual es la columna correcta de cada bloque y separar los ajustes ballon en un solo MERGE idempotente por (CREDITO, PERIODO) que calcule el valor final en lugar de acumular. Agregar una validación de cuadre al final del SP: PRINCIPAL_FINAL del cierre contra el saldo de capital de la fuente, con tolerancia definida.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Crítico" data-cat="Transaccional" data-env="BD"
+             data-lote="10"
+             data-txt="l10-002 sp_ind_gen_mes_mod abre transacción con 12 update y hace commit sin try/catch, xact_abort ni validación de estado cierre.sp_ind_gen_mes_mod set nocount on;
+begin transaction
+  -- 12 bloques update ... (principal_final, responsabilidad, saldo_final_moratorios, covid19=&#x27;balloon&#x27;, intereses_covid19, iva_covid19, mora_covid19, ...)
+commit transaction
+-- no hay begin try / begin catch / set xact_abort on / if xact_state()">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Crítico</span>
+        <span class="id">L10-002</span>
+        <span class="ti">SP_IND_GEN_MES_MOD abre transacción con 12 UPDATE y hace COMMIT sin TRY/CATCH, XACT_ABORT ni validación de estado</span>
+        <span class="meta">Transaccional &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_IND_GEN_MES_MOD</span></div>
+        <div class="kv"><b>Ubicación</b><span>CIERRE.SP_IND_GEN_MES_MOD:13 (BEGIN TRANSACTION) y :224 (COMMIT TRANSACTION)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>SET NOCOUNT ON;
+BEGIN TRANSACTION
+  -- 12 bloques UPDATE ... (PRINCIPAL_FINAL, RESPONSABILIDAD, SALDO_FINAL_MORATORIOS, COVID19=&#x27;BALLOON&#x27;, INTERESES_COVID19, IVA_COVID19, MORA_COVID19, ...)
+COMMIT TRANSACTION
+-- no hay BEGIN TRY / BEGIN CATCH / SET XACT_ABORT ON / IF XACT_STATE()</pre></div>
+        <div class="kv"><b>Impacto</b><span>Sin SET XACT_ABORT ON la mayoría de los errores de ejecución en SQL Server abortan solo la sentencia; el lote continua y el COMMIT final confirma un ajuste parcial de los 12 UPDATE. El cierre individual del mes queda a medio ajustar y sin ninguna señal de error: no hay CATCH, no hay THROW y no hay registro en PO.SAF_POLIZA_ERRORES, a diferencia de sus SPs hermanos. Es el peor caso del patrón transaccional que ya se reporto en L1-004 porque aquí no existe ni el rollback defensivo.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>SET XACT_ABORT ON al inicio, envolver en TRY/CATCH, ROLLBACK condicionado a IF XACT_STATE() &lt;&gt; 0 y THROW para propagar el error al job. Registrar en la bitácora el SP real, la fecha de proceso y el número de filas afectadas por bloque.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Crítico" data-cat="Observabilidad" data-env="BD BD_prod"
+             data-lote="10"
+             data-txt="l10-003 los cinco sps de cierre registran sus errores con nombres de procedimiento que no existen y tres comparten la misma etiqueta cierre.sp_cmr_dia, cierre.sp_cmr_gen_dia, cierre.sp_cmr_gen_mes, cierre.sp_ind_gen_mes, cierre.sp_saf_saldos insert into po.saf_poliza_errores (fecha_generacion, fecha_sistema, id_poliza, descripcion)
+values (getdate(), @fecha, 0, &#x27;sp_saf_cierre_cmr_mes linea:&#x27;+cast(error_line() as varchar)+&#x27;. &#x27;+error_message())
+-- la misma etiqueta &#x27;sp_saf_cierre_cmr_mes&#x27; aparece en sp_cmr_dia, sp_cmr_gen_dia y sp_cmr_gen_mes
+-- sp_ind_gen_mes registra &#x27;sp_saf_cierre_ind_mes&#x27; y sp_saf_saldos registra &#x27;sp_saf_cierre_saldos&#x27;
+-- ninguno de esos tres nombres existe como objeto en el repositorio">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Crítico</span>
+        <span class="id">L10-003</span>
+        <span class="ti">Los cinco SPs de cierre registran sus errores con nombres de procedimiento que no existen y tres comparten la misma etiqueta</span>
+        <span class="meta">Observabilidad &middot; BD + BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_CMR_DIA, CIERRE.SP_CMR_GEN_DIA, CIERRE.SP_CMR_GEN_MES, CIERRE.SP_IND_GEN_MES, CIERRE.SP_SAF_SALDOS</span></div>
+        <div class="kv"><b>Ubicación</b><span>SP_CMR_DIA:388, SP_CMR_GEN_DIA:510, SP_CMR_GEN_MES:875, SP_IND_GEN_MES:1298, SP_SAF_SALDOS:569</span></div>
+        <div class="kv"><b>Evidencia</b><pre>INSERT INTO PO.SAF_POLIZA_ERRORES (FECHA_GENERACION, FECHA_SISTEMA, ID_POLIZA, DESCRIPCION)
+VALUES (getdate(), @FECHA, 0, &#x27;SP_SAF_CIERRE_CMR_MES Linea:&#x27;+cast(ERROR_LINE() as varchar)+&#x27;. &#x27;+ERROR_MESSAGE())
+-- la misma etiqueta &#x27;SP_SAF_CIERRE_CMR_MES&#x27; aparece en SP_CMR_DIA, SP_CMR_GEN_DIA y SP_CMR_GEN_MES
+-- SP_IND_GEN_MES registra &#x27;SP_SAF_CIERRE_IND_MES&#x27; y SP_SAF_SALDOS registra &#x27;SP_SAF_CIERRE_SALDOS&#x27;
+-- ninguno de esos tres nombres existe como objeto en el repositorio</pre></div>
+        <div class="kv"><b>Impacto</b><span>Cuando falla un cierre, la bitácora apunta a procedimientos inexistentes y tres procesos distintos (cierre comercial diario, general diario y mensual) escriben la misma etiqueta, por lo que no se puede saber cual fallo ni reprocesar con criterio. Se combina con ID_POLIZA = 0 fijo (no se registra la póliza afectada) y con la ausencia total de THROW o RAISERROR en los 27 objetos: el CATCH hace ROLLBACK, escribe la fila y devuelve éxito, de modo que el job de cierre y cualquier orquestador continúan como si el proceso hubiera terminado bien.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Sustituir el literal por OBJECT_NAME(@@PROCID), registrar ID_POLIZA/@FECHA reales y terminar el CATCH con THROW. Añadir al portal de operación una vista de PO.SAF_POLIZA_ERRORES por proceso y fecha, y alertar cuando exista al menos una fila del día.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Crítico" data-cat="Control de ambientes" data-env="BD BD_prod"
+             data-lote="10"
+             data-txt="l10-004 17 de 27 objetos de cierre nombran la base externa en el código y sp_cmr_gen_mes mezcla dos bases distintas en el mismo procedimiento cierre.* (17 objetos), cierre.sp_cmr_gen_mes en particular bd/cierre.sp_cmr_gen_mes.storedprocedure.sql: 90 referencias a quiero_confianza_shadow.* y 1 referencia a quiero_confianza.pr.pr_rubro_cobro_x_credito (linea 450)
+bd_prod/cierre.sp_cmr_gen_mes.storedprocedure.sql: 91 referencias a quiero_confianza.*
+total de la familia: 753 referencias en 17 de 27 objetos; sp_saf_saldos usa ademas kardia.dbo.fecha_impago(...)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Crítico</span>
+        <span class="id">L10-004</span>
+        <span class="ti">17 de 27 objetos de cierre nombran la base externa en el código y SP_CMR_GEN_MES mezcla dos bases distintas en el mismo procedimiento</span>
+        <span class="meta">Control de ambientes &middot; BD + BD_prod &middot; esfuerzo L (&gt;3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.* (17 objetos), CIERRE.SP_CMR_GEN_MES en particular</span></div>
+        <div class="kv"><b>Ubicación</b><span>CIERRE.SP_CMR_GEN_MES:450 (BD) frente a las 90 referencias restantes del mismo archivo</span></div>
+        <div class="kv"><b>Evidencia</b><pre>BD/CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql: 90 referencias a Quiero_Confianza_shadow.* y 1 referencia a Quiero_Confianza.PR.PR_RUBRO_COBRO_X_CREDITO (linea 450)
+BD_prod/CIERRE.SP_CMR_GEN_MES.StoredProcedure.sql: 91 referencias a Quiero_Confianza.*
+Total de la familia: 753 referencias en 17 de 27 objetos; SP_SAF_SALDOS usa ademas KARDIA.dbo.FECHA_IMPAGO(...)</pre></div>
+        <div class="kv"><b>Impacto</b><span>El cierre comercial mensual de la versión de desarrollo lee 90 tablas de la base espejo y una de la base productiva en el mismo cálculo: los saldos que consolida provienen de dos fotografías distintas del mismo crédito, lo que produce descuadres imposibles de explicar. Como el nombre de la base vive en el código, cada promoción exige editar el texto del SP (de ahí las 126 diferencias dev-prod del inventario) y basta un olvido para que producción lea el espejo o el espejo escriba sobre producción.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Crear sinónimos por base (una capa SYN.* que apunte a Quiero_Confianza en producción y al espejo en QA) y reemplazar las 753 referencias por el sinónimo, de modo que el binario del SP sea idéntico en los dos ambientes. Añadir al pipeline una verificación que rechace cualquier objeto que contenga un nombre de base literal.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Crítico" data-cat="Integridad contable" data-env="BD"
+             data-lote="10"
+             data-txt="l10-005 sp_saf_saldos usa criterios de cancelación contradictorios entre el universo de créditos activos y los universos de saldos en orden cierre.sp_saf_saldos -- universo de creditos activos
+where ind_estado in (&#x27;d&#x27;,&#x27;c&#x27;) and (fec_cancelacion is null or fec_cancelacion &gt;= @fec_hoy)
+
+-- universo de saldos en orden (#impago) y post-castigo (#impago_castigo)
+where (fec_cancelacion is null or fec_cancelacion &lt;= @fec_hoy)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev c">Crítico</span>
+        <span class="id">L10-005</span>
+        <span class="ti">SP_SAF_SALDOS usa criterios de cancelación contradictorios entre el universo de créditos activos y los universos de saldos en orden</span>
+        <span class="meta">Integridad contable &middot; BD &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_SAF_SALDOS</span></div>
+        <div class="kv"><b>Ubicación</b><span>CIERRE.SP_SAF_SALDOS:24-28 frente a :109-116 y :301-308</span></div>
+        <div class="kv"><b>Evidencia</b><pre>-- universo de creditos activos
+WHERE IND_ESTADO IN (&#x27;D&#x27;,&#x27;C&#x27;) AND (FEC_CANCELACION IS NULL OR FEC_CANCELACION &gt;= @FEC_HOY)
+
+-- universo de saldos en orden (#impago) y post-castigo (#impago_castigo)
+WHERE (FEC_CANCELACION IS NULL OR FEC_CANCELACION &lt;= @FEC_HOY)</pre></div>
+        <div class="kv"><b>Impacto</b><span>Los dos universos del mismo SP aplican la desigualdad al revés: el primero conserva los créditos cancelados a futuro y el segundo conserva los ya cancelados. En consecuencia los saldos normales (TIPO &#x27;N&#x27;) y los saldos en cuentas de orden (TIPO &#x27;O&#x27;/&#x27;K&#x27;) se calculan sobre poblaciones distintas y complementarias: hay créditos con saldo en orden sin saldo normal y viceversa. CIERRE.SAF_SALDOS es la fuente de SP_CAS_CIERRE_RPT, SP_CMR_RPT_CIERRE_VIS, SP_IND_RPT_CIERRE_VIS y de la póliza, por lo que el efecto llega a la contabilidad. Requiere validación funcional para determinar cual de las dos condiciones es la correcta.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Definir una sola vez el universo de créditos del cierre (tabla temporal o vista única) y consumirlo en los tres bloques. Agregar una prueba de cuadre que compare el total de saldos normales y en orden contra el universo declarado y falle si difiere el número de créditos.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Cobertura de despliegue" data-env="BD BD_prod"
+             data-lote="11"
+             data-txt="l10-006 19 de los 27 objetos de cierre no existen en bd_prod y sp_saf_saldos está desplegado con menos de la mitad de su lógica familia cierre + rpt (27 objetos) presentes en bd_prod (8): sp_cmr_gen_mes, sp_cmr_mes_vis, sp_cmr_rpt_desembolsos_cartera_vis, sp_ind_rpt_desembolsos_cartera_vis, sp_rpt_cobranza_cartera_cmr_ind_vis, sp_rpt_ventas_de_cartera_vis, sp_saf_saldos, rpt.castigo_reest_saldos
+ausentes en bd_prod (19): sp_ind_gen_mes, sp_ind_gen_mes_mod, sp_cmr_dia, sp_cmr_gen_dia y los 15 reportes restantes
+sp_saf_saldos: 26 insert y 2 cursores en bd frente a 16 insert y 0 cursores en bd_prod">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L10-006</span>
+        <span class="ti">19 de los 27 objetos de cierre no existen en BD_prod y SP_SAF_SALDOS está desplegado con menos de la mitad de su lógica</span>
+        <span class="meta">Cobertura de despliegue &middot; BD + BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>Familia CIERRE + RPT (27 objetos)</span></div>
+        <div class="kv"><b>Ubicación</b><span>Comparación BD vs BD_prod de la familia; CIERRE.SP_SAF_SALDOS (573 líneas en BD, 223 en BD_prod)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>Presentes en BD_prod (8): SP_CMR_GEN_MES, SP_CMR_MES_VIS, SP_CMR_RPT_DESEMBOLSOS_CARTERA_VIS, SP_IND_RPT_DESEMBOLSOS_CARTERA_VIS, SP_RPT_COBRANZA_CARTERA_CMR_IND_VIS, SP_RPT_VENTAS_DE_CARTERA_VIS, SP_SAF_SALDOS, RPT.CASTIGO_REEST_SALDOS
+Ausentes en BD_prod (19): SP_IND_GEN_MES, SP_IND_GEN_MES_MOD, SP_CMR_DIA, SP_CMR_GEN_DIA y los 15 reportes restantes
+SP_SAF_SALDOS: 26 INSERT y 2 cursores en BD frente a 16 INSERT y 0 cursores en BD_prod</pre></div>
+        <div class="kv"><b>Impacto</b><span>La versión productiva de SP_SAF_SALDOS no contiene los bloques de saldos en cuentas de orden ni los de posteriores a castigo, es decir diez bloques de inserción menos. Si el reporte de cierre productivo consume TIPO &#x27;O&#x27; y &#x27;K&#x27; de CIERRE.SAF_SALDOS, en producción esas filas no se generan. En paralelo, el cierre individual mensual completo (SP_IND_GEN_MES y su MOD) no aparece en el export de producción. Hay dos lecturas posibles y hay que decidir cual aplica: (a) el export de BD_prod es incompleto, o (b) producción corre una versión anterior del cierre. Cualquiera de las dos es un riesgo de control de cambios que debe cerrarse antes de remediar código.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Reconciliar objeto por objeto contra sys.sql_modules de producción (nombre, fecha de modificación y hash del cuerpo) y publicar la matriz de paridad. A partir de ahí, versionar la base en un único repositorio con despliegue automatizado, para que la existencia de un objeto en producción no dependa de una promoción manual.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Corrección funcional" data-env="BD"
+             data-lote="11"
+             data-txt="l10-007 el generador de cierre.saf_saldos materializa rubros por lista negra y los reportes los consumen por lista blanca, sin catálogo que garantice el contrato cierre.sp_saf_saldos, cierre.sp_cas_cierre_rpt -- generador: todo rubro que no este en la lista negra entra al cierre con su propio nombre
+select &#x27;n&#x27;,num_credito, @fec_hoy, cod_rubro, sum(sal_rubro), sum(sal_iva)
+from quiero_confianza_shadow.pr.pr_rubro_cobro_x_credito
+where ind_estado = &#x27;p&#x27;
+  and cod_rubro not in (&#x27;principal&#x27;,&#x27;moratorios&#x27;,&#x27;interes_moratorio&#x27;,&#x27;mora_empresarial&#x27;,&#x27;seguro_vida&#x27;,&#x27;cargo_porcentaje&#x27;)--in (&#x27;intereses&#x27;,&#x27;comision_administracion&#x27;,&#x27;seguro_danos&#x27;)
+
+-- consumidor: lista blanca de seis rubros de comisiones
+from [cierre].[saf_saldos]
+where rubro in (&#x27;ase_financiera&#x27;,&#x27;com_cierre_obra&#x27;,&#x27;com_prorroga&#x27;,&#x27;com_reestructura&#x27;,&#x27;opi_valor&#x27;,&#x27;visita_extra&#x27;)
+
+-- el otro escritor, sp_saf_saldos_snd, solo produce principal, intereses y moratorios">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L10-007</span>
+        <span class="ti">El generador de CIERRE.SAF_SALDOS materializa rubros por lista negra y los reportes los consumen por lista blanca, sin catálogo que garantice el contrato</span>
+        <span class="meta">Corrección funcional &middot; BD &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_SAF_SALDOS, CIERRE.SP_CAS_CIERRE_RPT</span></div>
+        <div class="kv"><b>Ubicación</b><span>CIERRE.SP_SAF_SALDOS:59-66 frente a CIERRE.SP_CAS_CIERRE_RPT:12-20</span></div>
+        <div class="kv"><b>Evidencia</b><pre>-- generador: todo rubro que no este en la lista negra entra al cierre con su propio nombre
+SELECT &#x27;N&#x27;,NUM_CREDITO, @FEC_HOY, COD_RUBRO, SUM(SAL_RUBRO), SUM(SAL_IVA)
+FROM Quiero_Confianza_shadow.PR.PR_RUBRO_COBRO_X_CREDITO
+WHERE IND_ESTADO = &#x27;P&#x27;
+  AND COD_RUBRO NOT IN (&#x27;PRINCIPAL&#x27;,&#x27;MORATORIOS&#x27;,&#x27;INTERES_MORATORIO&#x27;,&#x27;MORA_EMPRESARIAL&#x27;,&#x27;SEGURO_VIDA&#x27;,&#x27;CARGO_PORCENTAJE&#x27;)--IN (&#x27;INTERESES&#x27;,&#x27;COMISION_ADMINISTRACION&#x27;,&#x27;SEGURO_DANOS&#x27;)
+
+-- consumidor: lista blanca de seis rubros de comisiones
+from [CIERRE].[SAF_SALDOS]
+where rubro in (&#x27;ASE_FINANCIERA&#x27;,&#x27;COM_CIERRE_OBRA&#x27;,&#x27;COM_PRORROGA&#x27;,&#x27;COM_REESTRUCTURA&#x27;,&#x27;OPI_VALOR&#x27;,&#x27;VISITA_EXTRA&#x27;)
+
+-- el otro escritor, SP_SAF_SALDOS_SND, solo produce PRINCIPAL, INTERESES y MORATORIOS</pre></div>
+        <div class="kv"><b>Impacto</b><span>El cierre publica en SAF_SALDOS cualquier rubro nuevo que se cree en el sistema núcleo, sin revisión ni cuadre, porque el filtro es por exclusión; el comentario de la misma línea muestra que antes era una lista blanca de tres rubros, de modo que el criterio ya cambio una vez sin dejar registro. Del otro lado, el reporte de cierre de castigos exige seis rubros de comisiones que solo llegan si existen con ese nombre exacto en la fuente y con FEC_COBRO &lt;= la fecha de proceso: si el nombre cambia o el rubro no se materializa, #OTROS queda vacío y el reporte publica ceros en las comisiones sin advertencia. Además el flujo SND cubre solo tres rubros, así que los dos escritores de la misma tabla no comparten alcance. Requiere validar contra la base cuáles rubros existen realmente hoy.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Definir un catálogo de rubros con su tratamiento en el cierre (se materializa, en que reporte participa, si causa IVA) y consumirlo por JOIN en generador y reportes, de modo que un rubro nuevo obligue a una decisión explícita. Añadir al final del cierre una validación que reporte los rubros presentes en la fuente que ningún reporte consume y los rubros solicitados que no se materializaron.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Consistencia de reglas" data-env="BD BD_prod"
+             data-lote="11"
+             data-txt="l10-008 la definición de cartera sin restricción difiere entre los reportes de cierre: dos listas distintas de cod_origen cierre.sp_ind_gen_mes, cierre.sp_ind_rpt_desembolsos_cartera_vis y 16 objetos más -- 3 ocurrencias (todas en el cierre individual mensual)
+case when a.cod_origen in (&#x27;008&#x27;, &#x27;031&#x27;, &#x27;046&#x27;) then &#x27;sin restriccion&#x27; else &#x27;restringidos&#x27; end
+
+-- 18 ocurrencias en el resto del repositorio
+case when c.cod_origen in (&#x27;008&#x27;,&#x27;031&#x27;) then &#x27;sin restriccion&#x27; else &#x27;restringido&#x27; end">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L10-008</span>
+        <span class="ti">La definición de cartera sin restricción difiere entre los reportes de cierre: dos listas distintas de COD_ORIGEN</span>
+        <span class="meta">Consistencia de reglas &middot; BD + BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_IND_GEN_MES, CIERRE.SP_IND_RPT_DESEMBOLSOS_CARTERA_VIS y 16 objetos más</span></div>
+        <div class="kv"><b>Ubicación</b><span>SP_IND_GEN_MES:59, 477, 892 frente a SP_IND_RPT_DESEMBOLSOS_CARTERA_VIS:29 y otros</span></div>
+        <div class="kv"><b>Evidencia</b><pre>-- 3 ocurrencias (todas en el cierre individual mensual)
+CASE WHEN A.COD_ORIGEN IN (&#x27;008&#x27;, &#x27;031&#x27;, &#x27;046&#x27;) THEN &#x27;SIN RESTRICCION&#x27; ELSE &#x27;RESTRINGIDOS&#x27; END
+
+-- 18 ocurrencias en el resto del repositorio
+CASE WHEN C.COD_ORIGEN IN (&#x27;008&#x27;,&#x27;031&#x27;) THEN &#x27;SIN RESTRICCION&#x27; ELSE &#x27;RESTRINGIDO&#x27; END</pre></div>
+        <div class="kv"><b>Impacto</b><span>El mismo concepto de negocio (cartera sin restricción) se calcula con dos universos distintos: el origen &#x27;046&#x27; es sin restricción en el cierre individual mensual y restringido en el resto de los reportes. Los reportes de desembolsos, cobranza y cierre no cuadran entre si por construcción, y ninguno de los dos criterios está documentado. Además las etiquetas difieren (&#x27;RESTRINGIDOS&#x27; vs &#x27;RESTRINGIDO&#x27;), lo que rompe agrupaciones y tableros que concatenan resultados.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Convertir la clasificación en un catálogo administrable (COD_ORIGEN -&gt; tipo de cartera, con vigencia) y exponerlo mediante una función o vista única que consuman todos los reportes. Normalizar también las etiquetas de salida.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Consistencia de reglas" data-env="BD BD_prod"
+             data-lote="11"
+             data-txt="l10-009 seis variantes de la lista de cuentas excluidas de los reportes, con comparaciones de texto y numéricas mezcladas cierre.sp_*_rpt_*_vis y reportes de dbo and a.id_cuenta not in (&#x27;2061&#x27;, &#x27;2056&#x27;, &#x27;2068&#x27;) -- se quitan los de stdr fiso damnif_6641, inbursa admon cobranza, siniestro
+
+variantes encontradas: (&#x27;2061&#x27;,&#x27;2056&#x27;,&#x27;2068&#x27;) x5, (&#x27;2061&#x27;,&#x27;2056&#x27;,&#x27;2068&#x27;,&#x27;2076&#x27;) x5,
+(&#x27;2061&#x27;,&#x27;2056&#x27;,&#x27;2068&#x27;,&#x27;2076&#x27;,&#x27;1020010502130300&#x27;) x3, y las mismas listas escritas como numeros: (2061,2056,2068) x6">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L10-009</span>
+        <span class="ti">Seis variantes de la lista de cuentas excluidas de los reportes, con comparaciones de texto y numéricas mezcladas</span>
+        <span class="meta">Consistencia de reglas &middot; BD + BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_*_RPT_*_VIS y reportes de dbo</span></div>
+        <div class="kv"><b>Ubicación</b><span>SP_IND_RPT_DESEMBOLSOS_CARTERA_VIS:37 y otras 18 ocurrencias en el repositorio</span></div>
+        <div class="kv"><b>Evidencia</b><pre>AND A.Id_cuenta NOT IN (&#x27;2061&#x27;, &#x27;2056&#x27;, &#x27;2068&#x27;) -- se quitan los de STDR FISO DAMNIF_6641, INBURSA ADMON COBRANZA, SINIESTRO
+
+Variantes encontradas: (&#x27;2061&#x27;,&#x27;2056&#x27;,&#x27;2068&#x27;) x5, (&#x27;2061&#x27;,&#x27;2056&#x27;,&#x27;2068&#x27;,&#x27;2076&#x27;) x5,
+(&#x27;2061&#x27;,&#x27;2056&#x27;,&#x27;2068&#x27;,&#x27;2076&#x27;,&#x27;1020010502130300&#x27;) x3, y las mismas listas escritas como numeros: (2061,2056,2068) x6</pre></div>
+        <div class="kv"><b>Impacto</b><span>Cada reporte excluye un conjunto distinto de cuentas, así que los desembolsos, la cobranza y el cierre no suman lo mismo aunque midan el periodo idéntico. Agregar una cuenta operativa nueva obliga a editar 19 procedimientos y basta olvidar uno para introducir un descuadre silencioso. La variante numérica compara un identificador de texto contra enteros, lo que fuerza conversión implícita: impide usar índices y puede fallar en tiempo de ejecución si aparece una cuenta no numérica como &#x27;1020010502130300&#x27;.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Crear un catálogo de cuentas con marca de exclusión por tipo de reporte, editable desde el portal con bitácora, y reemplazar las 19 listas por un JOIN o EXISTS contra el catálogo. Homogeneizar el tipo de dato de Id_cuenta.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Corrección funcional" data-env="BD"
+             data-lote="10"
+             data-txt="l10-010 sp_cmr_dia y sp_cmr_gen_dia son clones con filtros divergentes que alimentan dos tablas de cierre distintas cierre.sp_cmr_dia, cierre.sp_cmr_gen_dia similitud normalizada de los dos cuerpos: 54.8% (355 vs 473 lineas utiles)
+
+sp_cmr_dia  -&gt; delete from [cierre].[cmr_dia_rep] where fecha_sistema = @fecha
+  where c.ind_estado in (&#x27;c&#x27;, &#x27;d&#x27;) and c.ind_linea = &#x27;n&#x27;
+
+sp_cmr_gen_dia -&gt; delete from [cierre].[cmr_rep] where fecha_sistema = @fecha
+  where c.ind_linea = &#x27;n&#x27;      -- sin filtro de ind_estado">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L10-010</span>
+        <span class="ti">SP_CMR_DIA y SP_CMR_GEN_DIA son clones con filtros divergentes que alimentan dos tablas de cierre distintas</span>
+        <span class="meta">Corrección funcional &middot; BD &middot; esfuerzo L (&gt;3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_CMR_DIA, CIERRE.SP_CMR_GEN_DIA</span></div>
+        <div class="kv"><b>Ubicación</b><span>SP_CMR_DIA:47-50 frente a SP_CMR_GEN_DIA:44-47 (y 423 líneas de diferencia en total)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>Similitud normalizada de los dos cuerpos: 54.8% (355 vs 473 lineas utiles)
+
+SP_CMR_DIA  -&gt; DELETE FROM [CIERRE].[CMR_DIA_REP] WHERE FECHA_SISTEMA = @FECHA
+  WHERE C.IND_ESTADO IN (&#x27;C&#x27;, &#x27;D&#x27;) AND C.IND_LINEA = &#x27;N&#x27;
+
+SP_CMR_GEN_DIA -&gt; DELETE FROM [CIERRE].[CMR_REP] WHERE FECHA_SISTEMA = @FECHA
+  WHERE C.IND_LINEA = &#x27;N&#x27;      -- sin filtro de IND_ESTADO</pre></div>
+        <div class="kv"><b>Impacto</b><span>Los dos procesos calculan el mismo cierre comercial diario y publican en tablas distintas (CMR_DIA_REP y CMR_REP), pero el general no filtra el estado del crédito. Los cinco reportes por área que leen CMR_REP incluyen créditos en estados que el reporte diario excluye, de modo que las dos vistas del mismo día no conciliaran nunca y no hay forma de saber cual es la cifra oficial. Al ser clones, cada corrección futura debe aplicarse dos veces.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Definir cual es la salida autoritativa, unificar la extracción en un solo procedimiento parametrizado por granularidad (diario / general) y dejar el segundo como vista sobre el primero. Mientras se unifica, igualar los filtros y añadir una prueba de conciliación diaria entre ambas tablas.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Transaccional" data-env="BD BD_prod"
+             data-lote="10"
+             data-txt="l10-011 los seis procesos transaccionales del cierre operan sin xact_abort, sin xact_state y sin propagación de errores cierre.sp_cmr_dia, sp_cmr_gen_dia, sp_cmr_gen_mes, sp_ind_gen_mes, sp_ind_gen_mes_mod, sp_saf_saldos 27 objetos analizados: 0 con set xact_abort on, 0 con if xact_state(), 0 con throw o raiserror,
+6 con begin transaction, 5 con try/catch (sp_ind_gen_mes_mod no lo tiene), 27 con set nocount on.
+patron de los cinco con catch: rollback incondicional + insert en po.saf_poliza_errores + fin sin throw.">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L10-011</span>
+        <span class="ti">Los seis procesos transaccionales del cierre operan sin XACT_ABORT, sin XACT_STATE y sin propagación de errores</span>
+        <span class="meta">Transaccional &middot; BD + BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_CMR_DIA, SP_CMR_GEN_DIA, SP_CMR_GEN_MES, SP_IND_GEN_MES, SP_IND_GEN_MES_MOD, SP_SAF_SALDOS</span></div>
+        <div class="kv"><b>Ubicación</b><span>Detección automática sobre los 27 objetos (auditoría/checks_lote10-11.json)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>27 objetos analizados: 0 con SET XACT_ABORT ON, 0 con IF XACT_STATE(), 0 con THROW o RAISERROR,
+6 con BEGIN TRANSACTION, 5 con TRY/CATCH (SP_IND_GEN_MES_MOD no lo tiene), 27 con SET NOCOUNT ON.
+Patron de los cinco con CATCH: ROLLBACK incondicional + INSERT en PO.SAF_POLIZA_ERRORES + fin sin THROW.</pre></div>
+        <div class="kv"><b>Impacto</b><span>Un ROLLBACK incondicional falla si la transacción ya no está activa y, al no propagarse el error, el orquestador considera exitoso un cierre que no escribió nada. La combinación de DELETE + INSERT masivo dentro de una sola transacción larga (las tablas de cierre se vacían por fecha antes de reinsertar) mantiene bloqueos durante todo el proceso y deja la ventana en la que la tabla del día está vacía visible para cualquier lector con NOLOCK.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Plantilla única para procesos de cierre: SET XACT_ABORT ON, SET NOCOUNT ON, TRY/CATCH con IF XACT_STATE() &lt;&gt; 0 ROLLBACK, THROW final, bitácora con OBJECT_NAME(@@PROCID) y filas afectadas. Evaluar sustituir DELETE+INSERT por carga a tabla staging y switch de partición o MERGE, para acotar la ventana de bloqueo.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Rendimiento" data-env="BD"
+             data-lote="10"
+             data-txt="l10-012 sp_ind_gen_mes resuelve el cierre individual con 378 subconsultas correlacionadas y tres copias del mismo bloque de 400 líneas cierre.sp_ind_gen_mes 1302 lineas, 378 apariciones de &#x27;(select&#x27;, 75 rangos between, 95 columnas por insert.
+declare @porc_ion decimal (3,2) = 0.10, @porc_afirme decimal (3,2) = 0.90
+estructura: select (creditos tipo 1,3,9,10,11,16,17,20,23) union select @porc_ion * (...) (tipo 4) union select @porc_afirme * (...) (tipo 4)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L10-012</span>
+        <span class="ti">SP_IND_GEN_MES resuelve el cierre individual con 378 subconsultas correlacionadas y tres copias del mismo bloque de 400 líneas</span>
+        <span class="meta">Rendimiento &middot; BD &middot; esfuerzo L (&gt;3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_IND_GEN_MES</span></div>
+        <div class="kv"><b>Ubicación</b><span>CIERRE.SP_IND_GEN_MES:45-460 (100% ION), :461-875 (@PORC_ION) y :876-1290 (@PORC_AFIRME)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>1302 lineas, 378 apariciones de &#x27;(SELECT&#x27;, 75 rangos BETWEEN, 95 columnas por INSERT.
+DECLARE @PORC_ION DECIMAL (3,2) = 0.10, @PORC_AFIRME DECIMAL (3,2) = 0.90
+Estructura: SELECT (creditos tipo 1,3,9,10,11,16,17,20,23) UNION SELECT @PORC_ION * (...) (tipo 4) UNION SELECT @PORC_AFIRME * (...) (tipo 4)</pre></div>
+        <div class="kv"><b>Impacto</b><span>Cada columna del reporte se calcula con su propia subconsulta correlacionada por crédito contra la base núcleo, y el bloque completo está triplicado para separar la participación Afirme (10/90). El costo crece de forma lineal con el número de créditos multiplicado por casi 400 accesos, todo dentro de una transacción que primero borra el periodo en CIERRE.IND_REP. Además cualquier ajuste de reglas debe replicarse en tres lugares, con el riesgo demostrado de que las copias se separen (ver L10-022).</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Reescribir con una CTE por rubro que agregue una sola vez sobre PR_RUBRO_COBRO_X_CREDITO / PR_ENCABEZADO_PAGO y se una por crédito, y sustituir las tres copias por un CROSS JOIN contra una tabla de participaciones (tipo de crédito, participante, porcentaje). Medir antes y después con estadísticas de tiempo y lecturas para dimensionar la ganancia.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Concurrencia" data-env="BD"
+             data-lote="10"
+             data-txt="l10-013 sp_saf_saldos calcula los saldos en orden con dos cursores fila a fila y cursores de alcance global cierre.sp_saf_saldos exec cursorclosedeallocate &#x27;db_cursor_saldos_orden&#x27;
+declare db_cursor_saldos_orden cursor for select num_credito,fecha_impago from #impago
+...
+  insert into [cierre].[saf_saldos](...) values(&#x27;o&#x27;,@num_credito, @fec_hoy, &#x27;intereses&#x27;, ...)
+fetch next ...
+-- mismo patron para db_cursor_saldos_orden_castigo; ambos con insert unitario por credito">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L10-013</span>
+        <span class="ti">SP_SAF_SALDOS calcula los saldos en orden con dos cursores fila a fila y cursores de alcance global</span>
+        <span class="meta">Concurrencia &middot; BD &middot; esfuerzo L (&gt;3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_SAF_SALDOS</span></div>
+        <div class="kv"><b>Ubicación</b><span>CIERRE.SP_SAF_SALDOS:127-210 y :313-470</span></div>
+        <div class="kv"><b>Evidencia</b><pre>exec CursorCloseDeallocate &#x27;db_cursor_saldos_orden&#x27;
+DECLARE db_cursor_saldos_orden CURSOR FOR SELECT num_credito,FECHA_IMPAGO from #impago
+...
+  INSERT INTO [CIERRE].[SAF_SALDOS](...) VALUES(&#x27;O&#x27;,@num_credito, @FEC_HOY, &#x27;INTERESES&#x27;, ...)
+FETCH NEXT ...
+-- mismo patron para db_cursor_saldos_orden_castigo; ambos con INSERT unitario por credito</pre></div>
+        <div class="kv"><b>Impacto</b><span>Los cursores se declaran sin LOCAL, por lo que el nombre es global a la conexión y el SP debe llamar a un utilitario con SQL dinámico (dbo.CursorCloseDeallocate, ver L6-023) para limpiar restos de ejecuciones anteriores. Dos ejecuciones simultaneas del cierre en la misma instancia colisionan por nombre de cursor, y una ejecución interrumpida deja el cursor abierto. El costo también es alto: un INSERT por crédito dentro de la transacción, con una función escalar (KARDIA.dbo.FECHA_IMPAGO) evaluada por fila para construir el universo.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Declarar los cursores como LOCAL FAST_FORWARD mientras existan, y a mediano plazo sustituir cada cursor por una única sentencia basada en conjuntos (los cálculos por crédito son agregaciones con ventanas). Con eso desaparece la dependencia del utilitario de SQL dinámico.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Integridad de datos" data-env="BD BD_prod"
+             data-lote="11"
+             data-txt="l10-014 cierre.ind_rep no tiene llave natural única y las cuatro tablas de cierre usan uniqueidentifier aleatorio como clave agrupada cierre.ind_rep, cierre.cmr_rep, cierre.cmr_dia_rep, cierre.saf_saldos cierre.ind_rep: primary key clustered ([id] asc) + default (newid()) for [id]  -- sin restriccion unica natural
+cierre.cmr_rep / cmr_dia_rep: pk clustered (id) + constraint ix_* unique (fecha_sistema, num_credito)
+cierre.saf_saldos: pk clustered (id) + ix unique (fecha_sistema, num_credito, tipo, rubro)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L10-014</span>
+        <span class="ti">CIERRE.IND_REP no tiene llave natural única y las cuatro tablas de cierre usan uniqueidentifier aleatorio como clave agrupada</span>
+        <span class="meta">Integridad de datos &middot; BD + BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.IND_REP, CIERRE.CMR_REP, CIERRE.CMR_DIA_REP, CIERRE.SAF_SALDOS</span></div>
+        <div class="kv"><b>Ubicación</b><span>CIERRE.IND_REP.Table.sql:104-107; CMR_REP.Table.sql:180-188; SAF_SALDOS.Table.sql (PK + IX único)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>CIERRE.IND_REP: PRIMARY KEY CLUSTERED ([ID] ASC) + DEFAULT (newid()) FOR [ID]  -- sin restriccion unica natural
+CIERRE.CMR_REP / CMR_DIA_REP: PK CLUSTERED (ID) + CONSTRAINT IX_* UNIQUE (FECHA_SISTEMA, NUM_CREDITO)
+CIERRE.SAF_SALDOS: PK CLUSTERED (ID) + IX UNIQUE (FECHA_SISTEMA, NUM_CREDITO, TIPO, RUBRO)</pre></div>
+        <div class="kv"><b>Impacto</b><span>Tres de las cuatro tablas de cierre protegen la unicidad por fecha y crédito, pero IND_REP no: si el DELETE por periodo falla, si el proceso se ejecuta dos veces o si dos ejecuciones se solapan, el cierre individual duplica créditos y todos los importes se duplican en los reportes, sin que nada lo impida. Es la contraparte estructural de la falta de idempotencia de L1-006 y L10-001. Además las cuatro tablas usan una clave agrupada aleatoria (newid()), lo que provoca división de paginas y fragmentación en cargas diarias masivas, y ninguna declara índices no agrupados de apoyo para los reportes que filtran por fecha.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Añadir a IND_REP una restricción única sobre (PERIODO, CREDITO) más los discriminantes que definan la granularidad real, previa limpieza de duplicados. Evaluar mover la clave agrupada a la llave natural (fecha, crédito) dejando el uniqueidentifier como clave única no agrupada, y crear los índices de apoyo por fecha que consumen los reportes.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Corrección funcional" data-env="BD"
+             data-lote="10"
+             data-txt="l10-015 filtro de fecha comentado en el bloque de moratorios de sp_saf_saldos, a diferencia de los rubros hermanos cierre.sp_saf_saldos insert into [cierre].[saf_saldos](tipo,num_credito,fecha_sistema,rubro,saldo,saldo_iva)
+select &#x27;n&#x27;,num_credito, @fec_hoy, &#x27;moratorios&#x27;, sum(sal_rubro) as saldo,0
+from quiero_confianza_shadow.pr.pr_rubro_cobro_x_credito
+where ind_estado = &#x27;p&#x27;
+    and cod_rubro in (&#x27;moratorios&#x27;, &#x27;interes_moratorio&#x27;, &#x27;mora_empresarial&#x27;)
+    --and fec_cobro &lt;= @fec_hoy -------********
+
+-- el bloque de principal_vencido inmediatamente posterior si conserva  and fec_cobro &lt;= @fec_hoy">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L10-015</span>
+        <span class="ti">Filtro de fecha comentado en el bloque de moratorios de SP_SAF_SALDOS, a diferencia de los rubros hermanos</span>
+        <span class="meta">Corrección funcional &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_SAF_SALDOS</span></div>
+        <div class="kv"><b>Ubicación</b><span>CIERRE.SP_SAF_SALDOS:41-49</span></div>
+        <div class="kv"><b>Evidencia</b><pre>INSERT INTO [CIERRE].[SAF_SALDOS](TIPO,NUM_CREDITO,FECHA_SISTEMA,RUBRO,SALDO,SALDO_IVA)
+SELECT &#x27;N&#x27;,NUM_CREDITO, @FEC_HOY, &#x27;MORATORIOS&#x27;, SUM(SAL_RUBRO) as SALDO,0
+FROM Quiero_Confianza_shadow.PR.PR_RUBRO_COBRO_X_CREDITO
+WHERE IND_ESTADO = &#x27;P&#x27;
+    AND COD_RUBRO IN (&#x27;MORATORIOS&#x27;, &#x27;INTERES_MORATORIO&#x27;, &#x27;MORA_EMPRESARIAL&#x27;)
+    --AND FEC_COBRO &lt;= @FEC_HOY -------********
+
+-- el bloque de PRINCIPAL_VENCIDO inmediatamente posterior si conserva  AND FEC_COBRO &lt;= @FEC_HOY</pre></div>
+        <div class="kv"><b>Impacto</b><span>El saldo de moratorios del cierre incluye cuotas cuya fecha de cobro es posterior a la fecha de proceso, mientras el resto de los rubros se limita a lo exigible. Los asteriscos del comentario sugieren un cambio deliberado y urgente que nunca se documento ni se reflejo en los rubros hermanos, de modo que hoy no se puede saber si el saldo publicado es el esperado. Afecta la clasificación de cartera y los reportes de cobranza que consumen SAF_SALDOS.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Recuperar la decisión con el equipo contable y dejarla explícita: o se restablece el filtro, o se documenta la excepción en el código y en el diccionario de datos. Prohibir en revisión de código los cambios de regla entregados como comentario.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Alto" data-cat="Concurrencia" data-env="BD BD_prod"
+             data-lote="11"
+             data-txt="l10-016 287 hints nolock en 15 de los 27 objetos de cierre, incluidos los que producen cifras contables familia cierre + rpt 15 de 27 objetos usan with (nolock), 287 ocurrencias.
+ejemplo en rpt.castigo_reest_saldos: inner join quiero_confianza_shadow.pr.pr_creditos c with (nolock)
+ejemplo en sp_ind_rpt_desembolsos_cartera_vis: las cuatro tablas del reporte con nolock">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev a">Alto</span>
+        <span class="id">L10-016</span>
+        <span class="ti">287 hints NOLOCK en 15 de los 27 objetos de cierre, incluidos los que producen cifras contables</span>
+        <span class="meta">Concurrencia &middot; BD + BD_prod &middot; esfuerzo L (&gt;3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>Familia CIERRE + RPT</span></div>
+        <div class="kv"><b>Ubicación</b><span>auditoría/checks_lote10-11.json (conteo por objeto)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>15 de 27 objetos usan WITH (NOLOCK), 287 ocurrencias.
+Ejemplo en RPT.CASTIGO_REEST_SALDOS: INNER JOIN Quiero_Confianza_shadow.PR.PR_CREDITOS C WITH (NOLOCK)
+Ejemplo en SP_IND_RPT_DESEMBOLSOS_CARTERA_VIS: las cuatro tablas del reporte con NOLOCK</pre></div>
+        <div class="kv"><b>Impacto</b><span>Extiende el patrón ya reportado en L1-003 a la familia de cierre: los reportes leen la base núcleo en READ UNCOMMITTED mientras el cierre escribe, por lo que pueden ver filas de transacciones no confirmadas, omitir filas por movimiento de paginas o contarlas dos veces. En un cierre contable esto significa cifras no reproducibles: el mismo reporte ejecutado dos veces sobre la misma fecha puede devolver totales distintos y no hay forma de demostrar cual es el correcto. NOTA DE CONTEXTO (sesion con el equipo de desarrollo, 2026-08-31): la lectura ocurre contra una replica de solo lectura del core, por lo que el hint no compromete al sistema transaccional; lo que permanece es la falta de reproducibilidad de la cifra publicada, porque la replica cambia mientras el cierre la lee.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Sustituir el hint por lectura con SNAPSHOT sobre la replica y registrar la marca de sincronia usada por cada corrida del cierre, de forma que la poliza del dia sea reproducible a partir de un punto de lectura conocido.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Contrato de salida" data-env="BD"
+             data-lote="11"
+             data-txt="l10-017 tres reportes por área publican columnas con el mismo alias repetido en el mismo resultado cierre.sp_cmr_gen_dia_cartera_vis, cierre.sp_cmr_gen_dia_riesgos_vis, cierre.sp_cmr_gen_dia_finanzas_vis -- cartera_vis
+,cartera
+,cedido as cartera
+
+-- riesgos_vis
+,sum(isnull(pagado_intereses_iva,0)) as pagado_intereses_iva
+...
+,sum(isnull(dev_pag_int_iva,0)) as pagado_intereses_iva
+
+-- finanzas_vis
+,isnull(credito_tipo,&#x27;&#x27;) as credito_tipo   (dos veces, lineas 19 y 40)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L10-017</span>
+        <span class="ti">Tres reportes por área publican columnas con el mismo alias repetido en el mismo resultado</span>
+        <span class="meta">Contrato de salida &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_CMR_GEN_DIA_CARTERA_VIS, CIERRE.SP_CMR_GEN_DIA_RIESGOS_VIS, CIERRE.SP_CMR_GEN_DIA_FINANZAS_VIS</span></div>
+        <div class="kv"><b>Ubicación</b><span>..._CARTERA_VIS:19-20, ..._RIESGOS_VIS:51 y 62, ..._FINANZAS_VIS:19 y 40</span></div>
+        <div class="kv"><b>Evidencia</b><pre>-- CARTERA_VIS
+,CARTERA
+,CEDIDO AS CARTERA
+
+-- RIESGOS_VIS
+,SUM(isnull(PAGADO_INTERESES_IVA,0)) AS PAGADO_INTERESES_IVA
+...
+,SUM(isnull(DEV_PAG_INT_IVA,0)) AS PAGADO_INTERESES_IVA
+
+-- FINANZAS_VIS
+,isnull(CREDITO_TIPO,&#x27;&#x27;) AS CREDITO_TIPO   (dos veces, lineas 19 y 40)</pre></div>
+        <div class="kv"><b>Impacto</b><span>SQL Server permite alias duplicados, pero los consumidores por nombre no: los reportes RDL, los DataSet de Reporting Services, los ORM y las exportaciones a Excel resuelven el nombre a la primera o a la ultima columna según la librería, de modo que un área puede estar leyendo el valor equivocado sin error visible. En RIESGOS_VIS las dos columnas homónimas son conceptos contables distintos (IVA de intereses pagados frente a IVA de devolución de pagos de interés), así que el riesgo es publicar una cifra por otra.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Dar nombre único y descriptivo a cada columna, y añadir al pipeline una validación que rechace cualquier procedimiento cuyo conjunto de resultados (sys.dm_exec_describe_first_result_set) tenga nombres repetidos o vacíos.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Corrección funcional" data-env="BD"
+             data-lote="11"
+             data-txt="l10-018 sp_cmr_gen_dia_riesgos_vis agrupa por folio pero publica una llave que incluye la sección, y colapsa atributos descriptivos con min/max cierre.sp_cmr_gen_dia_riesgos_vis select min(fecha_sistema) as fecha_corte
+    ,id_externo+min(seccion_desc) as llave
+    ,id_externo as folio
+    ,min(cartera) as administrada
+    ,min(credito_tipo_l) as tipo_credito
+    ,min(restringido) as tipo_cartera
+    ...
+from cierre.cmr_rep where fecha_sistema = @fecha
+group by id_externo
+
+-- y el iva de devolucion de pagos se publica con el nombre del iva de intereses pagados
+,sum(isnull(dev_pag_int_iva,0)) as pagado_intereses_iva   -- linea 62; la linea 51 ya publico ese alias">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L10-018</span>
+        <span class="ti">SP_CMR_GEN_DIA_RIESGOS_VIS agrupa por folio pero publica una llave que incluye la sección, y colapsa atributos descriptivos con MIN/MAX</span>
+        <span class="meta">Corrección funcional &middot; BD &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_CMR_GEN_DIA_RIESGOS_VIS</span></div>
+        <div class="kv"><b>Ubicación</b><span>CIERRE.SP_CMR_GEN_DIA_RIESGOS_VIS:16-31 y :62</span></div>
+        <div class="kv"><b>Evidencia</b><pre>SELECT MIN(FECHA_SISTEMA) AS FECHA_CORTE
+    ,ID_EXTERNO+MIN(SECCION_DESC) AS LLAVE
+    ,ID_EXTERNO AS FOLIO
+    ,MIN(CARTERA) AS ADMINISTRADA
+    ,MIN(CREDITO_TIPO_L) AS TIPO_CREDITO
+    ,MIN(RESTRINGIDO) AS TIPO_CARTERA
+    ...
+FROM CIERRE.CMR_REP where FECHA_SISTEMA = @FECHA
+GROUP BY ID_EXTERNO
+
+-- y el IVA de devolucion de pagos se publica con el nombre del IVA de intereses pagados
+,SUM(isnull(DEV_PAG_INT_IVA,0)) AS PAGADO_INTERESES_IVA   -- linea 62; la linea 51 ya publico ese alias</pre></div>
+        <div class="kv"><b>Impacto</b><span>La llave que se entrega al área de riesgos combina el folio con el mínimo de la descripción de sección, mientras la agregación solo agrupa por folio: si un folio tiene más de una sección, la llave identifica una sola sección y los importes suman todas, de modo que quien use la llave como identificador está atribuyendo importes a la sección equivocada. Los atributos descriptivos (cartera administrada, tipo de crédito, tipo de cartera, estado de cartera) se resuelven con MIN o MAX solo para que la consulta sea agregable, así que cuando el folio tiene secciones con atributos distintos se publica uno arbitrario. A esto se suma que el IVA de devolución de pagos de interés se publica bajo el nombre del IVA de intereses pagados. Requiere cuadre con el diccionario contable y con riesgos antes de afirmar que la cifra publicada es incorrecta.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Definir con riesgos la granularidad esperada (folio o folio+sección) y alinear GROUP BY, llave y agregados; los atributos que no sean funcionalmente dependientes del folio deben entrar al GROUP BY o dejar de publicarse. Renombrar la columna de IVA de devolución y añadir una prueba de unicidad de la llave.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Corrección funcional" data-env="BD BD_prod"
+             data-lote="10"
+             data-txt="l10-019 rangos de periodo construidos con between sobre columnas de fecha y hora, junto al patrón correcto en el mismo procedimiento cierre.sp_ind_gen_mes y reportes con @fechaini/@fechafin -- patron correcto (limite superior exclusivo)
+and fec_aplicacion &gt;= dateadd(day,1,dateadd(month,-1,eomonth(@fecha))) and fec_aplicacion &lt; dateadd(day,1,eomonth(@fecha))
+
+-- patron de riesgo en el mismo sp
+and enc_pago.fec_movimiento between dateadd(day, 1, eomonth(@fecha, -1)) and eomonth(@fecha)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L10-019</span>
+        <span class="ti">Rangos de periodo construidos con BETWEEN sobre columnas de fecha y hora, junto al patrón correcto en el mismo procedimiento</span>
+        <span class="meta">Corrección funcional &middot; BD + BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_IND_GEN_MES y reportes con @FechaIni/@FechaFin</span></div>
+        <div class="kv"><b>Ubicación</b><span>SP_IND_GEN_MES:60-61 (patrón correcto) frente a :101, :103, :1245 y otras 72 apariciones de BETWEEN</span></div>
+        <div class="kv"><b>Evidencia</b><pre>-- patron correcto (limite superior exclusivo)
+AND FEC_APLICACION &gt;= DATEADD(DAY,1,DATEADD(MONTH,-1,EOMONTH(@FECHA))) AND FEC_APLICACION &lt; DATEADD(DAY,1,EOMONTH(@FECHA))
+
+-- patron de riesgo en el mismo SP
+AND ENC_PAGO.FEC_MOVIMIENTO BETWEEN DATEADD(DAY, 1, EOMONTH(@FECHA, -1)) AND EOMONTH(@FECHA)</pre></div>
+        <div class="kv"><b>Impacto</b><span>Si FEC_MOVIMIENTO almacena hora (datetime), BETWEEN con límite superior EOMONTH(@FECHA) excluye todos los movimientos del ultimo día del mes posteriores a las 00:00:00, de modo que los pagos del cierre se pierden del periodo y aparecen (o no) en el siguiente. El propio SP usa el patrón correcto unas líneas antes, lo que confirma que la diferencia no es intencional. El mismo riesgo aplica a los reportes que comparan FEC_MOVIMIENTO &lt;= @FechaFin. Requiere confirmar el tipo real de las columnas en la base núcleo.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Verificar el tipo de dato de cada columna de fecha usada en rangos y normalizar todos los filtros al patrón mitad abierta (&gt;= inicio AND &lt; fin+1). Añadir una regla de revisión que prohiba BETWEEN sobre columnas datetime.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Validación de entradas" data-env="BD BD_prod"
+             data-lote="11"
+             data-txt="l10-020 ninguno de los 20 procedimientos de reporte valida sus parámetros de fecha ni acota el rango consultado cierre.*_vis (17), cierre.sp_cas_cierre_rpt, cierre.sp_castigo_ini_rpt, rpt.castigo_reest_saldos 0 de 20 objetos contienen raiserror, throw o una validacion del tipo if @fechafin &lt; @fechaini.
+ejemplo: sp_ind_rpt_desembolsos_cartera_vis(@fechaini date, @fechafin date) consulta directamente
+quiero_confianza_shadow.pr.pr_encabezado_pago with (nolock) sin limite de rango.">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L10-020</span>
+        <span class="ti">Ninguno de los 20 procedimientos de reporte valida sus parámetros de fecha ni acota el rango consultado</span>
+        <span class="meta">Validación de entradas &middot; BD + BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.*_VIS (17), CIERRE.SP_CAS_CIERRE_RPT, CIERRE.SP_CASTIGO_INI_RPT, RPT.CASTIGO_REEST_SALDOS</span></div>
+        <div class="kv"><b>Ubicación</b><span>Revisión de los 20 objetos de reporte de la familia</span></div>
+        <div class="kv"><b>Evidencia</b><pre>0 de 20 objetos contienen RAISERROR, THROW o una validacion del tipo IF @FechaFin &lt; @FechaIni.
+Ejemplo: SP_IND_RPT_DESEMBOLSOS_CARTERA_VIS(@FechaIni DATE, @FechaFin DATE) consulta directamente
+Quiero_Confianza_shadow.PR.PR_ENCABEZADO_PAGO WITH (NOLOCK) sin limite de rango.</pre></div>
+        <div class="kv"><b>Impacto</b><span>Un rango invertido devuelve un resultado vacío que el usuario interpreta como cero operaciones, y un rango abierto (por ejemplo desde 2000) recorre el histórico completo de la base núcleo con NOLOCK durante el horario del cierre, con el consiguiente impacto en el sistema transaccional. Tampoco hay valores por defecto ni control de quien consulta que periodo, lo que dificulta auditar el acceso a información de clientes.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Plantilla de reporte con validación de parámetros (fecha fin &gt;= fecha inicio, rango máximo configurable, fecha no futura) y THROW con mensaje de negocio. Registrar en bitácora usuario, procedimiento, parámetros y filas devueltas para los reportes que exponen datos de clientes.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Robustez" data-env="BD"
+             data-lote="10"
+             data-txt="l10-021 monto_base_interes divide por una expresión que puede ser cero o null y aborta el cierre completo cierre.sp_ind_gen_mes (case when a.num_desc_tipo_credito = 26 then 0 else calculo_intereses_dia.mon_diario end)
+  / ((a.tasa_interes / 100) / 360 * (case when a.tip_calendario = 2 then cast(day(eomonth(@fecha)) as int)
+                                          when a.tip_calendario = 3 then 30 end))">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L10-021</span>
+        <span class="ti">MONTO_BASE_INTERES divide por una expresión que puede ser cero o NULL y aborta el cierre completo</span>
+        <span class="meta">Robustez &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_IND_GEN_MES</span></div>
+        <div class="kv"><b>Ubicación</b><span>CIERRE.SP_IND_GEN_MES:54, :472 y :887</span></div>
+        <div class="kv"><b>Evidencia</b><pre>(CASE WHEN A.NUM_DESC_TIPO_CREDITO = 26 THEN 0 ELSE CALCULO_INTERESES_DIA.MON_DIARIO END)
+  / ((A.TASA_INTERES / 100) / 360 * (CASE WHEN A.TIP_CALENDARIO = 2 THEN CAST(DAY(EOMONTH(@FECHA)) AS INT)
+                                          WHEN A.TIP_CALENDARIO = 3 THEN 30 END))</pre></div>
+        <div class="kv"><b>Impacto</b><span>Si un crédito tiene TASA_INTERES = 0 el divisor es cero y la sentencia falla; como el CASE de TIP_CALENDARIO no tiene ELSE, cualquier valor distinto de 2 o 3 vuelve el divisor NULL y la columna se publica en blanco. En el primer caso el INSERT de todo el cierre individual del mes se interrumpe y, por el patrón de L10-011, el error se registra con etiqueta equivocada y sin propagarse; en el segundo se publica un reporte incompleto sin aviso. Un solo crédito mal configurado detiene el proceso del mes.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Usar NULLIF en el divisor y devolver 0 o NULL de forma explícita, añadir ELSE a los CASE de calendario, y validar antes del cálculo que no existan créditos del universo con tasa nula o tipo de calendario desconocido, reportandolos como excepción de datos en lugar de romper el cierre.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Mantenibilidad" data-env="BD"
+             data-lote="10"
+             data-txt="l10-022 código muerto y listas de tipos de crédito inconsistentes dentro del mismo procedimiento de cierre cierre.sp_ind_gen_mes, cierre.sp_saf_saldos -- el where del bloque limita el universo a estos tipos
+a.num_desc_tipo_credito in (1, 3, 9, 10, 11, 16, 17, 20, 23)
+
+-- pero dentro del mismo bloque se evalua una y otra vez el tipo 26 (cartera castigada)
+case when a.num_desc_tipo_credito = 26 then 0 else ... end        -- rama inalcanzable
+
+-- y las subconsultas internas usan una lista distinta, con el tipo 4
+where num_desc_tipo_credito in (1, 3, 4, 9, 10, 11, 16, 17, 20, 23) and ind_estado = &#x27;d&#x27; and ind_linea = &#x27;n&#x27;
+
+-- sp_saf_saldos:551  /*insert into [cierre].[saf_saldos](...)   (bloque completo comentado)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L10-022</span>
+        <span class="ti">Código muerto y listas de tipos de crédito inconsistentes dentro del mismo procedimiento de cierre</span>
+        <span class="meta">Mantenibilidad &middot; BD &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_IND_GEN_MES, CIERRE.SP_SAF_SALDOS</span></div>
+        <div class="kv"><b>Ubicación</b><span>SP_IND_GEN_MES:48-71 frente a :455-459; :132 y :550 frente a la clausula WHERE de su bloque; SP_SAF_SALDOS:551</span></div>
+        <div class="kv"><b>Evidencia</b><pre>-- el WHERE del bloque limita el universo a estos tipos
+A.NUM_DESC_TIPO_CREDITO IN (1, 3, 9, 10, 11, 16, 17, 20, 23)
+
+-- pero dentro del mismo bloque se evalua una y otra vez el tipo 26 (cartera castigada)
+CASE WHEN A.NUM_DESC_TIPO_CREDITO = 26 THEN 0 ELSE ... END        -- rama inalcanzable
+
+-- y las subconsultas internas usan una lista distinta, con el tipo 4
+WHERE NUM_DESC_TIPO_CREDITO IN (1, 3, 4, 9, 10, 11, 16, 17, 20, 23) AND IND_ESTADO = &#x27;D&#x27; AND IND_LINEA = &#x27;N&#x27;
+
+-- SP_SAF_SALDOS:551  /*INSERT INTO [CIERRE].[SAF_SALDOS](...)   (bloque completo comentado)</pre></div>
+        <div class="kv"><b>Impacto</b><span>Las ramas para el tipo 26 son inalcanzables en los bloques cuyo universo lo excluye, lo que hace creer al lector que la cartera castigada está tratada cuando no entra al reporte. Las subconsultas internas si incluyen el tipo 4, de modo que el mismo procedimiento usa dos definiciones del universo según la profundidad de la consulta. Sumado al bloque INSERT comentado en SP_SAF_SALDOS, el código no permite deducir la regla vigente: cada cambio obliga a decidir por interpretación.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Extraer el universo de tipos de crédito a un catálogo y consumirlo tanto en el WHERE principal como en las subconsultas; eliminar las ramas inalcanzables y el código comentado (el historial queda en el control de versiones). Documentar en el diccionario que representa cada tipo.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Medio" data-cat="Integridad de datos" data-env="BD BD_prod"
+             data-lote="11"
+             data-txt="l10-023 rpt.castigo_reest_saldos reconstruye el ultimo movimiento con max(fecha) sin desempate, con nolock y con tipo de parámetro distinto al resto rpt.castigo_reest_saldos @fecha_sistema datetime       -- el resto de la familia usa date
+
+select num_credito,cod_concepto,tipo,max(fecha_sistema) as fecha_sistema into #referencia
+from [po].[pr_reest_cast_det] where fecha_sistema &lt;= @fecha_sistema group by num_credito,cod_concepto,tipo
+
+select d.num_credito,...,d.mon_pago from [po].[pr_reest_cast_det] d
+  inner join #referencia r on ... and d.fecha_sistema = r.fecha_sistema
+  inner join quiero_confianza_shadow.pr.pr_creditos c with (nolock) on d.num_credito = c.num_credito">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev m">Medio</span>
+        <span class="id">L10-023</span>
+        <span class="ti">RPT.CASTIGO_REEST_SALDOS reconstruye el ultimo movimiento con MAX(fecha) sin desempate, con NOLOCK y con tipo de parámetro distinto al resto</span>
+        <span class="meta">Integridad de datos &middot; BD + BD_prod &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>RPT.CASTIGO_REEST_SALDOS</span></div>
+        <div class="kv"><b>Ubicación</b><span>RPT.CASTIGO_REEST_SALDOS:10-27</span></div>
+        <div class="kv"><b>Evidencia</b><pre>@FECHA_SISTEMA DATETIME       -- el resto de la familia usa DATE
+
+SELECT NUM_CREDITO,COD_CONCEPTO,TIPO,MAX(fecha_sistema) AS FECHA_SISTEMA INTO #referencia
+FROM [PO].[PR_REEST_CAST_DET] WHERE fecha_sistema &lt;= @FECHA_SISTEMA GROUP BY NUM_CREDITO,COD_CONCEPTO,TIPO
+
+SELECT D.NUM_CREDITO,...,D.MON_PAGO FROM [PO].[PR_REEST_CAST_DET] D
+  INNER JOIN #referencia R ON ... AND D.FECHA_SISTEMA = R.FECHA_SISTEMA
+  INNER JOIN Quiero_Confianza_shadow.PR.PR_CREDITOS C WITH (NOLOCK) ON D.NUM_CREDITO = C.NUM_CREDITO</pre></div>
+        <div class="kv"><b>Impacto</b><span>El patrón &#x27;ultimo por fecha&#x27; sin desempate duplica filas cuando existe más de un movimiento con la misma fecha para el mismo crédito, concepto y tipo: el reporte de saldos remanentes de reestructuras de créditos castigados sumaria el importe dos veces. El parámetro DATETIME acepta una hora que el filtro compara contra una columna que el resto del sistema trata como fecha, con el mismo riesgo de truncamiento de L10-019. Requiere validación contra la unicidad real de PO.PR_REEST_CAST_DET.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Sustituir el patrón por ROW_NUMBER() OVER (PARTITION BY crédito, concepto, tipo ORDER BY fecha DESC, secuencia DESC) = 1 con un desempate determinístico, homogeneizar el parámetro a DATE y retirar el NOLOCK.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Bajo" data-cat="Mantenibilidad" data-env="BD"
+             data-lote="11"
+             data-txt="l10-024 nombres y metadatos de encabezado inconsistentes en la familia de cierre cierre.sp_rpt_quitas_y_condinaciones_cartera_vis, cierre.sp_cmr_dia_vis y otros cierre.sp_rpt_quitas_y_condinaciones_cartera_vis   -- &#x27;condinaciones&#x27; por &#x27;condonaciones&#x27;
+-- creacion: 202500521   (sp_cmr_dia_vis, nueve digitos)
+-- create date: 24/12/2025 frente a -- creacion: 20250424   (dos formatos y dos idiomas de encabezado)
+create   procedure / create    procedure   (espaciado irregular por reimplementaciones sucesivas)">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev b">Bajo</span>
+        <span class="id">L10-024</span>
+        <span class="ti">Nombres y metadatos de encabezado inconsistentes en la familia de cierre</span>
+        <span class="meta">Mantenibilidad &middot; BD &middot; esfuerzo S (&lt;1 día)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_RPT_QUITAS_Y_CONDINACIONES_CARTERA_VIS, CIERRE.SP_CMR_DIA_VIS y otros</span></div>
+        <div class="kv"><b>Ubicación</b><span>Encabezados de los 27 objetos</span></div>
+        <div class="kv"><b>Evidencia</b><pre>CIERRE.SP_RPT_QUITAS_Y_CONDINACIONES_CARTERA_VIS   -- &#x27;CONDINACIONES&#x27; por &#x27;CONDONACIONES&#x27;
+-- Creacion: 202500521   (SP_CMR_DIA_VIS, nueve digitos)
+-- Create date: 24/12/2025 frente a -- Creacion: 20250424   (dos formatos y dos idiomas de encabezado)
+CREATE   PROCEDURE / CREATE    PROCEDURE   (espaciado irregular por reimplementaciones sucesivas)</pre></div>
+        <div class="kv"><b>Impacto</b><span>El error tipográfico queda fijado en el nombre publico del objeto, por lo que corregirlo obliga a tocar todos los consumidores (reportes RDL, portales, jobs). Los encabezados con formatos y fechas invalidas impiden usar la cabecera como fuente de trazabilidad de cambios, que hoy es el único registro de autoría del repositorio.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Corregir el nombre con sinónimo temporal para no romper consumidores, y adoptar una plantilla de encabezado obligatoria (autor, fecha ISO, descripción, ticket) validada en revisión de código.</span></div>
+      </div>
+    </article>
+    <article class="f" data-sev="Bajo" data-cat="Hardcodes" data-env="BD BD_prod"
+             data-lote="11"
+             data-txt="l10-025 centinelas y literales de programa embebidos en la lógica de cierre cierre.sp_ind_gen_mes, cierre.sp_ind_gen_mes_mod, cierre.sp_saf_saldos and fec_exigible_pago &lt;= &#x27;20201231&#x27;      -- 45 ocurrencias: fin del programa covid
+isnull(max(fec_reclasificacion), &#x27;20000101&#x27;)  -- 45 ocurrencias: centinela de &#x27;sin reclasificacion&#x27;
+set c.covid19 = &#x27;balloon&#x27;, c.cuotas_posposicion = cuotas_posposicion + 1
+.16 * calculo_intereses_dia.mon_diario   /   ((a.tasa_interes * 0.16) + a.tasa_interes)   /   360">
+      <header onclick="this.parentNode.classList.toggle('open')">
+        <span class="sev b">Bajo</span>
+        <span class="id">L10-025</span>
+        <span class="ti">Centinelas y literales de programa embebidos en la lógica de cierre</span>
+        <span class="meta">Hardcodes &middot; BD + BD_prod &middot; esfuerzo M (1-3 días)</span>
+        <span class="chev">&#9662;</span>
+      </header>
+      <div class="body">
+        <div class="kv"><b>Objeto</b><span>CIERRE.SP_IND_GEN_MES, CIERRE.SP_IND_GEN_MES_MOD, CIERRE.SP_SAF_SALDOS</span></div>
+        <div class="kv"><b>Ubicación</b><span>SP_IND_GEN_MES:80-163 (&#x27;20201231&#x27;, 45 ocurrencias y &#x27;20000101&#x27;, 45 ocurrencias), SP_IND_GEN_MES_MOD:89-90 (&#x27;BALLOON&#x27;)</span></div>
+        <div class="kv"><b>Evidencia</b><pre>AND FEC_EXIGIBLE_PAGO &lt;= &#x27;20201231&#x27;      -- 45 ocurrencias: fin del programa COVID
+isnull(max(fec_reclasificacion), &#x27;20000101&#x27;)  -- 45 ocurrencias: centinela de &#x27;sin reclasificacion&#x27;
+SET C.COVID19 = &#x27;BALLOON&#x27;, C.CUOTAS_POSPOSICION = CUOTAS_POSPOSICION + 1
+.16 * CALCULO_INTERESES_DIA.MON_DIARIO   /   ((A.TASA_INTERES * 0.16) + A.TASA_INTERES)   /   360</pre></div>
+        <div class="kv"><b>Impacto</b><span>La vigencia del programa COVID está escrita 45 veces en el mismo procedimiento: cualquier ajuste regulatorio obliga a 45 ediciones coordinadas y una omisión produce una clasificación mixta. El centinela &#x27;20000101&#x27; sustituye la ausencia de reclasificación por una fecha real, de modo que un error de datos se vuelve indistinguible de un dato valido. El campo COVID19 se reutiliza para marcar &#x27;BALLOON&#x27;, mezclando dos conceptos en una columna. El IVA aparece como .16 y como 0.16 y la base anual como 360 sin declararlo.</span></div>
+        <div class="kv rem"><b>Remediación</b><span>Mover la vigencia del programa a un catálogo con fecha inicio y fin, sustituir el centinela por NULL con tratamiento explícito, separar la marca de esquema ballon del campo COVID19 y centralizar tasa de IVA y base de días en la tabla de parámetros que ya propone el plan.</span></div>
+      </div>
+    </article></div>
+
+
+  <h2>Cobertura del lote: 27 objetos revisados</h2>
+  <div class="bar">
+    <label>Lote</label><select id="cl"><option value="">Todos</option><option>10</option><option>11</option></select>
+    <input type="search" id="cq" placeholder="Buscar objeto...">
+    <button class="rst" onclick="resetCob()">Limpiar</button>
+    <span class="count" id="ccnt"></span>
+  </div>
+  <table><thead><tr><th>Lote</th><th>Objeto</th><th>Líneas</th><th>En BD_prod</th><th>ID_POLIZA</th>
+    <th>NOLOCK</th><th>Cursores</th><th>Patrón transaccional</th></tr></thead>
+  <tbody id="cbody">
+      <tr data-lote="10" data-txt="cierre.sp_cmr_dia">
+        <td class="num">10</td><td class="mono">CIERRE.SP_CMR_DIA</td>
+        <td class="num">393</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">46</td>
+        <td class="num">0</td><td>TRAN + TRY/CATCH sin XACT_ABORT ni THROW</td></tr>      <tr data-lote="10" data-txt="cierre.sp_cmr_gen_dia [revisado en lote 1 (l1-019)]">
+        <td class="num">10</td><td class="mono">CIERRE.SP_CMR_GEN_DIA [revisado en lote 1 (L1-019)]</td>
+        <td class="num">515</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">49</td>
+        <td class="num">0</td><td>TRAN + TRY/CATCH sin XACT_ABORT ni THROW</td></tr>      <tr data-lote="10" data-txt="cierre.sp_cmr_gen_mes [revisado en lote 1 (l1-001, l1-016)]">
+        <td class="num">10</td><td class="mono">CIERRE.SP_CMR_GEN_MES [revisado en lote 1 (L1-001, L1-016)]</td>
+        <td class="num">880</td><td>sí</td>
+        <td class="num">-</td><td class="num">72</td>
+        <td class="num">0</td><td>TRAN + TRY/CATCH sin XACT_ABORT ni THROW</td></tr>      <tr data-lote="10" data-txt="cierre.sp_cmr_rpt_intereses_devengados_vis">
+        <td class="num">10</td><td class="mono">CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS</td>
+        <td class="num">558</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">37</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="10" data-txt="cierre.sp_ind_gen_mes [revisado en lote 1 (l1-005)]">
+        <td class="num">10</td><td class="mono">CIERRE.SP_IND_GEN_MES [revisado en lote 1 (L1-005)]</td>
+        <td class="num">1,303</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">0</td>
+        <td class="num">0</td><td>TRAN + TRY/CATCH sin XACT_ABORT ni THROW</td></tr>      <tr data-lote="10" data-txt="cierre.sp_ind_gen_mes_mod [revisado en lote 1 (l1-006)]">
+        <td class="num">10</td><td class="mono">CIERRE.SP_IND_GEN_MES_MOD [revisado en lote 1 (L1-006)]</td>
+        <td class="num">227</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">0</td>
+        <td class="num">0</td><td>TRAN sin TRY/CATCH ni XACT_ABORT</td></tr>      <tr data-lote="10" data-txt="cierre.sp_ind_rpt_intereses_devengados_vis">
+        <td class="num">10</td><td class="mono">CIERRE.SP_IND_RPT_INTERESES_DEVENGADOS_VIS</td>
+        <td class="num">385</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">40</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="10" data-txt="cierre.sp_saf_saldos [revisado en lote 1 (l1-014)]">
+        <td class="num">10</td><td class="mono">CIERRE.SP_SAF_SALDOS [revisado en lote 1 (L1-014)]</td>
+        <td class="num">574</td><td>sí</td>
+        <td class="num">-</td><td class="num">0</td>
+        <td class="num">6</td><td>TRAN + TRY/CATCH sin XACT_ABORT ni THROW</td></tr>      <tr data-lote="10" data-txt="cierre.sp_saf_saldos_snd">
+        <td class="num">10</td><td class="mono">CIERRE.SP_SAF_SALDOS_SND</td>
+        <td class="num">368</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">1</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_castigo_ini_rpt">
+        <td class="num">11</td><td class="mono">CIERRE.SP_CASTIGO_INI_RPT</td>
+        <td class="num">273</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">8</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_cas_cierre_rpt">
+        <td class="num">11</td><td class="mono">CIERRE.SP_CAS_CIERRE_RPT</td>
+        <td class="num">157</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">4</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_cmr_dia_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_CMR_DIA_VIS</td>
+        <td class="num">75</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">0</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_cmr_gen_dia_cartera_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_CMR_GEN_DIA_CARTERA_VIS</td>
+        <td class="num">123</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">0</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_cmr_gen_dia_contabilidad_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_CMR_GEN_DIA_CONTABILIDAD_VIS</td>
+        <td class="num">135</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">0</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_cmr_gen_dia_control_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_CMR_GEN_DIA_CONTROL_VIS</td>
+        <td class="num">112</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">0</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_cmr_gen_dia_finanzas_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_CMR_GEN_DIA_FINANZAS_VIS</td>
+        <td class="num">123</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">0</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_cmr_gen_dia_riesgos_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_CMR_GEN_DIA_RIESGOS_VIS</td>
+        <td class="num">140</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">0</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_cmr_mes_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_CMR_MES_VIS</td>
+        <td class="num">183</td><td>sí</td>
+        <td class="num">-</td><td class="num">0</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_cmr_rpt_cierre_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_CMR_RPT_CIERRE_VIS</td>
+        <td class="num">102</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">0</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_cmr_rpt_desembolsos_cartera_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_CMR_RPT_DESEMBOLSOS_CARTERA_VIS</td>
+        <td class="num">58</td><td>sí</td>
+        <td class="num">-</td><td class="num">8</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_ind_rpt_cierre_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_IND_RPT_CIERRE_VIS</td>
+        <td class="num">273</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">1</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_ind_rpt_desembolsos_cartera_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_IND_RPT_DESEMBOLSOS_CARTERA_VIS</td>
+        <td class="num">52</td><td>sí</td>
+        <td class="num">-</td><td class="num">4</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_rpt_castigos_cartera_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_RPT_CASTIGOS_CARTERA_VIS</td>
+        <td class="num">366</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">4</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_rpt_cobranza_cartera_cmr_ind_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_RPT_COBRANZA_CARTERA_CMR_IND_VIS</td>
+        <td class="num">286</td><td>sí</td>
+        <td class="num">si</td><td class="num">0</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_rpt_quitas_y_condinaciones_cartera_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_RPT_QUITAS_Y_CONDINACIONES_CARTERA_VIS</td>
+        <td class="num">149</td><td><b>no</b></td>
+        <td class="num">-</td><td class="num">4</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="cierre.sp_rpt_ventas_de_cartera_vis">
+        <td class="num">11</td><td class="mono">CIERRE.SP_RPT_VENTAS_DE_CARTERA_VIS</td>
+        <td class="num">273</td><td>sí</td>
+        <td class="num">-</td><td class="num">8</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>      <tr data-lote="11" data-txt="rpt.castigo_reest_saldos [revisado en lote 6 (l6-005)]">
+        <td class="num">11</td><td class="mono">RPT.CASTIGO_REEST_SALDOS [revisado en lote 6 (L6-005)]</td>
+        <td class="num">31</td><td>sí</td>
+        <td class="num">-</td><td class="num">1</td>
+        <td class="num">0</td><td>sin transacción (reporte)</td></tr>
+  </tbody></table>
+
+  <h2>Catálogo de valores hardcodeados y clasificación de parametrización</h2>
+  <div class="bar">
+    <label>Clasificación</label><select id="hc"><option value="">Todas</option><option>Catálogo en BD (no editable en portal)</option><option>Configuración de ambiente</option><option>No parametrizable: es un defecto</option><option>No parametrizable: es un defecto de modelo</option><option>Parametrizable en portal (catálogo contable)</option><option>Parametrizable en portal (catálogo)</option><option>Parametrizable en portal (con cuatro ojos)</option><option>Parametrizable en portal (definición de universo)</option></select>
+    <input type="search" id="hq" placeholder="Buscar valor, tipo, destino...">
+    <button class="rst" onclick="resetHc()">Limpiar</button>
+    <span class="count" id="hcnt"></span>
+  </div>
+  <table class="hard"><thead><tr><th>Valor</th><th>Tipo</th><th>Ocurrencias</th><th>Clasificación</th><th>Destino propuesto</th><th>Nota</th></tr></thead>
+  <tbody id="hbody">
+      <tr data-clas="Parametrizable en portal (con cuatro ojos)"
+          data-txt="&#x27;20201231&#x27; (fin de vigencia del programa covid) vigencia de programa catálogo de programas con fecha inicio/fin se combina con el umbral 6051 de dbo.fn_es_covid (l6-003): dos definiciones distintas de &#x27;cuota covid&#x27;">
+        <td class="mono">&#x27;20201231&#x27; (fin de vigencia del programa COVID)</td><td>Vigencia de programa</td><td class="num">45 en CIERRE.SP_IND_GEN_MES</td>
+        <td><span class="pill p2">Parametrizable en portal (con cuatro ojos)</span></td>
+        <td>Catálogo de programas con fecha inicio/fin</td><td class="nota">Se combina con el umbral 6051 de dbo.FN_ES_COVID (L6-003): dos definiciones distintas de &#x27;cuota COVID&#x27;</td></tr>      <tr data-clas="Parametrizable en portal (con cuatro ojos)"
+          data-txt="0.10 / 0.90 (participación ion / afirme) regla de negocio tabla de participaciones (tipo de crédito, participante, porcentaje, vigencia) aquí obliga a triplicar 400 líneas de código: parametrizarlo elimina dos copias">
+        <td class="mono">0.10 / 0.90 (participación ION / Afirme)</td><td>Regla de negocio</td><td class="num">SP_IND_GEN_MES (@PORC_ION, @PORC_AFIRME) y 28 archivos de los lotes 2-5</td>
+        <td><span class="pill p2">Parametrizable en portal (con cuatro ojos)</span></td>
+        <td>Tabla de participaciones (tipo de crédito, participante, porcentaje, vigencia)</td><td class="nota">Aquí obliga a triplicar 400 líneas de código: parametrizarlo elimina dos copias</td></tr>      <tr data-clas="Parametrizable en portal (con cuatro ojos)"
+          data-txt="0.16 y .16 (iva) regla fiscal param.iva_tasa con vigencia dos escrituras distintas del mismo valor dificultan incluso localizarlo">
+        <td class="mono">0.16 y .16 (IVA)</td><td>Regla fiscal</td><td class="num">SP_IND_GEN_MES y SP_SAF_SALDOS en esta familia; 52 de los 100 objetos de los lotes 1-5</td>
+        <td><span class="pill p2">Parametrizable en portal (con cuatro ojos)</span></td>
+        <td>PARAM.IVA_TASA con vigencia</td><td class="nota">Dos escrituras distintas del mismo valor dificultan incluso localizarlo</td></tr>      <tr data-clas="Catálogo en BD (no editable en portal)"
+          data-txt="360 (base de días del ano) y 30 / day(eomonth()) por tip_calendario convención de cálculo catálogo de convenciones de calendario el case sin else lo vuelve además un riesgo de robustez (l10-021)">
+        <td class="mono">360 (base de días del ano) y 30 / DAY(EOMONTH()) por TIP_CALENDARIO</td><td>Convención de cálculo</td><td class="num">3 en SP_IND_GEN_MES</td>
+        <td><span class="pill p2">Catálogo en BD (no editable en portal)</span></td>
+        <td>Catálogo de convenciones de calendario</td><td class="nota">El CASE sin ELSE lo vuelve además un riesgo de robustez (L10-021)</td></tr>      <tr data-clas="Parametrizable en portal (catálogo)"
+          data-txt="cod_origen in (&#x27;008&#x27;,&#x27;031&#x27;,&#x27;046&#x27;) / (&#x27;008&#x27;,&#x27;031&#x27;) (cartera sin restricción) clasificación de cartera catálogo cod_origen -&gt; tipo de cartera y etiqueta origen directo de descuadres entre reportes (l10-008)">
+        <td class="mono">COD_ORIGEN IN (&#x27;008&#x27;,&#x27;031&#x27;,&#x27;046&#x27;) / (&#x27;008&#x27;,&#x27;031&#x27;) (cartera sin restricción)</td><td>Clasificación de cartera</td><td class="num">3 + 18 ocurrencias con listas distintas</td>
+        <td><span class="pill p1">Parametrizable en portal (catálogo)</span></td>
+        <td>Catálogo COD_ORIGEN -&gt; tipo de cartera y etiqueta</td><td class="nota">Origen directo de descuadres entre reportes (L10-008)</td></tr>      <tr data-clas="Parametrizable en portal (catálogo)"
+          data-txt="id_cuenta not in (&#x27;2061&#x27;,&#x27;2056&#x27;,&#x27;2068&#x27;[,&#x27;2076&#x27;][,&#x27;1020010502130300&#x27;]) exclusiones operativas catálogo de cuentas con marca de exclusión por reporte los comentarios nombran contrapartes (stdr fiso, inbursa, siniestro): el catálogo debe conservar esa descripción">
+        <td class="mono">Id_cuenta NOT IN (&#x27;2061&#x27;,&#x27;2056&#x27;,&#x27;2068&#x27;[,&#x27;2076&#x27;][,&#x27;1020010502130300&#x27;])</td><td>Exclusiones operativas</td><td class="num">19 ocurrencias con 6 variantes, algunas numéricas</td>
+        <td><span class="pill p1">Parametrizable en portal (catálogo)</span></td>
+        <td>Catálogo de cuentas con marca de exclusión por reporte</td><td class="nota">Los comentarios nombran contrapartes (STDR FISO, INBURSA, SINIESTRO): el catálogo debe conservar esa descripción</td></tr>      <tr data-clas="Parametrizable en portal (catálogo contable)"
+          data-txt="rubros (&#x27;ase_financiera&#x27;,&#x27;com_cierre_obra&#x27;,&#x27;com_prorroga&#x27;,&#x27;com_reestructura&#x27;,&#x27;opi_valor&#x27;,&#x27;visita_extra&#x27;) catálogo contable catálogo de rubros con marca de uso por reporte hoy la lista no coincide con lo que se materializa en cierre.saf_saldos (l10-007)">
+        <td class="mono">Rubros (&#x27;ASE_FINANCIERA&#x27;,&#x27;COM_CIERRE_OBRA&#x27;,&#x27;COM_PRORROGA&#x27;,&#x27;COM_REESTRUCTURA&#x27;,&#x27;OPI_VALOR&#x27;,&#x27;VISITA_EXTRA&#x27;)</td><td>Catálogo contable</td><td class="num">SP_CAS_CIERRE_RPT y 6 objetos más de la familia</td>
+        <td><span class="pill p1">Parametrizable en portal (catálogo contable)</span></td>
+        <td>Catálogo de rubros con marca de uso por reporte</td><td class="nota">Hoy la lista no coincide con lo que se materializa en CIERRE.SAF_SALDOS (L10-007)</td></tr>      <tr data-clas="Parametrizable en portal (definición de universo)"
+          data-txt="tipos de crédito: (1,3,9,10,11,16,17,20,23), (1,3,4,9,10,11,16,17,20,23), 4, 25, 26, 29 definición de universo catálogo de tipos de crédito con atributos (castigado, individual, comercial, participado) en esta familia genera ramas inalcanzables y universos contradictorios (l10-022)">
+        <td class="mono">Tipos de crédito: (1,3,9,10,11,16,17,20,23), (1,3,4,9,10,11,16,17,20,23), 4, 25, 26, 29</td><td>Definición de universo</td><td class="num">múltiples por objeto; 37 listas distintas en todo el repositorio (L6-015)</td>
+        <td><span class="pill p1">Parametrizable en portal (definición de universo)</span></td>
+        <td>Catálogo de tipos de crédito con atributos (castigado, individual, comercial, participado)</td><td class="nota">En esta familia genera ramas inalcanzables y universos contradictorios (L10-022)</td></tr>      <tr data-clas="No parametrizable: es un defecto"
+          data-txt="&#x27;20000101&#x27; (centinela de fecha inexistente) valor centinela eliminar: usar null y tratamiento explícito un centinela con forma de fecha valida contamina cualquier cálculo de antigüedad">
+        <td class="mono">&#x27;20000101&#x27; (centinela de fecha inexistente)</td><td>Valor centinela</td><td class="num">45 en SP_IND_GEN_MES</td>
+        <td><span class="pill p4">No parametrizable: es un defecto</span></td>
+        <td>Eliminar: usar NULL y tratamiento explícito</td><td class="nota">Un centinela con forma de fecha valida contamina cualquier cálculo de antigüedad</td></tr>      <tr data-clas="No parametrizable: es un defecto de modelo"
+          data-txt="&#x27;balloon&#x27; en la columna covid19 marca de esquema de pago columna propia para esquema de pago reutilizar la columna covid19 impide filtrar por programa">
+        <td class="mono">&#x27;BALLOON&#x27; en la columna COVID19</td><td>Marca de esquema de pago</td><td class="num">1 en SP_IND_GEN_MES_MOD</td>
+        <td><span class="pill p2">No parametrizable: es un defecto de modelo</span></td>
+        <td>Columna propia para esquema de pago</td><td class="nota">Reutilizar la columna COVID19 impide filtrar por programa</td></tr>      <tr data-clas="Configuración de ambiente"
+          data-txt="nombres de base: quiero_confianza, quiero_confianza_shadow, kardia configuración técnica por ambiente sinónimos por ambiente; el código no debe nombrar la base prerrequisito de cualquier remediación: hoy cada corrección debe aplicarse dos veces">
+        <td class="mono">Nombres de base: Quiero_Confianza, Quiero_Confianza_shadow, KARDIA</td><td>Configuración técnica por ambiente</td><td class="num">753 referencias en 17 de 27 objetos; mezcla de dos bases en SP_CMR_GEN_MES</td>
+        <td><span class="pill p3">Configuración de ambiente</span></td>
+        <td>Sinónimos por ambiente; el código no debe nombrar la base</td><td class="nota">Prerrequisito de cualquier remediación: hoy cada corrección debe aplicarse dos veces</td></tr>      <tr data-clas="No parametrizable: es un defecto"
+          data-txt="etiquetas de bitácora &#x27;sp_saf_cierre_cmr_mes&#x27;, &#x27;sp_saf_cierre_ind_mes&#x27;, &#x27;sp_saf_cierre_saldos&#x27; e id_poliza = 0 identificador de proceso object_name(@@procid) y la póliza real ninguno de los tres nombres existe como objeto (l10-003)">
+        <td class="mono">Etiquetas de bitácora &#x27;SP_SAF_CIERRE_CMR_MES&#x27;, &#x27;SP_SAF_CIERRE_IND_MES&#x27;, &#x27;SP_SAF_CIERRE_SALDOS&#x27; e ID_POLIZA = 0</td><td>Identificador de proceso</td><td class="num">5 objetos</td>
+        <td><span class="pill p4">No parametrizable: es un defecto</span></td>
+        <td>OBJECT_NAME(@@PROCID) y la póliza real</td><td class="nota">Ninguno de los tres nombres existe como objeto (L10-003)</td></tr>
+  </tbody></table>
+
+  <h2>Plan de despliegue de la parametrización</h2>
+      <div class="fase"><h3>Fase 0 - Reconciliación de ambientes (prerrequisito)</h3>
+        <p class="obj">Saber que corre realmente en producción antes de tocar código</p><ul><li>Comparar los 27 objetos contra sys.sql_modules de producción (nombre, fecha de modificación y hash) y resolver los 19 ausentes: export incompleto o falta de promoción</li><li>Aclarar en particular SP_SAF_SALDOS (573 líneas en BD y 223 en BD_prod, sin los bloques de saldos en orden ni post-castigo)</li><li>Publicar la matriz de paridad como línea base del control de cambios</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Nulo en producción: solo lectura de metadatos. Sin este paso cualquier remediación se aplica sobre una versión equivocada</p></div>      <div class="fase"><h3>Fase 1 - Correcciones puntuales de bajo riesgo</h3>
+        <p class="obj">Cerrar defectos acotados que hoy producen cifras o bitácoras equivocadas</p><ul><li>L10-003: sustituir las etiquetas de bitácora por OBJECT_NAME(@@PROCID), registrar la póliza real y terminar el CATCH con THROW</li><li>L10-002: envolver SP_IND_GEN_MES_MOD en TRY/CATCH con XACT_ABORT y XACT_STATE</li><li>L10-017: renombrar las columnas duplicadas de los tres reportes por área, coordinando con los consumidores RDL</li><li>L10-021: NULLIF en el divisor de MONTO_BASE_INTERES y ELSE explícito en los CASE de calendario</li><li>L10-015: decidir y documentar el filtro de fecha comentado del bloque de moratorios</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Bajo. Cambios locales y verificables ejecutando el cierre de una fecha ya cerrada en QA y comparando resultados</p></div>      <div class="fase"><h3>Fase 2 - Cuadres contables pendientes de validación</h3>
+        <p class="obj">Confirmar con contabilidad y riesgos los hallazgos que no pueden cerrarse solo con el código</p><ul><li>L10-001: definir la columna correcta de cada UPDATE de SP_IND_GEN_MES_MOD y volverlo idempotente por (CREDITO, PERIODO)</li><li>L10-005: unificar el universo de créditos de SP_SAF_SALDOS (criterio de cancelación contradictorio)</li><li>L10-007: confirmar el catálogo real de rubros de CIERRE.SAF_SALDOS y corregir generador o filtro</li><li>L10-018: acordar la granularidad del reporte de riesgos y revisar los rótulos de los totales posteriores al castigo</li><li>L10-019: verificar los tipos de dato de las columnas de fecha y normalizar los rangos a mitad abierta</li><li>Instrumentar, para cada punto, una prueba de cuadre automatizada que se ejecute al final del cierre</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Medio: cambian cifras publicadas. Requiere reproceso controlado de un periodo cerrado y firma de contabilidad</p></div>      <div class="fase"><h3>Fase 3 - Parametrización desde el portal</h3>
+        <p class="obj">Sacar del código los valores de negocio identificados en el catálogo de hardcodes</p><ul><li>Modelo de parámetros: PARAM.PARAMETRO (clave, valor, vigencia, aprobador) y catálogos (rubros, orígenes de fondos, cuentas excluidas, tipos de crédito, participaciones, programas)</li><li>Portal: alta, baja y cambio con vigencia, doble aprobación para IVA, participaciones y vigencia de programas, y bitácora inmutable de quien cambio que</li><li>Migración por dominio, empezando por cuentas excluidas y orígenes de fondos (L10-008, L10-009), que son puro catálogo y explican descuadres actuales entre reportes</li><li>Vista de conciliación que muestre, para cada parámetro, que procesos lo consumen</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Medio. Se despliega en paralelo: los SPs leen el catálogo pero el valor inicial replica exactamente el literal actual, de modo que el primer despliegue no cambia ninguna cifra</p></div>      <div class="fase"><h3>Fase 4 - Ambientes y despliegue reproducible</h3>
+        <p class="obj">Eliminar la causa estructural del drift</p><ul><li>Capa de sinónimos por ambiente y sustitución de las 753 referencias literales a bases externas (L10-004)</li><li>Un solo repositorio de base de datos con despliegue automatizado y verificación que rechace nombres de base literales, NOLOCK en objetos contables y alias duplicados</li><li>Retirar del repositorio los objetos de prueba y los bloques comentados (L10-022)</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Medio-alto por alcance, bajo por contenido: el cuerpo de los SPs no cambia de lógica, solo de referencia. Se valida comparando planes y resultados de una fecha cerrada</p></div>      <div class="fase"><h3>Fase 5 - Rendimiento y concurrencia del cierre</h3>
+        <p class="obj">Reducir la ventana del cierre y volver reproducibles las cifras</p><ul><li>L10-012: reescribir SP_IND_GEN_MES con agregaciones por rubro y una tabla de participaciones, eliminando las tres copias del bloque</li><li>L10-013: cursores LOCAL como medida inmediata y sustitución por operaciones de conjunto como objetivo</li><li>L10-016: retirar NOLOCK de los objetos contables y ejecutar los reportes sobre una fotografía consistente</li><li>L10-014: llave natural única en CIERRE.IND_REP, revisión de la clave agrupada aleatoria e índices de apoyo por fecha</li><li>L10-010: unificar SP_CMR_DIA y SP_CMR_GEN_DIA</li><li>Medir antes y después (duración, lecturas, bloqueos) para justificar cada cambio</li></ul>
+        <p class="riesgo"><b>Riesgo:</b> Alto: es reingeniería de los procesos que producen la contabilidad. Exige ejecución en paralelo contra la versión actual durante varios cierres antes de sustituir</p></div>
+
+  <h2>Valor agregado propuesto</h2>
+  <ul class="va"><li>El cierre es el punto donde convergen todos los patrones detectados en los lotes anteriores: aquí el drift de ambientes, la falta de idempotencia, el NOLOCK y los hardcodes dejan de ser deuda técnica y se convierten en cifras contables. Por eso conviene tratar la familia CIERRE como el caso piloto de la remediación: es donde el beneficio es medible (cuadre y duración del cierre) y donde ya existen tablas con llave natural que sirven de referencia de buen diseño.</li><li>Tres de los hallazgos de esta fase no se descubren leyendo un solo objeto, sino comparando objetos hermanos: el criterio de cancelación invertido dentro de SP_SAF_SALDOS, las dos definiciones de cartera sin restricción y los clones SP_CMR_DIA / SP_CMR_GEN_DIA. Vale la pena incorporar esa comparación como control permanente: un chequeo automático que agrupe procedimientos por similitud y alerte cuando dos copias divergen.</li><li>El diagnostico deja lista una batería de pruebas de cuadre que hoy no existe: total de saldos normales frente a saldos en orden, CMR_REP frente a CMR_DIA_REP, IND_REP frente a la fuente de capital, y rubros solicitados por los reportes frente a rubros materializados. Ejecutarlas al final de cada cierre convierte estos hallazgos en un control continuo en lugar de un informe puntual.</li><li>El portal de parámetros puede entregar valor antes de tocar el código del cierre: publicando los catálogos de cuentas excluidas y orígenes de fondos junto con la lista de procesos que los consumen, el área de negocio obtiene por primera vez la trazabilidad de por que dos reportes del mismo periodo no coinciden.</li><li>Recomendación de gobierno: exigir que ningún objeto de cierre se promueva sin bitácora con nombre real de proceso, sin propagación de error y sin prueba de idempotencia. Con esas tres reglas, los hallazgos críticos de este lote no habrían llegado a producción.</li></ul>
+</div>
+<footer>Generado por la auditoría automatizada + revisión manual del código. Los hallazgos se sustentan en el código fuente;
+los que dependen de datos o de plan de ejecución se marcan como tales en el impacto. Siguiente paso: validar los hallazgos y continuar con el siguiente lote.</footer>
+<script>
+const $=s=>document.querySelector(s), fs=$('#fs'),fc=$('#fc'),fe=$('#fe'),fq=$('#fq'),fl=$('#fl');
+function apply(){
+  let n=0, all=document.querySelectorAll('.f');
+  all.forEach(f=>{
+    const ok=(!fs.value||f.dataset.sev===fs.value)
+      &&(!fc.value||f.dataset.cat===fc.value)
+      &&(!fe.value||f.dataset.env.split(' ').includes(fe.value))
+      &&(!fl||!fl.value||f.dataset.lote===fl.value)
+      &&(!fq.value||f.dataset.txt.includes(fq.value.toLowerCase()));
+    f.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  $('#cnt').textContent=n+' de '+all.length+' hallazgos';
+}
+[fs,fc,fe,fl].forEach(x=>{if(x)x.onchange=apply;}); fq.oninput=apply;
+function reset(){fs.value=fc.value=fe.value='';if(fl)fl.value='';fq.value='';apply();}
+const cl=$('#cl'),cq=$('#cq');
+function applyCob(){
+  if(!cl)return; let n=0, rows=document.querySelectorAll('#cbody tr');
+  rows.forEach(r=>{
+    const ok=(!cl.value||r.dataset.lote===cl.value)&&(!cq.value||r.dataset.txt.includes(cq.value.toLowerCase()));
+    r.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  $('#ccnt').textContent=n+' de '+rows.length+' objetos';
+}
+if(cl){cl.onchange=applyCob; cq.oninput=applyCob;}
+function resetCob(){cl.value='';cq.value='';applyCob();}
+const hc=$('#hc'),hq=$('#hq');
+function applyHc(){
+  let n=0, rows=document.querySelectorAll('#hbody tr');
+  rows.forEach(r=>{
+    const ok=(!hc.value||r.dataset.clas===hc.value)&&(!hq.value||r.dataset.txt.includes(hq.value.toLowerCase()));
+    r.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  $('#hcnt').textContent=n+' de '+rows.length+' grupos';
+}
+hc.onchange=applyHc; hq.oninput=applyHc;
+function resetHc(){hc.value='';hq.value='';applyHc();}
+apply();applyHc();applyCob();
+</script>
+</body></html>
