@@ -193,7 +193,11 @@ de configuración por corrida del cierre.
   <span class="mono">PR.PR_DESC_TIPOS_CREDITO</span>, 45 rubros de <span class="mono">PR.PR_RUBRO</span> con sus
   banderas de origen y 44 orígenes de <span class="mono">PR.PR_ORIGEN_FONDOS</span>. La clasificación de cartera
   y administrador, las banderas por proceso y el concepto contable son locales: no vienen del origen y son
-  justamente lo que administra el portal.</div>
+  justamente lo que administra el portal. La versión de septiembre 30 agrega dos cosas: los rubros
+  <b>derivados</b> que el cierre fabrica (<span class="mono">PRINCIPAL_VENCIDO</span>,
+  <span class="mono">INTERES_NO_EXIGIBLES</span>) con su regla de cálculo y su alias, y la bandera de
+  restricción administrada <b>por ámbito</b>, porque el cliente confirmó que la respuesta depende del
+  proceso.</div>
   <span class="x" onclick="this.parentNode.remove()">Cerrar</span>
 </div>
 
@@ -333,6 +337,20 @@ de configuración por corrida del cierre.
           <span class="mono">ind_activo</span> y <span class="mono">tip_cobro</span> se leen del origen: el
           portal no las edita, el cierre debe dejar de volver a escribirlas a mano.</div>
         </div>
+        <div class="aviso info">
+          <div><b>Rubros derivados y alias (respuesta del cliente del 30 de septiembre).</b> Sobre
+          <span class="mono">PRINCIPAL_VENCIDO</span> e <span class="mono">INTERESES_NO_EXIGIBLES</span> el
+          cliente responde que son &laquo;un rubro propio del reporte y no se encuentra en cat&aacute;logos&raquo;,
+          y es exacto: los fabrica <span class="mono">CIERRE.SP_SAF_SALDOS</span> como texto. Pero el c&oacute;digo
+          los usa como <b>clave de JOIN y de exclusi&oacute;n</b> en 13 objetos, as&iacute; que hoy son cat&aacute;logo
+          de hecho sin serlo de derecho. La propuesta del portal es admitirlos en el mismo cat&aacute;logo con
+          <span class="mono">ORIGEN_DATO = DERIVADO</span>: el importe lo sigue calculando el cierre, el cat&aacute;logo
+          publica el c&oacute;digo, su concepto contable y su alias de reporte. La columna
+          <b>Origen del dato</b> distingue los tres casos: <span class="pill neu">de cat&aacute;logo</span> lo que
+          viene de <span class="mono">PR.PR_RUBRO</span>, <span class="pill info">derivado</span> lo que calcula el
+          cierre y <span class="pill bad">alias</span> los literales que no casan con el c&oacute;digo can&oacute;nico,
+          como <span class="mono">'OPI VALOR'</span> con espacio.</div>
+        </div>
       </div>
       <div class="filtros">
         <input type="text" id="fR" placeholder="Buscar rubro..." oninput="renderRubros()">
@@ -343,6 +361,8 @@ de configuración por corrida del cierre.
           <option value="pend">Requiere definición</option>
           <option value="iva">Con IVA en el origen (ind_iva = S)</option>
           <option value="noorig">Del código, ausente del origen</option>
+          <option value="der">Derivados (los fabrica el cierre)</option>
+          <option value="alias">Alias sin código canónico</option>
           <option value="nouso">Del origen, sin uso en el código</option>
           <option value="forma">Hoy exige cambiar el SP</option>
         </select>
@@ -422,22 +442,32 @@ de configuración por corrida del cierre.
         <span class="der">Origen: <span class="mono">Quiero_Confianza.PR.PR_ORIGEN_FONDOS</span> · el portal
         administra la restricci&oacute;n, no el c&oacute;digo</span></h3>
       <div class="cuerpo">
-        <div class="aviso bad">
-          <div>La regla «no restringido» está escrita tres veces y no dice lo mismo:
-          <span class="mono">IN ('008','031')</span> en 28 archivos,
-          <span class="mono">IN ('008','031','046')</span> en 1 y
-          <span class="mono">NOT IN (22,23,28,35)</span> en 19 &mdash; esta última comparando el código como
-          número y no como cadena. Con el catálogo la pregunta se responde una sola vez y todos los procesos
-          leen la misma respuesta.</div>
+        <div class="aviso info">
+          <div><b>Respuesta del cliente:</b> &laquo;ambas son correctas y su aplicaci&oacute;n depende del proceso
+          en el que se encuentra&raquo;. Entonces la bandera no es global: se administra por <b>&aacute;mbito</b>, y
+          cada &aacute;mbito sustituye uno de los filtros que hoy viven escritos en el c&oacute;digo. La regla que
+          decide cu&aacute;l aplica no estaba documentada en ning&uacute;n lado; sale de leer qu&eacute; consume el
+          resultado.</div>
+        </div>
+        <div id="tblAmb"></div>
+        <div class="aviso warn">
+          <div>Dos cosas que el cat&aacute;logo por &aacute;mbito no resuelve solo y siguen abiertas: el tercer
+          filtro compara el c&oacute;digo como n&uacute;mero (<span class="mono">22</span>) cuando el origen lo
+          publica como cadena (<span class="mono">'022'</span>), y en la p&oacute;liza el castigo no se identifica
+          por origen sino por tipo de cr&eacute;dito 26
+          (<span class="mono">PO.SYS_SP_CONTROL_HISTORICO_TRASPASOS</span>), as&iacute; que el
+          <span class="mono">046</span> del reporte individual debe confirmarse como decisi&oacute;n de
+          presentaci&oacute;n y no de fondeo.</div>
         </div>
       </div>
       <div class="filtros">
         <input type="text" id="fO" placeholder="Buscar código o descripción..." oninput="renderOrigenes()">
         <select id="fOest" onchange="renderOrigenes()">
           <option value="">Todos</option>
-          <option value="nr">No restringidos</option>
-          <option value="ex">Excluidos del castigo comercial</option>
-          <option value="dif">Con lecturas contradictorias en el código</option>
+          <option value="nr">No restringidos en póliza y movimientos</option>
+          <option value="ex">Sindicados SHF excluidos del castigo</option>
+          <option value="dif">Con respuesta distinta según el proceso</option>
+          <option value="num">Comparados como número y no como cadena</option>
         </select>
       </div>
       <div id="tblO"></div>
@@ -661,6 +691,24 @@ let PRODUCTOS = [
 /* Rubros que hoy tienen columna o JOIN propio en el SELECT del cierre. */
 const USO_FORMA = new Set(["CARGO_PORCENTAJE", "COMISION_ADMINISTRACION", "INTERESES", "MORATORIOS", "PRINCIPAL", "SEGURO_DANOS", "SEGURO_VIDA"]);
 
+/* Origen del dato de cada rubro. Respuesta del cliente sobre PRINCIPAL_VENCIDO e INTERESES_NO_EXIGIBLES:
+   «es un rubro propio del reporte y no se encuentra en catalogos». La propuesta del portal es admitirlos en
+   el mismo catalogo con ORIGEN_DATO = DERIVADO, porque el codigo ya los usa como clave de JOIN: asi el
+   catalogo sigue siendo la unica lista de rubros y el cierre deja de fabricar el literal.
+   ALIAS resuelve los literales que no casan con el codigo canonico (el caso de 'OPI VALOR' con espacio). */
+const RUBRO_META = {
+ 'PRINCIPAL_VENCIDO': {od:'DERIVADO', gen:'CIERRE.SP_SAF_SALDOS',
+   regla:'saldo de principal cuya fecha de exigibilidad ya paso al corte; no lleva IVA',
+   alias:'', canon:''},
+ 'INTERES_NO_EXIGIBLES': {od:'DERIVADO', gen:'CIERRE.SP_SAF_SALDOS',
+   regla:'MON_INT_ACUMULADO posterior al corte; el IVA se resuelve con el ind_iva del rubro base',
+   alias:'INTERESES_NO_EXIGIBLES (columna del cierre comercial) · INTERESES (PO.SP_COM_ADMINISTRADA)',
+   canon:''},
+ 'OPI VALOR': {od:'ALIAS', gen:'',
+   regla:'literal con espacio escrito en el codigo; el catalogo solo tiene OPI_VALOR',
+   alias:'IVA OPI VALOR', canon:'OPI_VALOR'}
+};
+
 /* CAT_RUBRO: espejo de Quiero_Confianza.PR.PR_RUBRO, extraido de la base con sus propias banderas
    (ind_iva, ind_activo, ind_cont_orden, ind_diferido, tip_cobro, ind_condonacion). Esas banderas se LEEN
    del origen, no se editan aqui: lo unico que el portal administra es el concepto contable y la poliza
@@ -714,12 +762,17 @@ let RUBROS = [
  ["TASA_COMPENSATORIA","TASA COMPENSATORIA",false,true,false,false,"V",false,true,"",0,"",[],""],
  ["VIDA_DEUDOR","CARGO DE VIDA DEUDOR A ARTICULOS",false,true,false,false,"V",false,true,"",0,"",[],""],
  ["VISITA_EXTRA","VISITA_EXTRAORDINARIA",true,true,false,false,"V",true,true,"OTRAS_COMISIONES",8,"Otras comisiones",["CMR", "COB"],""],
- ["OPI VALOR","(no existe en PR.PR_RUBRO)",false,false,false,false,"—",false,false,"OTRAS_COMISIONES",7,"Otras comisiones",["CMR", "COB"],"El origen solo tiene OPI_VALOR con guion bajo: este filtro nunca casa y el importe no entra en ninguna poliza."],
- ["PRINCIPAL_VENCIDO","(no existe en PR.PR_RUBRO)",false,false,false,false,"—",false,false,"PRINCIPAL",1,"Balance (sin devengo)",["CMR"],"Confirmar si es un rubro del origen o una columna derivada del cierre."],
- ["INTERES_NO_EXIGIBLES","(no existe en PR.PR_RUBRO)",false,false,false,false,"—",false,false,"",1,"",["CMR"],"No esta en el origen y no tiene concepto contable: contabilidad debe decidir si es devengo o cuenta de orden."],
+ ["OPI VALOR","(no existe en PR.PR_RUBRO)",false,false,false,false,"—",false,false,"OTRAS_COMISIONES",36,"Otras comisiones",["CMR", "COB"],"Sept30 lo corrigio solo en SP_CMR_GEN_MES; sigue en 5 objetos con 36 usos, y el importe no casa con el rubro OPI_VALOR."],
+ ["PRINCIPAL_VENCIDO","(rubro derivado: lo fabrica el cierre)",false,true,false,false,"—",false,false,"PRINCIPAL_VENCIDO",6,"Balance (sin devengo)",["CMR", "SAF", "POL"],""],
+ ["INTERES_NO_EXIGIBLES","(rubro derivado: lo fabrica el cierre)",false,true,false,false,"—",false,false,"",29,"",["CMR", "SAF", "POL", "COB"],"Contabilidad debe decidir si su concepto es devengo de intereses o cuenta de orden; el portal lo bloquea hasta entonces."],
 ].map(r => ({rubro:r[0], des:r[1], iva:r[2], activo:r[3], contOrden:r[4], difer:r[5], cobro:r[6],
              condona:r[7], enOrigen:r[8], grupo:r[9], pred:r[10], poliza:r[11], proc:r[12], nota:r[13],
-             forma:USO_FORMA.has(r[0])}));
+             forma:USO_FORMA.has(r[0]),
+             od:(RUBRO_META[r[0]] || {}).od || 'CATALOGO',
+             gen:(RUBRO_META[r[0]] || {}).gen || '',
+             regla:(RUBRO_META[r[0]] || {}).regla || '',
+             alias:(RUBRO_META[r[0]] || {}).alias || '',
+             canon:(RUBRO_META[r[0]] || {}).canon || ''}));
 
 /* CAT_ORIGEN_FONDOS: espejo de Quiero_Confianza.PR.PR_ORIGEN_FONDOS, extraido de la base (el cliente
    confirmo que la fuente es Quiero_Confianza y no el shadow). Las banderas salen de las tres listas del
@@ -765,11 +818,34 @@ let ORIGENES = [
  ["043","SHF_ALMACENAJE_2",false,false,"—",""],
  ["044","SHF_CALCE_2",false,false,"—",""],
  ["045","SHF_CALCE_3",false,false,"—",""],
- ["046","CARTERA_CASTIGADA",true,false,"IN ('008','031','046')","Es CARTERA_CASTIGADA: una sola lista la trata como no restringida y las otras 28 como restringida."],
+ ["046","CARTERA_CASTIGADA",true,false,"IN ('008','031','046')","Solo el cierre mensual individual la trata como no restringida; la poliza identifica el castigo por tipo de credito 26, no por origen."],
  ["047","COVALTO",false,false,"—",""],
  ["048","BBVA 2",false,false,"—",""],
  ["049","UALA",false,false,"—",""],
-].map(o => ({cod:o[0], desc:o[1], nr:o[2], exCast:o[3], listas:o[4], nota:o[5]}));
+].map(o => ({cod:o[0], desc:o[1], nr:o[2], exCast:o[3], listas:o[4], nota:o[5],
+             /* Respuesta del cliente: «ambas son correctas y su aplicacion depende del proceso en el que se
+                encuentra». Por eso la bandera deja de ser global y se resuelve por ambito. */
+             nrPol:o[2] && o[0] !== '046',   /* IN ('008','031') en poliza y movimientos */
+             nrRep:o[2],                     /* IN ('008','031','046') en el reporte mensual individual */
+             sind:o[3],                      /* NOT IN (22,23,28,35) en los procesos de castigo */
+             tipoNum:o[3]}));                /* el codigo la compara como numero, no como cadena */
+
+/* Ambitos de la bandera ES_NO_RESTRINGIDO. La regla que distingue cual aplica no estaba escrita en ningun
+   lado: sale de leer que proceso consume el resultado. */
+const AMBITOS = [
+ {k:'nrPol', nom:'Póliza y movimientos', reg:"IN ('008','031')", res:'ID_FONDEO = 2',
+  obj:'CIERRE.SP_CMR_GEN_MES · PO.SYS_SP_MOV_CARGO · PO.SYS_SP_MOV_ABONO · PO.SYS_SP_MOV_INTERES · '
+    + 'PO.SYS_SP_CONTROL_HISTORICO_TRASPASOS · SP_CMR_RPT_DESEMBOLSOS_CARTERA_VIS · '
+    + 'SP_IND_RPT_DESEMBOLSOS_CARTERA_VIS',
+  por:'clasificación de fondeo: decide el asiento y el ID_FONDEO que viaja al movimiento'},
+ {k:'nrRep', nom:'Reporte mensual individual', reg:"IN ('008','031','046')", res:"'SIN RESTRICCIÓN'",
+  obj:'CIERRE.SP_IND_GEN_MES',
+  por:'presentación del reporte: agrega la cartera castigada (046) a la columna de sin restricción'},
+ {k:'sind', nom:'Procesos de castigo comercial', reg:'NOT IN (22,23,28,35)', res:'excluye el crédito',
+  obj:'CIERRE.SP_SAF_SALDOS · PO.SP_COM_CASTIGOS_CONDONACION · PO.SP_COM_CASTIGOS_DAC_ADJ · '
+    + 'PO.SP_COM_CASTIGOS_REVERSO_* (5) · PO.SP_COM_COBRANZA_CASTIGOS · PO.SP_COM_REVERSO_COBRANZA_CASTIGOS',
+  por:'no es «no restringido»: excluye los cuatro sindicados SHF (2662, 2875, 3226, 5028) del castigo'}
+];
 
 /* CAT_PARTICIPACION_CONVENIO. 90/10 y 100/0 son las reglas que confirmó el cliente; la sindicada es
    variable y por eso puede quedar en «no establecido», estado que detiene el cierre. El convenio cuelga del
@@ -795,11 +871,13 @@ let CONSTANTES = [
   val:'0.16', prod:'0.16', usos:188, arch:'99 en BD · 89 en BD_prod',
   hist:[['2014-01-01','0.16','Reforma fiscal'],['2010-01-01','0.15','Vigente hasta 2013']]},
  {k:'UMBRAL_COVID_CREDITO', desc:'Crédito máximo considerado en el programa COVID (dbo.FN_ES_COVID)',
-  val:'6086', prod:'6051', usos:2, arch:'dbo.FN_ES_COVID en ambos ambientes',
-  hist:[['2021-01-01','6051','Corte original del programa']]},
+  val:'6051', prod:'6051', usos:2, arch:'dbo.FN_ES_COVID en ambos ambientes',
+  hist:[['2026-09-30','6051','La entrega SPs_Sept30 homologó el valor: las dos copias dicen 6051'],
+        ['2021-01-01','6086','Valor con que corría la copia de desarrollo hasta la entrega de septiembre']]},
  {k:'FEC_CORTE_COMISIONES', desc:'Fecha de la que SP_CMR_GEN_MES lee comisiones en lugar del período',
-  val:'20260123', prod:'20260123', usos:2, arch:'CIERRE.SP_CMR_GEN_MES',
-  hist:[['2026-01-23','20260123','Valor fijo dejado en el código: debe ser la fecha del período']]},
+  val:'@FechaIni', prod:'@FechaIni', usos:0, arch:'CIERRE.SP_CMR_GEN_MES (ya parametrizado)',
+  hist:[['2026-09-30','@FechaIni','SPs_Sept30 sustituyó el literal por el primer día del período'],
+        ['2026-01-23','20260123','Valor fijo dejado en el código: tomaba un solo día del mes']]},
  {k:'PARTICIPACION_AFIRME', desc:'Factor de participación propia del convenio Afirme',
   val:'0.90', prod:'0.90', usos:65, arch:'34 en BD · 31 en BD_prod',
   hist:[['2019-01-01','0.90','Convenio original']]},
@@ -833,7 +911,7 @@ const CUA_ANTERIOR = {
   nom:'CUA actual (queda como sandbox de desarrollo)',
   motivos:['los datos no tienen fecha de corte documentada, así que no sirven de oráculo',
            'tiene una base extra, Quiero_Confianza_CreditoPuente_QA, que no existe en producción',
-           'el umbral COVID vale 6086 y en producción 6051: el mismo proceso da cifras distintas',
+           'el umbral COVID valía 6086 y en producción 6051; SPs_Sept30 homologa el código en 6051, pero eso no dice qué tiene instalada la instancia',
            'no está probado que no pueda escribir hacia otra instancia']
 };
 
@@ -1007,10 +1085,16 @@ function rubrosSinConcepto(){
   return RUBROS.filter(r => r.pred && !r.grupo).map(r => r.rubro);
 }
 function rubrosFueraDelOrigen(){ return RUBROS.filter(r => !r.enOrigen).map(r => r.rubro); }
+function rubrosDerivados(){ return RUBROS.filter(r => r.od === 'DERIVADO').map(r => r.rubro); }
+function rubrosAlias(){ return RUBROS.filter(r => r.od === 'ALIAS').map(r => r.rubro); }
+function derivadosSinConcepto(){
+  return RUBROS.filter(r => r.od === 'DERIVADO' && !r.grupo).map(r => r.rubro);
+}
+function origenesPorProceso(){ return ORIGENES.filter(o => o.nrPol !== o.nrRep).map(o => o.cod); }
+function origenesTipoNumero(){ return ORIGENES.filter(o => o.tipoNum).map(o => o.cod); }
 function rubrosSinUso(){ return RUBROS.filter(r => r.enOrigen && !r.pred).length; }
 function rubrosConNota(){ return RUBROS.filter(r => r.enOrigen && r.nota).map(r => r.rubro); }
 function corridasSinSello(){ return CORRIDAS.filter(c => !c.cfg); }
-function origenesContradictorios(){ return ORIGENES.filter(o => o.nota).map(o => o.cod); }
 function conveniosSinParticipacion(){
   return CONVENIOS.filter(c => c.estado === 'No establecido').map(c => c.conv);
 }
@@ -1054,8 +1138,10 @@ function renderInicio(){
    <div class="kpi w"><b>${pend.length}</b><span>solicitudes por aprobar</span></div>
    <div class="kpi d"><b>${sinClasificar().length}</b><span>tipos del origen sin clasificación local</span></div>
    <div class="kpi"><b>${RUBROS.filter(r => r.enOrigen).length}</b><span>rubros en PR.PR_RUBRO</span></div>
-   <div class="kpi d"><b>${rubrosFueraDelOrigen().length}</b><span>rubros del código que no existen en el origen</span></div>
+   <div class="kpi"><b>${rubrosDerivados().length}</b><span>rubros derivados propuestos al catálogo</span></div>
+   <div class="kpi d"><b>${rubrosAlias().length}</b><span>literales sin código canónico (alias)</span></div>
    <div class="kpi"><b>${ORIGENES.length}</b><span>orígenes de fondos</span></div>
+   <div class="kpi"><b>${AMBITOS.length}</b><span>ámbitos de la bandera de restricción</span></div>
    <div class="kpi d"><b>${corridasSinSello().length}</b><span>corridas sin sello de configuración</span></div>
    <div class="kpi w"><b>${conveniosSinParticipacion().length}</b><span>convenios sin participación</span></div>
    <div class="kpi"><b>${CONSTANTES.reduce((a,c) => a + c.usos, 0)}</b><span>usos de constantes en el código</span></div>`;
@@ -1075,15 +1161,21 @@ function renderInicio(){
     'No es un error: son tipos que ningún proceso contable filtra hoy.'],
    ['Rubros sin concepto contable definido', rubrosSinConcepto(), 'bad',
     'El importe no sabe a qué póliza va. En el diseño objetivo esta validación detiene el cierre en vez de dejar el rubro fuera en silencio.'],
-   ['Rubros que el código filtra y no existen en PR.PR_RUBRO', rubrosFueraDelOrigen(), 'bad',
-    "'OPI VALOR' con espacio no existe en el origen (sólo OPI_VALOR): ese filtro nunca casa y su importe no entra en ninguna póliza."],
+   ['Literales del código sin código canónico en el catálogo (alias)', rubrosAlias(), 'bad',
+    "'OPI VALOR' con espacio no existe en el origen (sólo OPI_VALOR). SPs_Sept30 lo corrigió en SP_CMR_GEN_MES, pero sigue en 5 objetos con 36 usos: ahí el importe no casa con su rubro."],
+   ['Rubros derivados que el cierre fabrica en código y el catálogo no publica', rubrosDerivados(), 'warn',
+    'PRINCIPAL_VENCIDO e INTERES_NO_EXIGIBLES los escribe SP_SAF_SALDOS como texto y 13 objetos los usan como clave: la propuesta es darlos de alta con ORIGEN_DATO = DERIVADO.'],
+   ['Rubros derivados sin concepto contable asignado', derivadosSinConcepto(), 'bad',
+    'INTERES_NO_EXIGIBLES no tiene concepto: contabilidad debe decidir si es devengo de intereses o cuenta de orden antes de que el catálogo pueda resolverlo.'],
    ['Rubros con duplicidad o baja señalada en el propio origen', rubrosConNota(), 'warn',
     'El origen tiene pares con el mismo significado (SEGURO y SEGURO_DANOS, CARGO BALLON y CARGO_BALLON) y dos rubros descritos como «no usar».'],
    ['Corridas del cierre sin sello de configuración',
     corridasSinSello().map(c => c.fecha).filter((v,i,a) => a.indexOf(v) === i), 'bad',
     'Son las fechas cuya póliza no se puede explicar: no queda registro de con qué catálogos se resolvió.'],
-   ['Orígenes de fondos con lecturas contradictorias en el código', origenesContradictorios(), 'bad',
-    'El mismo origen es restringido o no según qué proceso lo lea, y en una de las listas el código se compara como número: tesorería debe fijar la respuesta única.'],
+   ['Orígenes cuya respuesta depende del proceso (resuelto por ámbito)', origenesPorProceso(), 'info',
+    'El cliente confirmó que ambas listas son correctas según el proceso: el 046 es no restringido sólo en el reporte mensual individual, no en la póliza. Ya no es contradicción, es una bandera con ámbito.'],
+   ['Orígenes que el código compara como número y el catálogo publica como cadena', origenesTipoNumero(), 'bad',
+    "NOT IN (22,23,28,35) contra '022','023','028','035': si COD_ORIGEN es cadena, esa comparación depende de una conversión implícita y puede dejar de excluir a los sindicados sin aviso."],
    ['Convenios sin participación establecida', conveniosSinParticipacion(), 'bad',
     'El cierre se detiene hasta que cartera capture la participación: es preferible a resolver la póliza con la participación del convenio anterior.'],
    ['Convenios cuya participación no suma 100', participacionInvalida(), 'warn',
@@ -1279,7 +1371,9 @@ function renderTipos(){
 
 /* -------------------------------------------------------------------- rubros */
 const PROC_NOM = {CMR:'CIERRE.SP_CMR_GEN_MES', IND:'CIERRE.SP_IND_GEN_MES',
-                  SAF:'CIERRE.SP_SAF_SALDOS', COB:'dbo.REPORTE_COBRANZA_INTEGRACION'};
+                  SAF:'CIERRE.SP_SAF_SALDOS', COB:'dbo.REPORTE_COBRANZA_INTEGRACION',
+                  POL:'PO.SP_COM_* (armado de la póliza comercial)'};
+const OD_PILL = {CATALOGO:['neu','de catálogo'], DERIVADO:['info','derivado'], ALIAS:['bad','alias']};
 function renderRubros(){
   const q = ($('fR').value || '').toLowerCase(), po = $('fRpol').value, gr = $('fRgru').value,
         es = $('fRest').value;
@@ -1290,15 +1384,21 @@ function renderRubros(){
     (es !== 'iva'   || r.iva) &&
     (es !== 'noorig'|| !r.enOrigen) &&
     (es !== 'nouso' || (r.enOrigen && !r.pred)) &&
+    (es !== 'der'   || r.od === 'DERIVADO') &&
+    (es !== 'alias' || r.od === 'ALIAS') &&
     (es !== 'forma' || r.forma));
   $('tblR').innerHTML = `<table><thead><tr>
-    <th class="nosort">Rubro</th><th class="nosort">Concepto contable</th><th class="nosort">Póliza destino</th>
+    <th class="nosort">Rubro</th><th class="nosort">Origen del dato</th>
+    <th class="nosort">Concepto contable</th><th class="nosort">Póliza destino</th>
     <th class="nosort">Banderas del origen</th><th class="nosort">Procesos que lo nombran</th>
     <th class="nosort">Predicados</th><th class="nosort">Estado</th><th class="nosort"></th>
     </tr></thead><tbody>`
    + fs.map((r,i) => {
       const idx = RUBROS.indexOf(r);
-      const et = !r.enOrigen ? '<span class="pill bad">no existe en el origen</span>'
+      const et = r.od === 'ALIAS' ? '<span class="pill bad">alias sin código canónico</span>'
+        : r.od === 'DERIVADO' && !r.grupo ? '<span class="pill bad">derivado sin concepto</span>'
+        : r.od === 'DERIVADO' ? '<span class="pill info">derivado, propuesto al catálogo</span>'
+        : !r.enOrigen ? '<span class="pill bad">no existe en el origen</span>'
         : !r.pred ? '<span class="pill neu">sin uso en el código</span>'
         : !r.grupo ? '<span class="pill bad">sin concepto</span>'
         : r.nota ? '<span class="pill warn">por confirmar</span>'
@@ -1307,9 +1407,13 @@ function renderRubros(){
       const bo = [r.iva && 'IVA', r.contOrden && 'cuentas de orden', r.difer && 'diferido',
                   r.condona && 'condonable', !r.activo && 'inactivo',
                   r.cobro && r.cobro !== '—' && 'cobro ' + r.cobro].filter(Boolean);
+      const od = OD_PILL[r.od];
       return `<tr>
         <td class="mono">${esc(r.rubro)}<br><span style="color:var(--tx2);font-family:inherit">${esc(r.des)}${
             r.nota ? ' · ' + esc(r.nota) : ''}</span></td>
+        <td><span class="pill ${od[0]}">${od[1]}</span>${r.canon
+            ? `<br><span class="mono" style="color:var(--tx2)">canónico: ${esc(r.canon)}</span>` : ''}${
+            r.gen ? `<br><span class="mono" style="color:var(--tx2)">${esc(r.gen)}</span>` : ''}</td>
         <td class="mono">${r.grupo ? esc(r.grupo) : '—'}</td>
         <td>${r.poliza ? esc(r.poliza) : '—'}</td>
         <td>${bo.length ? bo.map(x =>
@@ -1321,14 +1425,35 @@ function renderRubros(){
         <td><button class="btn mini" ${puedeEditar() ? '' : 'disabled'}
             onclick="editarRubro(${idx})">Editar</button></td></tr>`;
      }).join('')
-   + (fs.length ? '' : sinFilas(8))
+   + (fs.length ? '' : sinFilas(9))
    + '</tbody></table>';
 }
 function editarRubro(i){
   const r = RUBROS[i];
+  const extra = r.od === 'DERIVADO'
+    ? `<div class="campo"><label>Regla de cálculo (la ejecuta ${esc(r.gen)}, el portal la publica)</label>
+         <input value="${esc(r.regla)}" disabled></div>
+       ${r.alias ? `<div class="campo"><label>Alias con que el mismo importe sale en reportes</label>
+         <input value="${esc(r.alias)}" disabled></div>` : ''}
+       <div class="aviso info"><div>El cliente lo describe como <b>rubro propio del reporte</b>, no de catálogo.
+       La propuesta es darlo de alta en el mismo catálogo con
+       <span class="mono">ORIGEN_DATO = DERIVADO</span>: el portal no calcula el importe —lo sigue calculando
+       <span class="mono">${esc(r.gen)}</span>— pero sí publica el código, su concepto contable y su alias, que
+       es lo que hoy vive como literal repetido en ${r.pred} predicados.</div></div>`
+    : r.od === 'ALIAS'
+    ? `<div class="campo"><label>Código canónico al que debe apuntar</label>
+         <input value="${esc(r.canon)}" disabled></div>
+       <div class="aviso bad"><div>No es un rubro: es un literal del código que no casa con el catálogo.
+       Mientras exista, su importe no entra donde debe. El catálogo lo resuelve como alias de
+       <span class="mono">${esc(r.canon)}</span> para que la corrección no dependa de editar cada
+       <span class="mono">SELECT</span>.</div></div>`
+    : '';
   modal(`Concepto contable de ${r.rubro}`, `
     <div class="campo"><label>Rubro (viene del origen, no editable)</label>
       <input value="${esc(r.rubro)} — ${esc(r.des)}" disabled></div>
+    <div class="campo"><label>Origen del dato</label>
+      <input value="${r.od}" disabled></div>
+    ${extra}
     <div class="campo"><label>Banderas del origen (se leen de PR.PR_RUBRO, no se editan aquí)</label>
       <input value="ind_iva=${r.iva ? 'S' : 'N'} · ind_cont_orden=${r.contOrden ? 'S' : 'N'} · ind_diferido=${
         r.difer ? 'S' : 'N'} · ind_activo=${r.activo ? 'S' : 'N'} · tip_cobro=${esc(r.cobro)}" disabled></div>
@@ -1361,28 +1486,49 @@ function solRubro(i){
 }
 
 /* ------------------------------------------------------------------ orígenes */
+function renderAmbitos(){
+  $('tblAmb').innerHTML = `<table><thead><tr>
+    <th class="nosort">Ámbito</th><th class="nosort">Filtro que hoy vive en el código</th>
+    <th class="nosort">Qué produce</th><th class="nosort">Códigos marcados</th>
+    <th class="nosort">Objetos donde se usa</th><th class="nosort">Por qué es distinto</th>
+    </tr></thead><tbody>`
+   + AMBITOS.map(a => `<tr>
+      <td><b>${esc(a.nom)}</b></td>
+      <td class="mono">${esc(a.reg)}</td>
+      <td class="mono">${esc(a.res)}</td>
+      <td class="mono">${ORIGENES.filter(o => o[a.k]).map(o => o.cod).join(' · ')}</td>
+      <td style="color:var(--tx2)" class="mono">${esc(a.obj)}</td>
+      <td style="color:var(--tx2)">${esc(a.por)}</td></tr>`).join('')
+   + '</tbody></table>';
+}
 function renderOrigenes(){
+  renderAmbitos();
   const q = ($('fO').value || '').toLowerCase(), es = $('fOest').value;
   const fs = ORIGENES.filter(o =>
     (!q || (o.cod + ' ' + o.desc).toLowerCase().includes(q)) &&
-    (es !== 'nr'  || o.nr) && (es !== 'ex' || o.exCast) && (es !== 'dif' || o.nota));
+    (es !== 'nr'  || o.nrPol) && (es !== 'ex' || o.sind) &&
+    (es !== 'dif' || o.nrPol !== o.nrRep) && (es !== 'num' || o.tipoNum));
   $('tblO').innerHTML = `<table><thead><tr>
     <th class="nosort">Código</th><th class="nosort">Descripción</th>
-    <th class="nosort">No restringido</th><th class="nosort">Excluido del castigo comercial</th>
+    <th class="nosort" title="IN ('008','031')">No restringido<br>póliza y movimientos</th>
+    <th class="nosort" title="IN ('008','031','046')">No restringido<br>reporte individual</th>
+    <th class="nosort" title="NOT IN (22,23,28,35)">Sindicado SHF<br>excluido del castigo</th>
     <th class="nosort">Listas del código</th><th class="nosort">Estado</th><th class="nosort"></th>
     </tr></thead><tbody>`
    + fs.map(o => `<tr>
       <td class="mono">${o.cod}</td>
       <td>${esc(o.desc)}${o.nota
         ? `<br><span style="color:var(--tx2)">${esc(o.nota)}</span>` : ''}</td>
-      <td>${o.nr ? '<span class="pill ok">Sí</span>' : '<span class="pill neu">No</span>'}</td>
-      <td>${o.exCast ? '<span class="pill warn">Sí</span>' : '<span class="pill neu">No</span>'}</td>
+      <td>${o.nrPol ? '<span class="pill ok">Sí</span>' : '<span class="pill neu">No</span>'}</td>
+      <td>${o.nrRep ? '<span class="pill ok">Sí</span>' : '<span class="pill neu">No</span>'}</td>
+      <td>${o.sind ? '<span class="pill warn">Sí</span>' : '<span class="pill neu">No</span>'}</td>
       <td class="mono" style="color:var(--tx2)">${esc(o.listas)}</td>
-      <td>${o.nota ? '<span class="pill bad">lecturas contradictorias</span>'
-                   : '<span class="pill ok">consistente</span>'}</td>
+      <td>${o.nrPol !== o.nrRep ? '<span class="pill info">depende del proceso</span>'
+            : o.tipoNum ? '<span class="pill warn">comparado como número</span>'
+            : '<span class="pill ok">consistente</span>'}</td>
       <td><button class="btn mini" ${puedeEditar() ? '' : 'disabled'}
           onclick="editarOrigen(${ORIGENES.indexOf(o)})">Editar</button></td></tr>`).join('')
-   + (fs.length ? '' : sinFilas(7))
+   + (fs.length ? '' : sinFilas(8))
    + '</tbody></table>';
 }
 function editarOrigen(i){
@@ -1390,33 +1536,33 @@ function editarOrigen(i){
   modal(`Origen de fondos ${o.cod}`, `
     <div class="campo"><label>Código (viene del origen, no editable)</label>
       <input value="${o.cod}" disabled></div>
-    <div class="campo"><label>¿No restringido?</label>
-      <select id="eoNr"><option value="1" ${o.nr ? 'selected' : ''}>Sí</option>
-        <option value="0" ${o.nr ? '' : 'selected'}>No</option></select></div>
-    <div class="campo"><label>¿Excluido del castigo comercial?</label>
-      <select id="eoEx"><option value="1" ${o.exCast ? 'selected' : ''}>Sí</option>
-        <option value="0" ${o.exCast ? '' : 'selected'}>No</option></select></div>
+    ${AMBITOS.map(a => `<div class="campo"><label>${esc(a.nom)} &mdash; hoy en código:
+      <span class="mono">${esc(a.reg)}</span></label>
+      <select id="eo_${a.k}"><option value="1" ${o[a.k] ? 'selected' : ''}>Sí</option>
+        <option value="0" ${o[a.k] ? '' : 'selected'}>No</option></select></div>`).join('')}
     <div class="campo"><label>Vigente desde</label>
       <input type="date" id="eoDes" min="${manana()}" value="${manana()}"></div>
     <div class="campo"><label>Motivo</label><textarea id="eoMot"></textarea></div>
-    <div class="aviso info"><div>La respuesta queda en un solo lugar: los tres filtros del código
-    (<span class="mono">IN ('008','031')</span>, <span class="mono">IN ('008','031','046')</span> y
-    <span class="mono">NOT IN (22,23,28,35)</span>) se sustituyen por un join a esta bandera.</div></div>`,
+    <div class="aviso info"><div>La bandera se administra <b>por ámbito</b>, no una sola vez para todo:
+    el cliente confirmó que &laquo;ambas son correctas y su aplicación depende del proceso&raquo;. Cada ámbito
+    sustituye un filtro del código por un join a esta tabla, y la diferencia entre ámbitos deja de ser un
+    literal distinto en cada <span class="mono">SELECT</span> para volverse un dato visible y aprobado.</div></div>`,
     [['Cancelar','cerrarModal()',''],['Enviar a aprobación',`solOrigen(${i})`,'pri']]);
 }
 function solOrigen(i){
   const o = ORIGENES[i], mot = ($('eoMot').value || '').trim();
   if (!mot) return toast('El motivo es obligatorio', true);
   if (!vigenciaValida('eoDes')) return;
-  const nr = $('eoNr').value === '1', ex = $('eoEx').value === '1';
-  if (nr === o.nr && ex === o.exCast) return toast('No hay ningún cambio que enviar', true);
+  const val = {}; AMBITOS.forEach(a => val[a.k] = $('eo_' + a.k).value === '1');
+  const cambios = AMBITOS.filter(a => val[a.k] !== o[a.k]);
+  if (!cambios.length) return toast('No hay ningún cambio que enviar', true);
   const id = nuevoFolio();
-  SOLS.unshift({id, tabla:'CAT_ORIGEN_FONDOS', resumen:`Restricción del origen ${o.cod}`,
-    detalle:[`${o.cod} · no restringido: ${o.nr ? 'Sí' : 'No'} → ${nr ? 'Sí' : 'No'}`,
-             `excluido del castigo comercial: ${o.exCast ? 'Sí' : 'No'} → ${ex ? 'Sí' : 'No'}`,
-             `desde ${$('eoDes').value}`],
+  SOLS.unshift({id, tabla:'CAT_ORIGEN_FONDOS_AMBITO', resumen:`Restricción del origen ${o.cod} por ámbito`,
+    detalle:cambios.map(a =>
+      `${o.cod} · ${a.nom}: ${o[a.k] ? 'Sí' : 'No'} → ${val[a.k] ? 'Sí' : 'No'}`)
+      .concat(`desde ${$('eoDes').value}`),
     motivo:mot, solicita:'E. Navarro (Negocio)', fecha:hoy(), estado:'Pendiente', amb:ENV,
-    aprueba:'', nota:'', orig:{i, nr, exCast:ex}});
+    aprueba:'', nota:'', orig:{i, val}});
   cerrarModal(); toast(`${id} enviada al área de cartera.`); ir('aprob');
 }
 
@@ -1801,7 +1947,8 @@ function resolver(id, ok){
   }
   if (ok && s.orig){
     const o = ORIGENES[s.orig.i];
-    o.nr = s.orig.nr; o.exCast = s.orig.exCast; o.nota = '';
+    AMBITOS.forEach(a => o[a.k] = s.orig.val[a.k]);
+    o.nr = o.nrPol || o.nrRep; o.exCast = o.sind; o.nota = '';
   }
   if (ok && s.conv){
     const c = CONVENIOS[s.conv.i];
