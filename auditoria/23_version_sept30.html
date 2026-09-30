@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Validación de la versión SPs_Sept30 &mdash; KARDIA / SAF</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 "Segoe UI",system-ui,sans-serif;background:#0e1420;color:#e8edf6}
+a{color:#7fb2ff}
+header.top{padding:26px 32px;background:linear-gradient(120deg,#12213d,#0e1420 60%);border-bottom:1px solid #2a3549}
+header.top h1{margin:0;font-size:23px;letter-spacing:.3px}
+header.top p{margin:6px 0 0;color:#93a1bb}
+nav.docs{padding:10px 32px;background:#131b29;border-bottom:1px solid #2a3549;font-size:13px}
+nav.docs a{margin-right:16px;text-decoration:none}
+.wrap{padding:22px 32px 60px;max-width:1180px}
+h2{margin:34px 0 12px;font-size:18px;border-left:3px solid #4c8dff;padding-left:10px}
+h3{margin:22px 0 6px;font-size:15px}
+p.lead{color:#c9d6ee;font-size:15px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 26px}
+.kpi{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:14px 18px;min-width:140px}
+.kpi b{display:block;font-size:27px;line-height:1.1}
+.kpi span{color:#93a1bb;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+.kpi.c b{color:#ff6b6b}.kpi.a b{color:#ffa94d}.kpi.m b{color:#ffd43b}.kpi.b b{color:#74c0fc}
+.card{background:#161e2e;border:1px solid #2a3549;border-radius:10px;padding:16px 20px;margin:12px 0}
+.card.rojo{border-left:3px solid #ff6b6b}
+.card.ambar{border-left:3px solid #ffa94d}
+.card.azul{border-left:3px solid #4c8dff}
+.card.verde{border-left:3px solid #51cf66}
+.card h3{margin-top:0}
+.card .q{color:#93a1bb;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 2px}
+table{width:100%;border-collapse:collapse;background:#161e2e;border:1px solid #2a3549;border-radius:9px;overflow:hidden;margin-top:12px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #26314a;vertical-align:top;font-size:13px}
+th{background:#1d2739;color:#93a1bb;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.num{white-space:nowrap;color:#93a1bb}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#c9d6ee}
+pre{margin:8px 0 0;background:#0b1220;border:1px solid #26314a;border-radius:6px;padding:12px;overflow-x:auto;
+ font:12px/1.5 ui-monospace,Consolas,monospace;color:#c9d6ee;white-space:pre-wrap}
+.pill{font-size:11px;padding:3px 8px;border-radius:20px;display:inline-block;white-space:nowrap}
+.pill.c{background:#4a1414;color:#ff8787;border:1px solid #7d2020}
+.pill.a{background:#4a3211;color:#ffc078;border:1px solid #7d5a20}
+.pill.m{background:#443f10;color:#ffe066;border:1px solid #756a1c}
+.pill.ok{background:#10331f;color:#8ce99a;border:1px solid #1f6b3c}
+.pill.info{background:#122d47;color:#8ecaff;border:1px solid #1f5480}
+ul{margin:6px 0;padding-left:20px}li{margin:4px 0}
+.ola{background:#161e2e;border:1px solid #2a3549;border-left:3px solid #4c8dff;border-radius:9px;padding:14px 20px;margin:12px 0}
+.ola h3{margin:0 0 2px}
+.ola .obj{color:#93a1bb;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.tag{font-size:11px;color:#93a1bb;border:1px solid #35415a;border-radius:5px;padding:2px 7px;margin-right:6px}
+footer{color:#93a1bb;font-size:12px;padding:18px 32px;border-top:1px solid #2a3549}
+blockquote{margin:10px 0;padding:10px 14px;background:#131b29;border-left:3px solid #35415a;color:#c9d6ee}
+</style></head><body>
+<header class="top"><h1>Versi&oacute;n SPs_Sept30: qu&eacute; se cerr&oacute; y qu&eacute; sigue abierto</h1>
+<p>Medici&oacute;n del snapshot del 30 de septiembre contra el de septiembre 10, acotada a los 188 objetos en uso,
+m&aacute;s la propuesta para <code>PRINCIPAL_VENCIDO</code> / <code>INTERES_NO_EXIGIBLES</code> y la regla que
+distingue las dos listas de &laquo;no restringido&raquo;</p></header>
+<nav class="docs">
+<a href="index.html">Consolidado</a><a href="06_ejecutivo.html">Resumen ejecutivo</a>
+<a href="07_plan_remediacion.html">Plan de remediación</a><a href="08_portal_admin.html">Portal de administración</a>
+<a href="09_demo_portal.html">Demo del portal</a>
+<a href="14_demo_portal_banderas.html">Demo de banderas</a>
+<a href="10_contexto_migracion.html">Contexto operativo y cambio de core</a>
+<a href="11_fase0_fase1.html">Fase 0 y Fase 1 con ejemplos</a>
+<a href="12_preguntas_negocio.html">Confirmaciones con negocio</a>
+<a href="15_respuestas_cliente.html">Respuestas del cliente</a>
+<a href="16_reclasificacion.html">Reclasificación de hallazgos</a>
+<a href="17_objetos_vigentes.html">Objetos vigentes</a>
+<a href="18_version_sept10.html">Versión SPs_Sept10</a>
+<a href="19_alcance_produccion.html">Alcance productivo</a>
+<a href="20_qa_confiable.html">QA confiable</a>
+<a href="21_preguntas_alcance.html">Preguntas acotadas</a>
+<a href="22_ejemplos_sql.html">Ejemplos de SQL</a>
+<a href="23_version_sept30.html">Versión SPs_Sept30</a>
+<a href="13_dummy_catalogos.html">Dummy de catálogos y banderas</a>
+<a href="05_dependencias.html">Dependencias y reportes</a><a href="00_inventario.html">Inventario</a>
+</nav>
+<div class="wrap">
+<p class="lead">El snapshot qued&oacute; en el repositorio en la carpeta <code>SPs_Sept30/</code> de la rama
+<code>devin/1790804080-sps-sept30</code> (sin PR, como referencia). Todo lo que sigue se mide por script sobre esa
+copia, descontando comentarios SQL; no se ejecut&oacute; nada contra SQL Server.</p>
+
+<div class="kpis">
+<div class="kpi b"><b>25</b><span>objetos modificados vs. Sept10</span></div>
+<div class="kpi b"><b>2</b><span>pendientes cerrados</span></div>
+<div class="kpi a"><b>1</b><span>pendiente cerrado a medias</span></div>
+<div class="kpi c"><b>5</b><span>objetos siguen con 'OPI VALOR'</span></div>
+<div class="kpi m"><b>7</b><span>cambios funcionales no anunciados</span></div>
+</div>
+
+<h2>1. Los tres arreglos que anunci&oacute; el cliente</h2>
+
+<div class="card verde">
+<h3><span class="pill ok">CERRADO</span> Fecha fija de <code>CIERRE.SP_CMR_GEN_MES</code> (Q06)</h3>
+<pre>-- Sept10 (linea 461)
+        WHERE FECHA_SISTEMA='20260123' AND TIPO='N'
+            AND RUBRO IN (...,'COM_REESTRUCTURA','OPI VALOR')
+
+-- Sept30 (linea 464)
+        WHERE FECHA_SISTEMA=@FechaIni AND TIPO='N'
+            AND RUBRO IN (...,'COM_REESTRUCTURA','OPI_VALOR')</pre>
+<p>El literal desapareci&oacute; de las dos copias (desarrollo y producci&oacute;n) y ya no queda ninguna fecha
+<code>'20######'</code> en el cierre comercial. <code>@FechaIni</code> se calcula en la l&iacute;nea 20 como
+<code>datefromparts(year(@FECHA), month(@FECHA), 1)</code>.</p>
+<p class="q">observaci&oacute;n que conviene confirmar con contabilidad</p>
+<p>Los otros 16 <code>LEFT JOIN</code> a <code>CIERRE.SAF_SALDOS</code> del mismo SP leen el saldo con
+<code>FECHA_SISTEMA=@FechaFinMes</code> (cierre de mes). Esta consulta de &laquo;otras comisiones&raquo; qued&oacute;
+leyendo <code>@FechaIni</code> (primer d&iacute;a del mes). Es coherente con el literal anterior &mdash;que tomaba un
+solo d&iacute;a&mdash; pero sigue siendo un d&iacute;a y no el mes: si la intenci&oacute;n era acumular el mes,
+falta el rango <code>&gt;= @FechaIni AND &lt; @FechaFin</code>.</p>
+</div>
+
+<div class="card ambar">
+<h3><span class="pill a">PARCIAL</span> <code>'OPI VALOR'</code> con espacio</h3>
+<p>Se corrigi&oacute; en el objeto donde lo reportamos (<code>SP_CMR_GEN_MES</code>, ahora <code>'OPI_VALOR'</code>),
+pero el mismo literal sigue vivo en otros cinco objetos de la lista de 188, con 36 usos:</p>
+<table><thead><tr><th>Objeto</th><th>Usos</th><th>D&oacute;nde</th></tr></thead><tbody>
+<tr><td class="mono">CIERRE.SP_CASTIGO_INI_RPT</td><td class="num">3</td><td>l&iacute;neas 176, 178, 256</td></tr>
+<tr><td class="mono">CIERRE.SP_RPT_CASTIGOS_CARTERA_VIS</td><td class="num">18</td><td>l&iacute;neas 126-350, incluye <code>'IVA OPI VALOR'</code></td></tr>
+<tr><td class="mono">CIERRE.SP_RPT_COBRANZA_CARTERA_CMR_IND_VIS</td><td class="num">6</td><td>l&iacute;neas 106-245</td></tr>
+<tr><td class="mono">CIERRE.SP_RPT_VENTAS_DE_CARTERA_VIS</td><td class="num">3</td><td>l&iacute;neas 176, 178, 256</td></tr>
+<tr><td class="mono">dbo.REPORTE_COBRANZA_INTEGRACION</td><td class="num">6</td><td>l&iacute;neas 97-189, incluye <code>'IVA OPI VALOR'</code></td></tr>
+</tbody></table>
+<p>En estos cinco el campo <code>rubro</code> viene de <code>PO.SAF_MOV_ABONO</code>, que se llena con
+<code>B.COD_CONCEPTO</code> tal cual y con <code>CONCAT('IVA ', RUBRO)</code> para el impuesto. O sea los valores
+reales son <code>'OPI_VALOR'</code> y <code>'IVA OPI_VALOR'</code>: el filtro con espacio no casa nunca y el importe
+se queda fuera de la columna de comisiones del reporte.</p>
+<p class="q">de paso</p>
+<p>En esas mismas listas hay renglones con el prefijo <code>IVA</code> mezclado: por ejemplo
+<code>IN ('IVA COMISION_ANTICIPADA','COMISION_PREPAGO','VISITA_EXTRA',...)</code> en
+<code>SP_RPT_CASTIGOS_CARTERA_VIS</code> l&iacute;nea 128 y en <code>REPORTE_COBRANZA_INTEGRACION</code>
+l&iacute;nea 99 &mdash; el primer elemento lleva IVA y el resto no, dentro de la columna de IVA.</p>
+</div>
+
+<div class="card verde">
+<h3><span class="pill ok">CERRADO</span> Umbral COVID (divergencia entre ambientes)</h3>
+<pre>-- dbo.FN_ES_COVID
+-- Sept10:  BD = NUM_CREDITO &lt; 6051   |   BD_prod = NUM_CREDITO &lt; 6086
+-- Sept30:  BD = NUM_CREDITO &lt; 6051   |   BD_prod = NUM_CREDITO &lt; 6051</pre>
+<p>La divergencia entre copias se cerr&oacute;: ambas quedaron en 6051. Lo que no cambia es la naturaleza del dato:
+sigue siendo un n&uacute;mero escrito dentro de una funci&oacute;n. Ese es exactamente el caso de la pesta&ntilde;a
+&laquo;Constantes&raquo; del portal (D8): una constante con vigencia, aprobaci&oacute;n y hist&oacute;rico, para que
+la corrida de un mes anterior se pueda reconstruir con el valor que ten&iacute;a entonces.</p>
+</div>
+
+<h2>2. <code>PRINCIPAL_VENCIDO</code> e <code>INTERES_NO_EXIGIBLES</code>: la respuesta del cliente es correcta, y eso define el dise&ntilde;o</h2>
+
+<div class="card azul">
+<h3>El hecho, en el c&oacute;digo</h3>
+<p>El cliente dice que son &laquo;un rubro propio del reporte y no se encuentra en cat&aacute;logos&raquo;. El
+c&oacute;digo lo confirma: no vienen de <code>PR.PR_RUBRO</code>, los <b>fabrica el propio cierre</b> como texto al
+llenar <code>CIERRE.SAF_SALDOS</code>:</p>
+<pre>-- CIERRE.SP_SAF_SALDOS, linea 51
+SELECT 'N', NUM_CREDITO, @FEC_HOY, 'PRINCIPAL_VENCIDO' AS RUBRO, SUM(SAL_RUBRO), SUM(SAL_IVA)
+...
+-- CIERRE.SP_SAF_SALDOS, linea 80
+SELECT 'N', C.NUM_CREDITO, @FEC_HOY, 'INTERES_NO_EXIGIBLES' AS RUBRO, SUM(C.MON_INT_ACUMULADO),
+       CASE WHEN R.IND_IVA = 'N' THEN 0 ELSE SUM(C.MON_INT_ACUMULADO) * .16 END AS SALDO_IVA</pre>
+<p>Y despu&eacute;s se usan como clave de negocio en el resto del cierre y de la p&oacute;liza:</p>
+<pre>-- CIERRE.SP_CMR_GEN_MES, lineas 629 y 1005
+LEFT JOIN [CIERRE].[SAF_SALDOS] S_PRIN_VEN ON ... AND S_PRIN_VEN.RUBRO = 'PRINCIPAL_VENCIDO' ...
+LEFT JOIN [CIERRE].[SAF_SALDOS] S_INT_NO_EXIGIBLE ON ... AND S_INT_NO_EXIGIBLE.RUBRO = 'INTERES_NO_EXIGIBLES' ...
+
+-- PO.SP_COM_REESTRCTURA_SN_CAP, lineas 139/146/165: se excluyen a mano
+WHERE ... AND RUBRO NOT IN ('PRINCIPAL_VENCIDO','SEGURO_DANOS','SEGURO_VIDA','CARGO_PORCENTAJE','INTERES_NO_EXIGIBLES')
+
+-- PO.SP_COM_ADMINISTRADA, linea 28: y se renombran a mano para el reporte
+select case when rubro = 'INTERES_NO_EXIGIBLES' then 'INTERESES' else rubro end as rubro ...</pre>
+<table><thead><tr><th>Literal</th><th>Objetos (de los 188)</th><th>Usos</th></tr></thead><tbody>
+<tr><td class="mono">'PRINCIPAL_VENCIDO'</td><td class="num">3</td><td class="num">6</td></tr>
+<tr><td class="mono">'INTERES_NO_EXIGIBLES'</td><td class="num">10</td><td class="num">29</td></tr>
+<tr><td class="mono">columna INTERESES_NO_EXIGIBLES (plural)</td><td class="num">3</td><td class="num">7</td></tr>
+</tbody></table>
+<p>Ojo con el detalle de la &uacute;ltima fila: el <b>rubro</b> se llama <code>INTERES_NO_EXIGIBLES</code> (singular)
+y la <b>columna</b> del reporte <code>INTERESES_NO_EXIGIBLES</code> (plural). Son dos nombres para lo mismo y hoy
+nada impide que alguien escriba uno donde va el otro.</p>
+</div>
+
+<div class="card azul">
+<h3>Nuestra propuesta: s&iacute; al cat&aacute;logo, pero con el campo que los distingue</h3>
+<p>Un rubro derivado no deja de ser un rubro: participa en la p&oacute;liza, tiene IVA, tiene cuenta y se usa como
+clave en 13 objetos. Si no est&aacute; en el cat&aacute;logo, el portal no puede validarlo ni versionarlo, y el
+&laquo;rubro propio del reporte&raquo; sigue siendo texto suelto en 35 lugares. La propuesta es una sola tabla de
+rubros con una columna que diga de d&oacute;nde sale cada uno:</p>
+<pre>-- DUMMY.CAT_RUBRO  (propuesta; no ejecutado)
+COD_RUBRO               ORIGEN_DATO   REGLA_CALCULO                                IND_IVA  AGRUPA_REPORTE
+'PRINCIPAL'             CATALOGO      (PR.PR_RUBRO)                                 N        PRINCIPAL
+'OPI_VALOR'             CATALOGO      (PR.PR_RUBRO)                                 S        COMISIONES
+'PRINCIPAL_VENCIDO'     DERIVADO      saldo de principal con FEC_EXIGIBLE vencida   N        PRINCIPAL_VENCIDO
+'INTERES_NO_EXIGIBLES'  DERIVADO      MON_INT_ACUMULADO posterior al corte          segun    INTERESES</pre>
+<ul>
+<li><b><code>ORIGEN_DATO</code></b>: <code>CATALOGO</code> (se sincroniza desde <code>PR.PR_RUBRO</code>, solo lectura
+en el portal) o <code>DERIVADO</code> (lo calcula el cierre; el portal administra su nombre, su IVA, su cuenta y su
+agrupaci&oacute;n, no su f&oacute;rmula).</li>
+<li><b><code>REGLA_CALCULO</code></b>: texto descriptivo del c&aacute;lculo, para que el rubro derivado deje de ser
+conocimiento oral.</li>
+<li><b><code>AGRUPA_REPORTE</code></b>: reemplaza el <code>CASE WHEN rubro = 'INTERES_NO_EXIGIBLES' THEN 'INTERESES'</code>
+que hoy est&aacute; repetido en <code>SP_COM_ADMINISTRADA</code> y <code>SP_IND_ADMINISTRADA</code>.</li>
+<li><b><code>IND_IVA</code> con tasa vigente</b>: hoy el IVA de estos rubros se calcula con <code>* .16</code>
+incrustado (107 usos en 53 objetos de los 188). La tasa pertenece a la pesta&ntilde;a de constantes.</li>
+</ul>
+<p class="q">por qu&eacute; esto no crea el cat&aacute;logo gigante que el cliente no quiere</p>
+<p>Los rubros derivados que fabrica el cierre son <b>3 nombres</b> (<code>PRINCIPAL_VENCIDO</code>,
+<code>INTERES_NO_EXIGIBLES</code> y <code>SEGURO_VIDA</code> recalculado), sobre 5 tipos de saldo
+(<code>'N'</code>, <code>'O'</code>, <code>'K'</code>, <code>'C'</code>, <code>'V'</code>). El cat&aacute;logo crece
+por <i>concepto</i>, no por p&oacute;liza: pasa de 45 a 48 renglones. Lo que desaparece son los 35 literales
+repartidos en 13 procedimientos.</p>
+<p><b>Alternativa que descartamos:</b> dejarlos fuera del cat&aacute;logo y solo documentarlos. Es m&aacute;s barato
+hoy y m&aacute;s caro despu&eacute;s: el portal no podr&iacute;a validar que el cierre y los reportes usan el mismo
+nombre, que es justo el error que ya encontramos con <code>OPI VALOR</code>. La decisi&oacute;n final es del cliente;
+nuestra recomendaci&oacute;n es incluirlos marcados como <code>DERIVADO</code>.</p>
+</div>
+
+<h2>3. &laquo;No restringido&raquo;: d&oacute;nde se usa cada lista y cu&aacute;l es la regla</h2>
+
+<div class="card azul">
+<h3>La respuesta del cliente, verificada en el c&oacute;digo</h3>
+<blockquote>&laquo;Ambas son correctas y su aplicaci&oacute;n depende del proceso en el que se encuentra.&raquo;</blockquote>
+<p>El c&oacute;digo lo sostiene, y adem&aacute;s deja ver cu&aacute;l es el proceso de cada una. Hay tres reglas
+distintas, no dos:</p>
+<table><thead><tr><th>Lista</th><th>Objeto</th><th>Usos</th><th>Proceso</th><th>En los 188</th></tr></thead><tbody>
+<tr><td class="mono" rowspan="7">IN ('008','031')<br><span class="tag">A &mdash; p&oacute;liza y reportes de cartera</span></td>
+    <td class="mono">PO.SYS_SP_CONTROL_HISTORICO_TRASPASOS</td><td class="num">1</td><td>calcula <code>ID_FONDEO</code> del d&iacute;a (2 = no restringido)</td><td>s&iacute;</td></tr>
+<tr><td class="mono">PO.SYS_SP_MOV_ABONO</td><td class="num">1</td><td>p&oacute;liza, calcula <code>ID_FONDEO</code> en l&iacute;nea</td><td>no</td></tr>
+<tr><td class="mono">PO.SYS_SP_MOV_CARGO</td><td class="num">2</td><td>p&oacute;liza, calcula <code>ID_FONDEO</code> en l&iacute;nea</td><td>no</td></tr>
+<tr><td class="mono">PO.SYS_SP_MOV_INTERES</td><td class="num">1</td><td>p&oacute;liza, calcula <code>ID_FONDEO</code> en l&iacute;nea</td><td>no</td></tr>
+<tr><td class="mono">CIERRE.SP_CMR_GEN_MES</td><td class="num">1</td><td>columna <code>RESTRINGIDO</code> del cierre comercial</td><td>s&iacute;</td></tr>
+<tr><td class="mono">CIERRE.SP_CMR_RPT_DESEMBOLSOS_CARTERA_VIS</td><td class="num">1</td><td>columna <code>TIPO_CARTERA</code></td><td>s&iacute;</td></tr>
+<tr><td class="mono">CIERRE.SP_IND_RPT_DESEMBOLSOS_CARTERA_VIS</td><td class="num">1</td><td>columna <code>TIPO_CARTERA</code></td><td>s&iacute;</td></tr>
+<tr><td class="mono">IN ('008','031','046')<br><span class="tag">B &mdash; cierre mensual individual</span></td>
+    <td class="mono">CIERRE.SP_IND_GEN_MES</td><td class="num">3</td><td>columna <code>'Sin Restricci&oacute;n Restringidos'</code>, en los tres bloques (total, ION, AFIRME)</td><td>s&iacute;</td></tr>
+<tr><td class="mono">NOT IN (22,23,28,35)<br><span class="tag">C &mdash; otra regla</span></td>
+    <td class="mono">10 objetos de castigos comerciales y <code>SP_SAF_SALDOS</code></td><td class="num">15</td><td>excluye los cuatro sindicados SHF; no es &laquo;no restringido&raquo;</td><td>s&iacute;</td></tr>
+</tbody></table>
+<p>Adem&aacute;s hay 7 objetos donde la lista literal qued&oacute; <b>comentada</b> y el valor ahora se lee de
+<code>CH.ID_FONDEO</code> (por ejemplo <code>PO.SP_IND_FIRMA</code> l&iacute;nea 32,
+<code>PO.SP_COM_CONDONACION</code> l&iacute;nea 39). Eso es importante: alguien ya empez&oacute; a centralizar
+la regla.</p>
+</div>
+
+<div class="card ambar">
+<h3>La regla que encontramos</h3>
+<ol>
+<li><b>En la p&oacute;liza la regla ya no se eval&uacute;a en cada SP.</b> Se calcula una vez al d&iacute;a en
+<code>PO.SYS_SP_CONTROL_HISTORICO_TRASPASOS</code> y se guarda en
+<code>PO.CONTROL_HISTORICO_TRASPASOS.ID_FONDEO</code>; los 121 objetos que necesitan el dato lo leen de ah&iacute;
+(<code>CH.ID_FONDEO</code>) y lo convierten en texto al armar el concepto:
+<code>IIF(A.ID_FONDEO = 2, 'NO RESTRINGIDO ', 'RESTRINGIDO ')</code>. La lista contable, entonces, es
+<b><code>IN ('008','031')</code></b>.</li>
+<li><b>En los reportes cada SP reescribe la lista.</b> Los de desembolsos y el cierre comercial repiten
+<code>('008','031')</code>; el cierre mensual individual usa <code>('008','031','046')</code>.</li>
+<li><b>La diferencia es <code>046</code> = <code>CARTERA_CASTIGADA</code>.</b> Y aqu&iacute; est&aacute; la
+explicaci&oacute;n m&aacute;s probable de por qu&eacute; &laquo;ambas son correctas&raquo;: en la p&oacute;liza la
+cartera castigada no se identifica por el origen sino por el tipo de cr&eacute;dito, en el mismo SP que calcula el
+fondeo:
+<pre>-- PO.SYS_SP_CONTROL_HISTORICO_TRASPASOS, lineas 31-32
+,CASE WHEN C.COD_ORIGEN IN ('008','031') THEN 2 ELSE 1 END AS ID_FONDEO
+,CASE WHEN C.NUM_DESC_TIPO_CREDITO = 26 THEN 'S' ELSE 'N' END AS CASTIGO</pre>
+es decir, el castigo viaja por <code>CASTIGO='S'</code> y no hace falta meterlo en la lista de fondeo; el reporte
+mensual individual, que no tiene esa columna, lo resuelve agregando <code>'046'</code> a la lista.</li>
+</ol>
+<p class="q">c&oacute;mo confirmarlo sin discutirlo</p>
+<pre>-- Consulta de solo lectura para validar la hipotesis (pendiente de acceso a QA)
+SELECT CASE WHEN COD_ORIGEN = '046' THEN 'origen 046' ELSE 'otro origen' END AS ORIGEN,
+       CASE WHEN NUM_DESC_TIPO_CREDITO = 26 THEN 'tipo 26' ELSE 'otro tipo' END AS TIPO,
+       COUNT(*) AS CREDITOS
+FROM PR.PR_CREDITOS WITH (NOLOCK)
+WHERE IND_LINEA = 'N'
+GROUP BY CASE WHEN COD_ORIGEN = '046' THEN 'origen 046' ELSE 'otro origen' END,
+         CASE WHEN NUM_DESC_TIPO_CREDITO = 26 THEN 'tipo 26' ELSE 'otro tipo' END;</pre>
+<p>Si la celda &laquo;origen 046 / otro tipo&raquo; sale en cero, las dos listas son equivalentes y la diferencia es
+solo de redacci&oacute;n. Si sale con cr&eacute;ditos, entonces la p&oacute;liza y el reporte mensual s&iacute;
+clasifican distinto los mismos cr&eacute;ditos y hay que decidir cu&aacute;l manda.</p>
+</div>
+
+<div class="card azul">
+<h3>C&oacute;mo queda en el portal</h3>
+<p>No como una lista, sino como una bandera del origen de fondos <b>con &aacute;mbito de proceso</b>, que es
+exactamente lo que el cliente describe cuando dice &laquo;depende del proceso&raquo;:</p>
+<pre>-- DUMMY.CAT_ORIGEN_POR_BANDERA  (propuesta; no ejecutado)
+COD_ORIGEN  COD_BANDERA          AMBITO                VALOR  FEC_DESDE   FEC_HASTA
+'008'       ES_NO_RESTRINGIDO    POLIZA                 1     2020-01-01  9999-12-31
+'031'       ES_NO_RESTRINGIDO    POLIZA                 1     2020-01-01  9999-12-31
+'046'       ES_NO_RESTRINGIDO    POLIZA                 0     2020-01-01  9999-12-31
+'046'       ES_NO_RESTRINGIDO    REPORTE_REGULATORIO    1     2020-01-01  9999-12-31
+'022'       ES_SINDICADO_SHF     TODOS                  1     2020-01-01  9999-12-31</pre>
+<ul>
+<li>Las dos respuestas correctas conviven, pero <b>escritas</b>, con vigencia y con qui&eacute;n las aprob&oacute;.</li>
+<li>El SP deja de traer la lista: hace join a la bandera con el &aacute;mbito que le corresponde.</li>
+<li>Alta de un origen nuevo: un renglon por &aacute;mbito en el portal, cero ediciones de c&oacute;digo. Hoy son
+11 ediciones para la lista A, 3 para la B y 15 para la C.</li>
+<li>La validaci&oacute;n de salud del portal avisa cuando un origen tiene la bandera en un &aacute;mbito y no en el
+otro, que es el estado en el que est&aacute; hoy <code>046</code> sin que nadie lo sepa.</li>
+</ul>
+</div>
+
+<h2>4. Cambios de esta versi&oacute;n que nadie anunci&oacute; (y s&iacute; mueven cifras)</h2>
+<p>De los 25 objetos que cambiaron, 10 son tablas del esquema <code>ori</code> (fuera de alcance). Los 7 cambios
+funcionales de los objetos de p&oacute;liza y cierre son estos, y ninguno viene con prueba de equivalencia:</p>
+<table><thead><tr><th>Objeto</th><th>Cambio</th><th>Riesgo</th></tr></thead><tbody>
+<tr><td class="mono">PO.SP_COM_DEV_MORATORIO</td>
+    <td>cambia de fuente: ya no lee <code>PO.SAF_MORA_EMPR_HIST</code> (y elimina el <code>DELETE</code>+<code>INSERT</code> que la poblaba) sino <code>PR.PR_HISTORICO_CALCULO_TASA_MORA</code>, filtrando <code>cod_rubro='MORA_EMPRESARIAL'</code> y por <code>Fec_Calculo_Proceso</code></td>
+    <td><span class="pill c">alto</span> cambia el universo y la fecha del devengo moratorio empresarial</td></tr>
+<tr><td class="mono">PO.SP_SND_CAPITAL</td><td>nuevo <code>#CREDITO_UNICO</code>: <code>MIN(NUM_CREDITO)</code> por <code>ID_EXTERNO</code> y <code>INNER JOIN</code> contra &eacute;l</td>
+    <td><span class="pill a">medio</span> deduplica: si hab&iacute;a doble conteo se corrige, si no, puede excluir cr&eacute;ditos</td></tr>
+<tr><td class="mono">PO.SP_SND_ADMINISTRADA</td><td>dos temporales nuevos con el mismo criterio (<code>#CREDITO_UNICO_CAP</code>, <code>#CREDITO_UNICO_MIN</code>)</td><td><span class="pill a">medio</span> igual que el anterior</td></tr>
+<tr><td class="mono">PO.SP_SND_RECLASIFICACION</td><td>mismo <code>#CREDITO_UNICO</code></td><td><span class="pill a">medio</span> igual que el anterior</td></tr>
+<tr><td class="mono">CIERRE.SP_CMR_GEN_MES</td><td>secci&oacute;n nueva de &laquo;campos de riesgo&raquo; (~165 l&iacute;neas): devengo diario por cr&eacute;dito con corte por <code>DIA_PAGO</code> y regla de impago para etapa 3</td>
+    <td><span class="pill a">medio</span> l&oacute;gica nueva de devengo dentro del cierre mensual</td></tr>
+<tr><td class="mono">CIERRE.SP_CMR_RPT_INTERESES_DEVENGADOS_VIS</td><td>corrige un predicado que comparaba <code>A.mon_movimiento &lt;= C.FEC_CANCELACION</code> (importe contra fecha) y agrega el bloque de moratorios hu&eacute;rfanos</td>
+    <td><span class="pill m">bajo</span> ambos parecen correcciones; suben importes reportados</td></tr>
+<tr><td class="mono">CIERRE.SP_IND_RPT_INTERESES_DEVENGADOS_VIS</td><td>agrega moratorios y comisiones de d&iacute;as sin inter&eacute;s ordinario, en devengo y en reversa</td>
+    <td><span class="pill m">bajo</span> misma correcci&oacute;n del lado individual</td></tr>
+</tbody></table>
+<p>Es el mejor argumento a favor del QA reconstruido: cinco de estos siete cambian importes y hoy no existe un
+ambiente donde correr el mismo d&iacute;a antes y despu&eacute;s para cuantificar la diferencia.</p>
+
+<h2>5. Indicadores, acotados a los 188 objetos</h2>
+<table><thead><tr><th>Indicador</th><th>Sept10</th><th>Sept30</th><th></th></tr></thead><tbody>
+<tr><td>Fecha fija <code>'20######'</code></td><td class="num">2 obj / 91 usos</td><td class="num">1 obj / 90 usos</td><td><span class="pill ok">baja</span></td></tr>
+<tr><td><code>'OPI VALOR'</code> con espacio</td><td class="num">6 obj / 37 usos</td><td class="num">5 obj / 36 usos</td><td><span class="pill a">baja parcial</span></td></tr>
+<tr><td>Umbral COVID divergente entre copias</td><td class="num">6051 vs 6086</td><td class="num">6051 vs 6051</td><td><span class="pill ok">cierra</span></td></tr>
+<tr><td>IVA 16% incrustado</td><td class="num">53 obj / 105 usos</td><td class="num">53 obj / 107 usos</td><td><span class="pill c">sube</span></td></tr>
+<tr><td><code>NOT IN (22,23,28,35)</code></td><td class="num">10 obj / 15 usos</td><td class="num">10 obj / 15 usos</td><td><span class="pill a">igual</span></td></tr>
+<tr><td><code>IN ('008','031')</code> activo</td><td class="num">4 obj / 4 usos</td><td class="num">4 obj / 4 usos</td><td><span class="pill a">igual</span></td></tr>
+<tr><td><code>LIKE '%CUENTAS DE ORDEN%'</code></td><td class="num">9 obj / 11 usos</td><td class="num">9 obj / 11 usos</td><td><span class="pill a">igual</span></td></tr>
+<tr><td><code>NUM_DESC_TIPO_CREDITO</code> en filtros</td><td class="num">96 obj / 399 usos</td><td class="num">96 obj / 397 usos</td><td><span class="pill a">igual</span></td></tr>
+<tr><td>Referencias a <code>_shadow</code></td><td class="num">124 obj / 3356 usos</td><td class="num">124 obj / 3370 usos</td><td><span class="pill m">sube</span></td></tr>
+<tr><td><code>WITH (NOLOCK)</code></td><td class="num">83 obj / 1042 usos</td><td class="num">83 obj / 1055 usos</td><td><span class="pill m">sube</span></td></tr>
+<tr><td><code>getdate()</code></td><td class="num">120 obj / 225 usos</td><td class="num">120 obj / 224 usos</td><td><span class="pill a">igual</span></td></tr>
+</tbody></table>
+<p>El &uacute;nico objeto que conserva fechas literales es <code>CIERRE.SP_IND_GEN_MES</code>, con
+<code>'20000101'</code> y <code>'20201231'</code> en 90 usos: son fronteras de rango, no fechas de proceso, as&iacute;
+que las tratamos como caso distinto al de Q06.</p>
+
+<h2>6. Confirmaciones que agrega esta versi&oacute;n</h2>
+<div class="card ambar">
+<ul>
+<li><b>Contabilidad:</b> la consulta de otras comisiones del cierre comercial, &iquest;debe leer el saldo del primer
+d&iacute;a del mes (<code>@FechaIni</code>, como qued&oacute;) o el de fin de mes (<code>@FechaFinMes</code>, como
+los otros 16 joins)?</li>
+<li><b>Contabilidad:</b> &iquest;se aprueba incorporar <code>PRINCIPAL_VENCIDO</code> e
+<code>INTERES_NO_EXIGIBLES</code> al cat&aacute;logo marcados como <code>DERIVADO</code>, con
+<code>AGRUPA_REPORTE</code> y tasa de IVA vigente?</li>
+<li><b>Contabilidad / tesorer&iacute;a:</b> con el resultado de la consulta de validaci&oacute;n, &iquest;se declara
+que <code>046</code> es no restringido solo para el reporte regulatorio y restringido para la p&oacute;liza?</li>
+<li><b>TI:</b> los cinco objetos que siguen con <code>'OPI VALOR'</code>, &iquest;entran en la misma correcci&oacute;n
+o quedan para la ola de cat&aacute;logos?</li>
+<li><b>TI / negocio:</b> los siete cambios funcionales de esta entrega, &iquest;tienen un d&iacute;a de referencia
+donde comparar importes antes y despu&eacute;s? Sin eso no se pueden dar por buenos.</li>
+<li><b>TI:</b> <code>PO.SP_COM_DEV_MORATORIO</code> deja de poblar <code>PO.SAF_MORA_EMPR_HIST</code>;
+&iquest;alguien m&aacute;s lee esa tabla?</li>
+</ul>
+</div>
+
+</div>
+<footer>Medici&oacute;n est&aacute;tica sobre <code>SPs_Sept30/BD</code> y <code>SPs_Sept30/BD_prod</code>, descontando
+comentarios SQL, acotada a los 188 objetos de <code>auditoria/insumos/sp_relacionados_a_poliza.txt</code>.
+Los bloques marcados como propuesta son dise&ntilde;o dummy: no se ejecut&oacute; nada contra SQL Server.</footer>
+</body></html>
